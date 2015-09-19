@@ -55,6 +55,7 @@
     {:synsem {:cat :verb
               :essere false
               :sem {:pred :abbracciare
+                    :reflexive false
                     :activity false
                     :discrete false
                     :subj {:human true}
@@ -602,6 +603,7 @@
       "comprare" {:synsem {:cat :verb
                            :essere false
                            :sem {:pred :comprare
+                                 :reflexive false
                                  :subj {:human true}
                                  :obj {:buyable true}}}}
       
@@ -1216,6 +1218,7 @@
     :synsem {:cat :verb
              :essere false
              :sem {:discrete false
+                   :reflexive false
                    :pred :leggere
                    :subj {:human true}
                    :obj {:legible true}}}}
@@ -1313,6 +1316,7 @@
     {:synsem {:cat :verb
               :essere false
               :sem {:pred :mangiare
+                    :reflexive false
                     :subj {:animate true}
                     :obj {:edible true}}}}
 
@@ -1414,10 +1418,12 @@
    (let [common1
          {:synsem {:essere false
                    :sem {:pred :speak
+                         :reflexive false
                          :subj {:human true}}}}
          common2
          {:synsem {:essere false
                    :sem {:pred :talk
+                         :reflexive false
                          :subj {:human true}}}}]
      (list
       (unify common1 transitive
@@ -1740,6 +1746,7 @@
    
    "vendere"  {:synsem {:cat :verb 
                         :sem {:pred :vendere
+                              :reflexive false
                               :subj {:human true}
                               :obj {:human false}}}}
    
@@ -1784,6 +1791,7 @@
    
    "vincere"  {:synsem {:cat :verb
                         :sem {:pred :win
+                              :reflexive false
                               :subj {:human true}
                               :obj {:human false}}}}
 
