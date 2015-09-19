@@ -29,6 +29,3 @@
             [lein-ring "0.9.3"]]
 
   :ring {:handler babel.core/app})
-
-
-
