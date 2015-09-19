@@ -36,10 +36,9 @@
                                   (let [spec (unify {:root {:italiano {:italiano root-form}}}
                                                     tense)]
                                     (log/debug (str "generating from: " spec))
-                                    (process [{:fill
+                                    (process [{:fill-with-language
                                                {:spec spec
-                                                :source-model en/small-plus-vp-pronoun
-                                                :target-model small
+                                                :model small
                                                 :count count}}] "it")))
                                 (list {:synsem {:sem {:tense :conditional}}}
                                       {:synsem {:sem {:tense :future}}}

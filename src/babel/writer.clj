@@ -59,6 +59,9 @@
                          sentence))]
     {:target sentence}))
 
+(defn expression [model spec]
+  )
+
 (defn expression-pair [source-language-model target-language-model spec]
   "Generate a pair: {:source <source_expression :target <target_expression>}.
 
@@ -205,6 +208,23 @@
                [canonical (str (serialize lexeme))
                 language]]))
 
+(defn populate-with-language [num model spec]
+  (let [spec (if spec spec :top)
+        language (:language model)
+        debug (log/debug (str "populate-with-language: spec: " spec "; language: " language))]
+    (dotimes [n num]
+      (let [sentence (expression model spec)
+            fo (:morph model)
+            surface (fo sentence)]
+        (log/info (str "populate-with-language:" language ": '"
+                       (:surface sentence) "'"))
+        (insert-expression sentence ;; underlying structure
+                           surface ;; text of expression
+                           "expression" ;; table in database
+                           language
+                           (:name model)) ;; name of language model; e.g.: 'small','medium'
+        ))))
+
 ;; TODO: use named optional parameters.
 (defn populate [num source-language-model target-language-model & [ spec table ]]
   (let [spec (if spec spec :top)
@@ -307,6 +327,32 @@
                     target-model
                     spec table)
           (fill-by-spec spec (- count 1) table source-model target-model))
+        (log/debug (str "Since no more are required, not generating any for this spec."))))))
+
+(defn fill-language-by-spec [spec count table model]
+  (let [language (:language @model)
+        json-spec (json/write-str spec)
+        current-count
+        (:count
+         (first
+          (exec-raw ["SELECT count(*) FROM expression 
+                         WHERE structure @> ?::jsonb
+                           AND language=?"
+                       [(json/write-str spec) language]]
+                      :results)))]
+    (log/debug (str "current-count for spec: " spec "=" current-count))
+    (let [count (- count current-count)]
+      (if (> current-count 0)
+        (log/debug (str "There are already " current-count " expressions for: " spec)))
+      (if (> count 0)
+        (do
+          (log/info (str "Generating "
+                         count
+                         (if (> current-count 0) " more")
+                         " expressions for spec: " spec))
+          (populate-with-language
+           1 model spec table)
+          (fill-language-by-spec spec (- count 1) table model))
         (log/debug (str "Since no more are required, not generating any for this spec."))))))
 
 (defn fill-verb [verb count source-model target-model & [spec table]] ;; spec is for additional constraints on generation.
@@ -428,6 +474,15 @@
                          "expression_import"
                          (->> member-of-unit :fill :source-model)
                          (->> member-of-unit :fill :target-model))))
+                    (if (:fill-with-language member-of-unit)
+                      (let [count (or (->> member-of-unit :fill :count) 10)]
+                        (log/debug (str "doing fill-by-spec: " (->> member-of-unit :fill :spec)
+                                        "; count=" count))
+                        (fill-language-by-spec
+                         (->> member-of-unit :fill :spec)
+                         count
+                         "expression_import"
+                         (->> member-of-unit :fill :model))))
                     (if (:fill-verb member-of-unit)
                       (do
                         (log/info (str "Doing fill-verb: " (:fill-verb member-of-unit)))
