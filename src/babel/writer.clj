@@ -29,12 +29,9 @@
    (exec-raw [(str "TRUNCATE " table)])))
 ;; catch exceptions when trying to populate
 
-(defn expression-single [model spec]
+(defn expression [model spec]
   (let [no-language (if (nil? model)
                              (throw (Exception. "No target language model was supplied.")))
-
-        ;; 1. generate sentence in target language.
-        ;; resolve future
         model (if (future? model)
                 @model
                 model)
@@ -57,10 +54,7 @@
                                   {:synsem {:sem {:subj subj}}}))
                          true
                          sentence))]
-    {:target sentence}))
-
-(defn expression [model spec]
-  )
+    sentence))
 
 (defn expression-pair [source-language-model target-language-model spec]
   "Generate a pair: {:source <source_expression :target <target_expression>}.
@@ -217,7 +211,7 @@
             fo (:morph model)
             surface (fo sentence)]
         (log/info (str "populate-with-language:" language ": '"
-                       (:surface sentence) "'"))
+                       surface "'"))
         (insert-expression sentence ;; underlying structure
                            surface ;; text of expression
                            "expression" ;; table in database
@@ -318,7 +312,7 @@
         (log/debug (str "There are already " current-target-count " expressions for: " spec)))
       (if (> count 0)
         (do
-          (log/info (str "Generating "
+          (log/debug (str "Generating "
                          count
                          (if (> current-target-count 0) " more")
                          " expressions for spec: " spec))
@@ -330,7 +324,12 @@
         (log/debug (str "Since no more are required, not generating any for this spec."))))))
 
 (defn fill-language-by-spec [spec count table model]
-  (let [language (:language @model)
+  (let [model (if (future? model)
+                @model
+                model)
+        language (:language model)
+        debug (log/debug (str "THE LANGUAGE IS : " language))
+        debug (log/debug (str "THE SPEC IS : " spec))
         json-spec (json/write-str spec)
         current-count
         (:count
@@ -346,12 +345,11 @@
         (log/debug (str "There are already " current-count " expressions for: " spec)))
       (if (> count 0)
         (do
-          (log/info (str "Generating "
+          (log/debug (str "Generating "
                          count
                          (if (> current-count 0) " more")
                          " expressions for spec: " spec))
-          (populate-with-language
-           1 model spec table)
+          (populate-with-language 1 model spec)
           (fill-language-by-spec spec (- count 1) table model))
         (log/debug (str "Since no more are required, not generating any for this spec."))))))
 
@@ -476,13 +474,13 @@
                          (->> member-of-unit :fill :target-model))))
                     (if (:fill-with-language member-of-unit)
                       (let [count (or (->> member-of-unit :fill :count) 10)]
-                        (log/debug (str "doing fill-by-spec: " (->> member-of-unit :fill :spec)
+                        (log/debug (str "doing fill-with-language: " (->> member-of-unit :fill-with-language :spec)
                                         "; count=" count))
                         (fill-language-by-spec
-                         (->> member-of-unit :fill :spec)
+                         (->> member-of-unit :fill-with-language :spec)
                          count
                          "expression_import"
-                         (->> member-of-unit :fill :model))))
+                         (->> member-of-unit :fill-with-language :model))))
                     (if (:fill-verb member-of-unit)
                       (do
                         (log/info (str "Doing fill-verb: " (:fill-verb member-of-unit)))

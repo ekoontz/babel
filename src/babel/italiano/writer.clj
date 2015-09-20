@@ -1,7 +1,6 @@
 (ns babel.italiano.writer
   (:refer-clojure :exclude [get-in]))
 
-(require '[babel.english.grammar :as en])
 (require '[babel.italiano.grammar :refer [small]])
 (require '[babel.italiano.lexicon :refer [lexicon]])
 (require '[babel.writer :refer [delete-from-expressions process write-lexicon]])
