@@ -210,8 +210,15 @@
       (let [sentence (expression model spec)
             fo (:morph model)
             surface (fo sentence)]
-        (log/info (str "populate-with-language:" language ": '"
+        (if (empty? surface)
+          (let [err-mesg (str "Surface was empty for expression generated from spec: " spec)]
+            (log/error err-mesg)
+            (log/error (str " expression with empty surface:  " (strip-refs sentence)))
+            (throw (Exception. err-mesg))))
+        (log/info (str "populate-with-language:" language ": surface='"
                        surface "'"))
+        (log/debug (str "populate-with-language:" language ": spec='"
+                       spec "'"))
         (insert-expression sentence ;; underlying structure
                            surface ;; text of expression
                            "expression" ;; table in database
