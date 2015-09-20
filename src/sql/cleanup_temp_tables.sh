@@ -7,6 +7,8 @@ fi
 USER=$(echo ${DATABASE_URL} | sed 's/.*\/\/\([^@]*\).*/\1/g')
 DB=$(echo $DATABASE_URL | sed 's/.*\/\/[^@]*@localhost\/\(.*\)/\1/g')
 
+
+echo "\d" |  psql -U ${USER} ${DB} | grep expression_import_ | awk '{print $3}' | xargs -I{} echo "drop table {};"
 echo "\d" |  psql -U ${USER} ${DB} | grep expression_import_ | awk '{print $3}' | xargs -I{} echo "drop table {};" | psql -U ${USER} ${DB}
 
 
