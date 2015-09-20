@@ -24,7 +24,11 @@
     ;; TODO: promote to the (process) command set.
     ;; 
     (if false
-      (delete-from-expressions "fr" {:synsem {:sem {:aspect :perfect, :tense :past}}}))
+      (delete-from-expressions "fr" {:synsem {:sem {:pred :believe
+                                                    :aspect :perfect, :tense :past}}}))
+    (if false
+      (delete-from-expressions "fr" {:synsem {:sem {:pred :have-to
+                                                    :aspect :perfect, :tense :past}}}))
 
     (write-lexicon "fr" @lexicon)
     (let [
