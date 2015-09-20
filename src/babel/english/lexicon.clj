@@ -738,12 +738,14 @@
    "play" [{:comment "We are talking about playing games or sports."
             :synsem {:cat :verb
                      :sem {:pred :giocare
+                           :reflexive false
                            :subj {:human true}
                            :obj {:games true}}}}
 
            {:comment "We are talking about playing music or sounds."
             :synsem {:cat :verb
                      :sem {:pred :suonare
+                           :reflexive false
                            :subj {:human true}
                            :obj {:music true}}}}]
 
