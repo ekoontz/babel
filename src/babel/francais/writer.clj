@@ -3,7 +3,6 @@
 
 (require '[babel.cache :refer [create-index]])
 (require '[babel.engine :refer [generate]])
-(require '[babel.english.grammar :as en])
 (require '[babel.forest :as forest])
 (require '[babel.francais.grammar :refer [small medium]])
 (require '[babel.francais.lexicon :refer [lexicon]])
@@ -24,7 +23,7 @@
     ;; A place to erase old mistakes (before attempting again).
     ;; TODO: promote to the (process) command set.
     ;; 
-    (if true
+    (if false
       (delete-from-expressions "fr" {:synsem {:sem {:aspect :perfect, :tense :past}}}))
 
     (write-lexicon "fr" @lexicon)
@@ -45,21 +44,46 @@
       (.size (map (fn [verb]
                     (let [root-form (get-in verb [:français :français])]
                       (log/debug (str "generating from root-form:" root-form))
-                      (.size (map (fn [tense]
-                                    (let [spec (unify {:root {:français {:français root-form}}}
-                                                      tense)]
-                                      (log/debug (str "generating from: " spec))
-                                      (process [{:fill-with-language
-                                                 {:spec spec
-                                                  :model small
-                                                  :count count}}] "fr")))
-                                  (list {:synsem {:sem {:tense :conditional}}}
-                                        {:synsem {:sem {:tense :future}}}
-                                        {:synsem {:sem {:tense :present}}}
-                                        {:synsem {:sem {:aspect :progressive
-                                                        :tense :past}}}
-                                        {:synsem {:sem {:aspect :perfect
-                                                        :tense :past}}})))))
+                      (.size
+                       (map (fn [tense]
+                              (log/trace (str "generating from tense: " tense))
+                              (let [spec (unify {:root {:français {:français root-form}}}
+                                                tense)]
+                                (.size
+                                 (map (fn [gender]
+                                        (let [spec (unify spec
+                                                          {:comp {:synsem {:agr gender}}})]
+                                          (log/trace (str "generating from gender: " gender))
+                                          (.size
+                                           (map (fn [person]
+                                                  (let [spec (unify spec
+                                                                    {:comp {:synsem {:agr {:person person}}}})]
+                                                    (log/trace (str "generating from person: " person))
+                                                    (.size
+                                                     (map (fn [number]
+                                                            (let [spec (unify spec
+                                                                              {:comp {:synsem {:agr {:number number}}}})]
+                                                              (log/debug (str "generating from spec: " spec))
+                                                              (process [{:fill-with-language
+                                                                         {:spec spec
+                                                                          :model small
+                                                                          :count 1}}] "fr")))
+                                                          [:sing :plur]))))
+                                                [:1st :2nd :3rd]))))
+                                      (cond (= tense
+                                               {:synsem {:sem {:aspect :perfect
+                                                               :tense :past}}})
+                                            [{:gender :masc}
+                                             {:gender :fem}]
+                                            true
+                                            [:top])))))
+                            (list {:synsem {:sem {:tense :conditional}}}
+                                  {:synsem {:sem {:tense :future}}}
+                                  {:synsem {:sem {:tense :present}}}
+                                  {:synsem {:sem {:aspect :progressive
+                                                  :tense :past}}}
+                                  {:synsem {:sem {:aspect :perfect
+                                                  :tense :past}}})))))
                   (reduce concat
                           (map (fn [key]
                                  (get root-verbs key))
