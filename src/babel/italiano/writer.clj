@@ -32,13 +32,37 @@
                   (let [root-form (get-in verb [:italiano :italiano])]
                     (log/debug (str "generating from root-form:" root-form))
                     (.size (map (fn [tense]
+                                  (log/trace (str "generating from tense: " tense))
                                   (let [spec (unify {:root {:italiano {:italiano root-form}}}
                                                     tense)]
-                                    (log/debug (str "generating from: " spec))
-                                    (process [{:fill-with-language
-                                               {:spec spec
-                                                :model small
-                                                :count count}}] "it")))
+                                    (.size
+                                     (map (fn [gender]
+                                            (let [spec (unify spec
+                                                              {:comp {:synsem {:agr gender}}})]
+                                              (log/trace (str "generating from gender: " gender))
+                                              (.size
+                                               (map (fn [person]
+                                                      (let [spec (unify spec
+                                                                        {:comp {:synsem {:agr {:person person}}}})]
+                                                        (log/trace (str "generating from person: " person))
+                                                        (.size
+                                                         (map (fn [number]
+                                                                (let [spec (unify spec
+                                                                                  {:comp {:synsem {:agr {:number number}}}})]
+                                                                  (log/debug (str "generating from spec: " spec))
+                                                                  (process [{:fill-with-language
+                                                                             {:spec spec
+                                                                              :model small
+                                                                              :count 1}}] "it")))
+                                                              [:sing :plur]))))
+                                                    [:1st :2nd :3rd]))))
+                                          (cond (= tense
+                                                   {:synsem {:sem {:aspect :perfect
+                                                                   :tense :past}}})
+                                                [{:gender :masc}
+                                                 {:gender :fem}]
+                                                true
+                                                [:top])))))
                                 (list {:synsem {:sem {:tense :conditional}}}
                                       {:synsem {:sem {:tense :future}}}
                                       {:synsem {:sem {:tense :present}}}
