@@ -133,13 +133,15 @@
                         :sem {:pred :develop}}}
 
    "devoir" {:synsem {:cat :verb
-                     :sem {:pred :have-to}}}
+                      :sem {:pred :have-to}}
+             :français {:past-participle "dû"}}
 
    "diviser" {:synsem {:cat :verb
                       :sem {:pred :divide}}}
       
    "croire" {:synsem {:cat :verb
-                      :sem {:pred :believe}}}  
+                      :sem {:pred :believe}}
+             :français {:past-participle "cru"}}
    
    "décider" {:synsem {:cat :verb
                        :sem {:pred :decide}}}
