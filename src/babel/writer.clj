@@ -473,7 +473,7 @@
                          (->> member-of-unit :fill :source-model)
                          (->> member-of-unit :fill :target-model))))
                     (if (:fill-with-language member-of-unit)
-                      (let [count (or (->> member-of-unit :fill :count) 10)]
+                      (let [count (or (->> member-of-unit :fill-with-language :count) 10)]
                         (log/debug (str "doing fill-with-language: " (->> member-of-unit :fill-with-language :spec)
                                         "; count=" count))
                         (fill-language-by-spec
