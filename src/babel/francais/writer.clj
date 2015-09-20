@@ -67,7 +67,7 @@
                                                      (map (fn [number]
                                                             (let [spec (unify spec
                                                                               {:comp {:synsem {:agr {:number number}}}})]
-                                                              (log/debug (str "generating from spec: " spec))
+                                                              (log/trace (str "generating (if not in db) from: " spec))
                                                               (process [{:fill-with-language
                                                                          {:spec spec
                                                                           :model small
