@@ -44,23 +44,24 @@
                 (vals @lexicon)))]
       (.size (map (fn [verb]
                     (let [root-form (get-in verb [:français :français])]
-                      (log/info (str "generate with:" root-form))
+                      (log/debug (str "generating from root-form:" root-form))
                       (.size (map (fn [tense]
                                     (let [spec (unify {:root {:français {:français root-form}}}
                                                       tense)]
                                       (log/debug (str "generating from: " spec))
-                                      (process [{:fill
+                                      (process [{:fill-with-language
                                                  {:spec spec
-                                                  :source-model en/small
-                                                  :target-model small}
-                                                 :count count}] "fr")))
-                                  [{:synsem {:sem {:tense :conditional}}}
-                                   {:synsem {:sem {:tense :future}}}
-                                   {:synsem {:sem {:tense :present}}}
-                                   {:synsem {:sem {:tense :past
-                                                   :aspect :perfect}}}]
-                                  ))))
+                                                  :model small
+                                                  :count count}}] "fr")))
+                                  (list {:synsem {:sem {:tense :conditional}}}
+                                        {:synsem {:sem {:tense :future}}}
+                                        {:synsem {:sem {:tense :present}}}
+                                        {:synsem {:sem {:aspect :progressive
+                                                        :tense :past}}}
+                                        {:synsem {:sem {:aspect :perfect
+                                                        :tense :past}}})))))
                   (reduce concat
                           (map (fn [key]
                                  (get root-verbs key))
                                (sort (keys root-verbs)))))))))
+
