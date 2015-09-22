@@ -476,7 +476,6 @@
                      (= (first %) :propernoun)
                      (= (first %) :first)
                      (= (first %) :head-filled)
-                     (= (first %) :initial)
                      (= (first %) :phrasal)
                      (= (first %) :root)
                      (= (first %) :schema-symbol)
