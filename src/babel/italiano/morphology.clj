@@ -1248,6 +1248,14 @@
                             :agr {:number :plur
                                   :person :3rd}}}}})
 
+(def reflexive-to-infinitive
+  {
+   #"alzato"
+   {:replace-with "alzarsi"
+    :unify-with {:italiano {:infl :past
+                            :agr {:number :sing
+                                  :gender :masc}}}}})
+
 ;; allows reconstruction of the infinitive form from the inflected form
 (def future-to-infinitive
   {
@@ -1511,6 +1519,7 @@
          plural-to-singular-adj-masc
          plural-to-singular-adj-fem-plur
          plural-to-singular-adj-fem-sing
+         reflexive-to-infinitive
          )
         
         analyzed
@@ -1524,9 +1533,7 @@
                                              (string/replace surface-form key
                                                              (:replace-with replace-with)))
                               looked-up (lookup-fn lexical-form)]
-                          (map #(unifyc 
-                                 %
-                                 (:unify-with replace-with))
+                          (map #(unifyc % (:unify-with replace-with))
                                looked-up))))
                  (keys replace-pairs)))
 
