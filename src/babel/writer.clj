@@ -37,7 +37,11 @@
                 model)
 
         sentence (engine/generate spec model :enrich true)
-        
+
+        check (if (nil? sentence)
+                (throw (Exception. (str "Could not generate a sentence for spec: " spec " for language: " (:language model)
+                                        " with model named: " (:name model)))))
+
         sentence (if (:morph-walk-tree model)
                    (merge ((:morph-walk-tree model) sentence)
                           sentence)
@@ -63,7 +67,7 @@
 
    Then, the source expression is generated according to the semantics of this target expression.
 
-   Thus the source expression's spec is not specified directly - rather it is derived from the 
+   Thus the source expression's spec is not specified directly - rather it is derived from the
    semantics of the target expression."
 
   (let [no-source-language (if (nil? source-language-model)
@@ -213,7 +217,7 @@
         (if (empty? surface)
           (let [err-mesg (str "Surface was empty for expression generated from spec: " spec)]
             (log/error err-mesg)
-            (log/error (str " expression with empty surface:  " (strip-refs sentence)))
+            (log/error (str " expression with empty surface has structure: " (strip-refs sentence)))
             (throw (Exception. err-mesg))))
         (log/info (str "populate-with-language:" language ": surface='"
                        surface "'"))
