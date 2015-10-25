@@ -584,13 +584,14 @@
                                 :pred :chiedere}}
                  :italiano {:passato "chiesto"}}
 
-"chiudere" {:synsem {:cat :verb
-                          :sem {:subj {:human true}
-                                :pred :close}}
-                 :italiano {:passato "chiuso"}}
+   "chiudere" {:synsem {:cat :verb
+                        :sem {:subj {:human true}
+                              :pred :close}}
+               :italiano {:passato "chiuso"}}
 
      "chiunque"
-     {:synsem {:cat :fail ; :noun ;; disabling until more constraints are put on usage of it (TODO).
+     {:synsem {:disabled true ;; disabling until more constraints are put on usage of it (TODO).
+               :cat :noun
                :pronoun true
                :case :nom
                :agr {:person :3rd
@@ -862,15 +863,15 @@
 
       "dire" (let [shared-part-of-dire
                    {:synsem {:cat :verb}
-                    :italiano {:italiano "dicere"
+                    :italiano {:infinitive "dicere"
                                :drop-e false
                                :passato "detto"
                                :future-stem "dir"
                                :present {:2plur "dite"}}}]
                [(merge shared-part-of-dire
-                       {:synsem {:pred :say}})
+                       {:synsem {:sem {:pred :say}}})
                 (merge shared-part-of-dire
-                       {:synsem {:pred :tell}})])
+                       {:synsem {:sem {:pred :tell}}})])
       
       "divertirsi" (let [subject-semantics (ref {:human true})
                          subject-agr (ref :top)]
