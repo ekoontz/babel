@@ -8,7 +8,7 @@
    [babel.parse :as parse]
    [babel.ug :refer :all]
    [clojure.tools.logging :as log]
-   [dag-unify.core :refer (get-in unifyc)]))
+   [dag-unify.core :refer (get-in strip-refs unifyc)]))
 
 (declare cache)
 (declare grammar)
