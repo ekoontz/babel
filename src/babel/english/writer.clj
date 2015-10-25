@@ -9,9 +9,12 @@
 (require '[babel.writer :as writer
            :refer [delete-from-expressions
                    fill-language-by-spec
-                   process write-lexicon]])
+                   process]])
 (require '[clojure.tools.logging :as log])
 (require '[dag-unify.core :refer (fail? get-in strip-refs unify)])
+
+(defn write-lexicon []
+  (writer/write-lexicon "en" @lexicon))
 
 (defn expression [spec]
   (writer/expression small-plus-vp-pronoun spec))
@@ -79,7 +82,7 @@
                         lexeme-set))
               (vals @lexicon)))]
 
-    (write-lexicon "en" @lexicon)
+    (write-lexicon)
     (log/info (str "done writing lexicon."))
     (log/info (str "generating with this many verbs: " (.size (reduce concat (vals root-verbs)))))
     (.size (pmap (fn [verb]
