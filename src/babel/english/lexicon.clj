@@ -1579,9 +1579,3 @@
                          (if-then {:synsem {:cat :verb
                                             :subcat {:2 {:reflexive false}}}}
                                   {:synsem {:subcat {:2 {:reflexive false}}}}))))
-
-
-                         
-
-    
-
