@@ -195,8 +195,7 @@
                             :rule "s-aux"
                             :synsem {:infl :present
                                      :cat :verb
-                                     :sem {:aspect :perfect
-                                           :tense :past}}})
+                                     :sem {:tense :past}}})
                    (unifyc c10
                            root-is-head
                            {:head {:phrasal false ;; non-auxiliary past: e.g. "he slept"
