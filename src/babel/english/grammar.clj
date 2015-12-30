@@ -386,8 +386,7 @@
                        (= (:rule %) "s-present-nonphrasal-head")
                        (= (:rule %) "s-future-nonphrasal-head")
                        (= (:rule %) "s-imperfect-nonphrasal-head")
-                       (= (:rule %) "s-past-nonphrasal-head")
-                       (= (:rule %) "s-aux"))
+                       (= (:rule %) "s-past-nonphrasal-head"))
                   grammar)
 
           lexicon
@@ -444,8 +443,6 @@
                        (= (:rule %) "s-imperfect-phrasal-head")
                        (= (:rule %) "s-past-nonphrasal-head")
                        (= (:rule %) "s-past-phrasal-head")
-                       (= (:rule %) "s-aux")
-                       (= (:rule %) "vp-past")
                        (= (:rule %) "vp-pronoun"))
                   grammar)
 
@@ -503,8 +500,6 @@
                        (= (:rule %) "s-imperfect-phrasal-head")
                        (= (:rule %) "s-past-nonphrasal-head")
                        (= (:rule %) "s-past-phrasal-head")
-                       (= (:rule %) "s-aux")
-                       (= (:rule %) "vp-past")
                        (= (:rule %) "vp-present")
                        (= (:rule %) "vp-pronoun")
                        (= (:rule %) "noun-phrase1"))
