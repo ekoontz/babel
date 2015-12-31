@@ -13,7 +13,7 @@
 (require '[babel.parse :as parse])
 (require '[babel.english.pos :as epos :refer (intransitivize transitive transitivize verb-subjective)])
 (require '[babel.ug :refer :all])
-(require '[dag-unify.core :as unify :refer (dissoc-paths get-in strip-refs)])
+(require '[dag_unify.core :as unify :refer (dissoc-paths get-in strip-refs)])
 
 (def get-string morph/get-string)
 (def grammar gram/grammar)
