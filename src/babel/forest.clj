@@ -9,7 +9,7 @@
    [clojure.set :refer :all]
    [clojure.string :as string]
    [clojure.tools.logging :as log]
-   [dag-unify.core :refer (dissoc-paths get-in fail? fail-path-between lazy-shuffle ref? remove-false 
+   [dag_unify.core :refer (dissoc-paths get-in fail? fail-path-between lazy-shuffle ref? remove-false 
                                         remove-top-values-log strip-refs show-spec unifyc)]))
 (def concurrent false)
 (declare path-to-map)

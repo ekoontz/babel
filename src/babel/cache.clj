@@ -8,7 +8,7 @@
    [clojure.string :as string]
    [clojure.tools.logging :as log]
    ;; TODO: be more specific in :refer than :all.
-   [dag-unify.core :refer :all :exclude [unify]]
+   [dag_unify.core :refer :all :exclude [unify]]
 
    [babel.over :exclude [overc overh]]
    [babel.over :as over]))
