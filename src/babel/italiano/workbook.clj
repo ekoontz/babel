@@ -242,3 +242,11 @@
                           (get (get request :query-params) "attrs"))
          :headers {"Content-Type" "text/html;charset=utf-8"}})
   ))
+
+(def foo
+  (take 1 (map #(fo %)
+               (generate-all
+                {:synsem {:sem {:spec {:def :possessive} 
+                                :mod {:pred :nero}
+                                :pred :gatto}}} 
+                np-grammar))))
