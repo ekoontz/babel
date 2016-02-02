@@ -6,15 +6,15 @@
 
    #"^l$"
    {:replace-with "la"
-    :unify-with :top}
+    :unify-with :top} ;; TODO: unify with :cat :determiner, :def :def
 
    #"^l$"
    {:replace-with "il"
-    :unify-with :top}
+    :unify-with :top} ;; TODO  unify with :cat :determiner, :def :def
    
    #"^gli$"
    {:replace-with "i"
-    :unify-with :top}
+    :unify-with :top} ;; TODO unify with :cat :determiner, :def :def
 
    }
   )
