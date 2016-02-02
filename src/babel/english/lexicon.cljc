@@ -1012,6 +1012,15 @@
    "measure" {:synsem {:cat :verb
                 :sem {:pred :measure}}}
 
+   "man"
+   (unify agreement-noun
+          common-noun
+          countable-noun
+          {:english {:plur "men"}
+           :synsem {:sem {:human true
+                          :pred :man
+                          :child false}}})
+
    "meet"  {:synsem {:cat :verb
                      :sem {:pred :incontrare}}
             :english {:past "met"}}
