@@ -172,7 +172,7 @@
     (exec-raw [(str "INSERT INTO lexeme 
                                  (canonical, structure, serialized, language) 
                           VALUES (?,"
-                    "'" (json/write-str (strip-refs lexeme)) "'"
+                    "$$" (json/write-str (strip-refs lexeme)) "$$"
                     ",?,?)")
                [canonical (str (serialize lexeme))
                 language]])))
