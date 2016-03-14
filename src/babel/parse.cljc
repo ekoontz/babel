@@ -41,6 +41,10 @@
               (pmap #(vec (concat % (list last-token)))
                     (toks2 (subvec tokens 0 (- (count tokens) n))
                            n)))
+            (let [first-token (subvec tokens 0 1)]
+              (pmap #(vec (concat first-token %))
+                    (toks2 (subvec tokens 1 (count tokens))
+                           n)))
             (toks2 tokens (- n 1)))
     true
     tokens))
