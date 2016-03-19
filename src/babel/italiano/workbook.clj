@@ -41,24 +41,15 @@
 
 (defn parse
   ([string]
-   (map #(conj {:surface (fo %)}
-               %)
-        (parse/parse string
-                     (fn [token]
-                       (map (fn [looked-up]
-                              looked-up)
-                            ((:lookup medium) token)))
-                     medium)))
+   (parse/parse string
+                (fn [token]
+                  ((:lookup medium) token))
+                medium))
   ([string model]
-   (map #(conj {:surface (fo %)}
-               %)
-        (parse/parse string
-                     (fn [token]
-                       (map (fn [looked-up]
-                              (merge {:surface (str "'" token "'")}
-                                     looked-up))
-                            ((:lookup model) token)))
-                     model))))
+   (parse/parse string
+                (fn [token]
+                  ((:lookup model) token))
+                model)))
 (defn expr [id]
   (reader/id2expression (Integer. id)))
 
