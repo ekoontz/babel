@@ -205,13 +205,11 @@
     (is (= "il gatto rosso si è alzato"
            (fo (first result))))))
 
-(defn run-benchmark []
-  (repeatedly #(let [debug (println "starting generation")
-                     expr (time (generate :top))]
-                 (println (str "generated expression: " (fo expr)))
-                 (let [parsed (time (first (take 1 (parse (fo expr)))))]
-                   (println (str "parsed: " (fo parsed)))
-                   (println "")))))
+;; tricky tokenization of 'la loro' to lexeme.
+;;   i.e. noi beviamo la_loro acqua bella
+(deftest noi-beviamo-la-loro-acqua-bella
+  (let [result (parse "noi beviamo la loro acqua bella")]
+    (is (not (empty? result)))))
 
 
 
