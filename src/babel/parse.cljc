@@ -113,7 +113,7 @@
              result))))
      (create-ngram-map args left ngrams grammar morph (+ 1 split-at) x))))
 
-(defn create-xgram-map [args x index grammar morph & [nminus1grams runlevel]]
+(defn create-xgram-map [args x index grammar morph]
   (log/debug
    (str "create-xgram-map: args: "
         (string/join ";"
@@ -131,26 +131,16 @@
                           args))))
   (cond (= x 0) {}
         (= x 1) (create-unigram-map args index)
-        true (let [foo 1]
-               (cond
-                (< (+ x index) (+ 1 (count args)))
-                (let [runlevel (if runlevel runlevel 0)]
-                  (create-xgram-map args x (+ index 1) grammar morph
-
-                                    ;; combine the parses for 1. and 2. below:
-                                    (merge 
-                                     ;; 1. the span from index to (+ x index).
-                                     {[index (+ x index)]
-                                      (create-ngram-map args index
-                                                        (create-xgram-map args (- x 1) 0 grammar morph)
-                                                        grammar morph 1 x)}
-
-                                     ;; 2. the span from 0 to (- index 1).
-                                     (create-xgram-map args (- x 1) 0 grammar morph))
-                                    
-                                    (+ 1 runlevel)))
-                true
-                nminus1grams))))
+        (< (+ x index) (+ 1 (count args)))
+        (merge 
+         ;; 1. the span from index to (+ x index).
+         {[index (+ x index)]
+          (create-ngram-map args index
+                            (create-xgram-map args (- x 1) 0 grammar morph)
+                            grammar morph 1 x)}
+         (create-xgram-map args x (+ index 1) grammar morph))
+        true
+        (create-xgram-map args (- x 1) 0 grammar morph)))
 
 ;; TODO: move tokenization to within lexicon.
 (defn parse [arg lookup grammar]
