@@ -82,9 +82,9 @@
   (log/trace (str "parse/over: grammar size: " (count grammar)))
   (over/over grammar left right))
 
-(defn create-ngram-map [args left ngrams grammar morph split-at x]
+(defn create-ngram-map [args left ngrams grammar morph split-at]
   (log/debug (str "create-ngram-map: left:" left ";split-at:" split-at))
-  (log/trace (str "create-ngram-map: left:" left ";split-at:" split-at "; size:" (count args) "; x:" x))
+  (log/trace (str "create-ngram-map: left:" left ";split-at:" split-at "; size:" (count args)))
 
   (log/debug
    (str "create-ngram-map: args: "
@@ -134,14 +134,20 @@
                                                         "]"))
                                                  result)))))
              result))))
-     (create-ngram-map args left ngrams grammar morph (+ 1 split-at) x))))
+     (create-ngram-map args left ngrams grammar morph (+ 1 split-at)))))
 
 (defn create-xgram-map [args from to grammar morph]
+  (log/trace (str "create-xgram-map: count of args: " (count args)))
   (log/debug
-   (str "create-xgram-map: from: " from " to: " to " args: "
-        (string/join " "
-                     (map morph args))))
-;                          (subvec args from 0)))))
+   (str "create-xgram-map: [" from " , " to "]"))
+  (log/debug
+   (str "create-xgram-map: fromth:"
+        (string/join ";"
+                     (map morph
+                          (nth args from)))))
+;  (log/debug
+;   (str "create-xgram-map: "
+;        (subvec args from 1)))
   (cond (= to 0) {}
 
         ;; create a vector of: [ {[0 1] tok0}, {[1 2] tok1}, .. ]
@@ -163,7 +169,7 @@
            {[from (+ to from)]
             (create-ngram-map args from
                               (create-xgram-map args 0 (- to 1) grammar morph)
-                              grammar morph 1 to)}
+                              grammar morph 1)}
            (create-xgram-map args (+ from 1) to grammar morph)))
 
         true
