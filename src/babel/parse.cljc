@@ -138,8 +138,10 @@
 
 (defn create-xgram-map [args from to grammar morph]
   (log/debug
-   (str "create-xgram-map: from: " from ";to: " to ";args: "
-        args))
+   (str "create-xgram-map: from: " from " to: " to " args: "
+        (string/join " "
+                     (map morph args))))
+;                          (subvec args from 0)))))
   (cond (= to 0) {}
 
         ;; create a vector of: [ {[0 1] tok0}, {[1 2] tok1}, .. ]
@@ -153,7 +155,9 @@
 
         (< (+ to from) (+ 1 (count args)))
         (let [debug
-              (log/debug (str "COND 3: from=" from "; to=" to ";count(args)=" (count args)))]
+              (log/debug (str "COND 3: from=" from "; to=" to ";span size=" (- to from) ";"))]
+;                              "span:" (string/join " "
+;                                       (map morph (subvec from (+ to from))))))]
           (merge 
            ;; 1. the span from:..
            {[from (+ to from)]
@@ -163,7 +167,7 @@
            (create-xgram-map args (+ from 1) to grammar morph)))
 
         true
-        (let [debug (str "COND 4:  to=" to "; from=" from "; count(args)=" (count args))]
+        (let [debug (str "COND 4:  to=" to "; from=" from "; ")] ;; count(args)=" (count args))]
           (create-xgram-map args 0 (- to 1) grammar morph))))
 
 ;; TODO: move tokenization to within lexicon.
@@ -180,7 +184,7 @@
                           true
                           (fn [x] (str (type grammar-input) "(morph goes here)")))
               tokens (toks arg lookup morph)]
-          (parse tokens lookup grammar))
+          (parse tokens lookup grammar-input))
         (and (vector? arg)
              (empty? (rest arg)))
         (first arg)
