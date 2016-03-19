@@ -10,15 +10,7 @@
 ;; for now, using a language-independent tokenizer.
 (def tokenizer #"[ ']")
 (declare over)
-(declare toks2)
 (declare toks3)
-
-(defn has-empty-segmentation? [segmentations]
-  (contains?
-   (set (map (fn [segmentation]
-               (empty? segmentation))
-             segmentations))
-   true))
 
 (defn segmentations [tokens]
   (vec (set (toks3 tokens))))
@@ -63,32 +55,6 @@
 
               filtered-segmentations))
          tokens2)))
-
-(defn toks2 [tokens n]
-  "group tokens together into every possible sequence of n or less tokens."
-  (cond
-    (seq? tokens)
-    (toks2 (vec tokens) n)
-    (< n 1) nil
-    (= n 1) (vec (list tokens))
-    (> n (count tokens)) (toks2 tokens (count tokens))
-
-    (= (count tokens) n) ;; ([a b]; n = 2) => [["a b"] ["a" "b"]]
-    (cons [(string/join " " tokens)]
-          (toks2 tokens (- n 1)))
-    
-    (> (count tokens) n) ;; ([a b c]; n = 2) => [["a b" "c"] ["a" "b c"]]
-    (concat (let [first-token (string/join " " (subvec tokens 0 n))]
-              (pmap #(vec (cons first-token %))
-                    (toks2 (subvec tokens n (count tokens))
-                           n)))
-            (let [last-token (string/join " " (subvec tokens (- (count tokens) n) (count tokens)))]
-              (pmap #(vec (concat % (list last-token)))
-                    (toks2 (subvec tokens 0 (- (count tokens) n))
-                           n)))
-            (toks2 tokens (- n 1)))
-    true
-    tokens))
 
 (defn toks3 [tokens]
   "group tokens together into every possible grouping"
