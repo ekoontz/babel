@@ -54,28 +54,6 @@
 
 (declare over)
 
-(defn create-trigram-map [args index grammar bigrams]
-  (if (< (+ 2 index) (count args))
-    (do
-      (merge
-       {[index (+ 3 index)]
-        (lazy-cat
-         ;; [ a b | c ]
-         (let [left-parse (get bigrams [index (+ 2 index)])
-               right-parse (get bigrams [(+ 2 index) (+ 3 index)])]
-           (if (and (not (empty? left-parse))
-                    (not (empty? right-parse)))
-             (over grammar left-parse right-parse)))
-
-         ;; [ a | b c ]
-         (let [left-parse (get bigrams [index (+ 1 index)])
-               right-parse (get bigrams [(+ 1 index) (+ 3 index)])]
-           (if (and (not (empty? left-parse))
-                    (not (empty? right-parse)))
-             (over grammar left-parse right-parse))))}
-       (create-trigram-map args (+ index 1) grammar bigrams)))
-    bigrams))
-
 (defn over [grammar left right]
   "opportunity for additional logging before calling the real (over)"
   (log/trace (str "parse/over: grammar size: " (count grammar)))
@@ -153,14 +131,8 @@
                           args))))
   (cond (= x 0) {}
         (= x 1) (create-unigram-map args index)
-        true (let [nminus1grams (if nminus1grams nminus1grams
-                                    (create-xgram-map args (- x 1) 0 grammar morph))]
+        true (let [foo 1]
                (cond
-                 (= x 3)
-                 (let [retval
-                       (create-trigram-map args index grammar nminus1grams)]
-                   (do
-                     retval))
                 (< (+ x index) (+ 1 (count args)))
                 (let [runlevel (if runlevel runlevel 0)]
                   (create-xgram-map args x (+ index 1) grammar morph
@@ -169,10 +141,12 @@
                                     (merge 
                                      ;; 1. the span from index to (+ x index).
                                      {[index (+ x index)]
-                                      (create-ngram-map args index nminus1grams grammar morph 1 x)}
+                                      (create-ngram-map args index
+                                                        (create-xgram-map args (- x 1) 0 grammar morph)
+                                                        grammar morph 1 x)}
 
                                      ;; 2. the span from 0 to (- index 1).
-                                     nminus1grams)
+                                     (create-xgram-map args (- x 1) 0 grammar morph))
                                     
                                     (+ 1 runlevel)))
                 true
