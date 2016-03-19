@@ -46,10 +46,9 @@
         (parse/parse string
                      (fn [token]
                        (map (fn [looked-up]
-                              (merge {:surface (str "'" token "'")}
-                                     looked-up))
+                              looked-up)
                             ((:lookup medium) token)))
-                     (:grammar medium))))
+                     medium)))
   ([string model]
    (map #(conj {:surface (fo %)}
                %)
@@ -59,7 +58,7 @@
                               (merge {:surface (str "'" token "'")}
                                      looked-up))
                             ((:lookup model) token)))
-                     (:grammar model)))))
+                     model))))
 (defn expr [id]
   (reader/id2expression (Integer. id)))
 
@@ -218,7 +217,7 @@
 
 ;(def foo (expression {:synsem {:cat :verb}}))
 ;(def foo (expression {:synsem {:sem {:pred :have-fun}}}))
-(def foo (count (take 1 (parse "io dormo"))))
+;(def foo (count (take 1 (parse "io dormo"))))
 
 (def routes
   (compojure/routes

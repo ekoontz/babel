@@ -52,21 +52,6 @@
       (subvec args index (+ 1 index))}
      (create-unigram-map args (+ 1 index)))))
 
-(defn create-bigram-map [args index grammar]
-  (log/debug (str "create-bigram-map: args count: " (count args)))
-  (if (< (+ 1 index) (count args))
-    (let [left-side (subvec args index (+ 1 index))
-          right-side (subvec args (+ 1 index) (+ 2 index))]
-      (log/trace (str "create-bigram-map: size of left-side: " (count left-side)))
-      (log/trace (str "create-bigram-map: size of right-side: " (count right-side)))
-      (merge
-       {[index (+ 2 index)]
-        (over grammar
-              (list (first left-side))
-              (list (first right-side)))}
-       (create-bigram-map args (+ index 1) grammar)))
-    (create-unigram-map args 0)))
-
 (declare over)
 
 (defn create-trigram-map [args index grammar bigrams]
@@ -96,9 +81,26 @@
   (log/trace (str "parse/over: grammar size: " (count grammar)))
   (over/over grammar left right))
 
-(defn create-ngram-map [args left ngrams grammar split-at x]
+(defn create-ngram-map [args left ngrams grammar morph split-at x]
   (log/debug (str "create-ngram-map: left:" left ";split-at:" split-at))
   (log/trace (str "create-ngram-map: left:" left ";split-at:" split-at "; size:" (count args) "; x:" x))
+
+  (log/debug
+   (str "create-ngram-map: args: "
+        (string/join ";"
+                     (map (fn [arg]
+                            (string/join ","
+                                         (map (fn [tree-node]
+                                                (cond (and (map? tree-node)
+                                                           (:rule tree-node))
+                                                      (str "[" (:rule tree-node) ":"
+                                                           (morph tree-node)
+                                                           "]")
+                                                      true
+                                                      (str "'" (morph tree-node) "'")))
+                                              arg)))
+                          args))))
+
   (if (< (+ left (- split-at 2))
          (/ (count args) 2))
     (lazy-cat
@@ -106,62 +108,68 @@
            right-parses (get ngrams [(+ left split-at 0) (- (count args) 0)] '())]
        (if (and (not (empty? left-parses))
                 (not (empty? right-parses)))
-         (over grammar left-parses right-parses)))
-     (create-ngram-map args left ngrams grammar (+ 1 split-at) x))))
+         (do
+           (log/debug (str "left: " (if (not (nil? left-parses))
+                                       (string/join ";"
+                                                    (if (not (nil? left-parses))
+                                                      (map (fn [parses]
+                                                             (str "'" (morph parses) "'"))
+                                                           (filter #(not (empty? %))
+                                                                   left-parses)))))))
+           (log/debug (str "right: " (if (not (nil? right-parses))
+                                       (string/join ";"
+                                                    (if (not (nil? right-parses))
+                                                      (map (fn [parses]
+                                                             (str "'" (morph parses) "'"))
+                                                           (filter #(not (empty? %))
+                                                                   right-parses)))))))
+           (let [result (over grammar left-parses right-parses)]
+             (if (not (empty? result))
+               (log/debug (str "create-ngram-map: "
+                               (string/join ";"
+                                            (map (fn [res]
+                                                   (str "[" (:rule res) " -> "
+                                                        (morph res)
+                                                        "]"))
+                                                 result)))))
+             result))))
+     (create-ngram-map args left ngrams grammar morph (+ 1 split-at) x))))
 
-(defn create-xgram-map [args x index grammar & [nminus1grams runlevel]]
+(defn create-xgram-map [args x index grammar morph & [nminus1grams runlevel]]
+  (log/debug
+   (str "create-xgram-map: args: "
+        (string/join ";"
+                     (map (fn [arg]
+                            (string/join ","
+                                         (map (fn [tree-node]
+                                                (cond (and (map? tree-node)
+                                                           (:rule tree-node))
+                                                      (str "[" (:rule tree-node) ":"
+                                                           (morph tree-node)
+                                                           "]")
+                                                      true
+                                                      (str "'" (morph tree-node) "'")))
+                                              arg)))
+                          args))))
   (cond (= x 0) {}
         (= x 1) (create-unigram-map args index)
-        (= x 2) (let [bigram-map (create-bigram-map args index grammar)]
-                  (log/trace (str "create-xgram-map: bigram-map: " bigram-map))
-                  (log/debug (str "create-xgram-map: keys: " (keys bigram-map)))
-                  (log/trace (str "create-xgram-map: vals: "
-                                  (string/join ";"
-                                               (map
-                                                (fn [val]
-                                                  (string/join ","
-                                                               (map (fn [x]
-                                                                      (cond
-                                                                        (map? x)
-                                                                        (:rule x)
-                                                                        true (str
-                                                                              "not map:"
-                                                                              (type x))))
-                                                                    val)))
-                                                (vals bigram-map)))))
-                  bigram-map)
-
         true (let [nminus1grams (if nminus1grams nminus1grams
-                                    (create-xgram-map args (- x 1) 0 grammar))]
+                                    (create-xgram-map args (- x 1) 0 grammar morph))]
                (cond
-                (= x 3) (create-trigram-map args index grammar nminus1grams)
+                 (= x 3)
+                 (let [retval
+                       (create-trigram-map args index grammar nminus1grams)]
+                   (do
+                     retval))
                 (< (+ x index) (+ 1 (count args)))
                 (let [runlevel (if runlevel runlevel 0)]
-                  (log/debug (str "create-xgram-map: x=" x "; index=" index "; runlevel=" runlevel))
-                  (log/debug (str "args: ("
-                                  (string/join
-                                   ","
-                                   (map (fn [each]
-                                          (str "["
-                                               (string/join ","
-                                                            (map (fn [inner]
-                                                                   (:surface inner))
-                                                                 each))
-                                               "]"))
-                                        
-                                        ;                                                      (string/join ","
-                                        ;                                                                   (type each)))
-                                                    args))
-                                  ")"))
-                  (log/trace (str "  -> create-ngram-map(index:" index ";split-at: " 1 ";x:" x))
-                  (log/trace (str "  -> create-xgram-map(x:" x "; index:" (+ 1 index)))
-                  (create-xgram-map args x (+ index 1) grammar 
+                  (create-xgram-map args x (+ index 1) grammar morph
 
                                     ;; combine the parses for 1. and 2. below:
                                     (merge 
                                      ;; 1. the span from index to (+ x index).
                                      {[index (+ x index)]
-                                      (create-ngram-map args index nminus1grams grammar 1 x)}
+                                      (create-ngram-map args index nminus1grams grammar morph 1 x)}
 
                                      ;; 2. the span from 0 to (- index 1).
                                      nminus1grams)
@@ -176,17 +184,25 @@
   (cond (string? arg)
         (let [tokens (toks arg lookup)]
           (parse tokens lookup grammar))
-
         (and (vector? arg)
              (empty? (rest arg)))
         (first arg)
 
         (vector? arg)
-        ;; return the parse of the whole expression.
+        ;; returns the parse of the whole expression (from [0..l] where l=length(arg).
         ;; TODO: if a parse for the whole expression is not found,
         ;; return the largest subparse(s).
-        (get (create-xgram-map arg (count arg) 0 grammar)
-             [0 (count arg)])
+        (let [grammar-input grammar
+              grammar (cond (map? grammar-input)
+                            (:grammar grammar-input)
+                            true
+                            grammar-input)
+              morph (cond (map? grammar-input)
+                          (:morph grammar-input)
+                          true
+                          (fn [x] (str (type grammar-input) "(morph goes here)")))]
+          (get (create-xgram-map arg (count arg) 0 grammar morph)
+               [0 (count arg)]))
 
         (seq? arg)
         (mapcat #(parse (vec %) lookup grammar)
