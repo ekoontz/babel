@@ -211,6 +211,12 @@
   (let [result (parse "noi beviamo la loro acqua bella")]
     (is (not (empty? result)))))
 
+;; tricky tokenization of 'la sua' to lexeme.
+;;   i.e. la_sua ragazza
+(deftest la-sua-ragazza
+  (let [result (parse "la sua ragazza")]
+    (is (not (empty? result)))))
+
 
 
 
