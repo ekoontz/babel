@@ -104,41 +104,35 @@
              result))))
      (create-ngram-map args left ngrams grammar morph (+ 1 split-at) x))))
 
-(defn create-xgram-map [args x index grammar morph]
+(defn create-xgram-map [args from to grammar morph]
   (log/debug
-   (str "create-xgram-map: args: "
-        (string/join ";"
-                     (map (fn [arg]
-                            (string/join ","
-                                         (map (fn [tree-node]
-                                                (cond (and (map? tree-node)
-                                                           (:rule tree-node))
-                                                      (str "[" (:rule tree-node) ":"
-                                                           (morph tree-node)
-                                                           "]")
-                                                      true
-                                                      (str "'" (morph tree-node) "'")))
-                                              arg)))
-                          args))))
-  (cond (= x 0) {}
-        (= x 1)
+   (str "create-xgram-map: from: " from ";to: " to ";args: "
+        args))
+  (cond (= to 0) {}
+
+        ;; create a vector of: [ {[0 1] tok0}, {[1 2] tok1}, .. ]
+        (= to 1)
         (reduce merge
-                (map (fn [index]
-                       {[index (+ 1 index)]
-                        (subvec args index (+ 1 index))})
+                (map (fn [from]
+                       {[from (+ 1 from)]
+                        (subvec args from (+ 1 from))})
                      (range 0 (count args))))
 
-        (< (+ x index) (+ 1 (count args)))
-        (merge 
-         ;; 1. the span from index to (+ x index).
-         {[index (+ x index)]
-          (create-ngram-map args index
-                            (create-xgram-map args (- x 1) 0 grammar morph)
-                            grammar morph 1 x)}
-         (create-xgram-map args x (+ index 1) grammar morph))
+
+        (< (+ to from) (+ 1 (count args)))
+        (let [debug
+              (log/debug (str "COND 3: from=" from "; to=" to ";count(args)=" (count args)))]
+          (merge 
+           ;; 1. the span from:..
+           {[from (+ to from)]
+            (create-ngram-map args from
+                              (create-xgram-map args 0 (- to 1) grammar morph)
+                              grammar morph 1 to)}
+           (create-xgram-map args (+ from 1) to grammar morph)))
 
         true
-        (create-xgram-map args (- x 1) 0 grammar morph)))
+        (let [debug (str "COND 4:  to=" to "; from=" from "; count(args)=" (count args))]
+          (create-xgram-map args 0 (- to 1) grammar morph))))
 
 ;; TODO: move tokenization to within lexicon.
 (defn parse [arg lookup grammar]
@@ -163,7 +157,7 @@
                           (:morph grammar-input)
                           true
                           (fn [x] (str (type grammar-input) "(morph goes here)")))]
-          (get (create-xgram-map arg (count arg) 0 grammar morph)
+          (get (create-xgram-map arg 0 (count arg) grammar morph)
                [0 (count arg)]))
 
         (seq? arg)
