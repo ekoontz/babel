@@ -8,8 +8,7 @@
             [babel.francais.morphology :refer [analyze fo replace-patterns]]
             [babel.francais.workbook :as workbook]
             [babel.over :as over]
-            [babel.parse :refer [create-ngram-map create-trigram-map
-                                 create-unigram-map create-xgram-map parse tokenizer toks toks2]]
+            [babel.parse :refer [create-ngram-map create-xgram-map parse tokenizer toks toks2]]
             [clojure.string :as string]
             #?(:clj [clojure.test :refer [deftest is]])
             #?(:cljs [cljs.test :refer-macros [deftest is]])

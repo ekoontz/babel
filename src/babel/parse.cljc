@@ -45,15 +45,6 @@
     true
     tokens))
 
-(defn create-unigram-map [args index]
-  (if (< index (count args))
-    (merge
-     {[index (+ 1 index)]
-      (subvec args index (+ 1 index))}
-     (create-unigram-map args (+ 1 index)))))
-
-(declare over)
-
 (defn over [grammar left right]
   "opportunity for additional logging before calling the real (over)"
   (log/trace (str "parse/over: grammar size: " (count grammar)))
@@ -130,7 +121,13 @@
                                               arg)))
                           args))))
   (cond (= x 0) {}
-        (= x 1) (create-unigram-map args index)
+        (= x 1)
+        (reduce merge
+                (map (fn [index]
+                       {[index (+ 1 index)]
+                        (subvec args index (+ 1 index))})
+                     (range 0 (count args))))
+
         (< (+ x index) (+ 1 (count args)))
         (merge 
          ;; 1. the span from index to (+ x index).
@@ -139,6 +136,7 @@
                             (create-xgram-map args (- x 1) 0 grammar morph)
                             grammar morph 1 x)}
          (create-xgram-map args x (+ index 1) grammar morph))
+
         true
         (create-xgram-map args (- x 1) 0 grammar morph)))
 
