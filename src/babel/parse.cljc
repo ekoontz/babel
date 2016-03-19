@@ -11,12 +11,57 @@
 (def tokenizer #"[ ']")
 (declare over)
 (declare toks2)
+(declare toks3)
 
-(defn toks [s lookup]
+(defn has-empty-segmentation? [segmentations]
+  (contains?
+   (set (map (fn [segmentation]
+               (empty? segmentation))
+             segmentations))
+   true))
+
+(defn segmentations [tokens]
+  (vec (set (toks3 tokens))))
+
+(defn toks [s lookup morph]
   (let [tokens (string/split s tokenizer)
-        tokens2 (toks2 tokens (count tokens))]
+        ;; TODO: workaround for the fact that toks3 generates duplicate segmentations
+        tokens2 (segmentations tokens)]
     (pmap (fn [token-vector]
-            (pmap lookup token-vector))
+            (let [segmentations (pmap lookup token-vector)
+                  filtered-segmentations
+                  (filter
+
+                   (fn [segmentation]
+                     (let [empty-count
+                           (count (filter #(= true %)
+                                          (map (fn [segmentation]
+                                                 (empty? segmentation))
+                                               segmentations)))]
+                       (= 0 empty-count)))
+                   segmentations)]
+                  
+              (log/debug (str "segmentations found:"
+                              (string/join ";"
+                                           (map (fn [segmentation]
+                                                  (string/join ","
+                                                               (map
+                                                                (fn [segment]
+                                                                  (morph segment))
+                                                                segmentation)))
+                                                segmentations))))
+              (log/debug (str "filtered segmentations found:"
+                              (string/join ";"
+                                           (map (fn [segmentation]
+                                                  (string/join ","
+                                                               (map
+                                                                (fn [segment]
+                                                                  (morph segment))
+                                                                segmentation)))
+                                                filtered-segmentations))))
+
+
+              filtered-segmentations))
          tokens2)))
 
 (defn toks2 [tokens n]
@@ -44,6 +89,27 @@
             (toks2 tokens (- n 1)))
     true
     tokens))
+
+(defn toks3 [tokens]
+  "group tokens together into every possible grouping"
+  (cond
+    (empty? tokens) tokens
+    (= (count tokens) 1)
+    []
+
+    (= (count tokens) 2)
+    [[(string/join " " tokens)]
+     tokens]
+
+    true
+    (concat
+     (map (fn [each]
+            (vec (cons (first tokens)
+                       each)))
+          (toks3 (subvec tokens 1 (count tokens))))
+     (map (fn [each]
+            (vec (concat each (list (last tokens)))))
+          (toks3 (subvec tokens 0 (- (count tokens) 1)))))))
 
 (defn over [grammar left right]
   "opportunity for additional logging before calling the real (over)"
@@ -138,7 +204,16 @@
 (defn parse [arg lookup grammar]
   "return a list of all possible parse trees for a string or a list of lists of maps (a result of looking up in a dictionary a list of tokens from the input string)"
   (cond (string? arg)
-        (let [tokens (toks arg lookup)]
+        (let [grammar-input grammar
+              grammar (cond (map? grammar-input)
+                            (:grammar grammar-input)
+                            true
+                            grammar-input)
+              morph (cond (map? grammar-input)
+                          (:morph grammar-input)
+                          true
+                          (fn [x] (str (type grammar-input) "(morph goes here)")))
+              tokens (toks arg lookup morph)]
           (parse tokens lookup grammar))
         (and (vector? arg)
              (empty? (rest arg)))
