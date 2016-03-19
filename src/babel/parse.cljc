@@ -138,18 +138,34 @@
                 (< (+ x index) (+ 1 (count args)))
                 (let [runlevel (if runlevel runlevel 0)]
                   (log/debug (str "create-xgram-map: x=" x "; index=" index "; runlevel=" runlevel))
+                  (log/debug (str "args: ("
+                                  (string/join
+                                   ","
+                                   (map (fn [each]
+                                          (str "["
+                                               (string/join ","
+                                                            (map (fn [inner]
+                                                                   (:surface inner))
+                                                                 each))
+                                               "]"))
+                                        
+                                        ;                                                      (string/join ","
+                                        ;                                                                   (type each)))
+                                                    args))
+                                  ")"))
                   (log/trace (str "  -> create-ngram-map(index:" index ";split-at: " 1 ";x:" x))
                   (log/trace (str "  -> create-xgram-map(x:" x "; index:" (+ 1 index)))
                   (create-xgram-map args x (+ index 1) grammar 
 
-                                    ;; combine the parses for this span from [index to (+ x index))...
+                                    ;; combine the parses for 1. and 2. below:
                                     (merge 
-
+                                     ;; 1. the span from index to (+ x index).
                                      {[index (+ x index)]
                                       (create-ngram-map args index nminus1grams grammar 1 x)}
 
-                                     ;; .. with parses of all of the proceeding consituent parts.
+                                     ;; 2. the span from 0 to (- index 1).
                                      nminus1grams)
+                                    
                                     (+ 1 runlevel)))
                 true
                 nminus1grams))))
