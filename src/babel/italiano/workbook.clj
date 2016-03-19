@@ -208,7 +208,7 @@
 
 ;(def foo (expression {:synsem {:cat :verb}}))
 ;(def foo (expression {:synsem {:sem {:pred :have-fun}}}))
-;(def foo (count (take 1 (parse "io dormo"))))
+(def foo (count (take 1 (parse "io dormo"))))
 
 (def routes
   (compojure/routes
