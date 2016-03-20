@@ -120,7 +120,7 @@
 
         (< (+ from extent) (+ (count args) 1))
         (merge
-         (let [trees (create-trees from (count args)
+         (let [trees (create-trees from (- (count args) 1)
                                    (create-tree-map args 0 (- extent 1) grammar morph)
                                    grammar morph 1)]
            (if (not (empty? trees))
