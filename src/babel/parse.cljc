@@ -83,6 +83,15 @@
   (log/trace (str "parse/over: grammar size: " (count grammar)))
   (over/over grammar left right))
 
+(defn tree-map-entries [args from extent]
+  (if (< (+ from extent)
+         (+ 1 (count args)))
+    (merge
+     {[from (+ 1 from)]
+      (subvec args from (+ 1 from))}
+     (tree-map-entries args (+ 1 from) extent))
+    {}))
+
 (defn create-trees [args left ngrams grammar morph split-at]
   (lazy-cat
    (let [left-trees (get ngrams [left (+ left (- split-at 0))] '())
@@ -97,11 +106,7 @@
 (defn create-tree-map [args from extent grammar morph]
   (cond (= extent 0) {}
         (= extent 1)
-        (reduce merge
-                (map (fn [from]
-                       {[from (+ 1 from)]
-                        (subvec args from (+ 1 from))})
-                     (range 0 (count args))))
+        (tree-map-entries args from extent)
         (< (+ from extent) (+ (count args) 1))
         (merge 
          {[from (+ extent from)]
