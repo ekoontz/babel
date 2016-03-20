@@ -116,7 +116,7 @@
 
         (= extent 1) (tree-map-entries args from extent)
 
-        (< (+ from extent) (+ (count args) 1))
+        (<= (+ from extent) (count args))
         (merge
          (let [trees (create-trees from (- (count args) 1)
                                    (create-tree-map args 0 (- extent 1) grammar morph)
