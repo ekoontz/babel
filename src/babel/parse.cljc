@@ -33,7 +33,7 @@
                        (= 0 empty-count)))
                    segmentations)]
                   
-              (log/debug (str "segmentations found:"
+              (log/trace (str "segmentations (pre-empty?-filtering) found:"
                               (string/join ";"
                                            (map (fn [segmentation]
                                                   (string/join ","
@@ -42,15 +42,16 @@
                                                                   (morph segment))
                                                                 segmentation)))
                                                 segmentations))))
-              (log/debug (str "filtered segmentations found:"
-                              (string/join ";"
-                                           (map (fn [segmentation]
-                                                  (string/join ","
-                                                               (map
-                                                                (fn [segment]
-                                                                  (morph segment))
-                                                                segmentation)))
-                                                filtered-segmentations))))
+              (if (not (empty? filtered-segmentations))
+                (log/debug (str "segmentations found:"
+                                (string/join ";"
+                                             (map (fn [segmentation]
+                                                    (string/join ","
+                                                                 (map
+                                                                  (fn [segment]
+                                                                    (morph segment))
+                                                                  segmentation)))
+                                                  filtered-segmentations)))))
 
 
               filtered-segmentations))
@@ -126,7 +127,7 @@
                                                                    right-parses)))))))
            (let [result (over grammar left-parses right-parses)]
              (if (not (empty? result))
-               (log/debug (str "create-ngram-map: "
+               (log/debug (str "create-ngram-map: left=" left ",split-at=" split-at ":"
                                (string/join ";"
                                             (map (fn [res]
                                                    (str "[" (:rule res) " -> "
@@ -136,45 +137,54 @@
              result))))
      (create-ngram-map args left ngrams grammar morph (+ 1 split-at)))))
 
-(defn create-xgram-map [args from to grammar morph]
-  (log/trace (str "create-xgram-map: count of args: " (count args)))
+(defn create-tree-map [args from extent grammar morph]
+  (log/debug (str "create-tree-map: (#args=" (count args) ",from=" from ", extent=" extent ")"))
   (log/debug
-   (str "create-xgram-map: [" from " , " to "]"))
+   (str "create-tree-map: [" (count args) ": " from "," (+ from extent) "]"))
   (log/debug
-   (str "create-xgram-map: fromth:"
+   (str "create-tree-map: subvec:["
+        (string/join " "
+                     (map morph (subvec args from extent)))
+        "]"))
+  (log/debug
+   (str "create-tree-map: fromth:"
         (string/join ";"
                      (map morph
                           (nth args from)))))
+  (log/debug
+   (str "create-tree-map: extent:" extent))
+
 ;  (log/debug
-;   (str "create-xgram-map: "
+;   (str "create-tree-map: "
 ;        (subvec args from 1)))
-  (cond (= to 0) {}
+  (cond (= extent 0) {}
 
         ;; create a vector of: [ {[0 1] tok0}, {[1 2] tok1}, .. ]
-        (= to 1)
-        (reduce merge
-                (map (fn [from]
-                       {[from (+ 1 from)]
-                        (subvec args from (+ 1 from))})
-                     (range 0 (count args))))
+        (= extent 1)
+        (do
+          (log/debug (str "create-tree-map: extent=1"))
+          (reduce merge
+                  (map (fn [from]
+                         {[from (+ 1 from)]
+                          (subvec args from (+ 1 from))})
+                       (range 0 (count args)))))
 
-
-        (< (+ to from) (+ 1 (count args)))
+        (< (+ extent from) (+ (count args) 1))
         (let [debug
-              (log/debug (str "COND 3: from=" from "; to=" to ";span size=" (- to from) ";"))]
+              (log/debug (str "COND 3: from=" from "; extent=" extent ";span size=" (- extent from) ";"))]
 ;                              "span:" (string/join " "
-;                                       (map morph (subvec from (+ to from))))))]
+;                                       (map morph (subvec from (+ extent from))))))]
           (merge 
            ;; 1. the span from:..
-           {[from (+ to from)]
+           {[from (+ extent from)]
             (create-ngram-map args from
-                              (create-xgram-map args 0 (- to 1) grammar morph)
+                              (create-tree-map args 0 (- extent 1) grammar morph)
                               grammar morph 1)}
-           (create-xgram-map args (+ from 1) to grammar morph)))
+           (create-tree-map args (+ from 1) extent grammar morph)))
 
         true
-        (let [debug (str "COND 4:  to=" to "; from=" from "; ")] ;; count(args)=" (count args))]
-          (create-xgram-map args 0 (- to 1) grammar morph))))
+        (let [debug (str "COND 4:  extent=" extent "; from=" from "; ")] ;; count(args)=" (count args))]
+          (create-tree-map args 0 (- extent 1) grammar morph))))
 
 ;; TODO: move tokenization to within lexicon.
 (defn parse [arg lookup grammar]
@@ -208,7 +218,7 @@
                           (:morph grammar-input)
                           true
                           (fn [x] (str (type grammar-input) "(morph goes here)")))]
-          (get (create-xgram-map arg 0 (count arg) grammar morph)
+          (get (create-tree-map arg 0 (count arg) grammar morph)
                [0 (count arg)]))
 
         (seq? arg)
