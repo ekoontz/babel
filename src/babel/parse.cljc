@@ -92,16 +92,16 @@
      (tree-map-entries args (+ extent from) extent))
     {}))
 
-(defn create-trees [args left parse-map grammar morph split-at]
+(defn create-trees [left right parse-map grammar morph split-at]
   (lazy-cat
    (let [left-trees (get parse-map [left (+ left split-at)])
-         right-trees (get parse-map [(+ left split-at) (count args)])]
+         right-trees (get parse-map [(+ left split-at) right])]
      (if (and (not (empty? left-trees))
               (not (empty? right-trees)))
        (let [result (over grammar left-trees right-trees)]
          result)))
-   (if (> (count args) (+ 1 split-at))
-     (create-trees args left parse-map grammar morph (+ 1 split-at)))))
+   (if (> right (+ 1 split-at))
+     (create-trees left right parse-map grammar morph (+ 1 split-at)))))
 
 (defn create-tree-map [args from extent grammar morph]
   (log/debug (str "create-tree-map (#args=" (count args)
@@ -115,7 +115,7 @@
         (< (+ from extent) (+ (count args) 1))
         (merge 
          {[from (+ extent from)]
-          (create-trees args from
+          (create-trees from (count args)
                         (create-tree-map args 0 (- extent 1) grammar morph)
                         grammar morph 1)}
          (create-tree-map args (+ from 1) extent grammar morph))
