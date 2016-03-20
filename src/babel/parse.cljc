@@ -85,24 +85,6 @@
 
 (defn create-trees [args left ngrams grammar morph split-at]
   (log/debug (str "create-trees: left:" left ";split-at:" split-at))
-  (log/trace (str "create-trees: left:" left ";split-at:" split-at "; size:" (count args)))
-
-  (log/debug
-   (str "create-trees: args: "
-        (string/join ";"
-                     (map (fn [arg]
-                            (string/join ","
-                                         (map (fn [tree-node]
-                                                (cond (and (map? tree-node)
-                                                           (:rule tree-node))
-                                                      (str "[" (:rule tree-node) ":"
-                                                           (morph tree-node)
-                                                           "]")
-                                                      true
-                                                      (str "'" (morph tree-node) "'")))
-                                              arg)))
-                          args))))
-
   (if (< (+ left (- split-at 2))
          (/ (count args) 2))
     (lazy-cat
@@ -110,76 +92,29 @@
            right-trees (get ngrams [(+ left split-at 0) (- (count args) 0)] '())]
        (if (and (not (empty? left-trees))
                 (not (empty? right-trees)))
-         (do
-           (log/debug (str "create-trees: left trees: " (if (not (nil? left-trees))
-                                                          (string/join ";"
-                                                                       (if (not (nil? left-trees))
-                                                                         (map (fn [parses]
-                                                                                (str "'" (morph parses) "'"))
-                                                                              (filter #(not (empty? %))
-                                                                                      left-trees)))))))
-           (log/debug (str "create-trees: right trees: " (if (not (nil? right-trees))
-                                                           (string/join ";"
-                                                                  (if (not (nil? right-trees))
-                                                                    (map (fn [parses]
-                                                                           (str "'" (morph parses) "'"))
-                                                                         (filter #(not (empty? %))
-                                                                                 right-trees)))))))
-           (let [result (over grammar left-trees right-trees)]
-             (if (not (empty? result))
-               (log/debug (str "create-trees: left=" left "; split-at: " split-at "; created:"
-                               (string/join ";"
-                                            (map (fn [res]
-                                                   (str "[" (:rule res) " -> "
-                                                        (morph res)
-                                                        "]"))
-                                                 result)))))
-             result))))
-     (create-trees args left ngrams grammar morph (+ 1 split-at)))))
+         (let [result (over grammar left-trees right-trees)]
+             result)))
+     (if (> (count args) (+ 1 split-at))
+       (create-trees args left ngrams grammar morph (+ 1 split-at))))))
 
 (defn create-tree-map [args from extent grammar morph]
-  (log/debug (str "create-tree-map: (#args=" (count args) ",from=" from ",extent=" extent ")"))
-  (log/debug
-   (str "create-tree-map: [" from "," (+ from extent) "]"))
-;  (log/debug
-;   (str "create-tree-map: subvec:["
-;        (string/join " "
-;                     (map morph (subvec args from (- extent 1))))
-;        "]"))
-
-  (log/debug
-   (str "cond3: extent+from:" (+ extent from)))
-  (log/debug
-   (str "cond3: args+1:" (+ (count args) 1)))
-  (log/debug
-   (str "cond3: test:" (< (+ extent from) (+ (count args) 1))))
-
   (cond (= extent 0) {}
-
-        ;; create a vector of: [ {[0 1] tok0}, {[1 2] tok1}, .. ]
         (= extent 1)
-        (do
-          (log/debug (str "create-tree-map: extent=1"))
-          (reduce merge
-                  (map (fn [from]
-                         {[from (+ 1 from)]
-                          (subvec args from (+ 1 from))})
-                       (range 0 (count args)))))
-
-        (< (+ extent from) (+ (count args) 1))
-        (let [debug
-              (log/debug (str "COND 3: from=" from "; extent=" extent ";span size=" (- extent from) ";"))]
-          (merge 
-           ;; 1. the span [from from+extend]:
-           {[from (+ extent from)]
-            (create-trees args from
-                          (create-tree-map args 0 (- extent 1) grammar morph)
-                          grammar morph 1)}
-           (create-tree-map args (+ from 1) extent grammar morph)))
+        (reduce merge
+                (map (fn [from]
+                       {[from (+ 1 from)]
+                        (subvec args from (+ 1 from))})
+                     (range 0 (count args))))
+        (< (+ from extent) (+ (count args) 1))
+        (merge 
+         {[from (+ extent from)]
+          (create-trees args from
+                        (create-tree-map args 0 (- extent 1) grammar morph)
+                        grammar morph 1)}
+         (create-tree-map args (+ from 1) extent grammar morph))
 
         true
-        (let [debug (str "COND 4:  extent=" extent "; from=" from "; ")] ;; count(args)=" (count args))]
-          (create-tree-map args 0 (- extent 1) grammar morph))))
+        (create-tree-map args 0 (- extent 1) grammar morph)))
 
 ;; TODO: move tokenization to within lexicon.
 (defn parse [arg lookup grammar]
