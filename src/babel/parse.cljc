@@ -85,11 +85,11 @@
 
 (defn tree-map-entries [args from extent]
   (if (< (+ from extent)
-         (+ 1 (count args)))
+         (+ extent (count args)))
     (merge
-     {[from (+ 1 from)]
-      (subvec args from (+ 1 from))}
-     (tree-map-entries args (+ 1 from) extent))
+     {[from (+ extent from)]
+      (subvec args from (+ extent from))}
+     (tree-map-entries args (+ extent from) extent))
     {}))
 
 (defn create-trees [args left ngrams grammar morph split-at]
