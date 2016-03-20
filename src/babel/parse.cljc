@@ -112,8 +112,6 @@
                         (< (+ from extent)
                            (+ (count args) 1)) "3rd"
                         true "4th")))
-;  (if (and (< (+ from extent 0) (count args)))
-;    (log/debug (str " .. = " (morph (subvec args from (+ 1 extent))))))
   (cond (= extent 0) {}
 
         (= extent 1) (tree-map-entries args from extent)
@@ -129,12 +127,6 @@
 
         true
         (create-tree-map args 0 (- extent 1) grammar morph)))
-;        (merge
-;         {[from (- extent 1)]
-;          (create-trees args from 
-;                        (create-tree-map args 0 (- extent 1) grammar morph)
-;                        grammar morph 1)}
-;         (create-tree-map args (+ from 1) (- extent 1) grammar morph))))
 
 ;; TODO: move tokenization to within lexicon.
 (defn parse [input lookup grammar]
