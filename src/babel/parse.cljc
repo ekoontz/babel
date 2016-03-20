@@ -103,6 +103,22 @@
    (if (> right (+ 1 split-at))
      (create-trees left right parse-map grammar morph (+ 1 split-at)))))
 
+(defn terminal-spans [segmentations]
+  "generate a map of [i i+1] => tokens; used as an input to n-spans."
+  (if (not (empty? segmentations))
+    (let [tokens (vec (first segmentations))]
+      (merge
+       (reduce merge
+               (map (fn [from]
+                      {[from (+ 1 from)]
+                       (subvec tokens from (+ 1 from))})
+                    (range 0 (count tokens))))
+       (terminal-spans (rest segmentations))))))
+
+(defn n-spans [span-map n]
+  "create all trees that span _n_ tokens, using subtree-map as input"
+  span-map)
+
 (defn create-tree-map [args from extent grammar morph]
   (log/debug (str "create-tree-map (#args=" (count args)
                   ",from=" from ",extent=" extent ") = "))
