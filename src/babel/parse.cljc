@@ -43,7 +43,7 @@
                                                                 segmentation)))
                                                 segmentations))))
               (if (not (empty? filtered-segmentations))
-                (log/debug (str "segmentations found:"
+                (log/debug (str "segmentation found:"
                                 (string/join ";"
                                              (map (fn [segmentation]
                                                     (string/join ","
@@ -84,7 +84,6 @@
   (over/over grammar left right))
 
 (defn create-trees [args left ngrams grammar morph split-at]
-  (log/debug (str "create-trees: left:" left ";split-at:" split-at))
   (if (< (+ left (- split-at 2))
          (/ (count args) 2))
     (lazy-cat
@@ -129,7 +128,7 @@
                           (:morph grammar-input)
                           true
                           (fn [x] (str (type grammar-input) "(morph goes here)")))
-              tokens (toks arg lookup morph)]
+              tokens (filter #(not (empty? %)) (toks arg lookup morph))]
           (parse tokens lookup grammar-input))
         (and (vector? arg)
              (empty? (rest arg)))
