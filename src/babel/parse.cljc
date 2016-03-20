@@ -106,6 +106,12 @@
 (defn create-tree-map [args from extent grammar morph]
   (log/debug (str "create-tree-map (#args=" (count args)
                   ",from=" from ",extent=" extent ") = "))
+  (log/debug (str "condition holding: "
+                  (cond (= extent 0) "1st"
+                        (= extent 1) "2nd"
+                        (< (+ from extent)
+                           (+ (count args) 1)) "3rd"
+                        true "4th")))
 ;  (if (and (< (+ from extent 0) (count args)))
 ;    (log/debug (str " .. = " (morph (subvec args from (+ 1 extent))))))
   (cond (= extent 0) {}
@@ -113,11 +119,12 @@
         (= extent 1) (tree-map-entries args from extent)
 
         (< (+ from extent) (+ (count args) 1))
-        (merge 
-         {[from (+ extent from)]
-          (create-trees from (count args)
-                        (create-tree-map args 0 (- extent 1) grammar morph)
-                        grammar morph 1)}
+        (merge
+         (let [trees (create-trees from (count args)
+                                   (create-tree-map args 0 (- extent 1) grammar morph)
+                                   grammar morph 1)]
+           (if (not (empty? trees))
+             {[from (+ extent from)] trees}))
          (create-tree-map args (+ from 1) extent grammar morph))
 
         true
@@ -178,9 +185,5 @@
         grammar (:grammar grammar)
         input (vec (first (filter #(not (empty? %))
                                   (toks input lookup morph))))]
-    (let [pm (create-tree-map input 0 (count input) grammar morph)]
-      (zipmap (filter #(not (empty? (get pm %)))
-                      (keys pm))
-              (filter #(not (empty? %))
-                      (vals pm))))))
+    (create-tree-map input 0 (count input) grammar morph)))
 
