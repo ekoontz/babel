@@ -119,14 +119,14 @@
   "Generate a map of pair [i,i+n] to trees that span the [i,i+n]'th tokens, using subspan-map as input, which itself is a
    a map of the same type, but containing smaller trees, which are used to compose the output map."
   (merge subspan-map
-         {[0 2]
+         {[0 n]
           (over/over grammar
-                     (get subspan-map [0 1])
-                     (get subspan-map [1 2]))
-          [1 3]
+                     (get subspan-map [0 (- n 1)])
+                     (get subspan-map [(- n 1) n]))
+          [1 (+ n 1)]
           (over/over grammar
-                     (get subspan-map [1 2])
-                     (get subspan-map [2 3]))}))
+                     (get subspan-map [1 n])
+                     (get subspan-map [n (+ n 1)]))}))
 
 (defn create-tree-map [args from extent grammar morph]
   (log/debug (str "create-tree-map (#args=" (count args)
