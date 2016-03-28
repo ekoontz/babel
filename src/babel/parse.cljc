@@ -2,6 +2,7 @@
  (:refer-clojure :exclude [get-in resolve find])
  (:require
   [babel.over :as over]
+  [clojure.set :refer [union]]
   [clojure.string :as string]
   #?(:clj [clojure.tools.logging :as log])
   #?(:cljs [babel.logjs :as log])
@@ -105,15 +106,53 @@
 
 (defn terminal-spans [segmentations]
   "Generate a map of pair:[i,i+1] => tokens; used as an input to n-spans."
-  (if (not (empty? segmentations))
-    (let [tokens (vec (first segmentations))]
-      (merge
-       (reduce merge
-               (map (fn [from]
-                      {[from (+ 1 from)]
-                       (subvec tokens from (+ 1 from))})
+  (reduce merge
+          (map (fn [tokens]
+                 (map (fn [from]
+                        {[from (+ 1 from)]
+                         (subvec tokens from (+ 1 from))})
                     (range 0 (count tokens))))
-       (terminal-spans (rest segmentations))))))
+               segmentations)))
+
+(defn cross-product [x y]
+  (mapcat (fn [each-x]
+            (filter #(not (nil? %))
+                    (map (fn [each-y]
+                           (if (= (second each-x) (first each-y))
+                             [each-x each-y]))
+                         y)))
+          x))
+
+(defn spanpairs [n]
+  (mapcat (fn [x]
+            (map (fn [y]
+                   [x y])
+                 (range (+ x 1) (+ n 1))))
+          (range 0 n)))
+
+(defn square [x]
+  (let [pairs (spanpairs x)]
+    (cross-product pairs pairs)))
+
+(defn tomap [n]
+  "take a 'square span array' and reorganizes it into a map of size -> _spans_,
+   where _size_ is an integer, and _spans_ are all the [left,right] pairs whose combined
+   size is equal to _size_."
+  (let [spans
+        (square n)]
+    (reduce (fn [resultant-map this-submap]
+              (merge-with union
+                          resultant-map this-submap))
+            (map (fn [span-pair]
+                   (let [left-span (first span-pair)
+                         left-boundary (first left-span)
+                         right-span (second span-pair)
+                         right-boundary (second right-span)]
+                     {(- right-boundary left-boundary)
+                      (list span-pair)}))
+                 spans))))
+
+(def bar (tomap 5))
 
 (defn n-spans [subspan-map n grammar morph]
   "Generate a map of pair [i,i+n] to trees that span the [i,i+n]'th tokens, using subspan-map as input, which itself is a
