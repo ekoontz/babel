@@ -146,7 +146,7 @@
   (let [pairs (spanpairs x)]
     (cross-product pairs pairs)))
 
-(defn tomap [n]
+(defn span-map [n]
   "take a 'square span array' and reorganizes it into a map of size -> _spans_,
    where _size_ is an integer, and _spans_ are all the [left,right] pairs whose combined
    size is equal to _size_."
@@ -163,61 +163,13 @@
                      {(- right-boundary left-boundary)
                       (list span-pair)}))
                  spans))))
-
-(def bar (tomap 5))
-
-(defn n-spans [subspan-map n grammar morph]
-  "Generate a map of pair [i,i+n] to trees that span the [i,i+n]'th tokens, using subspan-map as input, which itself is a
-   a map of the same type, but containing smaller trees, which are used to compose the output map."
-  (cond
-    (= n 0) {}
-    (= n 1) subspan-map
-    (= n 2) (merge subspan-map
-                   {[0 2]
-                    (over/over grammar
-                               (get subspan-map [0 1])
-                               (get subspan-map [1 2]))
-                    [1 3]
-                    (over/over grammar
-                               (get subspan-map [1 2])
-                               (get subspan-map [2 3]))
-                    [2 4]
-                    (over/over grammar
-                               (get subspan-map [2 3])
-                               (get subspan-map [3 4]))})
-                    
-    (= n 3) (let [pre (n-spans subspan-map 2 grammar morph)]
-              (merge pre
-                     {[0 3]
-                      (concat
-                       (over/over grammar
-                                  (get pre [0 1])
-                                  (get pre [1 3]))
-                       (over/over grammar
-                                  (get pre [0 2])
-                                  (get pre [2 3])))
-                      [1 4]
-                      (concat
-                       (over/over grammar
-                                  (get pre [1 2])
-                                  (get pre [2 4]))
-                       (over/over grammar
-                                  (get pre [1 3])
-                                  (get pre [3 4])))}))
-
-    (= n 4) (let [pre (n-spans subspan-map 3 grammar morph)]
-              (merge pre
-                     {[0 4]
-                      (concat
-                       (over/over grammar
-                                  (get pre [0 1])
-                                  (get pre [1 4]))
-                       (over/over grammar
-                                  (get pre [0 2])
-                                  (get pre [2 4]))
-                       (over/over grammar
-                                  (get pre [0 3])
-                                  (get pre [3 4])))}))))
+(def span-maps
+  {2 (span-map 2)
+   3 (span-map 3)
+   4 (span-map 4)
+   5 (span-map 5)
+   6 (span-map 6)
+   7 (span-map 7)})
 
 (defn create-tree-map [args from extent grammar morph]
   (log/debug (str "create-tree-map (#args=" (count args)
@@ -293,9 +245,8 @@
         grammar (:grammar grammar)
         tokens (toks input-string lookup morph)]
 
-    ;; TODO: why do we need (first) here?
-    (vec (first (filter #(not (empty? %))
-                        (toks input-string lookup morph))))))
+    (filter #(not (empty? %))
+            (toks input-string lookup morph))))
 
 (defn get-parse-map [input grammar]
   (let [morph (:morph grammar)

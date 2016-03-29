@@ -211,20 +211,40 @@
   (let [result (parse "noi beviamo la loro acqua bella")]
     (is (not (empty? result)))))
 
-;; tricky tokenization of 'la sua' to lexeme.
+(def segmentations (parse/lookup-tokens "la sua ragazza" medium))
+(def terminal-maps
+  (map (fn [segmentation]
+         (zipmap (map (fn [i] [i (+ i 1)])
+                      (range 0 (count segmentation)))
+                 (map (fn [i] (nth segmentation i))
+                      (range 0 (count segmentation)))))
+       segmentations))
+
+(def span-maps
+  (map (fn [segmentation]
+         (get parse/span-maps (count segmentation))) ;; length of "la sua" + "ragazza"
+       segmentations))
+
+;; tricky tokenization of 'la sua' as a lexeme:
 ;;   i.e. la_sua ragazza
 (deftest la-sua-ragazza
-  (let [looked-up (parse/lookup-tokens "la sua ragazza" medium)
+  (let [segmentations (parse/lookup-tokens "la sua ragazza" medium)
         
-        terminal-map (zipmap (map (fn [i] [i (+ i 1)]) (range 0 (count looked-up)))
-                             (map (fn [i] (nth looked-up i)) (range 0 (count looked-up))))
+        terminal-maps (map (fn [segmentation]
+                             (zipmap (map (fn [i] [i (+ i 1)])
+                                          (range 0 (count segmentation)))
+                                     (map (fn [i] (nth segmentation i))
+                                          (range 0 (count segmentation)))))
+                           segmentations)
 
-        index-map (parse/tomap 2);; length of "la sua" + "ragazza"
+        span-maps (map (fn [segmentation]
+                         (get parse/span-maps (count segmentation))) ;; length of "la sua" + "ragazza"
+                       segmentations)
+        
+;        left-side (get terminal-map (first (first (get 2))))
+;        right-side (get terminal-map (second (first (get index-map 2))))
 
-        left-side (get terminal-map (first (first (get index-map 2))))
-        right-side (get terminal-map (second (first (get index-map 2))))
-
-        do-over (parse/over (:grammar medium) left-side right-side)
+;        do-over (parse/over (:grammar medium) left-side right-side)
         
         result (parse "la sua ragazza")]
     (is (not (empty? result)))))
