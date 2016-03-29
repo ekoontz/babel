@@ -13,6 +13,8 @@
 (declare over)
 (declare toks3)
 
+;; A segmentation is a vector of segments. Each
+;; segment is a lexeme that consists of 0 or more tokens.
 (defn segmentations [tokens]
   (vec (set (toks3 tokens))))
 
@@ -20,11 +22,21 @@
   (let [tokens (string/split s tokenizer)
         ;; TODO: workaround for the fact that toks3 generates duplicate segmentations
         tokens2 (segmentations tokens)]
+
     (pmap (fn [token-vector]
             (let [segmentations (pmap lookup token-vector)
+
+                  ;; we filter out any segmentation that has no matches
+                  ;; for a given segment in its segmentation. For example, in
+                  ;; "la sua ragazza", there are two possible segmentations:
+                  ;; 1. ["la sua"] ["ragazza"]
+                  ;; 2. ["la"] [] ["ragazza"]
+                  ;;
+                  ;; In segmentation 2., there is no lexeme to be found when we look up "sua",
+                  ;; so the whole segmentation is removed, and we return a list with only 
+                  ;; one member - segmentation 1.
                   filtered-segmentations
                   (filter
-
                    (fn [segmentation]
                      (let [empty-count
                            (count (filter #(= true %)
@@ -110,7 +122,7 @@
           (map (fn [tokens]
                  (map (fn [from]
                         {[from (+ 1 from)]
-                         (subvec tokens from (+ 1 from))})
+                         (subvec (vec tokens) from (+ 1 from))})
                     (range 0 (count tokens))))
                segmentations)))
 
@@ -275,11 +287,20 @@
         true
         (str "unexpected input: type: " (type input))))
 
+(defn lookup-tokens [input-string grammar]
+  (let [morph (:morph grammar)
+        lookup (:lookup grammar)
+        grammar (:grammar grammar)
+        tokens (toks input-string lookup morph)]
+
+    ;; TODO: why do we need (first) here?
+    (vec (first (filter #(not (empty? %))
+                        (toks input-string lookup morph))))))
+
 (defn get-parse-map [input grammar]
   (let [morph (:morph grammar)
         lookup (:lookup grammar)
         grammar (:grammar grammar)
-        input (vec (first (filter #(not (empty? %))
-                                  (toks input lookup morph))))]
+        input (lookup-tokens input grammar)]
     (create-tree-map input 0 (count input) grammar morph)))
 

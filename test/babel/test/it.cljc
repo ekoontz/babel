@@ -214,6 +214,18 @@
 ;; tricky tokenization of 'la sua' to lexeme.
 ;;   i.e. la_sua ragazza
 (deftest la-sua-ragazza
-  (let [result (parse "la sua ragazza")]
+  (let [looked-up (parse/lookup-tokens "la sua ragazza" medium)
+        
+        terminal-map (zipmap (map (fn [i] [i (+ i 1)]) (range 0 (count looked-up)))
+                             (map (fn [i] (nth looked-up i)) (range 0 (count looked-up))))
+
+        index-map (parse/tomap 2);; length of "la sua" + "ragazza"
+
+        left-side (get terminal-map (first (first (get index-map 2))))
+        right-side (get terminal-map (second (first (get index-map 2))))
+
+        do-over (parse/over (:grammar medium) left-side right-side)
+        
+        result (parse "la sua ragazza")]
     (is (not (empty? result)))))
                       
