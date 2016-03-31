@@ -220,11 +220,6 @@
                       (range 0 (count segmentation)))))
        segmentations))
 
-(def span-maps
-  (map (fn [segmentation]
-         (get parse/span-maps (count segmentation))) ;; length of "la sua" + "ragazza"
-       segmentations))
-
 ;; tricky tokenization of 'la sua' as a lexeme:
 ;;   i.e. la_sua ragazza
 (deftest la-sua-ragazza
@@ -248,4 +243,11 @@
         
         result (parse "la sua ragazza")]
     (is (not (empty? result)))))
-                      
+
+(def foo
+  (map (fn [span-pair]
+         (parse/over (:grammar medium)
+                     (get terminal-map (first span-pair))
+                     (get terminal-map (second span-pair))))
+       (get parse/span-maps 2)))
+

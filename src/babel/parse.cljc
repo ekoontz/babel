@@ -164,12 +164,12 @@
                       (list span-pair)}))
                  spans))))
 (def span-maps
-  {2 (span-map 2)
-   3 (span-map 3)
-   4 (span-map 4)
-   5 (span-map 5)
-   6 (span-map 6)
-   7 (span-map 7)})
+  {2 (get (span-map 2) 2)
+   3 (get (span-map 3) 3)
+   4 (get (span-map 4) 4)
+   5 (get (span-map 5) 5)
+   6 (get (span-map 6) 6)
+   7 (get (span-map 7) 7)})
 
 (defn create-tree-map [args from extent grammar morph]
   (log/debug (str "create-tree-map (#args=" (count args)
@@ -198,7 +198,8 @@
 
 ;; TODO: move tokenization to within lexicon.
 (defn parse [input lookup grammar]
-  "return a list of all possible parse trees for a string or a list of lists of maps (a result of looking up in a dictionary a list of tokens from the input string)"
+  "return a list of all possible parse trees for a string or a list of lists of maps
+   (a result of looking up in a dictionary a list of tokens from the input string)"
   (cond (string? input)
         (let [grammar-input grammar
               grammar (cond (map? grammar-input)
@@ -255,3 +256,12 @@
         input (lookup-tokens input grammar)]
     (create-tree-map input 0 (count input) grammar morph)))
 
+(defn parses [spans2subtrees i n]
+  (if (<= i n)
+    (let [i-spans (get span-maps i)]
+      (parses
+       (merge
+        (let []
+          {i 42})
+        spans2subtrees)
+       (+ 1 i) n))))
