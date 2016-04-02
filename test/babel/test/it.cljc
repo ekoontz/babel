@@ -206,119 +206,21 @@
     (is (= "il gatto rosso si è alzato"
            (fo (first result))))))
 
-;; tricky tokenization of 'la loro' to lexeme.
-;;   i.e. noi beviamo la_loro acqua bella
-(deftest noi-beviamo-la-loro-acqua-bella
-  (let [result (parse "noi beviamo la loro acqua bella")]
-    (is (not (empty? result)))))
+;; tricky tokenization of 'la sua' and 'la loro' as lexemes.
+(deftest parsing
+  (count
+   (map (fn [surface-and-extent]
+          (let [surface (first surface-and-extent)
+                extent (second surface-and-extent)
+                semantics (strip-refs
+                           (get-in
+                            (first
+                             (get (first (parse/parse2 surface medium)) extent))
+                            [:synsem :sem]))]
+            (is (map? semantics))))
+        [["la sua ragazza" [0 2]]
+         ["la sua ragazza dorme" [0 3]]
+         ["la sua ragazza bella dorme" [0 4]]
+         ["noi beviamo la loro acqua bella" [0 5]]
+         ["noi abbiamo bevuto la loro acqua bella" [0 6]]])))
 
-;; tricky tokenization of 'la sua' as a lexeme:
-;;   i.e. la_sua ragazza
-(deftest la-sua-ragazza
-  (let [segmentations (parse/lookup-tokens "la sua ragazza" medium)
-        
-        terminal-maps (map (fn [segmentation]
-                             (zipmap (map (fn [i] [i (+ i 1)])
-                                          (range 0 (count segmentation)))
-                                     (map (fn [i] (nth segmentation i))
-                                          (range 0 (count segmentation)))))
-                           segmentations)
-
-        span-maps (map (fn [segmentation]
-                         (get parse/span-maps (count segmentation))) ;; length of "la sua" + "ragazza"
-                       segmentations)
-        
-;        left-side (get terminal-map (first (first (get 2))))
-;        right-side (get terminal-map (second (first (get index-map 2))))
-
-;        do-over (parse/over (:grammar medium) left-side right-side)
-        
-        result (parse "la sua ragazza")]
-    (is (not (empty? result)))))
-
-(defn parse-with-segmentation [input n span-map]
-  (log/info (str "calling p-w-s " n "; span-maps: " (get span-map n)))
-  (cond
-    (= n 1) input
-    (> n 1)
-    (let [minus-1 (parse-with-segmentation input (- n 1) span-map)]
-      (merge minus-1
-             (reduce (fn [x y]
-                       (do
-                         (log/debug (str "merge x: " (keys x)))
-                         (log/debug (str "merge y: " (keys y)))
-                         (merge-with concat x y)))
-                     (map (fn [span-pair]
-                            {[(first (first span-pair))
-                              (second (second span-pair))]
-                             (do
-                               (let [result
-                                     (if (and (not (empty? (get minus-1 (first span-pair))))
-                                              (not (empty? (get minus-1 (second span-pair)))))
-                                       (do
-                                         (log/debug (str "span-pair: " span-pair))
-                                         (log/info (str "left: " ((:morph medium)
-                                                                  (get minus-1 (first span-pair)))))
-                                         (log/info (str "right: " ((:morph medium)
-                                                                   (get minus-1 (second span-pair)))))
-                                         (parse/over (:grammar medium)
-                                                     (get minus-1 (first span-pair))
-                                                     (get minus-1 (second span-pair)))))]
-                                 (if (not (empty? result))
-                                   (log/info
-                                    (str "result: "
-                                         [(first (first span-pair))
-                                          (second (second span-pair))] " "
-                                         (string/join "; "
-                                                      (map (fn [each-parse]
-                                                             (str
-                                                              (get each-parse :rule) ":'"
-                                                              ((:morph medium) each-parse)
-                                                              "'"))
-                                                           result)))))
-                                 result))})
-                              (get span-map n)))))))
-(defn parse2 [input]
-  (filter #(not (empty? %))
-          (map (fn [segments]
-                 (let [segment-count (count segments)
-                       token-count-range (range 0 segment-count)
-                       input-map (zipmap (map (fn [i] [i (+ i 1)])
-                                      token-count-range)
-                                         (map (fn [i] (nth segments i))
-                                              token-count-range))]
-                   (parse-with-segmentation input-map segment-count
-                                            (parse/span-map segment-count))))
-               (parse/lookup-tokens input medium))))
-  
-(def semantics1
-  (strip-refs
-   (get-in
-    (first
-     (get (first (parse2 "la sua ragazza dorme"))
-          [0 3]))
-    [:synsem :sem])))
-
-(def semantics2
-  (strip-refs
-   (get-in
-    (first
-     (get (first (parse2 "la sua ragazza bella dorme"))
-          [0 4]))
-    [:synsem :sem])))
-
-(def semantics3
-  (strip-refs
-   (get-in
-    (first
-     (get (first (parse2 "noi beviamo la loro acqua bella"))
-          [0 5]))
-    [:synsem :sem])))
-
-(def semantics4
-  (strip-refs
-   (get-in
-    (first
-     (get (first (parse2 "noi abbiamo bevuto la loro acqua bella"))
-          [0 6]))
-    [:synsem :sem])))

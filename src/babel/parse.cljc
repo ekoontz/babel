@@ -247,19 +247,58 @@
     (filter #(not (empty? %))
             (toks input-string lookup morph))))
 
-(defn get-parse-map [input grammar]
-  (let [morph (:morph grammar)
-        lookup (:lookup grammar)
-        grammar (:grammar grammar)
-        input (lookup-tokens input grammar)]
-    (create-tree-map input 0 (count input) grammar morph)))
+(defn parse-with-segmentation [input n model span-map]
+  (log/debug (str "calling p-w-s " n "; span-maps: " (get span-map n)))
+  (cond
+    (= n 1) input
+    (> n 1)
+    (let [minus-1 (parse-with-segmentation input (- n 1) model span-map)]
+      (merge minus-1
+             (reduce (fn [x y]
+                       (do
+                         (log/debug (str "merge x: " (keys x)))
+                         (log/debug (str "merge y: " (keys y)))
+                         (merge-with concat x y)))
+                     (map (fn [span-pair]
+                            {[(first (first span-pair))
+                              (second (second span-pair))]
+                             (do
+                               (let [result
+                                     (if (and (not (empty? (get minus-1 (first span-pair))))
+                                              (not (empty? (get minus-1 (second span-pair)))))
+                                       (do
+                                         (log/debug (str "span-pair: " span-pair))
+                                         (log/info (str "left: " ((:morph model)
+                                                                  (get minus-1 (first span-pair)))))
+                                         (log/info (str "right: " ((:morph model)
+                                                                   (get minus-1 (second span-pair)))))
+                                         (over (:grammar model)
+                                               (get minus-1 (first span-pair))
+                                               (get minus-1 (second span-pair)))))]
+                                 (if (not (empty? result))
+                                   (log/info
+                                    (str "result: "
+                                         [(first (first span-pair))
+                                          (second (second span-pair))] " "
+                                         (string/join "; "
+                                                      (map (fn [each-parse]
+                                                             (str
+                                                              (get each-parse :rule) ":'"
+                                                              ((:morph model) each-parse)
+                                                              "'"))
+                                                           result)))))
+                                 result))})
+                              (get span-map n)))))))
+(defn parse2 [input model]
+  (filter #(not (empty? %))
+          (map (fn [segments]
+                 (let [segment-count (count segments)
+                       token-count-range (range 0 segment-count)
+                       input-map (zipmap (map (fn [i] [i (+ i 1)])
+                                      token-count-range)
+                                         (map (fn [i] (nth segments i))
+                                              token-count-range))]
+                   (parse-with-segmentation input-map segment-count model
+                                            (span-map segment-count))))
+               (lookup-tokens input model))))
 
-(defn parses [spans2subtrees i n]
-  (if (<= i n)
-    (let [i-spans (get span-maps i)]
-      (parses
-       (merge
-        (let []
-          {i 42})
-        spans2subtrees)
-       (+ 1 i) n))))
