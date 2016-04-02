@@ -121,6 +121,9 @@
                             (is (not (empty? parsed)))))
                         expressions))))))
 
+(deftest three-word-lexeme
+  (is (not (empty? (parse/lookup-tokens "Luisa e io dormiamo" medium)))))
+
 (deftest roundtrip-imperfect
   (let [do-this-many 20
         expressions (take do-this-many
