@@ -236,22 +236,17 @@
         result (parse "la sua ragazza")]
     (is (not (empty? result)))))
 
-
-(def segmentations (parse/lookup-tokens "la sua ragazza dorme" medium))
-
-(def terminal-map
-  {[0 1] (nth (first segmentations) 0)
-   [1 2] (nth (first segmentations) 1)
-   [2 3] (nth (first segmentations) 2)})
-
-(defn parse-n [n]
+(defn parse-n [input n]
   (cond
 
     (= n 1)
-    terminal-map
+    (let [segmentations (parse/lookup-tokens input medium)]
+      {[0 1] (nth (first segmentations) 0)
+       [1 2] (nth (first segmentations) 1)
+       [2 3] (nth (first segmentations) 2)})
 
     (> n 1)
-    (let [minus-1 (parse-n (- n 1))]
+    (let [minus-1 (parse-n input (- n 1))]
       (merge minus-1
              {[0 n]
               (mapcat (fn [span-pair]
@@ -259,6 +254,11 @@
                                     (get minus-1 (first span-pair))
                                     (get minus-1 (second span-pair))))
                       (get parse/span-maps n))}))))
-
-(def semantics (strip-refs (get-in (first (get (parse-n 3) [0 3])) [:synsem :sem])))
-  
+(def semantics
+  (strip-refs
+   (get-in
+    (first
+     (get (parse-n
+           "la sua ragazza dorme" 3)
+          [0 3]))
+    [:synsem :sem])))
