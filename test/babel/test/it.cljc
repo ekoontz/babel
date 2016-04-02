@@ -245,22 +245,25 @@
       (merge minus-1
              (reduce (fn [x y]
                        (do
-                         (log/info (str "merge x: " (keys x)))
-                         (log/info (str "merge y: " (keys y)))
+                         (log/debug (str "merge x: " (keys x)))
+                         (log/debug (str "merge y: " (keys y)))
                          (merge-with concat x y)))
                      (map (fn [span-pair]
                             {[(first (first span-pair))
                               (second (second span-pair))]
                              (do
-                               (log/info (str "span-pair: " span-pair))
-                               (log/info (str "left: " ((:morph medium)
-                                                        (get minus-1 (first span-pair)))))
-                               (log/info (str "right: " ((:morph medium)
-                                                         (get minus-1 (second span-pair)))))
                                (let [result
-                                     (parse/over (:grammar medium)
-                                                 (get minus-1 (first span-pair))
-                                                 (get minus-1 (second span-pair)))]
+                                     (if (and (not (empty? (get minus-1 (first span-pair))))
+                                              (not (empty? (get minus-1 (second span-pair)))))
+                                       (do
+                                         (log/debug (str "span-pair: " span-pair))
+                                         (log/info (str "left: " ((:morph medium)
+                                                                  (get minus-1 (first span-pair)))))
+                                         (log/info (str "right: " ((:morph medium)
+                                                                   (get minus-1 (second span-pair)))))
+                                         (parse/over (:grammar medium)
+                                                     (get minus-1 (first span-pair))
+                                                     (get minus-1 (second span-pair)))))]
                                  (if (not (empty? result))
                                    (log/info
                                     (str "result: "
