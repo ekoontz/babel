@@ -57,13 +57,13 @@
                                                 segmentations))))
               (if (not (empty? filtered-segmentations))
                 (log/debug (str "segmentation found:"
-                                (string/join ";"
+                                (string/join " ; "
                                              (map (fn [segmentation]
                                                     (string/join ","
-                                                                 (map
-                                                                  (fn [segment]
-                                                                    (morph segment))
-                                                                  segmentation)))
+                                                                 (set (map
+                                                                       (fn [segment]
+                                                                         (morph segment))
+                                                                       segmentation))))
                                                   filtered-segmentations)))))
 
 
