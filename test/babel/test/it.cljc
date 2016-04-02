@@ -243,24 +243,25 @@
     (> n 1)
     (let [minus-1 (parse-with-segmentation input (- n 1) span-map)]
       (merge minus-1
-             (zipmap
-              (map (fn [span-pair]
-                     [(first (first span-pair))
-                      (second (second span-pair))])
-                   (get span-map n))
-              (map (fn [span-pair]
-                     (log/info (str "span-pair: " span-pair))
-                     (log/info (str "left: " ((:morph medium)
-                                              (get minus-1 (first span-pair)))))
-                     (log/info (str "right: " ((:morph medium)
-                                               (get minus-1 (second span-pair)))))
-                     (let [result
-                           (parse/over (:grammar medium)
-                                       (get minus-1 (first span-pair))
-                                       (get minus-1 (second span-pair)))]
-                       (log/info (str "result: " (string/join ";" (map :rule result))))
-                       result))
-                   (get span-map n)))))))
+             (reduce merge
+                     (map (fn [span-pair]
+                            {[(first (first span-pair))
+                              (second (second span-pair))]
+                             (do
+                               (log/info (str "span-pair: " span-pair))
+                               (log/info (str "left: " ((:morph medium)
+                                                        (get minus-1 (first span-pair)))))
+                               (log/info (str "right: " ((:morph medium)
+                                                         (get minus-1 (second span-pair)))))
+                               (let [result
+                                     (parse/over (:grammar medium)
+                                                 (get minus-1 (first span-pair))
+                                                 (get minus-1 (second span-pair)))]
+                                 (log/info
+                                      (str "result: " (string/join ";"
+                                                                   (map :rule result))))
+                                 result))})
+                              (get span-map n)))))))
 (defn parse2 [input]
   (map (fn [segmentation]
          (let [token-count (count segmentation)
