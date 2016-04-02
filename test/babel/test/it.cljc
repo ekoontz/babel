@@ -295,4 +295,22 @@
           [0 4]))
     [:synsem :sem])))
 
+(def semantics3
+  (strip-refs
+   (get-in
+    (first
+     (get (first (parse2 "noi beviamo la loro acqua bella"))
+          [0 5]))
+    [:synsem :sem])))
+
+(def semantics4
+  (strip-refs
+   (get-in
+    (first
+     (get (first (parse2 "noi abbiamo bevuto la loro acqua bella"))
+          [0 6]))
+    [:synsem :sem])))
+
+
+
 
