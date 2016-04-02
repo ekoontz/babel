@@ -238,69 +238,27 @@
 
 
 (def segmentations (parse/lookup-tokens "la sua ragazza dorme" medium))
-(def terminal-maps
-  (map (fn [segmentation]
-         (zipmap (map (fn [i] [i (+ i 1)])
-                      (range 0 (count segmentation)))
-                 (map (fn [i] (nth segmentation i))
-                      (range 0 (count segmentation)))))
-       segmentations))
 
-(def terminal-map (first terminal-maps))
+(def terminal-map
+  {[0 1] (nth (first segmentations) 0)
+   [1 2] (nth (first segmentations) 1)
+   [2 3] (nth (first segmentations) 2)})
 
-(def zero-to-two
-  (merge
-   terminal-map
-   {[0 2]
-    (mapcat (fn [span-pair]
-              (parse/over (:grammar medium)
-                          (get terminal-map (first span-pair))
-                          (get terminal-map (second span-pair))))
-            (get parse/span-maps 2))}))
-(def foo
-  (merge
-   zero-to-two
-   {[0 3]
-    (mapcat (fn [span-pair]
-              (parse/over (:grammar medium)
-                          (get zero-to-two (first span-pair))
-                          (get zero-to-two (second span-pair))))
-            (get parse/span-maps 3))}))
-
-
-;; (strip-refs (get-in (first (get (parse-n 3) [0 3])) [:synsem :sem]))
 (defn parse-n [n]
   (cond
+
     (= n 1)
-    (map (fn [segmentation]
-           (zipmap (map (fn [i] [i (+ i 1)])
-                        (range 0 (count segmentation)))
-                   (map (fn [i] (nth segmentation i))
-                        (range 0 (count segmentation)))))
-         segmentations)
-    (= n 2)
-    (let [terminal-map (first (foos 1))]
-      (merge
-       terminal-map
-       {[0 2]
-        (mapcat (fn [span-pair]
-                  (parse/over (:grammar medium)
-                              (get terminal-map (first span-pair))
-                              (get terminal-map (second span-pair))))
-                (get parse/span-maps 2))}))
-    (= n 3)
-    (merge
-     (let [zero-to-twos (list (foos 2))]
-       {[0 n]
-        (mapcat (fn [zero-to-two]
-                  (mapcat (fn [span-pair]
-                            (parse/over (:grammar medium)
-                                        (get zero-to-two (first span-pair))
-                                        (get zero-to-two (second span-pair))))
-                          (get parse/span-maps n)))
-                zero-to-twos)}))))
+    terminal-map
 
+    (> n 1)
+    (let [minus-1 (parse-n (- n 1))]
+      (merge minus-1
+             {[0 n]
+              (mapcat (fn [span-pair]
+                        (parse/over (:grammar medium)
+                                    (get minus-1 (first span-pair))
+                                    (get minus-1 (second span-pair))))
+                      (get parse/span-maps n))}))))
 
-
-
+(def semantics (strip-refs (get-in (first (get (parse-n 3) [0 3])) [:synsem :sem])))
   
