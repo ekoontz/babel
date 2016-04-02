@@ -168,13 +168,6 @@
                       {(- right-boundary left-boundary)
                        (list span-pair)}))
                   spans)))))
-(def span-maps
-  {2 (get (span-map 2) 2)
-   3 (get (span-map 3) 3)
-   4 (get (span-map 4) 4)
-   5 (get (span-map 5) 5)
-   6 (get (span-map 6) 6)
-   7 (get (span-map 7) 7)})
 
 (defn create-tree-map [args from extent grammar morph]
   (log/debug (str "create-tree-map (#args=" (count args)
