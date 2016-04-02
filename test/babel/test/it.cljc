@@ -212,15 +212,6 @@
   (let [result (parse "noi beviamo la loro acqua bella")]
     (is (not (empty? result)))))
 
-(def segmentations (parse/lookup-tokens "la sua ragazza" medium))
-(def terminal-maps
-  (map (fn [segmentation]
-         (zipmap (map (fn [i] [i (+ i 1)])
-                      (range 0 (count segmentation)))
-                 (map (fn [i] (nth segmentation i))
-                      (range 0 (count segmentation)))))
-       segmentations))
-
 ;; tricky tokenization of 'la sua' as a lexeme:
 ;;   i.e. la_sua ragazza
 (deftest la-sua-ragazza
@@ -245,36 +236,34 @@
         result (parse "la sua ragazza")]
     (is (not (empty? result)))))
 
-(def zero-to-two
-  (merge-with
-   concat
-   (map (fn [terminal-map]
-          {[0 2]
-           (map (fn [span-pair]
-                  (parse/over (:grammar medium)
-                              (get terminal-map (first span-pair))
-                              (get terminal-map (second span-pair))))
-                (get parse/span-maps 2))})
-        terminal-maps)))
 
+(def segmentations (parse/lookup-tokens "la sua ragazza dorme" medium))
+(def terminal-maps
+  (map (fn [segmentation]
+         (zipmap (map (fn [i] [i (+ i 1)])
+                      (range 0 (count segmentation)))
+                 (map (fn [i] (nth segmentation i))
+                      (range 0 (count segmentation)))))
+       segmentations))
+
+(def terminal-map (first terminal-maps))
+
+(def zero-to-two
+  (merge
+   terminal-map
+   {[0 2]
+    (mapcat (fn [span-pair]
+              (parse/over (:grammar medium)
+                          (get terminal-map (first span-pair))
+                          (get terminal-map (second span-pair))))
+            (get parse/span-maps 2))}))
 (def foo
   (merge
    zero-to-two
    {[0 3]
-    (map (fn [parse-map]
-           (map (fn [span-pair]
-                  (parse/over (:grammar medium)
-                              (get parse-map (first span-pair))
-                              (get parse-map (second span-pair))))
-                (get parse/span-maps 3)))
-         zero-to-two)}))
-
-
-
-
-
-
-
-
-
+    (mapcat (fn [span-pair]
+              (parse/over (:grammar medium)
+                          (get zero-to-two (first span-pair))
+                          (get zero-to-two (second span-pair))))
+            (get parse/span-maps 3))}))
 
