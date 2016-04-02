@@ -261,9 +261,18 @@
                                      (parse/over (:grammar medium)
                                                  (get minus-1 (first span-pair))
                                                  (get minus-1 (second span-pair)))]
-                                 (log/info
-                                      (str "result: " (string/join ";"
-                                                                   (map :rule result))))
+                                 (if (not (empty? result))
+                                   (log/info
+                                    (str "result: "
+                                         [(first (first span-pair))
+                                          (second (second span-pair))] " "
+                                         (string/join "; "
+                                                      (map (fn [each-parse]
+                                                             (str
+                                                              (get each-parse :rule) ":'"
+                                                              ((:morph medium) each-parse)
+                                                              "'"))
+                                                           result)))))
                                  result))})
                               (get span-map n)))))))
 (defn parse2 [input]
@@ -310,7 +319,3 @@
      (get (first (parse2 "noi abbiamo bevuto la loro acqua bella"))
           [0 6]))
     [:synsem :sem])))
-
-
-
-
