@@ -199,16 +199,19 @@
                                       token-count-range)
                                          (map (fn [i] (nth segments i))
                                               token-count-range))]
-                   (parse-with-segmentation input-map segment-count model
-                                            (span-map segment-count))))
+                   (let [all-parses
+                         (parse-with-segmentation input-map segment-count model
+                                                  (span-map segment-count))]
+                     {:segment-count segment-count
+                      :complete-parses
+                      (get all-parses
+                           [0 segment-count])
+                      :all-parses all-parses})))
                ;; TODO: move tokenization to within lexicon.
                (lookup-tokens input model))))
 
 (defn parse [input lookup grammar]
   "return a list of all possible parse trees for a string or a list of lists of maps
    (a result of looking up in a dictionary a list of tokens from the input string)"
-  (let [result (parse2 input grammar)]
-    result))
-
- 
+  (reduce concat (map :complete-parses (parse2 input grammar))))
 
