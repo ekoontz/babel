@@ -153,7 +153,7 @@
   (let [spans
         (square n)]
     (reduce (fn [resultant-map this-submap]
-              (merge-with union
+              (merge-with union ;; TODO: this could get expensive - consider alternatives.
                           resultant-map this-submap))
             (map (fn [span-pair]
                    (let [left-span (first span-pair)
