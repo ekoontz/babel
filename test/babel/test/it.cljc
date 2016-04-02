@@ -267,3 +267,40 @@
                           (get zero-to-two (second span-pair))))
             (get parse/span-maps 3))}))
 
+
+;; (strip-refs (get-in (first (get (parse-n 3) [0 3])) [:synsem :sem]))
+(defn parse-n [n]
+  (cond
+    (= n 1)
+    (map (fn [segmentation]
+           (zipmap (map (fn [i] [i (+ i 1)])
+                        (range 0 (count segmentation)))
+                   (map (fn [i] (nth segmentation i))
+                        (range 0 (count segmentation)))))
+         segmentations)
+    (= n 2)
+    (let [terminal-map (first (foos 1))]
+      (merge
+       terminal-map
+       {[0 2]
+        (mapcat (fn [span-pair]
+                  (parse/over (:grammar medium)
+                              (get terminal-map (first span-pair))
+                              (get terminal-map (second span-pair))))
+                (get parse/span-maps 2))}))
+    (= n 3)
+    (merge
+     (let [zero-to-twos (list (foos 2))]
+       {[0 n]
+        (mapcat (fn [zero-to-two]
+                  (mapcat (fn [span-pair]
+                            (parse/over (:grammar medium)
+                                        (get zero-to-two (first span-pair))
+                                        (get zero-to-two (second span-pair))))
+                          (get parse/span-maps n)))
+                zero-to-twos)}))))
+
+
+
+
+  
