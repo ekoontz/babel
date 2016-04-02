@@ -96,36 +96,6 @@
   (log/trace (str "parse/over: grammar size: " (count grammar)))
   (over/over grammar left right))
 
-(defn tree-map-entries [args from extent]
-  (if (< (+ from extent)
-         (+ extent (count args)))
-    (merge
-     {[from (+ extent from)]
-      (subvec args from (+ extent from))}
-     (tree-map-entries args (+ extent from) extent))
-    {}))
-
-(defn create-trees [left right parse-map grammar morph split-at]
-  (lazy-cat
-   (let [left-trees (get parse-map [left (+ left split-at)])
-         right-trees (get parse-map [(+ left split-at) right])]
-     (if (and (not (empty? left-trees))
-              (not (empty? right-trees)))
-       (let [result (over grammar left-trees right-trees)]
-         result)))
-   (if (> right (+ 1 split-at))
-     (create-trees left right parse-map grammar morph (+ 1 split-at)))))
-
-(defn terminal-spans [segmentations]
-  "Generate a map of pair:[i,i+1] => tokens; used as an input to n-spans."
-  (reduce merge
-          (map (fn [tokens]
-                 (map (fn [from]
-                        {[from (+ 1 from)]
-                         (subvec (vec tokens) from (+ 1 from))})
-                    (range 0 (count tokens))))
-               segmentations)))
-
 (defn cross-product [x y]
   (mapcat (fn [each-x]
             (filter #(not (nil? %))
@@ -169,75 +139,6 @@
                        (list span-pair)}))
                   spans)))))
 
-(defn create-tree-map [args from extent grammar morph]
-  (log/debug (str "create-tree-map (#args=" (count args)
-                  ",from=" from ",extent=" extent ") = "))
-  (log/debug (str "condition holding: "
-                  (cond (= extent 0) "1st"
-                        (= extent 1) "2nd"
-                        (< (+ from extent)
-                           (+ (count args) 1)) "3rd"
-                        true "4th")))
-  (cond (= extent 0) {}
-
-        (= extent 1) (tree-map-entries args from extent)
-
-        (<= (+ from extent) (count args))
-        (merge
-         (let [trees (create-trees from (- (count args) 1)
-                                   (create-tree-map args 0 (- extent 1) grammar morph)
-                                   grammar morph 1)]
-           (if (not (empty? trees))
-             {[from (+ extent from)] trees}))
-         (create-tree-map args (+ from 1) extent grammar morph))
-
-        true
-        (create-tree-map args 0 (- extent 1) grammar morph)))
-
-;; TODO: move tokenization to within lexicon.
-(defn parse [input lookup grammar]
-  "return a list of all possible parse trees for a string or a list of lists of maps
-   (a result of looking up in a dictionary a list of tokens from the input string)"
-  (cond (string? input)
-        (let [grammar-input grammar
-              grammar (cond (map? grammar-input)
-                            (:grammar grammar-input)
-                            true
-                            grammar-input)
-              morph (cond (map? grammar-input)
-                          (:morph grammar-input)
-                          true
-                          (fn [x] (str (type grammar-input) "(morph goes here)")))
-              tokens (filter #(not (empty? %)) (toks input lookup morph))]
-          (parse tokens lookup grammar-input))
-        (and (vector? input)
-             (empty? (rest input)))
-        (first input)
-
-        (vector? input)
-        ;; returns the parse of the whole expression (from [0..l] where l=length(input).
-        ;; TODO: if a parse for the whole expression is not found,
-        ;; return the largest subparse(s).
-        (let [grammar-input grammar
-              grammar (cond (map? grammar-input)
-                            (:grammar grammar-input)
-                            true
-                            grammar-input)
-              morph (cond (map? grammar-input)
-                          (:morph grammar-input)
-                          true
-                          (fn [x] (str (type grammar-input) "(morph goes here)")))]
-          (get (create-tree-map input 0 (count input) grammar morph)
-               [0 (count input)]))
-
-        (seq? input)
-        (mapcat #(parse (vec %) lookup grammar)
-                input)
-        
-        ;; TODO: throw exception here.
-        true
-        (str "unexpected input: type: " (type input))))
-
 (defn lookup-tokens [input-string grammar]
   (let [morph (:morph grammar)
         lookup (:lookup grammar)
@@ -248,7 +149,7 @@
             (toks input-string lookup morph))))
 
 (defn parse-with-segmentation [input n model span-map]
-  (log/debug (str "calling p-w-s " n "; span-maps: " (get span-map n)))
+  (log/trace (str "calling p-w-s " n "; span-maps: " (get span-map n)))
   (cond
     (= n 1) input
     (> n 1)
@@ -256,8 +157,8 @@
       (merge minus-1
              (reduce (fn [x y]
                        (do
-                         (log/debug (str "merge x: " (keys x)))
-                         (log/debug (str "merge y: " (keys y)))
+                         (log/trace (str "merge x: " (keys x)))
+                         (log/trace (str "merge y: " (keys y)))
                          (merge-with concat x y)))
                      (map (fn [span-pair]
                             {[(first (first span-pair))
@@ -300,5 +201,14 @@
                                               token-count-range))]
                    (parse-with-segmentation input-map segment-count model
                                             (span-map segment-count))))
+               ;; TODO: move tokenization to within lexicon.
                (lookup-tokens input model))))
+
+(defn parse [input lookup grammar]
+  "return a list of all possible parse trees for a string or a list of lists of maps
+   (a result of looking up in a dictionary a list of tokens from the input string)"
+  (let [result (parse2 input grammar)]
+    result))
+
+ 
 
