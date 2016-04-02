@@ -236,33 +236,42 @@
         result (parse "la sua ragazza")]
     (is (not (empty? result)))))
 
-(defn parse-with-segmentation [input n]
+(defn parse-with-segmentation [input n span-map]
+  (log/info (str "calling p-w-s " n "; span-maps: " (get span-map n)))
   (cond
     (= n 1) input
     (> n 1)
-    (let [minus-1 (parse-with-segmentation input (- n 1))]
+    (let [minus-1 (parse-with-segmentation input (- n 1) span-map)]
       (merge minus-1
-             {[0 n]
-              (mapcat (fn [span-pair]
-                        (log/info (str "span-pair: " span-pair))
-                        (log/info (str "left: " ((:morph medium)
-                                                 (get minus-1 (first span-pair)))))
-                        (log/info (str "right: " ((:morph medium)
-                                                  (get minus-1 (second span-pair)))))
-                        (parse/over (:grammar medium)
-                                    (get minus-1 (first span-pair))
-                                    (get minus-1 (second span-pair))))
-                      (get parse/span-maps n))}))))
-
+             (zipmap
+              (map (fn [span-pair]
+                     [(first (first span-pair))
+                      (second (second span-pair))])
+                   (get span-map n))
+              (map (fn [span-pair]
+                     (log/info (str "span-pair: " span-pair))
+                     (log/info (str "left: " ((:morph medium)
+                                              (get minus-1 (first span-pair)))))
+                     (log/info (str "right: " ((:morph medium)
+                                               (get minus-1 (second span-pair)))))
+                     (let [result
+                           (parse/over (:grammar medium)
+                                       (get minus-1 (first span-pair))
+                                       (get minus-1 (second span-pair)))]
+                       (log/info (str "result: " (string/join ";" (map :rule result))))
+                       result))
+                   (get span-map n)))))))
 (defn parse2 [input]
   (map (fn [segmentation]
          (let [token-count (count segmentation)
                token-count-range (range 0 token-count)]
            (parse-with-segmentation
-            (zipmap (map (fn [i] [i (+ i 1)]) token-count-range)
+            (zipmap (map (fn [i] [i (+ i 1)])
+                         token-count-range)
                     (map (fn [i] (nth segmentation i))
                          token-count-range))
-            token-count)))
+            token-count
+            (parse/span-map token-count))))
        (parse/lookup-tokens input medium)))
 
 (def semantics
