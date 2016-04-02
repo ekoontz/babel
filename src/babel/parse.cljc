@@ -152,17 +152,22 @@
    size is equal to _size_."
   (let [spans
         (square n)]
-    (reduce (fn [resultant-map this-submap]
-              (merge-with union ;; TODO: this could get expensive - consider alternatives.
-                          resultant-map this-submap))
-            (map (fn [span-pair]
-                   (let [left-span (first span-pair)
-                         left-boundary (first left-span)
-                         right-span (second span-pair)
-                         right-boundary (second right-span)]
-                     {(- right-boundary left-boundary)
-                      (list span-pair)}))
-                 spans))))
+    (merge
+     {1 (map
+         (fn [i]
+           [i (+ 1 i)])
+         (range 0 n))}
+     (reduce (fn [resultant-map this-submap]
+               (merge-with union ;; TODO: this could get expensive - consider alternatives.
+                           resultant-map this-submap))
+             (map (fn [span-pair]
+                    (let [left-span (first span-pair)
+                          left-boundary (first left-span)
+                          right-span (second span-pair)
+                          right-boundary (second right-span)]
+                      {(- right-boundary left-boundary)
+                       (list span-pair)}))
+                  spans)))))
 (def span-maps
   {2 (get (span-map 2) 2)
    3 (get (span-map 3) 3)
