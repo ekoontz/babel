@@ -243,7 +243,11 @@
     (> n 1)
     (let [minus-1 (parse-with-segmentation input (- n 1) span-map)]
       (merge minus-1
-             (reduce merge
+             (reduce (fn [x y]
+                       (do
+                         (log/info (str "merge x: " (keys x)))
+                         (log/info (str "merge y: " (keys y)))
+                         (merge-with concat x y)))
                      (map (fn [span-pair]
                             {[(first (first span-pair))
                               (second (second span-pair))]
@@ -263,23 +267,32 @@
                                  result))})
                               (get span-map n)))))))
 (defn parse2 [input]
-  (map (fn [segmentation]
-         (let [token-count (count segmentation)
-               token-count-range (range 0 token-count)]
-           (parse-with-segmentation
-            (zipmap (map (fn [i] [i (+ i 1)])
-                         token-count-range)
-                    (map (fn [i] (nth segmentation i))
-                         token-count-range))
-            token-count
-            (parse/span-map token-count))))
-       (parse/lookup-tokens input medium)))
-
-(def semantics
+  (filter #(not (empty? %))
+          (map (fn [segments]
+                 (let [segment-count (count segments)
+                       token-count-range (range 0 segment-count)
+                       input-map (zipmap (map (fn [i] [i (+ i 1)])
+                                      token-count-range)
+                                         (map (fn [i] (nth segments i))
+                                              token-count-range))]
+                   (parse-with-segmentation input-map segment-count
+                                            (parse/span-map segment-count))))
+               (parse/lookup-tokens input medium))))
+  
+(def semantics1
   (strip-refs
    (get-in
     (first
-     (get (parse2 "la sua ragazza dorme")
+     (get (first (parse2 "la sua ragazza dorme"))
           [0 3]))
     [:synsem :sem])))
+
+(def semantics2
+  (strip-refs
+   (get-in
+    (first
+     (get (first (parse2 "la sua ragazza bella dorme"))
+          [0 4]))
+    [:synsem :sem])))
+
 
