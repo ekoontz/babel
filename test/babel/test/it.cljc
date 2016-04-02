@@ -12,6 +12,7 @@
             #?(:clj [clojure.tools.logging :as log])
             #?(:cljs [babel.logjs :as log])
             [clojure.string :as string]
+            [clojure.set :as set]
             [dag_unify.core :refer [get-in strip-refs]]))
 
 (deftest analyze-1
@@ -244,10 +245,36 @@
         result (parse "la sua ragazza")]
     (is (not (empty? result)))))
 
+(def zero-to-two
+  (merge-with
+   concat
+   (map (fn [terminal-map]
+          {[0 2]
+           (map (fn [span-pair]
+                  (parse/over (:grammar medium)
+                              (get terminal-map (first span-pair))
+                              (get terminal-map (second span-pair))))
+                (get parse/span-maps 2))})
+        terminal-maps)))
+
 (def foo
-  (map (fn [span-pair]
-         (parse/over (:grammar medium)
-                     (get terminal-map (first span-pair))
-                     (get terminal-map (second span-pair))))
-       (get parse/span-maps 2)))
+  (merge
+   zero-to-two
+   {[0 3]
+    (map (fn [parse-map]
+           (map (fn [span-pair]
+                  (parse/over (:grammar medium)
+                              (get parse-map (first span-pair))
+                              (get parse-map (second span-pair))))
+                (get parse/span-maps 3)))
+         zero-to-two)}))
+
+
+
+
+
+
+
+
+
 
