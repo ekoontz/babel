@@ -236,29 +236,40 @@
         result (parse "la sua ragazza")]
     (is (not (empty? result)))))
 
-(defn parse-n [input n]
+(defn parse-with-segmentation [input n]
   (cond
-
-    (= n 1)
-    (let [segmentations (parse/lookup-tokens input medium)]
-      {[0 1] (nth (first segmentations) 0)
-       [1 2] (nth (first segmentations) 1)
-       [2 3] (nth (first segmentations) 2)})
-
+    (= n 1) input
     (> n 1)
-    (let [minus-1 (parse-n input (- n 1))]
+    (let [minus-1 (parse-with-segmentation input (- n 1))]
       (merge minus-1
              {[0 n]
               (mapcat (fn [span-pair]
+                        (log/info (str "span-pair: " span-pair))
+                        (log/info (str "left: " ((:morph medium)
+                                                 (get minus-1 (first span-pair)))))
+                        (log/info (str "right: " ((:morph medium)
+                                                  (get minus-1 (second span-pair)))))
                         (parse/over (:grammar medium)
                                     (get minus-1 (first span-pair))
                                     (get minus-1 (second span-pair))))
                       (get parse/span-maps n))}))))
+
+(defn parse2 [input]
+  (map (fn [segmentation]
+         (let [token-count (count segmentation)
+               token-count-range (range 0 token-count)]
+           (parse-with-segmentation
+            (zipmap (map (fn [i] [i (+ i 1)]) token-count-range)
+                    (map (fn [i] (nth segmentation i))
+                         token-count-range))
+            token-count)))
+       (parse/lookup-tokens input medium)))
+
 (def semantics
   (strip-refs
    (get-in
     (first
-     (get (parse-n
-           "la sua ragazza dorme" 3)
+     (get (parse2 "la sua ragazza dorme")
           [0 3]))
     [:synsem :sem])))
+
