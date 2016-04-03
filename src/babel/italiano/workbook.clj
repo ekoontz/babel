@@ -41,15 +41,10 @@
 
 (defn parse
   ([string]
-   (parse/parse string
-                (fn [token]
-                  ((:lookup medium) token))
-                medium))
+   (parse/parse string medium))
   ([string model]
-   (parse/parse string
-                (fn [token]
-                  ((:lookup model) token))
-                model)))
+   (parse/parse string model)))
+
 (defn expr [id]
   (reader/id2expression (Integer. id)))
 
