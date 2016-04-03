@@ -73,7 +73,7 @@
                                        :pred :donna}}} 
                        np-grammar)]
     (is (= (fo expr) "la donna difficile"))
-    (is (not (empty? (parse/parse2 (fo expr) np-grammar))))))
+    (is (not (empty? (parse (fo expr) np-grammar))))))
 
 (deftest forbid-mispelling
  (is (empty? (parse (fo "la donna difficila") np-grammar))))
@@ -218,7 +218,7 @@
                 semantics (strip-refs
                            (get-in
                             (first
-                             (get (first (parse/parse2 surface medium)) extent))
+                             (get (first (parse surface medium)) extent))
                             [:synsem :sem]))]
             (is (map? semantics))))
         [["la sua ragazza" [0 2]]
