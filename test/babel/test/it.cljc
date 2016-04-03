@@ -121,9 +121,6 @@
                             (is (not (empty? parsed)))))
                         expressions))))))
 
-(deftest three-word-lexeme
-  (is (not (empty? (parse/lookup-tokens "Luisa e io dormiamo" medium)))))
-
 (deftest roundtrip-imperfect
   (let [do-this-many 20
         expressions (take do-this-many
@@ -212,18 +209,16 @@
 ;; tricky tokenization of 'la sua' and 'la loro' as lexemes.
 (deftest parsing
   (count
-   (map (fn [surface-and-extent]
-          (let [surface (first surface-and-extent)
-                extent (second surface-and-extent)
-                semantics (strip-refs
+   (map (fn [surface]
+          (let [semantics (strip-refs
                            (get-in
-                            (first
-                             (get (first (parse surface medium)) extent))
+                            (first (parse surface medium))
                             [:synsem :sem]))]
             (is (map? semantics))))
-        [["la sua ragazza" [0 2]]
-         ["la sua ragazza dorme" [0 3]]
-         ["la sua ragazza bella dorme" [0 4]]
-         ["noi beviamo la loro acqua bella" [0 5]]
-         ["noi abbiamo bevuto la loro acqua bella" [0 6]]])))
+        ["la sua ragazza"
+         "la sua ragazza dorme"
+         "la sua ragazza bella dorme"
+         "noi beviamo la loro acqua bella"
+         "noi abbiamo bevuto la loro acqua bella"])))
+
 
