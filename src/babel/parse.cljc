@@ -188,9 +188,11 @@
                                                                   (get minus-1 (first span-pair)))))
                                          (log/info (str "right: " ((:morph model)
                                                                    (get minus-1 (second span-pair)))))
-                                         (over (:grammar model)
-                                               (get minus-1 (first span-pair))
-                                               (get minus-1 (second span-pair)))))]
+                                         (concat
+;                                          (lookup-tokens (string/join " " [(first span-pair) (second span-pair)] model))
+                                          (over (:grammar model)
+                                                (get minus-1 (first span-pair))
+                                                (get minus-1 (second span-pair))))))]
                                  (if (not (empty? result))
                                    (log/info
                                     (str "result: "
@@ -205,13 +207,13 @@
                                                            result)))))
                                  result))})
                               (get span-map n)))))))
-(defn parse2 [input model]
+(defn parses [input model]
   (filter #(not (empty? %))
           (map (fn [segments]
                  (let [segment-count (count segments)
                        token-count-range (range 0 segment-count)
                        input-map (zipmap (map (fn [i] [i (+ i 1)])
-                                      token-count-range)
+                                              token-count-range)
                                          (map (fn [i] (nth segments i))
                                               token-count-range))]
                    (let [all-parses
@@ -228,5 +230,5 @@
 (defn parse [input lookup grammar]
   "return a list of all possible parse trees for a string or a list of lists of maps
    (a result of looking up in a dictionary a list of tokens from the input string)"
-  (reduce concat (map :complete-parses (parse2 input grammar))))
+  (reduce concat (map :complete-parses (parses input grammar))))
 
