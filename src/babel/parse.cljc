@@ -74,12 +74,14 @@
   "group tokens together into every possible grouping"
   (cond
     (empty? tokens) tokens
-    (= (count tokens) 1)
-    []
 
-    (= (count tokens) 2)
-    [[(string/join " " tokens)]
-     tokens]
+    (= (count tokens) 1) []
+
+    (= (count tokens) 2) [[(string/join " " tokens)]
+                          tokens]
+
+;    (= (count tokens) 3) [[(string/join " " tokens)]
+;                          tokens]
 
     true
     (concat
@@ -90,6 +92,19 @@
      (map (fn [each]
             (vec (concat each (list (last tokens)))))
           (toks3 (subvec tokens 0 (- (count tokens) 1)))))))
+
+(defn sliding-tokenizer-n [tokens n i]
+  (cond (= 0 (count tokens)) nil
+        (>= (count tokens) n)
+        (cons [i n (string/join " " (subvec tokens 0 n))]
+              (sliding-tokenizer-n (subvec tokens 1)
+                                   n
+                                   (+ i 1)))))
+
+(defn sliding-tokenizer [tokens size]
+  (if (>= (count tokens) size)
+    (concat (sliding-tokenizer-n tokens size 0)
+            (sliding-tokenizer tokens (+ 1 size)))))
 
 (defn over [grammar left right]
   "opportunity for additional logging before calling the real (over)"
