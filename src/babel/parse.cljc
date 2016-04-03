@@ -60,12 +60,12 @@
                        (list span-pair)}))
                   spans)))))
 
-(defn parse-with-segmentation-as-strings [input n model span-map]
-  (log/trace (str "calling p-w-s " n "; span-maps: " (get span-map n)))
+(defn parses [input n model span-map]
+  (log/trace (str "calling parses " n "; span-maps: " (get span-map n)))
   (cond
     (= n 1) input
     (> n 1)
-    (let [minus-1 (parse-with-segmentation-as-strings input (- n 1) model span-map)]
+    (let [minus-1 (parses input (- n 1) model span-map)]
       (merge minus-1
              (reduce (fn [x y]
                        (do
@@ -73,14 +73,16 @@
                          (log/trace (str "merge y: " (keys y)))
                          (merge-with concat x y)))
                      (map (fn [span-pair]
+                            ;; create a new key/value pair: [i,j] => parses,
+                            ;; where each parse in parses matches the tokens from [i,j] in the input.
                             {[(first (first span-pair))
                               (second (second span-pair))]
                              (let [left (get minus-1 (first span-pair))
                                    right (get minus-1 (second span-pair))]
                                (log/debug (str "span-pair: " span-pair))
-                               (log/info (str "left: " ((:morph model)
+                               (log/debug (str "left: " ((:morph model)
                                                          left)))
-                               (log/info (str "right: " ((:morph model)
+                               (log/debug (str "right: " ((:morph model)
                                                          right)))
                                (let [left-strings (filter string? left)
                                      right-strings (filter string? right)
@@ -90,16 +92,16 @@
                                                           right-strings)
                                      left-signs (concat left-lexemes (filter map? left))
                                      right-signs (concat right-lexemes (filter map? right))
-                                     debug (do (log/info (str "left-signs: " ((:morph model)
-                                                                              left-signs)))
-                                               (log/info (str "right-signs: " ((:morph model)
+                                     debug (do (log/debug (str "left-signs: " ((:morph model)
+                                                                               left-signs)))
+                                               (log/debug (str "right-signs: " ((:morph model)
                                                                                right-signs)))
-                                               (log/info (str "left-strings: " (string/join "," left-strings)))
-                                               (log/info (str "right-strings: " (string/join "," right-strings)))
-                                               (log/info (str "looked-up left-strings:" (string/join ","  (map (:morph model)
+                                               (log/debug (str "left-strings: " (string/join "," left-strings)))
+                                               (log/debug (str "right-strings: " (string/join "," right-strings)))
+                                               (log/debug (str "looked-up left-strings:" (string/join ","  (map (:morph model)
                                                                                                                (mapcat (:lookup model)
                                                                                                                        left-strings)))))
-                                               (log/info (str "looked-up right-strings:" (string/join "," (map (:morph model)
+                                               (log/debug (str "looked-up right-strings:" (string/join "," (map (:morph model)
                                                                                                                (mapcat (:lookup model)
                                                                                                                        right-strings))))))
                                      result
@@ -128,24 +130,22 @@
 (defn parse [input model]
   "return a list of all possible parse trees for a string or a list of lists of maps
    (a result of looking up in a dictionary a list of tokens from the input string)"
-  (let [segments (string/split input tokenizer)
-        segment-count (count segments)
-        token-count-range (range 0 segment-count)
+  (let [tokens (string/split input tokenizer)
+        token-count (count tokens)
+        token-count-range (range 0 token-count)
         input-map (zipmap (map (fn [i] [i (+ i 1)])
                                token-count-range)
-                          (map (fn [i] [(nth segments i)])
+                          (map (fn [i] [(nth tokens i)])
                                token-count-range))]
     (log/debug (str "input map: " input-map))
     (let [all-parses
-          (parse-with-segmentation-as-strings input-map segment-count model
-                                              (span-map segment-count))
+          (parses input-map token-count model
+                  (span-map token-count))
           result
-          {:segment-count segment-count
+          {:token-count token-count
            :complete-parses
            (filter map? (get all-parses
-                             [0 segment-count]))
+                             [0 token-count]))
            :all-parses all-parses}]
       (:complete-parses result))))
-
-
 
