@@ -26,6 +26,19 @@
   #?(:cljs
      (throw (js/Error. error-string))))
 
+;; diagnostic function
+(defn ps-tree [tree morph]
+  "return just the essentials of a tree: just rule names and surface forms at leaves."
+  (let [rule (get-in tree [:rule])
+        head (get-in tree [:head])
+        comp (get-in tree [:comp])]
+    (if (and head comp rule)
+      (conj {:rule rule}
+            {:head (ps-tree head morph)
+             :comp (ps-tree comp morph)})
+      (let [morph (morph tree)]
+        (if (= morph "") "_" morph)))))
+
 (defn current-time []
   #?(:clj (System/currentTimeMillis))
   #?(:cljs (.getTime (js/Date.))))
@@ -73,6 +86,7 @@
                   (let [lb (lightning-bolt (lazy-shuffle grammar)
                                            lexicon
                                            spec 0 index nil morph)]
+                    (log/debug (str "lightning-bolt: " (ps-tree lightning-bolt morph)))
                     (-> lb
                         ;; TODO: allow more than a fixed maximum depth of generation (here, 4 levels from top of tree).
                         (add-complements-to-bolts [:head :head :head :comp] :top grammar lexicon index morph)
@@ -137,24 +151,25 @@ of this function with complements."
                         (log/debug
                          (str "candidate head lexeme for parent: "
                               (get-in parent [:rule]) ": "
-                              (string/join ","
-                                           (map (fn [lexeme]
-                                                  (morph lexeme))
-                                                candidate-lexemes))))
+                              (if (empty? candidate-lexemes)
+                                "none."
+                                (let [lexeme (first candidate-lexemes)]
+                                  (morph lexeme)))))
                         (let [result
-                              (if (empty? (get-lex parent :head index spec))
-                                (do (log/warn (str "no head lexemes found for parent: " (:rule parent) " and spec: "
-                                                   (strip-refs spec)))
+                              (if (empty? candidate-lexemes)
+                                (do (log/debug (str "no head lexemes found for parent: " (:rule parent) " and spec: "
+                                                    (strip-refs spec)))
                                     nil)
-                                (over/overh parent (lazy-shuffle (get-lex parent :head index spec)) morph))]
+                                (let [parent (unifyc parent {:head (get-in spec [:head] :top)})]
+                                  (over/overh parent
+                                              (lazy-shuffle (get-lex parent :head index spec)) morph)))]
                           (if (not (empty? result))
-                            (log/debug (str "successful results of attaching head lexemes to: " (get-in parent [:rule]) ":"
-                                            (string/join ","
-                                                         (map #(morph %1)
-                                                              result)))))
+                            (log/debug (str "successful results (spec=" spec ") of attaching head lexemes to: " (get-in parent [:rule]) ":"
+                                            (ps-tree (first result) morph))))
                           result)))
                     candidate-parents)
 
+            debug (log/debug (str "GOT HERE: COUNT(lexical): " (count lexical)))            
             ;; TODO: throw exception if (get-in parent [:head]) is null.
             phrasal ;; 2. generate list of all phrases where the head child of each parent is itself a phrase.
             ;; recursively call lightning-bolt with (+ 1 depth).
@@ -163,7 +178,8 @@ of this function with complements."
                         (log/debug (str "calling over/overh with parent: " (get-in parent [:rule])))
                         (let [phrasal-children
                               (lightning-bolt grammar lexicon
-                                              (get-in parent [:head])
+                                              (unifyc (get-in parent [:head])
+                                                      (get-in spec [:head]))
                                               (+ 1 depth)
                                               index parent morph)]
                           (if (empty? phrasal-children)
@@ -229,8 +245,8 @@ of this function with complements."
                         (not (fail? result)))
                       (map (fn [complement]
                              (let [debug (log/debug (str "adding complement to: ["
-                                                         (get-in bolt [:rule]) " "
-                                                         (morph bolt) "]: trying lexical complement:" (morph complement)))
+                                                         (ps-tree bolt morph)
+                                                         "]: trying lexical complement:" (morph complement)))
                                    debug (if (= "" (morph complement))
                                            (log/error (str "WHY IS IT EMPTY: " complement)))
                                    result
@@ -275,6 +291,10 @@ of this function with complements."
 )
               (do (log/debug (str "add-complement after adding complement: "
                                   (morph (first return-val)) ",.."))
+                  (log/debug (str "add-complement after adding complement(2): "
+                                  (ps-tree (first return-val) morph) ",.."))
+                  (log/debug (str "add-complement after adding complement(semantics): "
+                                  (strip-refs (get-in (first return-val) [:synsem :sem]))))
                   return-val)))))
 
       ;; path doesn't exist in bolt: simply return the bolt unmodified.

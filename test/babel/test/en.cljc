@@ -1,17 +1,20 @@
 (ns babel.test.en
   (:refer-clojure :exclude [get-in])
   (:require [babel.engine :as engine]
-            [babel.english.grammar :refer [small small-plus-vp-pronoun medium]]
+            [babel.english.grammar :refer [small small-plus-plus-np small-plus-vp-pronoun medium]]
             [babel.english.lexicon :refer [lexicon]]
             [babel.english.morphology :refer [fo get-string]]
             [babel.english.workbook :refer [analyze generate parse]]
+            [babel.forest :refer [ps-tree]]
             [babel.parse :as parse]
+            [babel.ug :as ug]
+            [clojure.repl :refer [doc]]
             [clojure.string :as string]
             #?(:clj [clojure.test :refer [deftest is]])
             #?(:cljs [cljs.test :refer-macros [deftest is]])
             #?(:clj [clojure.tools.logging :as log])
             #?(:cljs [babel.logjs :as log]) 
-            [dag_unify.core :refer [get-in strip-refs]]))
+            [dag_unify.core :refer [get-in strip-refs unify unifyc]]))
 
 (deftest generate-irregular-present
   (let [form {:english {:a {:english {:past {:1sing "was",
@@ -175,4 +178,36 @@
                          :plur}}}}]
     (is (= (fo form)
            "you all were going downstairs"))))
+
+(defn vp-present-bug []
+  (do
+    (count (take 1 (repeatedly #(let [result (generate {:synsem {:cat :verb}
+                                                                              :head {:rule "vp-present"
+                                                                                     :head {:synsem {:sem {:sense 2 :pred :be}}}}}
+                                                                             small-plus-plus-np)]
+                                                       (println (fo result))
+                                                       (println (str " HEAD SEM :" (strip-refs (get-in result [:head :synsem :sem :pred]))))
+                                                       (println (str " SEM :" (strip-refs (get-in result [:synsem :sem :pred]))))
+                                                       (println (str " RULE:" (strip-refs (get-in result [:rule]))))
+                                                       (println (str " HEAD RULE:" (strip-refs (get-in result [:head :rule]))))
+                                                       (println (str " HEAD HEAD:" (strip-refs (get-in result [:head :head]))))
+                                                       (println "")))))
+
+  (count (take 10 (repeatedly #(let [result
+                                     (generate {:synsem {:cat :verb}
+                                                :head {:rule "vp-present"
+                                                       :head {:synsem {:sem {:sense 42 ;; one bug: the head is a 'ghost' empty lexeme
+                                                                             ;; :sense 1 ;; another bug: somehow unifies with the intransitive form of "be".
+                                                                             :pred :be}}}}}
+                                               small-plus-plus-np)]
+                                 (println (fo result))
+                                 (println (str " HEAD SEM :" (strip-refs (get-in result [:head :synsem :sem :pred]))))
+                                 (println (str " SEM :" (strip-refs (get-in result [:synsem :sem :pred]))))
+                                 (println (str " RULE:" (strip-refs (get-in result [:rule]))))
+                                 (println (str " HEAD RULE:" (strip-refs (get-in result [:head :rule]))))
+                                 (println (str " HEAD HEAD:" (strip-refs (get-in result [:head :head]))))
+                                 (println "")))))))
+
+
+
 

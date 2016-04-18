@@ -108,39 +108,40 @@
            (unify common
                   {:synsem {:subcat {:1 {:cat :noun}
                                      :2 '()}
-                            :sem {:pred :be}}})
-
+                            :sem {:sense 1
+                                  :pred :be}}})
 
            ;; be + propernoun, e.g. "I am John"
-           (let [subj-agr (atom :top)
-                 infl (atom :top)
-                 the-real-subj (atom :top)
-                 the-obj (atom :top)]
-             (unify common
-                    subject-verb-agreement
-                    {:intransitivize false
-                     :transitivize false
-                     :synsem {:agr subj-agr
-                              :sem {:aspect :progressive
-                                    :pred :be-called
-                                    :tense :present
-                                    :subj the-real-subj
-                                    :obj the-obj}
-                              :subcat {:1 {:cat :noun
-                                           :agr subj-agr
-                                           :sem {:pred :name
-                                                 :subj the-real-subj}
+;           (let [subj-agr (atom :top)
+;                 infl (atom :top)
+;                 the-real-subj (atom :top)
+;                 the-obj (atom :top)]
+;             (unify common
+ ;                   subject-verb-agreement
+ ;                   {:intransitivize false
+ ;                    :transitivize false
+ ;;                    :synsem {:agr subj-agr
+ ;                             :sem {:aspect :progressive
+ ;                                   :pred :be-called
+  ;                                  :tense :present
+  ;;                                  :subj the-real-subj
+  ;                                  :obj the-obj}
+  ;                            :subcat {:1 {:cat :noun
+   ;                                        :agr subj-agr
+   ;                                        :sem {:pred :name
+   ;;                                              :subj the-real-subj}
+   ;                                        }
+   ;                                    :2 {:cat :noun
+    ;                                       :agr subj-agr
+    ;                                       :sem the-obj
+    ;;                                       :propernoun true ;; "I am John"
+    ;                                       }
+    ;;                                   } ;; subcat {
+    ;                          } ;; synsem {
+    ;                 } ;; end of map
+    ;                ))
 
-                                           }
-                                       :2 {:cat :noun
-                                           :agr subj-agr
-                                           :sem the-obj
-                                           :propernoun true ;; "I am John"
-                                           }
-                                       } ;; subcat {
-                              } ;; synsem {
-                     } ;; end of map
-                    ))])
+           ])
 
    "be able to" {:english {:imperfect {:1sing "was able to"
                                        :2sing "were able to"
@@ -514,7 +515,8 @@
    
    "forget" {:synsem {:cat :verb
                       :sem {:pred :forget}}
-             :english {:past "forgot"}}
+             :english {:past "forgot"
+                       :participle "forgetting"}} ;; need exception for orthographic double-t.
 
    "form" {:synsem {:cat :verb
                     :sem {:pred :form}}}

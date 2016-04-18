@@ -84,7 +84,7 @@
               ]
 
           ;; Now get all the target expressions that are semantically
-          ;; equivalent to this expression's semantics,
+          ;; equivalent to this single target expression's semantics,
           ;; and a single source expression whose semantics contain
           ;; that same semantics.
           ;; TODO: consider selecting source where semantics contains
