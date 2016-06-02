@@ -163,7 +163,7 @@ of this function with complements."
             (concat phrasal lexical)))))))
 
 (defn add-complement [bolt path spec grammar lexicon cache morph depth total-depth]
-  (log/debug (str "add-complement: " (show-bolt bolt path morph)))
+  (log/debug (str "add-complement with spec: " (strip-refs spec) " to: " (show-bolt bolt path morph)))
   (let [input-spec spec
         from-bolt bolt ;; so we can show what (add-complement) did to the input bolt, for logging.
         spec (unifyc spec (get-in bolt path))
@@ -189,14 +189,20 @@ of this function with complements."
         debug (log/debug
                (if (not (empty? filtered-lexical-complements))
                  (str "add-complement: " (show-bolt bolt path morph) ":candidate first complement-lexemes:'"
-                      (morph (first filtered-lexical-complements))) "'"))]
+                      (morph (first filtered-lexical-complements)) "'")
+                 (str "add-complement: " (show-bolt bolt path morph) ": no complement lexemes passed filtering.")))
+        ;; TODO: below is 'false': need to work more on how to throw exceptions
+        ;; due to pathological cases here.
+        error (if (and false (not (empty? complement-candidate-lexemes))
+                       (empty? filtered-lexical-complements))
+                (exception (str "add-complement: " (show-bolt bolt path morph) ": no complement lexemes passed filtering.")))
+        ]
     (filter (fn [complement]
               (if (fail? complement)
                 (do
                   (log/trace (str "add-complement(depth=" depth ",total-depth=" total-depth
                                   ",path=" path ",bolt=(" (show-bolt bolt path morph) ") FAILED:"
                                   "'" (morph complement) "'"))
-                  
                   false)
                 (do
                   (log/trace (str "add-complement(depth=" depth ",total-depth=" total-depth
