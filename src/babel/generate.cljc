@@ -147,7 +147,7 @@
                               & {:keys [max-total-depth truncate-children]
                                  :or {max-total-depth max-total-depth
                                       truncate-children true}}]
-  (log/debug (str "add-complement-to-bolt: " (show-bolt bolt language-model)
+  (log/info (str "add-complement-to-bolt: " (show-bolt bolt language-model)
                   "@[" (string/join " " path) "]" "^" total-depth))
   (let [index (:index language-model)
         lexicon (if (-> :generate :lexicon language-model)
@@ -210,10 +210,9 @@
                                           "while trying to create a complement: " (spec-info spec)))
 
                           lexemes-before-phrases
-                          (lazy-cat (lazy-shuffle filtered-lexical-complements) phrasal-complements)
-
+                          (take 1 (lazy-cat (lazy-shuffle filtered-lexical-complements) phrasal-complements))
                           true
-                          (lazy-cat phrasal-complements (lazy-shuffle filtered-lexical-complements))))))))
+                          (take 1 (lazy-cat phrasal-complements (lazy-shuffle filtered-lexical-complements)))))))))
 
 (defn spec-info [spec]
   "give a human-readable summary of _spec_."
