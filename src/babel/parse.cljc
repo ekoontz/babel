@@ -1,7 +1,7 @@
 (ns babel.parse
  (:refer-clojure :exclude [get-in resolve find])
  (:require
-  [babel.over :as over]
+  [babel.over :as over :refer [truncate]]
   [clojure.set :refer [union]]
   [clojure.string :as string]
   #?(:clj [clojure.tools.logging :as log])
@@ -116,8 +116,18 @@
                                   (lazy-cat
                                    (if (and (not (empty? left-signs))
                                             (not (empty? right-signs)))
-                                     (over (:grammar model) left-signs right-signs (:morph model)))
-                                   
+                                     (let [parents
+                                           (over (:grammar model) left-signs right-signs (:morph-ps model))]
+                                       (if (not (empty? parents))
+                                         (log/info (str "parse/parses: parents: " (string/join "," (map #((:morph-ps model) %) parents)))))
+                                       (log/info (str " left: "
+                                                      (string/join ","
+                                                                   (map #((:morph-ps model) %) left-signs))))
+                                       (log/info (str " right: "
+                                                      (string/join ","
+                                                                   (map #((:morph-ps model) %) right-signs))))
+                                       parents))
+                                     
                                  ;; TODO: explain why we can use (first) here for the left- and right-strings.
                                    ;; Throw an exception if (> 1 (count left-strings)) or (> 1 (count right-strings))
                                    [(string/join " " [(first left-strings) (first right-strings)])]))
