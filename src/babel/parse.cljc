@@ -13,7 +13,7 @@
 (declare over)
 
 (def map-fn #?(:clj pmap) #?(:cljs map))
-
+(def ^:const parse-with-truncate true)
 (defn over [grammar left right morph]
   "opportunity for additional logging before calling the real (over)"
   (log/trace (str "parse/over: grammar size: " (count grammar)))
@@ -76,6 +76,8 @@
                             (list span-pair)}))
                        spans))))))
 
+(declare leaves)
+
 (defn parses [input n model span-map]
   (cond
     (= n 1) input
@@ -117,16 +119,26 @@
                                    (if (and (not (empty? left-signs))
                                             (not (empty? right-signs)))
                                      (let [parents
-                                           (over (:grammar model) left-signs right-signs (:morph-ps model))]
+                                           (over (:grammar model) left-signs right-signs (:morph-ps model))
+                                           truncated-parents
+                                           (if parse-with-truncate
+                                             (map (fn [parent]
+                                                    (assoc 
+                                                     (truncate parent [[:comp][:head]] model)
+                                                     :leaves 42 ;; TODO: (leaves parent)
+                                                     ))
+                                                  parents))]
                                        (if (not (empty? parents))
                                          (log/info (str "parse/parses: parents: " (string/join "," (map #((:morph-ps model) %) parents)))))
+                                       (if (not (empty? truncated-parents))
+                                         (log/info (str "parse/parses: truncated-parents: " (string/join "," (map #((:morph-ps model) %) truncated-parents)))))
                                        (log/info (str " left: "
                                                       (string/join ","
                                                                    (map #((:morph-ps model) %) left-signs))))
                                        (log/info (str " right: "
                                                       (string/join ","
                                                                    (map #((:morph-ps model) %) right-signs))))
-                                       parents))
+                                       (if parse-with-truncate parents truncated-parents)))
                                      
                                  ;; TODO: explain why we can use (first) here for the left- and right-strings.
                                    ;; Throw an exception if (> 1 (count left-strings)) or (> 1 (count right-strings))
