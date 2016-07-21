@@ -8,12 +8,14 @@
   #?(:cljs [babel.logjs :as log])
   [dag_unify.core :refer (get-in strip-refs)]))
 
+(def ^:const parse-with-truncate true)
+
 ;; for now, using a language-independent tokenizer.
 (def tokenizer #"[ ']")
+(def map-fn #?(:clj pmap) #?(:cljs map))
+
 (declare over)
 
-(def map-fn #?(:clj pmap) #?(:cljs map))
-(def ^:const parse-with-truncate true)
 (defn over [grammar left right morph]
   "opportunity for additional logging before calling the real (over)"
   (log/trace (str "parse/over: grammar size: " (count grammar)))
@@ -118,8 +120,14 @@
                                   (lazy-cat
                                    (if (and (not (empty? left-signs))
                                             (not (empty? right-signs)))
-                                     (let [parents
-                                           (over (:grammar model) left-signs right-signs (:morph-ps model))
+                                     (let [morph-ps (if (:morph-ps model)
+                                                      (:morph-ps model)
+                                                      (:morph model))
+                                           ;; fallback to (:morph model) if
+                                           ;; (:morph-ps is not available)
+                                                      
+                                           parents
+                                           (over (:grammar model) left-signs right-signs morph-ps)
                                            truncated-parents
                                            (if parse-with-truncate
                                              (map (fn [parent]
@@ -129,16 +137,16 @@
                                                      ))
                                                   parents))]
                                        (if (not (empty? parents))
-                                         (log/info (str "parse/parses: parents: " (string/join "," (map #((:morph-ps model) %) parents)))))
-                                       (if (not (empty? truncated-parents))
-                                         (log/info (str "parse/parses: truncated-parents: " (string/join "," (map #((:morph-ps model) %) truncated-parents)))))
+                                         (log/info (str "parse/parses: parents: "
+                                                        (string/join ","
+                                                                     (map #(morph-ps %) parents)))))
                                        (log/info (str " left: "
                                                       (string/join ","
-                                                                   (map #((:morph-ps model) %) left-signs))))
+                                                                   (map #(morph-ps %) left-signs))))
                                        (log/info (str " right: "
                                                       (string/join ","
-                                                                   (map #((:morph-ps model) %) right-signs))))
-                                       (if parse-with-truncate parents truncated-parents)))
+                                                                   (map #(morph-ps %) right-signs))))
+                                       (if parse-with-truncate truncated-parents parents)))
                                      
                                  ;; TODO: explain why we can use (first) here for the left- and right-strings.
                                    ;; Throw an exception if (> 1 (count left-strings)) or (> 1 (count right-strings))
