@@ -367,56 +367,49 @@
                                             :3plur "hanno"}}}]
 
      ;; 1. "avere": to possess something buyable
-     [(unify
-
-       ;; TODO: transitive should have: {:synsem {:subcat {:3 '()}}}
-       transitive       
-       {:synsem {:subcat {:3 '()}}}
-       avere-common
-       {:note "avere (possess)"
-        :synsem {:sem {:pred :have
-                       :activity false
-                       :discrete false
-                       :subj {:human true}
-                       :obj {:buyable true}}}})
+     [{:unify [
+               ;; TODO: transitive should have: {:synsem {:subcat {:3 '()}}}
+               transitive       
+               {:synsem {:subcat {:3 '()}}}
+               avere-common]
+       :note "avere (possess)"
+       :synsem {:sem {:pred :have
+                      :activity false
+                      :discrete false
+                      :subj {:human true}
+                      :obj {:buyable true}}}}
 
       ;; 2. "avere": to be in a relation with: e.g. "I have two children"
-      (unify
-       ;; TODO: transitive should have: {:synsem {:subcat {:3 '()}}}
-       transitive
-       {:synsem {:subcat {:3 '()}}}
-       avere-common
-       {:note "avere (relation)"
-        :synsem {:sem {:pred :have
-                       :activity false
-                       :discrete false
-                       :subj {:human :top}
-                       :obj {:human :top}}}})
+      {:unify [
+               ;; TODO: transitive should have: {:synsem {:subcat {:3 '()}}}
+               transitive
+               {:synsem {:subcat {:3 '()}}}
+               avere-common]
+       :note "avere (relation)"
+       :synsem {:sem {:pred :have
+                      :activity false
+                      :discrete false
+                      :subj {:human :top}
+                      :obj {:human :top}}}}
 
       ;; 3. avere: unspecified object
-      (unify
-       avere-common
-       verb-subjective
-       intransitive-unspecified-obj
-       {:note "avere (possess): unspecified object"
-        :synsem {:sem {:pred :have
-                       :activity false
-                       :discrete false
-                       :subj {:human true}}}})
+      {:unify [avere-common verb-subjective intransitive-unspecified-obj]
+       :note "avere (possess): unspecified object"
+       :synsem {:sem {:pred :have
+                      :activity false
+                      :discrete false
+                      :subj {:human true}}}}
 
       ;; 4. "avere" that takes a transitive verb: e.g. "io l'ho vista (i saw her)"
       (let [agr-of-obj-of-main-verb (atom :top)]
-        (unify
-         verb-aux
-         verb-subjective
-         avere-common
-        {:note "avere(aux): takes trans"
+        {:unify [verb-aux verb-subjective avere-common]
+         :note "avere(aux): takes trans"
          :synsem {:infl :present
                   :subcat {:2 {:agr agr-of-obj-of-main-verb
                                :reflexive false
                                :subcat {:2 {:agr agr-of-obj-of-main-verb
                                             :pronoun true}}
-                               :essere false}}}}))
+                               :essere false}}}})
 
       ;; 5. "avere" that takes an intransitive verb or a transitive verb within a VP
       ;;    with the object (e.g. "io ho dormito (i slept)" or "io ho [mangiato la pizza] (i ate the pizza)"
@@ -424,21 +417,17 @@
       ;; 1. subject that is the same as the subject of 2.
       ;; 2. an intransitive verb.
       (let [agr-of-subj-of-main-verb (atom :top)]
-        (unify
-         verb-aux
-         verb-subjective
-         avere-common
-         {:note "avere(aux): takes intrans"
-          :synsem {:infl :present
-                   :subcat {:1 {:agr agr-of-subj-of-main-verb}
-                            :2 {:essere false
-                                :reflexive false ;; in Italian, reflexive verbs are always essere=false.
-                                ;; this additional qualification here (:reflexive false) is not necessary
-                                ;; but is expected to reduce fails during generation.
-                                :agr agr-of-subj-of-main-verb
-                                :subcat {:1 {:agr agr-of-subj-of-main-verb}
-                                         :2 '()}}}}}))])
-   
+        {:unify [verb-aux verb-subjective avere-common]
+         :note "avere(aux): takes intrans"
+         :synsem {:infl :present
+                  :subcat {:1 {:agr agr-of-subj-of-main-verb}
+                           :2 {:essere false
+                               :reflexive false ;; in Italian, reflexive verbs are always essere=false.
+                               ;; this additional qualification here (:reflexive false) is not necessary
+                               ;; but is expected to reduce fails during generation.
+                               :agr agr-of-subj-of-main-verb
+                               :subcat {:1 {:agr agr-of-subj-of-main-verb}
+                                        :2 '()}}}}})])
    "ballare" {:synsem {:cat :verb
                        :sem {:pred :dance}}}
    "bello"
