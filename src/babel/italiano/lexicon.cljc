@@ -4,28 +4,43 @@
   (:require
    [babel.encyclopedia :refer [sem-impl]]
    [babel.lexicon :refer [universals]]
+
+   ;; TODO: use dag_unify/unifyc instead:
+   ;; deprecate lexiconfn/unify.
    [babel.lexiconfn :refer [compile-lex if-then constrain-vals-if
                             filter-vals
                             map-function-on-map-vals
-                            rewrite-keys unify]] ;; TODO: use dag_unify/unifyc instead:
-   ;; deprecate lexiconfn/unify.
+                            rewrite-keys unify]]
 
    #?(:clj [clojure.tools.logging :as log])
    #?(:cljs [babel.logjs :as log]) 
    [babel.italiano.morphology :refer [exception-generator italian-specific-rules phonize]]
-   [babel.italiano.pos :refer [adjective agreement-noun cat-of-pronoun
-                               common-noun comparative countable-noun determiner
-                               drinkable-noun feminine-noun intransitive intransitivize
-                               intransitive-unspecified-obj
-                               masculine-noun non-comparative-adjective
-                               noun pronoun-acc pronoun-reflexive sentential-adverb
-                               transitive transitivize verb-aux verb-subjective]]
+   [babel.italiano.pos :as ipos]
    [dag_unify.core :refer [fail? get-in merge strip-refs]]))
 
 (def analyze-lexemes false)
 
 (def lexicon-source
-  {"Luisa"
+  (let [adjective ipos/adjective
+        agreement-noun ipos/agreement-noun 
+        cat-of-pronoun ipos/cat-of-pronoun
+        common-noun ipos/common-noun
+        comparative ipos/comparative
+        countable-noun ipos/countable-noun
+        determiner ipos/determiner
+        intransitive ipos/intransitive
+        intransitive-unspecified-obj ipos/intransitive-unspecified-obj
+        masculine-noun ipos/masculine-noun
+        non-comparative-adjective ipos/non-comparative-adjective
+        pronoun-acc ipos/pronoun-acc
+        pronoun-reflexive ipos/pronoun-reflexive
+        sentential-adverb ipos/sentential-adverb
+        transitive ipos/transitive
+        verb-aux ipos/verb-aux
+        verb-subjective ipos/verb-subjective]
+
+    
+    {"Luisa"
    {:synsem {:sem {:pred :luisa
                    :human true}
              :agr {:number :sing
@@ -2268,7 +2283,9 @@
    ":top-noun" {:synsem {:cat :noun}
                 :top true}
 
-   })
+   }
+  ))
+
 
   
 
@@ -2287,11 +2304,11 @@
                     (get universals (get-in val [:synsem :sem :pred]))))
 
                  ;; TODO: refactor this; it's very monolithic currently:
-                 intransitivize
+                 ipos/intransitivize
 
                  ;; if verb does specify a [:sem :obj], then fill it in with subcat info.
                  ;; TODO: refactor this; it's very monolithic currently:
-                 transitivize
+                 ipos/transitivize
 
                  (constrain-vals-if
                   (fn [val]
@@ -2320,7 +2337,7 @@
                   ;; in such cases, don't apply agreement-noun.
                          
                   (fn [val]
-                    (unify val agreement-noun)))
+                    (unify val ipos/agreement-noun)))
 
                  (constrain-vals-if
                   (fn [val]
