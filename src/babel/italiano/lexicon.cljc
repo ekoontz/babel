@@ -180,31 +180,29 @@
    [;; non-comparative:
     (let [subject-sem (atom {:human true}) ;; only humans can be tall.
           subject-agr (atom :top)] 
-      (unify adjective
-             non-comparative-adjective
-             {:synsem {:cat :adjective
-                       :sem {:pred :alto
-                             :comparative false
-                             :arg1 subject-sem
-                             :human true}
-                       :subcat {:1 {:cat :det
-                                    :agr subject-agr
-                                    :sem subject-sem}
-                                :2 '()}}}))
+      {:unify [adjective non-comparative-adjective]
+       :synsem {:cat :adjective
+                :sem {:pred :alto
+                      :comparative false
+                      :arg1 subject-sem
+                      :human true}
+                :subcat {:1 {:cat :det
+                             :agr subject-agr
+                             :sem subject-sem}
+                         :2 '()}}})
     ;; comparative:
     (let [complement-complement-sem (atom {:human true}) ;; only humans can be tall.
           complement-sem (atom {:pred :di
                                :mod complement-complement-sem})
           subject-sem (atom {:human true})] ;; only humans can be tall.
-      (unify adjective
-             comparative
-             {:synsem {:sem {:pred :alto
-                             :arg1 subject-sem
-                             :arg2 complement-complement-sem}
-                       :subcat {:1 {:cat :noun
-                                    :sem subject-sem}
-                                :2 {:cat :prep
-                                    :sem complement-sem}}}}))]
+      {:unify [adjective comparative]
+       :synsem {:sem {:pred :alto
+                      :arg1 subject-sem
+                      :arg2 complement-complement-sem}
+                :subcat {:1 {:cat :noun
+                             :sem subject-sem}
+                         :2 {:cat :prep
+                             :sem complement-sem}}}})]
 
    "alzarsi" (let [subject-semantics (atom {:animate true})
                    subject-agr (atom :top)]
