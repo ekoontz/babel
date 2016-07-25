@@ -2280,11 +2280,26 @@
    }
   ))
 
-
-  
+(def lexicon-source-unify
+  (zipmap
+   (sort (keys lexicon-source))
+   (map (fn [k]
+          (let [vals (get lexicon-source k)
+                vals (cond (seq? vals)
+                           vals
+                           (vector? vals)
+                           vals
+                           true [vals])]
+            (map (fn [v]
+                   (reduce unify
+                           (cons
+                            (dissoc v :unify)
+                            (:unify v))))
+                 vals)))
+        (sort (keys lexicon-source)))))
 
 ;; see TODOs in lexiconfn/compile-lex (should be more of a pipeline as opposed to a argument-position-sensitive function.
-(def lexicon (-> (compile-lex lexicon-source
+(def lexicon (-> (compile-lex lexicon-source-unify
                               exception-generator 
                               ;; TODO: rewrite phonize as (constrain-val-if)(one or more)
                               phonize
