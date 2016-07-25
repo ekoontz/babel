@@ -146,28 +146,22 @@
                            :place true}}}
    "affolato"
    [;; comparative
-    (let [is-place1 {:place true} ;; only places can be crowded.
-          is-place (atom is-place1)
+    (let [is-place {:synsem {:sem {:place true}}} ;; only places can be crowded.
           than-this (atom {:pred :di
                            :mod is-place})]
-      (unify adjective
-              comparative
-              {:synsem {:sem {:pred :affolato
-                              :arg1 is-place
-                              :arg2 is-place}
-                        :subcat {:1 {:cat :noun
-                                     :sem is-place}
-                                 :2 {:cat :prep
-                                     :sem than-this}}}})
+      {:unify [adjective comparative is-place]
+       :synsem {:sem {:pred :affolato
+                      :arg1 is-place
+                      :arg2 is-place}
+                :subcat {:1 {:cat :noun
+                             :sem is-place}
+                         :2 {:cat :prep
+                             :sem than-this}}}}
       ;; non-comparative
-      (unify adjective
-             {:synsem {:cat :adjective
-                       :sem {:pred :affolato
-                             :comparative false}}}
-             ;; TODO: make this sem-impl process happen generally with _adjective_.
-             {:synsem {:sem (sem-impl is-place1)}}))
-      
-    ] ;; only places can be crowded.
+      {:unify [adjective is-place]
+       :synsem {:cat :adjective
+                :sem {:pred :affolato
+                      :comparative false}}})]
 
    "aggiungere" {:synsem {:cat :verb
                           :sem {:pred :add}}}
