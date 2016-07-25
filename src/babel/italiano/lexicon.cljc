@@ -432,26 +432,24 @@
                        :sem {:pred :dance}}}
    "bello"
    [;; non-comparative
-    (unify adjective
-           {:synsem {:sem {:pred :bello
-                           :comparative false
-                           }}}) ;; for now, no restrictions on what can be beautiful.
+    {:unify [adjective]
+     :synsem {:sem {:pred :bello
+                    :comparative false
+                    }}} ;; for now, no restrictions on what can be beautiful.
     
     ;; comparative
     (let [complement-complement-sem (atom :top) ;; for now no restrictions
           complement-sem (atom {:pred :di
                                :mod complement-complement-sem})
           subject-sem (atom :top)] ;; subject can be anything.
-      (unify adjective
-             comparative
-             {:synsem {:sem {:pred :bello
-                             :arg1 subject-sem
-                             :arg2 complement-complement-sem}
-                       :subcat {:1 {:cat :noun
-                                    :sem subject-sem}
-                                :2 {:cat :prep
-                                    :sem complement-sem}}}}))]
-
+      {:unify [adjective comparative]
+       :synsem {:sem {:pred :bello
+                      :arg1 subject-sem
+                      :arg2 complement-complement-sem}
+                :subcat {:1 {:cat :noun
+                             :sem subject-sem}
+                         :2 {:cat :prep
+                             :sem complement-sem}}}})]
    "bene"
    {:synsem {:cat :adverb
              :sem {:pred :bene}}}
@@ -478,15 +476,15 @@
                     :subj {:animate true}
                     :obj {:drinkable true}}}}
    "bianco"
-   (unify adjective
-          {:synsem {:cat :adjective
-                    :sem {:pred :bianco
-                          :comparative false
-                          :physical-object true
-                          :human false}}
-           :italiano {:masc {:plur "bianchi"}
-                      :fem {:plur "bianche"}
-                      :cat :adjective}})
+     {:unify [adjective]
+      :synsem {:cat :adjective
+               :sem {:pred :bianco
+                     :comparative false
+                     :physical-object true
+                     :human false}}
+      :italiano {:masc {:plur "bianchi"}
+                 :fem {:plur "bianche"}
+                 :cat :adjective}}
    "birra"
    {:synsem {:agr {:gender :fem}
              :cat :noun
@@ -509,13 +507,13 @@
    "brutto"
    ;; non-comparative
    ;; TODO: add comparative
-   (unify adjective
-          {:synsem {:cat :adjective
-                    :sem {:pred :brutto
-                          :comparative false
-                          }} ;; for now, no restrictions on what can be ugly.
-           :italiano {:cat :adjective}})
-
+     {:unify [adjective]
+      :synsem {:cat :adjective
+               :sem {:pred :brutto
+                     :comparative false
+                     }} ;; for now, no restrictions on what can be ugly.
+      :italiano {:cat :adjective}}
+    
    "bucato"
    {:synsem {:cat :noun
              :agr {:gender :masc
@@ -610,13 +608,13 @@
     ]
 
    "cattivo"
-   (unify adjective
-          {:synsem {:cat :adjective
-                    :sem {:pred :cattivo
-                          :comparative false
-                          :human true;; TODO:should not need this because child => human.
-                          :child true}}
-           :italiano {:cat :adjective}})
+     {:unify [adjective]
+      :synsem {:cat :adjective
+               :sem {:pred :cattivo
+                     :comparative false
+                     :human true;; TODO:should not need this because child => human.
+                     :child true}}
+      :italiano {:cat :adjective}}
 
    ;; working on: "mi sono comprato un nuovo cellulare"
    "cellulare"
@@ -790,23 +788,22 @@
           complement-sem (atom {:pred :di
                                 :mod complement-complement-sem})
           subject-sem (atom {:place true})]
-      (unify adjective
-             comparative
-             {:synsem {:sem {:pred :contento
-                             :arg1 subject-sem
-                             :arg2 complement-complement-sem}
-                       :subcat {:1 {:cat :noun
-                                    :sem subject-sem}
-                                :2 {:cat :prep
-                                    :sem complement-sem}}}})
-
+      {:unify [adjective comparative]
+       :synsem {:sem {:pred :contento
+                      :arg1 subject-sem
+                      :arg2 complement-complement-sem}
+                :subcat {:1 {:cat :noun
+                             :sem subject-sem}
+                         :2 {:cat :prep
+                             :sem complement-sem}}}}
+    
       ;; non-comparative
-      (unify adjective
-             {:synsem {:cat :adjective
-                       :sem {:pred :contento
-                             :comparative false
-                             :human true}}}))]
-
+      {:unify [adjective]
+       :synsem {:cat :adjective
+                :sem {:pred :contento
+                      :comparative false
+                      :human true}}})]
+    
    "contraccambiare" {:synsem {:sem {:pred :reciprocate}
                                :cat :verb}}
    
