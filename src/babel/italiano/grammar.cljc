@@ -582,6 +582,7 @@
                        (= (:rule %) "s-aux")
                        (= (:rule %) "vp-aux")
                        (= (:rule %) "vp-aux-22")
+                       (= (:rule %) "vp-32")
                        (= (:rule %) "vp-pronoun-nonphrasal")
                        (= (:rule %) "vp-pronoun-phrasal"))
                   grammar)
