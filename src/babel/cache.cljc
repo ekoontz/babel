@@ -103,7 +103,8 @@
        (spec-to-phrases (rest specs) all-phrases)))
     {}))
 
-;; TODO: spec is not used yet; add support for it.
+;; TODO: spec is not used yet; add support for it or remove..
+;; leaning towards the latter at the moment.
 (defn get-lex [parent head-or-comp cache spec]
   "return the subset of the whole lexicon that can be added to _parent_ either as a head (head-or-comp=:head) or as a comp (head-or-comp=:comp)."
   (log/debug (str "get-lex:" parent))
