@@ -36,15 +36,23 @@
 ;; TODO: (defn generate [...] (take 1 (generate-all ...)))
 ;; TODO: this should just call (take 1 (generate-all ..))
 ;;(fo (generate :top medium {:max-total-depth 2}))
-(defn generate [spec language-model & {:keys [add-subcat do-enrich max-total-depth truncate-children]
+(defn generate [spec language-model & {:keys [add-subcat do-enrich lexicon max-total-depth truncate-children]
                                        :or {add-subcat true
                                             do-enrich true
+                                            lexicon nil
                                             max-total-depth generate/max-total-depth
                                             truncate-children true}}]
   (log/debug (str "engine/generate with spec: " (strip-refs spec) "; max-total-depth: " max-total-depth "; enrich: " do-enrich "; truncate-children: " truncate-children))
   (let [language-model (if (future? language-model)
                          @language-model
                          language-model)
+        lexicon (cond
+                  lexicon lexicon
+                  ;; if a generate-only lexicon is supplied by the language model, use that.
+                  (get-in language-model [:generate :lexicon])
+                  (get-in language-model [:generate :lexicon])
+                  true
+                  (:lexicon language-model))
         grammar (:grammar language-model)]
     (if (empty? grammar)
       (do
@@ -62,10 +70,6 @@
 
         debug (log/debug (str "pre-enrich spec: " spec))
 
-        ;; if a generate-only lexicon is supplied by the language model, use that.
-        lexicon (if (get-in language-model [:generate :lexicon])
-                  (get-in language-model [:generate :lexicon])
-                  (get-in language-model [:lexicon]))
 
         post-enrich-spec (if (and do-enrich (:enrich language-model))
                            ((:enrich language-model)
