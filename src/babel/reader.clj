@@ -83,13 +83,23 @@
          :target-semantics {:synsem {:sem (get-in target-expression [:synsem :sem])}}}))
 
 (defn generate-question-and-correct-set [target-spec source-language source-locale
-                                         target-language target-locale]
+                                         target-language target-locale
+                                         & [source-language-model
+                                            target-language-model]]
   "Return a set of semantically-equivalent expressions, for a given spec in the target language,
    and and a single expression in the source language that contains the semantics shared 
    by this set.
    To rephrase, the set of expressions in the target language share an identical semantics, 
    and the single expression in the source language contains that semantics."
   (log/debug (str "generate target language set with spec: " target-spec))
+  (when (and source-language-model target-language-model)
+    (log/info (str "doing dynamic generation.."))
+    (log/info (str "result:" (generate-question-and-correct-set-dynamic
+                              target-spec source-language source-locale
+                              target-language target-locale
+                              source-language-model
+                              target-language-model))))
+
   (let [target-spec (unify target-spec
                     {:synsem {:subcat '()}})
 
