@@ -564,6 +564,9 @@
                      :sem {:pred :earn
                            :subj {:human true}}}}
 
+   "easy chair" {:synsem {:cat :noun
+                          :sem {:pred :easy-chair}}}
+   
    "eat" {:english {:past "ate"}
           :synsem {:cat :verb
                    :sem {:pred :mangiare
@@ -1090,6 +1093,9 @@
    "increase" {:synsem {:cat :verb
                         :sem {:pred :increase}}}
 
+   "in front of" {:synsem {:cat :prep
+                           :sem {:pred :in-front-of}}}
+   
    "insist" {:synsem {:cat :verb
                       :sem {:pred :insist}}}
 
@@ -1737,6 +1743,9 @@
    "support" {:synsem {:cat :verb
                        :sem {:pred :support}}}
 
+   "table" {:synsem {:cat :noun
+                     :sem {:pred :table}}}
+   
    "take" (let [common {:synsem {:cat :verb}
                         :english {:past "took"
                                   :past-participle "taken"}}]
