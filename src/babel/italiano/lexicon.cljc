@@ -143,10 +143,10 @@
                    :subcat {:1 {:sem subject-semantics}}
                    :sem {:subj subject-semantics}}}))
 
-      ;; commenting out: getting stack overflow.
       (default ;;  a verb's second argument is the semantic object of the verb.
        (let [object-semantics (atom :top)]
          {:synsem {:cat :verb
+                   :aux false
                    :subcat {:2 {:sem object-semantics}}
                    :sem {:obj object-semantics}}}))
 
