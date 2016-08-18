@@ -776,7 +776,8 @@
                                   :3plur "devono"}}}
 
  "ensalata" {:synsem {:sem {:pred :salad}
-                      :cat :noun}}
+                      :cat :noun
+                      :agr {:gender :fem}}}
  
  "entrare" {:synsem {:cat :verb
                        :essere true
