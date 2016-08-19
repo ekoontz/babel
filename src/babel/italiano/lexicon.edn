@@ -431,6 +431,12 @@
                      :child true}}
       :italiano {:cat :adjective}}
 
+ "c" ;; "c'è un tavolo.." ;; TODO: add same for "ci" (but :number :plur)
+ {:synsem {:cat :noun
+           :pronoun true
+           :case :existential
+           :agr {:number :sing}}}
+ 
    ;; working on: "mi sono comprato un nuovo cellulare"
    "cellulare"
    {:synsem {:agr {:gender :masc}
