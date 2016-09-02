@@ -20,9 +20,12 @@
    [clojure.java.io :as io]
    [dag_unify.core :refer (fail? get-in remove-matching-keys unifyc)]))
 
-(defn make-lexicon []
-  (future (edn2lexicon
-           (io/resource "babel/italiano/lexicon.edn"))))
+(def edn (io/resource "babel/italiano/lexicon.edn"))
+
+(def lexicon (promise))
+(defn deliver-lexicon []
+  (if (not (realized? lexicon))
+    (deliver lexicon (edn2lexicon (io/resource "babel/italiano/lexicon.edn")))))
 
 (defn exception [error-string]
   #?(:clj
@@ -571,25 +574,25 @@
      :lexical-cache (atom (cache/fifo-cache-factory {} :threshold 1024))
      :index (create-index grammar (flatten (vals lexicon)) head-principle)}))
 
-(def small
-  (future
-    (let [lexicon @lexicon
-          grammar
-          (filter #(or (= (:rule %) "s-conditional-phrasal")
-                       (= (:rule %) "s-conditional-nonphrasal")
-                       (= (:rule %) "s-present-phrasal")
-                       (= (:rule %) "s-present-nonphrasal")
-                       (= (:rule %) "s-future-phrasal")
-                       (= (:rule %) "s-future-nonphrasal")
-                       (= (:rule %) "s-imperfect-phrasal")
-                       (= (:rule %) "s-imperfect-nonphrasal")
-                       (= (:rule %) "s-aux")
-                       (= (:rule %) "vp-32")
-                       (= (:rule %) "vp-aux")
-                       (= (:rule %) "vp-aux-22")
-                       (= (:rule %) "vp-pronoun-nonphrasal")
-                       (= (:rule %) "vp-pronoun-phrasal"))
-                  grammar)
+(defn small []
+  (deliver-lexicon)
+  (let [lexicon @lexicon
+        grammar
+        (filter #(or (= (:rule %) "s-conditional-phrasal")
+                     (= (:rule %) "s-conditional-nonphrasal")
+                     (= (:rule %) "s-present-phrasal")
+                     (= (:rule %) "s-present-nonphrasal")
+                     (= (:rule %) "s-future-phrasal")
+                     (= (:rule %) "s-future-nonphrasal")
+                     (= (:rule %) "s-imperfect-phrasal")
+                     (= (:rule %) "s-imperfect-nonphrasal")
+                     (= (:rule %) "s-aux")
+                     (= (:rule %) "vp-32")
+                     (= (:rule %) "vp-aux")
+                     (= (:rule %) "vp-aux-22")
+                     (= (:rule %) "vp-pronoun-nonphrasal")
+                     (= (:rule %) "vp-pronoun-phrasal"))
+                grammar)
 
           lexicon  ;; create a subset of the lexicon tailored to this small grammar.
           (into {}
