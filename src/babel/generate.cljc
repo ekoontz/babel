@@ -109,7 +109,8 @@ to generate expressions by adding complements using (add-all-comps)."
                    (log/debug (str "looking for lexical heads of parent: " (:rule parent)))
                    (if (= false (get-in parent [:head :phrasal] false))
                      (let [candidate-lexemes (get-lex parent :head index)
-                           debug (log/debug (str "candidate lexical heads: " (count candidate-lexemes)))
+                           debug (log/debug (str "# candidate lexical heads: " (count candidate-lexemes)))
+                           debug (log/debug (str " spec-info: " (spec-info spec)))
                            subset candidate-lexemes]
                        (filter #(not (nil? %))
                                (do (when (not (empty? subset))
