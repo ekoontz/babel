@@ -5,6 +5,7 @@
    [babel.over :as over :refer [show-bolt truncate truncate-expressions]]
    #?(:clj [clojure.tools.logging :as log])
    #?(:cljs [babel.logjs :as log]) 
+   [clojure.set :refer [intersection]]
    [clojure.string :as string]
    [dag_unify.core :refer [copy get-in fail? strip-refs unify unifyc]]))
                                         
@@ -105,13 +106,28 @@ to generate expressions by adding complements using (add-all-comps)."
         parents (shuffle (candidate-parents grammar spec))]
     (log/debug (str "lightning-bolt: candidate-parents:" (count parents) " for spec:" (strip-refs spec)))
     (let [lexical ;; 1. generate list of all phrases where the head child of each parent is a lexeme.
-          (mapfn (fn [parent]
-                   (log/debug (str "looking for lexical heads of parent: " (:rule parent)))
-                   (if (= false (get-in parent [:head :phrasal] false))
-                     (let [candidate-lexemes (get-lex parent :head index)
-                           debug (log/debug (str "# candidate lexical heads: " (count candidate-lexemes)))
-                           debug (log/debug (str " spec-info: " (spec-info spec)))
-                           subset candidate-lexemes]
+          (when (= false (get-in spec [:head :phrasal] false))
+            (mapfn (fn [parent]
+                     (log/debug (str "looking for lexical heads of parent: " (:rule parent)))
+                     (let [subset
+                           (cond
+                             (and true
+                                  (:pred2lex language-model)
+                                  (not (= :top (get-in spec [:synsem :sem :pred] :top)))
+                                  (not (= nil (get-in spec [:synsem :sem :pred] nil)))
+                                  (not (empty? (get (:pred2lex language-model)
+                                                    (get-in spec [:synsem :sem :pred]))))
+                             
+                                  (:cat2lex language-model)
+                                  (not (= :top (get-in spec [:synsem :cat] :top)))
+                                  (not (= nil (get-in spec [:synsem :cat] nil)))
+                                  (not (empty? (get (:cat2lex language-model)
+                                                    (get-in spec [:synsem :cat])))))
+                             (intersection (get (:pred2lex language-model)
+                                                (get-in spec [:synsem :sem :pred]))
+                                           (get (:cat2lex language-model)
+                                                (get-in spec [:synsem :cat])))
+                             true (get-lex parent :head index))]
                        (filter #(not (nil? %))
                                (do (when (not (empty? subset))
                                      (log/debug (str "adding lexical heads to parent:" (:rule parent)))
@@ -120,8 +136,8 @@ to generate expressions by adding complements using (add-all-comps)."
                                      (log/trace (str " with spec:" (spec-info spec))))
                                    (if (not (empty? subset))
                                      (over/overh parent (shuffle subset))
-                                     []))))))
-                 parents)
+                                     [])))))
+                   parents))
           phrasal ;; 2. generate list of all phrases where the head child of each parent is itself a phrase.
           (if (and (< total-depth max-total-depth)
                    (= true (get-in spec [:head :phrasal] true)))
@@ -235,10 +251,20 @@ bolt."
         complement-candidate-lexemes
         (if (not (= true
                     (get-in bolt (concat path [:phrasal]))))
-          (let [indexed (if index
-                         (get-lex immediate-parent :comp index))]
-            (if indexed indexed
-                (flatten (vals lexicon)))))
+          (cond 
+            (and false
+                 (:pred2lex language-model)
+                 (not (= :top (get-in spec [:synsem :sem :pred] :top)))
+                 (not (= nil (get-in spec [:synsem :sem :pred] nil)))
+                 (not (empty? (get (:pred2lex language-model)
+                                   (get-in spec [:synsem :sem :pred])))))
+            (get (:pred2lex language-model)
+                 (get-in spec [:synsem :sem :pred]))
+            true
+            (let [indexed (if index
+                            (get-lex immediate-parent :comp index))]
+              (if indexed indexed
+                  (flatten (vals lexicon))))))
 
         bolt-child-synsem (strip-refs (get-in bolt (concat path [:synsem]) :top))
         bolt-child-italiano (strip-refs (get-in bolt (concat path [:italiano]) :top))
