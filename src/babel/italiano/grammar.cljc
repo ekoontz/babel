@@ -589,6 +589,31 @@
      :lexical-cache (atom (cache/fifo-cache-factory {} :threshold 1024))
      :index (create-index grammar (flatten (vals lexicon)) head-principle)}))
 
+(defn map-subset-by-pred [preds
+                          lexemes]
+  (if (and true (not (empty? preds)))
+    (let [pred (first preds)]
+      (merge {pred
+              (set (filter (fn [lexeme]
+                             (or (= :top (get-in lexeme [:synsem :sem :pred]))
+                                 (= pred
+                                    (get-in lexeme [:synsem :sem :pred]))))
+                           lexemes))}
+             (map-subset-by-pred (rest preds)
+                                 lexemes)))))
+
+(defn map-subset-by-cat [cats lexemes]
+  (if (and true (not (empty? cats)))
+    (let [cat (first cats)]
+      (merge {cat
+              (set (filter (fn [lexeme]
+                        (or (= :top (get-in lexeme [:synsem :cat]))
+                            (= cat
+                               (get-in lexeme [:synsem :cat]))))
+                      lexemes))}
+             (map-subset-by-cat (rest cats)
+                                lexemes)))))
+
 (defn small []
   (deliver-lexicon)
   (let [lexicon @lexicon
@@ -649,14 +674,30 @@
      :language-keyword :italiano
      :morph fo
      :morph-ps fo-ps
-     :lookup (fn [arg]
-               (analyze arg lexicon))
      :enrich enrich
      :generate {:lexicon lexicon-for-generation}
      :grammar grammar
+     :index (create-index grammar (flatten (vals lexicon-for-generation)) head-principle)
      :lexicon lexicon
+     :pred2lex ;; map:<pred => subset of lexicon with that pred>
+     (map-subset-by-pred
+      (filter #(not (nil? %))
+              (vec (set (mapcat (fn [entry]
+                                  (get-in entry [:synsem :sem :pred]))
+                                (vals lexicon-for-generation)))))
+      (flatten (vals lexicon-for-generation)))
+
+     :cat2lex ;; map:<cat => subset of lexicon with that cat>
+     (map-subset-by-cat
+      (filter #(not (nil? %))
+              (vec (set (mapcat (fn [entry]
+                                  (get-in entry [:synsem :cat]))
+                                (vals lexicon-for-generation)))))
+      (flatten (vals lexicon-for-generation)))
+           
      :lexical-cache (atom (cache/fifo-cache-factory {} :threshold 1024))
-     :index (create-index grammar (flatten (vals lexicon-for-generation)) head-principle)}))
+     :lookup (fn [arg]
+               (analyze arg lexicon))}))
 
 ;; TODO: promote to babel.writer
 (defn create-model-for-spec [spec]
@@ -738,6 +779,24 @@
                (analyze arg parse-lexicon))
      :morph fo
      :morph-ps fo-ps
+     :pred2lex ;; map:<pred => subset of lexicon with that pred>
+     (do (log/error (str "WTF GOT HERE."))
+         (throw (Exception. (str "WTF(medium)")))
+         (map-subset-by-pred
+          (filter #(not (nil? %))
+                  (vec (set (mapcat (fn [entry]
+                                  (get-in entry [:synsem :sem :pred]))
+                                    (vals lexicon)))))
+          (flatten (vals lexicon))))
+     
+     :cat2lex ;; map:<cat => subset of lexicon with that cat>
+     (map-subset-by-cat
+      (filter #(not (nil? %))
+              (vec (set (mapcat (fn [entry]
+                                  (get-in entry [:synsem :cat]))
+                                (vals lexicon)))))
+      (flatten (vals lexicon)))
+
      :rules rules
      :rule-map (zipmap rules
                        grammar)
