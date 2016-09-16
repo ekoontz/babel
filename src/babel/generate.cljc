@@ -105,12 +105,27 @@ to generate expressions by adding complements using (add-all-comps)."
         parents (shuffle (candidate-parents grammar spec))]
     (log/debug (str "lightning-bolt: candidate-parents:" (count parents) " for spec:" (strip-refs spec)))
     (let [lexical ;; 1. generate list of all phrases where the head child of each parent is a lexeme.
-          (mapfn (fn [parent]
-                   (log/debug (str "looking for lexical heads of parent: " (:rule parent)))
-                   (if (= false (get-in parent [:head :phrasal] false))
-                     (let [candidate-lexemes (get-lex parent :head index)
-                           debug (log/debug (str "candidate lexical heads: " (count candidate-lexemes)))
-                           subset candidate-lexemes]
+          (when (= false (get-in spec [:head :phrasal] false))
+            (mapfn (fn [parent]
+                     (log/debug (str "looking for lexical heads of parent: " (:rule parent)))
+                     (let [pred (get-in spec [:synsem :sem :pred] :top)
+                           cat (get-in spec [:synsem :cat] :top)
+                           subset
+                           (cond
+                             (and (:pred2lex language-model)
+                                  (not (= :top pred))
+                                  (not (empty? (get (:pred2lex language-model)
+                                                    pred)))
+
+                                  (:cat2lex language-model)
+                                  (not (= :top cat))
+                                  (not (empty? (get (:cat2lex language-model)
+                                                    cat))))
+                             (intersection (get (:pred2lex language-model)
+                                                pred)
+                                           (get (:cat2lex language-model)
+                                                cat))
+                             true (get-lex parent :head index))]
                        (filter #(not (nil? %))
                                (do (when (not (empty? subset))
                                      (log/debug (str "adding lexical heads to parent:" (:rule parent)))
@@ -119,8 +134,8 @@ to generate expressions by adding complements using (add-all-comps)."
                                      (log/trace (str " with spec:" (spec-info spec))))
                                    (if (not (empty? subset))
                                      (over/overh parent (shuffle subset))
-                                     []))))))
-                 parents)
+                                     [])))))
+                   parents))
           phrasal ;; 2. generate list of all phrases where the head child of each parent is itself a phrase.
           (if (and (< total-depth max-total-depth)
                    (= true (get-in spec [:head :phrasal] true)))
