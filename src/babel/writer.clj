@@ -160,6 +160,11 @@
    The serialized column allows loading a desired expression as a Clojure map into the runtime system, including
    the expression' internal structure-sharing."
 
+  (if (re-find #"Atom" (string/join "" (serialize expression)))
+    (do
+      (log/error (str "serialized expression has unexpected non-serializable data: " (string/join "" (serialize expression))))
+      (throw (Exception. (str "serialized expression has unexpected non-serializable data: " (string/join "" (serialize expression)))))))
+  
   (try
     (exec-raw [(str "INSERT INTO " table " (surface, structure, serialized, language, model) VALUES (?,"
                     ;; TODO: dissoc the spec per immediately below TODO

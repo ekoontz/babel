@@ -65,6 +65,7 @@
                            spec
                            {:synsem {:sem (strip-refs (get-in expression [:synsem :sem]))}}))))
         (log/warn (str "generate: no expression could be generated for spec:" (strip-refs spec))))
+      (throw (Exception. (str "serialization: " (string/join "" (dag_unify.core/serialize expression)))))
       expression)))
 
 (defn generate-all [spec language-model total-depth

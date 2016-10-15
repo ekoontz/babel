@@ -35,6 +35,7 @@
 
 ;; TODO: (defn generate [...] (take 1 (generate-all ...)))
 ;; TODO: this should just call (take 1 (generate-all ..))
+;; TODO: this preparation work is way too complex: get rid of all this middleware and just call generate/generate.
 ;;(fo (generate :top medium {:max-total-depth 2}))
 (defn generate [spec language-model & {:keys [add-subcat do-enrich max-total-depth truncate-children]
                                        :or {add-subcat true
@@ -121,7 +122,7 @@
     (log/info (str "generate with pred: " pred "; lang: " lang))
     (let [expression (generate unified model)
           semantics (strip-refs (get-in expression [:synsem :sem]))
-          results (merge
+          results (unify
                    {:spec spec
                     (keyword lang) ((:fo model) expression)
                     :semantics semantics})]
@@ -335,16 +336,25 @@
 
         sentence (generate spec model :truncate-children truncate-children)
 
+        check (do (log/error (str "problem: " (string/join "" (dag_unify.core/serialize sentence))))
+                  (throw (Exception. (str "problem: " (string/join "" (dag_unify.core/serialize sentence))))))
+        
+        check (if (re-find #"Atom" (string/join "" (dag_unify.core/serialize sentence)))
+                    (do
+                      (log/error (str "serialized expression has unexpected non-serializable data: " (string/join "" (dag_unify.core/serialize sentence))))
+                      (throw (Exception. (str "serialized expression has unexpected non-serializable data: " (string/join "" (dag_unify.core/serialize sentence))))))
+                    (log/info (str "serialization was ok.")))
+        
         check (if (nil? sentence)
                 (let [message (str "Could not generate a sentence for spec: " spec " for language: " (:language model)
                                    " with model named: " (:name model))]
                   (log/error message)
                   (throw (Exception. message))))
 
-        sentence (merge sentence {:spec spec})
+        sentence (unifyc sentence {:spec spec})
 
         sentence (if (:morph-walk-tree model)
-                   (merge ((:morph-walk-tree model) sentence)
+                   (unify ((:morph-walk-tree model) sentence)
                           sentence)
                    (do (log/warn (str "there is no morph-walk-tree function for the model:"
                                       (:name model) " of language: "

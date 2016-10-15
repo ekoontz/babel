@@ -37,7 +37,7 @@
         debug (log/debug (str "using root:" root))
         debug (log/debug (str "using spec:" (strip-refs spec)))
         
-        use-map-fn pmap
+        use-map-fn map
         source-expressions (read-all spec
                                      source-language-short-name)]
     (count
@@ -104,7 +104,7 @@
     (process [{:fill-one-language
                {:count 1
                 :spec spec
-                :model small}}]
+                :model (small)}}]
              "en")
     (catch Exception e
       (cond
