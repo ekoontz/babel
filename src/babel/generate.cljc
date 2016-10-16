@@ -251,29 +251,28 @@ bolt."
                                 & {:keys [max-total-depth truncate-children]
                                    :or {max-total-depth max-total-depth
                                         truncate-children true}}]
-  (not-empty
-   (let [lexicon (or (-> :generate :lexicon language-model)
-                     (:lexicon language-model))
-         from-bolt bolt ;; so we can show what (add-complement-to-bolt) did to the input bolt, for logging.
-         spec (get-in bolt path)
-         immediate-parent (get-in bolt (butlast path))
-         complement-candidate-lexemes
-         (if (not (= true (get-in bolt (concat path [:phrasal]))))
-           (let [pred (get-in spec [:synsem :sem :pred])
-                 cat (get-in spec [:synsem :cat])
-                 pred-set (if (and (:pred2lex language-model)
-                                   (not (= :top pred)))
-                            (get (:pred2lex language-model) pred))
+  (let [lexicon (or (-> :generate :lexicon language-model)
+                    (:lexicon language-model))
+        from-bolt bolt ;; so we can show what (add-complement-to-bolt) did to the input bolt, for logging.
+        spec (get-in bolt path)
+        immediate-parent (get-in bolt (butlast path))
+        complement-candidate-lexemes
+        (if (not (= true (get-in bolt (concat path [:phrasal]))))
+          (let [pred (get-in spec [:synsem :sem :pred])
+                cat (get-in spec [:synsem :cat])
+                pred-set (if (and (:pred2lex language-model)
+                                  (not (= :top pred)))
+                           (get (:pred2lex language-model) pred))
                 cat-set (if (and (:cat2lex language-model)
                                  (not (= :top cat)))
                           (get (:cat2lex language-model) cat))
-                 subset
-                 (cond (empty? pred-set)
-                       cat-set
-                       (empty? cat-set)
-                       pred-set
-                       true
-                       (intersection-with-identity pred-set cat-set))]
+                subset
+                (cond (empty? pred-set)
+                      cat-set
+                      (empty? cat-set)
+                      pred-set
+                      true
+                      (intersection-with-identity pred-set cat-set))]
             (if (not (empty? subset))
               subset
               (let [index (:index language-model)
@@ -283,57 +282,28 @@ bolt."
                   (do
                     (log/warn (str "no candidate lexemes were found."))
                     nil))))))
-         bolt-child-synsem (strip-refs (get-in bolt (concat path [:synsem]) :top))
-         lexical-complements (lazy-shuffle
-                              (filter (fn [lexeme]
-                                        (and (not-fail? (unify (strip-refs (get-in lexeme [:synsem] :top))
-                                                               bolt-child-synsem))))
-                                      complement-candidate-lexemes))]
-     (filter #(not-fail? %)
-             (mapfn (fn [complement]
-                      (let [unified
-                            (unify (copy bolt)
-                                   (assoc-in {} path 
-                                             (copy complement)))]
-                        (if truncate-children
-                          (truncate unified [path] language-model)
-                          unified)))
-                    (let [phrasal-complements (if (and (> max-total-depth total-depth)
-                                                       (= true (get-in spec [:phrasal] true)))
-                                                (generate-all spec language-model (+ (count path) total-depth)
-                                                              :max-total-depth max-total-depth))
-                          lexemes-before-phrases (lexemes-before-phrases total-depth max-total-depth)]
-                      (cond (and lexemes-before-phrases
-                                 (empty? lexical-complements)
-                                 (= false (get-in spec [:phrasal] true)))
-                            (log/warn (str "failed to generate any lexical complements with spec: "
-                                           (strip-refs spec)))
-                            
-                            (and lexemes-before-phrases
-                                 (= true (get-in spec [:phrasal] false))
-                                 (empty? phrasal-complements))
-                            (log/warn (str "failed to generate any phrasal complements with spec: "
-                                           (strip-refs spec)))
-                            
-                            (and (empty? lexical-complements)
-                                 (empty? phrasal-complements))
-                            
-                            (let [message (str "add-complement-to-bolt: could generate neither phrasal "
-                                               "nor lexical complements for "
-                                               "bolt:" (show-bolt bolt language-model) "; immediate parent: "
-                                               (get-in bolt (concat (butlast path) [:rule]) :norule) " "
-                                               "while trying to create a complement: "
-                                               (spec-info spec)
-                                               )]
-                              (log/warn message)
-                              (if error-if-no-complements (exception message)))
-                            
-                            lexemes-before-phrases
-                            (take max-generated-complements
-                                  (lazy-cat lexical-complements phrasal-complements))
-                            true
-                            (take max-generated-complements
-                                  (lazy-cat phrasal-complements lexical-complements)))))))))
+        bolt-child-synsem (strip-refs (get-in bolt (concat path [:synsem]) :top))
+        lexical-complements (lazy-shuffle
+                             (filter (fn [lexeme]
+                                       (and (not-fail? (unify (strip-refs (get-in lexeme [:synsem] :top))
+                                                              bolt-child-synsem))))
+                                     complement-candidate-lexemes))]
+    (or (not (empty? lexical-complements))
+        (not (empty?
+              (filter #(not-fail? %)
+                      (mapfn (fn [complement]
+                               (let [unified
+                                     (unify (copy bolt)
+                                            (assoc-in {} path 
+                                                      (copy complement)))]
+                                 (if truncate-children
+                                   (truncate unified [path] language-model)
+                                   unified)))
+                             (let [phrasal-complements (if (and (> max-total-depth total-depth)
+                                                                (= true (get-in spec [:phrasal] true)))
+                                                         (generate-all spec language-model (+ (count path) total-depth)
+                                                                       :max-total-depth max-total-depth))]
+                               phrasal-complements))))))))
   
 (defn bolt-depth [bolt]
   (if-let [head (get-in bolt [:head] nil)]
