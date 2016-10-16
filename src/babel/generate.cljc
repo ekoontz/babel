@@ -251,7 +251,6 @@ bolt."
                                    :or {max-total-depth max-total-depth}}]
   (let [lexicon (or (-> :generate :lexicon language-model)
                     (:lexicon language-model))
-        from-bolt bolt ;; so we can show what (add-complement-to-bolt) did to the input bolt, for logging.
         spec (get-in bolt path)
         immediate-parent (get-in bolt (butlast path))
         complement-candidate-lexemes
@@ -285,8 +284,8 @@ bolt."
         (not (empty?
               (filter #(not-fail? %)
                       (mapfn (fn [complement]
-                               (unify (copy bolt)
-                                      (assoc-in {} path 
+                               (unify (strip-refs (get-in bolt [:synsem]))
+                                      (assoc-in {} (concat path [:synsem])
                                                 complement)))
                              (if (and (> max-total-depth total-depth)
                                       (= true (get-in spec [:phrasal] true)))
