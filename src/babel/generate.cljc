@@ -124,8 +124,8 @@ to generate expressions by adding complements using (add-all-comps)."
         (filter
          (fn [bolt]
            (not-empty
-            (add-all-comps-with-paths [bolt] language-model total-depth
-                                      [[:comp]] false max-total-depth)))
+            (add-complement-to-bolt bolt [:comp] language-model total-depth
+                                    :max-total-depth max-total-depth)))
          (if (lexemes-before-phrases total-depth max-total-depth)
            (lazy-cat lexical phrasal)
            (lazy-cat phrasal lexical))))))
