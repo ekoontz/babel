@@ -287,7 +287,7 @@ bolt."
                       (mapfn (fn [complement]
                                (unify (copy bolt)
                                       (assoc-in {} path 
-                                                (copy complement))))
+                                                complement)))
                              (if (and (> max-total-depth total-depth)
                                       (= true (get-in spec [:phrasal] true)))
                                (generate-all spec language-model (+ (count path) total-depth)
