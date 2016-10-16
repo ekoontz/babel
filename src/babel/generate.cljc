@@ -277,17 +277,12 @@ bolt."
               subset
               (let [index (:index language-model)
                     indexed (if index (get-lex immediate-parent :comp index))]
-                (if (not (empty? indexed))
-                  indexed
-                  (do
-                    (log/warn (str "no candidate lexemes were found."))
-                    nil))))))
+                indexed))))
         bolt-child-synsem (strip-refs (get-in bolt (concat path [:synsem]) :top))
-        lexical-complements (lazy-shuffle
-                             (filter (fn [lexeme]
-                                       (and (not-fail? (unify (strip-refs (get-in lexeme [:synsem] :top))
-                                                              bolt-child-synsem))))
-                                     complement-candidate-lexemes))]
+        lexical-complements (filter (fn [lexeme]
+                                      (and (not-fail? (unify (strip-refs (get-in lexeme [:synsem] :top))
+                                                             bolt-child-synsem))))
+                                    complement-candidate-lexemes)]
     (or (not (empty? lexical-complements))
         (not (empty?
               (filter #(not-fail? %)
