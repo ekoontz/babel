@@ -131,7 +131,6 @@ to generate expressions by adding complements using (add-all-comps)."
            (lazy-cat lexical phrasal)
            (lazy-cat phrasal lexical))))))
 
-;; TODO: catch exception thrown by add-complement-by-bolt: "could generate neither phrasal nor lexical complements for bolt"
 (defn add-all-comps [bolts language-model total-depth truncate-children max-total-depth]
   "At each point in each bolt in the list of list of bolts,
 _bolt-groups_, add all possible complements at all open nodes in the
@@ -289,11 +288,10 @@ bolt."
                                (unify (copy bolt)
                                       (assoc-in {} path 
                                                 (copy complement))))
-                             (let [phrasal-complements (if (and (> max-total-depth total-depth)
-                                                                (= true (get-in spec [:phrasal] true)))
-                                                         (generate-all spec language-model (+ (count path) total-depth)
-                                                                       :max-total-depth max-total-depth))]
-                               phrasal-complements))))))))
+                             (if (and (> max-total-depth total-depth)
+                                      (= true (get-in spec [:phrasal] true)))
+                               (generate-all spec language-model (+ (count path) total-depth)
+                                             :max-total-depth max-total-depth)))))))))
   
 (defn bolt-depth [bolt]
   (if-let [head (get-in bolt [:head] nil)]
