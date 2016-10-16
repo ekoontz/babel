@@ -246,6 +246,8 @@ bolt."
                            (take max-generated-complements
                                  (lazy-cat phrasal-complements lexical-complements))))))))
 
+;; TODO: was copied from (defn add-complement-to-bolt) and then modified:
+;; refactor both above and below so that commonalities are shared.
 (defn any-possible-complement? [bolt path language-model total-depth
                                 & {:keys [max-total-depth]
                                    :or {max-total-depth max-total-depth}}]
