@@ -248,9 +248,8 @@ bolt."
                                  (lazy-cat phrasal-complements lexical-complements))))))))
 
 (defn any-possible-complement? [bolt path language-model total-depth
-                                & {:keys [max-total-depth truncate-children]
-                                   :or {max-total-depth max-total-depth
-                                        truncate-children true}}]
+                                & {:keys [max-total-depth]
+                                   :or {max-total-depth max-total-depth}}]
   (let [lexicon (or (-> :generate :lexicon language-model)
                     (:lexicon language-model))
         from-bolt bolt ;; so we can show what (add-complement-to-bolt) did to the input bolt, for logging.
@@ -287,13 +286,9 @@ bolt."
         (not (empty?
               (filter #(not-fail? %)
                       (mapfn (fn [complement]
-                               (let [unified
-                                     (unify (copy bolt)
-                                            (assoc-in {} path 
-                                                      (copy complement)))]
-                                 (if truncate-children
-                                   (truncate unified [path] language-model)
-                                   unified)))
+                               (unify (copy bolt)
+                                      (assoc-in {} path 
+                                                (copy complement))))
                              (let [phrasal-complements (if (and (> max-total-depth total-depth)
                                                                 (= true (get-in spec [:phrasal] true)))
                                                          (generate-all spec language-model (+ (count path) total-depth)
