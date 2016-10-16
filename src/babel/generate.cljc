@@ -97,41 +97,41 @@ to generate expressions by adding complements using (add-all-comps)."
         parents (lazy-shuffle (candidate-parents grammar spec))]
     (let [lexical ;; 1. generate list of all phrases where the head child of each parent is a lexeme.
           (when (= false (get-in spec [:head :phrasal] false))
-            (mapfn (fn [parent]
-                     (let [pred (get-in spec [:synsem :sem :pred])
-                           cat (get-in spec [:synsem :cat])
-                           pred-set (if (:pred2lex language-model) (get (:pred2lex language-model) pred))
-                           cat-set (if (:cat2lex language-model) (get (:cat2lex language-model) cat))
-                           subset
-                           (cond
-                             (and (not (= :top pred)) (not (empty? pred-set))
-                                  (not (= :top cat)) (not (empty? cat-set)))
-                             (intersection-with-identity pred-set cat-set)
-                             true (get-lex parent :head (:index language-model)))]
-                       (let [grounded-bolts
-                             (over/overh parent (lazy-shuffle subset))]
-                         (filter
-                          (fn [bolt]
-                            (not (empty?
-                                  (add-all-comps-with-paths [bolt]
-                                                            language-model total-depth
-                                                            [[:comp]]
-                                                            false max-total-depth))))
-                          grounded-bolts))))
-                   parents))
+            (lazy-mapcat
+             (fn [parent]
+               (let [pred (get-in spec [:synsem :sem :pred])
+                     cat (get-in spec [:synsem :cat])
+                     pred-set (if (:pred2lex language-model) (get (:pred2lex language-model) pred))
+                     cat-set (if (:cat2lex language-model) (get (:cat2lex language-model) cat))
+                     subset
+                     (cond
+                       (and (not (= :top pred)) (not-empty pred-set)
+                            (not (= :top cat)) (not-empty cat-set))
+                       (intersection-with-identity pred-set cat-set)
+                       true (get-lex parent :head (:index language-model)))]
+                 (let [grounded-bolts
+                       (over/overh parent (lazy-shuffle subset))]
+                   (filter
+                    (fn [bolt]
+                      (not-empty
+                       (add-all-comps-with-paths [bolt]
+                                                 language-model total-depth
+                                                 [[:comp]]
+                                                 false max-total-depth)))
+                    grounded-bolts))))
+             parents))
           phrasal ;; 2. generate list of all phrases where the head child of each parent is itself a phrase.
           (if (and (< total-depth max-total-depth)
                    (= true (get-in spec [:head :phrasal] true)))
-            (mapfn (fn [parent]
-                     (over/overh parent
-                                 (lightning-bolts language-model (get-in parent [:head])
-                                                  (+ 1 depth) (+ 1 total-depth)
+            (lazy-mapcat (fn [parent]
+                           (over/overh parent
+                                       (lightning-bolts language-model (get-in parent [:head])
+                                                        (+ 1 depth) (+ 1 total-depth)
                                                   :max-total-depth max-total-depth)))
-                   parents))]
-      (reduce concat 
-              (if (lexemes-before-phrases total-depth max-total-depth)
-                (lazy-cat lexical phrasal)
-                (lazy-cat phrasal lexical))))))
+                         parents))]
+      (if (lexemes-before-phrases total-depth max-total-depth)
+        (lazy-cat lexical phrasal)
+        (lazy-cat phrasal lexical)))))
 
 ;; TODO: catch exception thrown by add-complement-by-bolt: "could generate neither phrasal nor lexical complements for bolt"
 (defn add-all-comps [bolts language-model total-depth truncate-children max-total-depth]
