@@ -131,6 +131,54 @@ to generate expressions by adding complements using (add-all-comps)."
            (lazy-cat lexical phrasal)
            (lazy-cat phrasal lexical))))))
 
+;; TODO: was copied from (defn add-complement-to-bolt) and then modified:
+;; refactor both above and below so that commonalities are shared.
+(defn any-possible-complement? [bolt path language-model total-depth
+                                & {:keys [max-total-depth]
+                                   :or {max-total-depth max-total-depth}}]
+  (let [lexicon (or (-> :generate :lexicon language-model)
+                    (:lexicon language-model))
+        spec (get-in bolt path)
+        immediate-parent (get-in bolt (butlast path))
+        complement-candidate-lexemes
+        (if (not (= true (get-in bolt (concat path [:phrasal]))))
+          (let [pred (get-in spec [:synsem :sem :pred])
+                cat (get-in spec [:synsem :cat])
+                pred-set (if (and (:pred2lex language-model)
+                                  (not (= :top pred)))
+                           (get (:pred2lex language-model) pred))
+                cat-set (if (and (:cat2lex language-model)
+                                 (not (= :top cat)))
+                          (get (:cat2lex language-model) cat))
+                subset
+                (cond (empty? pred-set)
+                      cat-set
+                      (empty? cat-set)
+                      pred-set
+                      true
+                      (intersection-with-identity pred-set cat-set))]
+            (if (not (empty? subset))
+              subset
+              (let [index (:index language-model)
+                    indexed (if index (get-lex immediate-parent :comp index))]
+                indexed))))
+        bolt-child-synsem (strip-refs (get-in bolt (concat path [:synsem]) :top))
+        lexical-complements (filter (fn [lexeme]
+                                      (and (not-fail? (unify (strip-refs (get-in lexeme [:synsem] :top))
+                                                             bolt-child-synsem))))
+                                    complement-candidate-lexemes)]
+    (or (not (empty? lexical-complements))
+        (not (empty?
+              (filter #(not-fail? %)
+                      (mapfn (fn [complement]
+                               (unify (strip-refs (get-in bolt [:synsem]))
+                                      (assoc-in {} (concat path [:synsem])
+                                                complement)))
+                             (if (and (> max-total-depth total-depth)
+                                      (= true (get-in spec [:phrasal] true)))
+                               (generate-all spec language-model (+ (count path) total-depth)
+                                             :max-total-depth max-total-depth)))))))))
+
 (defn add-all-comps [bolts language-model total-depth truncate-children max-total-depth]
   "At each point in each bolt in the list of list of bolts,
 _bolt-groups_, add all possible complements at all open nodes in the
@@ -246,54 +294,6 @@ bolt."
                            (take max-generated-complements
                                  (lazy-cat phrasal-complements lexical-complements))))))))
 
-;; TODO: was copied from (defn add-complement-to-bolt) and then modified:
-;; refactor both above and below so that commonalities are shared.
-(defn any-possible-complement? [bolt path language-model total-depth
-                                & {:keys [max-total-depth]
-                                   :or {max-total-depth max-total-depth}}]
-  (let [lexicon (or (-> :generate :lexicon language-model)
-                    (:lexicon language-model))
-        spec (get-in bolt path)
-        immediate-parent (get-in bolt (butlast path))
-        complement-candidate-lexemes
-        (if (not (= true (get-in bolt (concat path [:phrasal]))))
-          (let [pred (get-in spec [:synsem :sem :pred])
-                cat (get-in spec [:synsem :cat])
-                pred-set (if (and (:pred2lex language-model)
-                                  (not (= :top pred)))
-                           (get (:pred2lex language-model) pred))
-                cat-set (if (and (:cat2lex language-model)
-                                 (not (= :top cat)))
-                          (get (:cat2lex language-model) cat))
-                subset
-                (cond (empty? pred-set)
-                      cat-set
-                      (empty? cat-set)
-                      pred-set
-                      true
-                      (intersection-with-identity pred-set cat-set))]
-            (if (not (empty? subset))
-              subset
-              (let [index (:index language-model)
-                    indexed (if index (get-lex immediate-parent :comp index))]
-                indexed))))
-        bolt-child-synsem (strip-refs (get-in bolt (concat path [:synsem]) :top))
-        lexical-complements (filter (fn [lexeme]
-                                      (and (not-fail? (unify (strip-refs (get-in lexeme [:synsem] :top))
-                                                             bolt-child-synsem))))
-                                    complement-candidate-lexemes)]
-    (or (not (empty? lexical-complements))
-        (not (empty?
-              (filter #(not-fail? %)
-                      (mapfn (fn [complement]
-                               (unify (strip-refs (get-in bolt [:synsem]))
-                                      (assoc-in {} (concat path [:synsem])
-                                                complement)))
-                             (if (and (> max-total-depth total-depth)
-                                      (= true (get-in spec [:phrasal] true)))
-                               (generate-all spec language-model (+ (count path) total-depth)
-                                             :max-total-depth max-total-depth)))))))))
-  
 (defn bolt-depth [bolt]
   (if-let [head (get-in bolt [:head] nil)]
     (+ 1 (bolt-depth head))
