@@ -135,7 +135,8 @@ to generate expressions by adding complements using (add-all-comps)."
 ;; refactor both above and below so that commonalities are shared.
 (defn complements-at [bolt path language-model total-depth
                       & {:keys [max-total-depth]
-                         :or {max-total-depth max-total-depth}}]
+                         :or {max-total-depth max-total-depth
+                              truncate-children true}}]
   "return a lazy sequence of all possible complements for the given bolt at the given path."
   (let [lexicon (or (-> :generate :lexicon language-model)
                     (:lexicon language-model))
@@ -171,7 +172,7 @@ to generate expressions by adding complements using (add-all-comps)."
     (lazy-cat lexical-complements
               (filter #(not-fail? %)
                       (mapfn (fn [complement]
-                               (unify (strip-refs (get-in bolt [:synsem]))
+                               (unify (copy bolt)
                                       (assoc-in {} (concat path [:synsem])
                                                 complement)))
                              (if (and (> max-total-depth total-depth)
