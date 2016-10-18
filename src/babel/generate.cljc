@@ -22,7 +22,7 @@
 (declare add-all-comps)
 (declare add-all-comps-with-paths)
 (declare add-complement-to-bolt)
-(declare any-possible-complement?)
+(declare complements-at)
 (declare bolt-depth)
 (declare candidate-parents)
 (declare exception)
@@ -124,7 +124,7 @@ to generate expressions by adding complements using (add-all-comps)."
                          parents))]
         (filter
          (fn [bolt]
-           (not (empty? (any-possible-complement?
+           (not (empty? (complements-at
                          bolt [:comp] language-model total-depth
                          :max-total-depth max-total-depth))))
          (if (lexemes-before-phrases total-depth max-total-depth)
@@ -133,9 +133,10 @@ to generate expressions by adding complements using (add-all-comps)."
 
 ;; TODO: was copied from (defn add-complement-to-bolt) and then modified:
 ;; refactor both above and below so that commonalities are shared.
-(defn any-possible-complement? [bolt path language-model total-depth
-                                & {:keys [max-total-depth]
-                                   :or {max-total-depth max-total-depth}}]
+(defn complements-at [bolt path language-model total-depth
+                      & {:keys [max-total-depth]
+                         :or {max-total-depth max-total-depth}}]
+  "return a lazy sequence of all possible complements for the given bolt at the given path."
   (let [lexicon (or (-> :generate :lexicon language-model)
                     (:lexicon language-model))
         spec (get-in bolt path)
