@@ -197,8 +197,8 @@ bolt."
         bolt-child-synsem (strip-refs (get-in bolt (concat path [:synsem]) :top))
         lexical-complements (lazy-shuffle
                              (filter (fn [lexeme]
-                                       (and (not-fail? (unify (strip-refs (get-in lexeme [:synsem] :top))
-                                                              bolt-child-synsem))))
+                                       (not-fail? (unify (strip-refs (get-in lexeme [:synsem] :top))
+                                                              bolt-child-synsem)))
                                      complement-candidate-lexemes))]
     (filter #(not-fail? %)
             (mapfn (fn [complement]
