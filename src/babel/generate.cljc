@@ -124,9 +124,9 @@ to generate expressions by adding complements using (add-all-comps)."
                          parents))]
         (filter
          (fn [bolt]
-           (any-possible-complement?
-            bolt [:comp] language-model total-depth
-            :max-total-depth max-total-depth))
+           (not (empty? (any-possible-complement?
+                         bolt [:comp] language-model total-depth
+                         :max-total-depth max-total-depth))))
          (if (lexemes-before-phrases total-depth max-total-depth)
            (lazy-cat lexical phrasal)
            (lazy-cat phrasal lexical))))))
@@ -167,8 +167,7 @@ to generate expressions by adding complements using (add-all-comps)."
                                       (and (not-fail? (unify (strip-refs (get-in lexeme [:synsem] :top))
                                                              bolt-child-synsem))))
                                     complement-candidate-lexemes)]
-    (or (not (empty? lexical-complements))
-        (not (empty?
+    (lazy-cat lexical-complements
               (filter #(not-fail? %)
                       (mapfn (fn [complement]
                                (unify (strip-refs (get-in bolt [:synsem]))
@@ -177,7 +176,7 @@ to generate expressions by adding complements using (add-all-comps)."
                              (if (and (> max-total-depth total-depth)
                                       (= true (get-in spec [:phrasal] true)))
                                (generate-all spec language-model (+ (count path) total-depth)
-                                             :max-total-depth max-total-depth)))))))))
+                                             :max-total-depth max-total-depth)))))))
 
 (defn add-all-comps [bolts language-model total-depth truncate-children max-total-depth]
   "At each point in each bolt in the list of list of bolts,
