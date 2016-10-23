@@ -100,9 +100,8 @@ to generate expressions by adding complements using (add-all-comps)."
           (when (= false (get-in spec [:head :phrasal] false))
             (lazy-mapcat
              (fn [parent]
-               (when (or true (not (fail? (unifyc (get-in spec [:head]) (get-in parent [:head])))))
-
-                 (let [spec (get-in spec [:head])
+               (when (not (= :fail (unifyc spec parent)))
+                 (let [spec (get-in (unifyc spec parent) [:head])
                        pred (get-in spec [:synsem :sem :pred])
 
                      debug (log/info (str "spec:" (strip-refs spec)))
