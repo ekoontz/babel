@@ -100,7 +100,17 @@ to generate expressions by adding complements using (add-all-comps)."
           (when (= false (get-in spec [:head :phrasal] false))
             (lazy-mapcat
              (fn [parent]
-               (let [pred (get-in spec [:synsem :sem :pred])
+               (when (or true (not (fail? (unifyc (get-in spec [:head]) (get-in parent [:head])))))
+
+                 (let [spec (get-in spec [:head])
+                       pred (get-in spec [:synsem :sem :pred])
+
+                     debug (log/info (str "spec:" (strip-refs spec)))
+                     debug (log/info (str "parent head:" (spec-info (get-in parent [:head]))))
+
+                     debug (if (fail? (unifyc spec (get-in parent [:head])))
+                             (log/error (str "THE PARENT WILL NEVER FIND A LEXICAL CHILD.")))
+                     
                      cat (get-in spec [:synsem :cat])
                      pred-set (if (:pred2lex language-model) (get (:pred2lex language-model) pred))
                      cat-set (if (:cat2lex language-model) (get (:cat2lex language-model) cat))
@@ -121,12 +131,21 @@ to generate expressions by adding complements using (add-all-comps)."
                  (log/debug (str "lightning-bolts: (optimizeme) size of subset of candidate heads: " (count subset) " with spec: " (strip-refs spec) " and parent:  " (:rule parent)))
                  (let [result (over/overh parent (lazy-shuffle subset))]
                    (log/debug (str "lightning-bolts: (optimizeme) surviving candidate heads: " (count result)))
-                   (if (and (not (empty? subset)) (empty? result))
+                   (when (and (not (empty? subset)) (empty? result))
                      ;; log/warn because it's very expensive to run
                      ;; over/overh: for every candidate, both parent
                      ;; and candidate head must be copied.
                      (log/warn (str "tried: " (count subset) " lexical candidates with spec:" ( strip-refs spec) " and all of them failed as heads of parent:" (:rule parent))))
-                   result)))
+                   (when (and (not (empty? result))
+                              (fail? (unifyc spec (get-in parent [:head]))))
+                     (log/error (str "WTF:(1)" (strip-refs spec)))
+                     (log/error (str "WTF:(2)" (strip-refs (get-in parent [:head]))))
+                     (log/error (str "WTF:(3)" (dag_unify.core/fail-path
+                                                                    (copy parent)
+                                                                    {:head spec}))))
+               
+                     
+                   result))))
              parents))
           phrasal ;; 2. generate list of all phrases where the head child of each parent is itself a phrase.
           (if (and (< total-depth max-total-depth)
