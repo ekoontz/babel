@@ -318,6 +318,7 @@
 "bisogno"
 (let [the-object (atom :top)]
   {:synsem {:cat :noun
+            :agr {:gender :masc}
             :sem {:pred :bisogno-di
                   :obj the-object}
             :subcat {:1 {:cat :prep
@@ -673,17 +674,21 @@
  "dettare" {:synsem {:cat :verb
                      :sem {:pred :dictate}}}
  "di"
- {:synsem {:cat :prep
-           :sem {:pred :di
-                 :comparative true}
-           :subcat {:1 {:cat :noun
-                        :subcat '()
-                        :def {:not :partitivo} ;; avoid alliteration like "di delle ragazze (of some women)"
-                        :case :disj ;; pronouns must be disjunctive (me/te/lui/lei...etc)
-                        ;; non-pronouns will unify with this constraint.
-                        }
-                    :2 '()}}
-  :italiano {:initial true}}
+ [{:synsem {:cat :prep
+            :sem {:pred :di
+                  :comparative true}
+            :subcat {:1 {:cat :noun
+                         :subcat '()
+                         :def {:not :partitivo} ;; avoid alliteration like "di delle ragazze (of some women)"
+                         :case :disj ;; pronouns must be disjunctive (me/te/lui/lei...etc)
+                         ;; non-pronouns will unify with this constraint.
+                         }
+                     :2 '()}}
+   :italiano {:initial true}}
+
+  {:synsem {:cat :prep ;; subcat is empty: allow generation of e.g. "ho bisogna di" with no object.
+            :sem {:pred :di}
+            :subcat '()}}]
 
  "di la"
  {:synsem {:cat :det

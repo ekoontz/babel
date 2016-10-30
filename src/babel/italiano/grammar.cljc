@@ -280,6 +280,12 @@
                                      :synsem {:propernoun is-propernoun?}}
                               :comp {:phrasal false}})) ;; rathole prevention ;; TODO: see if this can be removed.
 
+                   (unifyc h10
+                           {:rule "np-to-n-plus-di"
+                            :synsem {:cat :noun}
+                            :head {:phrasal false}
+                            :comp {:phrasal false}})
+                   
                    (unifyc c10
                            comp-specs-head
                            (let [number-agreement (atom :top)
