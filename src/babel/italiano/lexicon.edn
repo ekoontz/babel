@@ -212,7 +212,7 @@
                                           :1plur "abbiamo"
                                           :2plur "avete"
                                           :3plur "hanno"}}}]
-
+   [
    ;; 1. "avere": to possess something buyable
    {:unify [avere-common]
     :note "avere (possess)"
@@ -263,7 +263,7 @@
                      :obj need-obj}
                :subcat {:2 {:cat :noun
                             :sem {:pred :bisogno-di
-                                  :obj need-obj}}}}}))
+                                  :obj need-obj}}}}})])
 
  "ballare" {:synsem {:cat :verb
                      :sem {:pred :dance}}}
@@ -674,17 +674,17 @@
  "dettare" {:synsem {:cat :verb
                      :sem {:pred :dictate}}}
  "di"
- [{:synsem {:cat :prep
-            :sem {:pred :di
-                  :comparative true}
-            :subcat {:1 {:cat :noun
-                         :subcat '()
-                         :def {:not :partitivo} ;; avoid alliteration like "di delle ragazze (of some women)"
-                         :case :disj ;; pronouns must be disjunctive (me/te/lui/lei...etc)
-                         ;; non-pronouns will unify with this constraint.
-                         }
-                     :2 '()}}
-   :italiano {:initial true}}
+ [;{:synsem {:cat :prep
+  ;          :sem {:pred :di
+  ;                :comparative true}
+  ;          :subcat {:1 {:cat :noun
+  ;                       :subcat '()
+  ;                       :def {:not :partitivo} ;; avoid alliteration like "di delle ragazze (of some women)"
+  ;                       :case :disj ;; pronouns must be disjunctive (me/te/lui/lei...etc)
+  ;                       ;; non-pronouns will unify with this constraint.
+  ;                       }
+  ;                   :2 '()}}
+  ; :italiano {:initial true}}
 
   {:synsem {:cat :prep ;; subcat is empty: allow generation of e.g. "ho bisogna di" with no object.
             :sem {:pred :di}
