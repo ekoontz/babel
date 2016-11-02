@@ -121,7 +121,11 @@
                            true
                            (do
                              (log/warn (str "no index found for spec: " (spec-info spec)))
-                             (get-lex parent :head (:index language-model))))]
+                             (let [get-lex
+                                   (get-lex parent :head (:index language-model))]
+                               (if (and get-lex (not (empty? get-lex)))
+                                 get-lex
+                                 (vals (:lexicon language-model))))))]
                      (log/debug (str "lightning-bolts: (optimizeme) size of subset of candidate heads: " (count subset) " with spec: " (strip-refs spec) " and parent:  " (get-in parent [:rule])))
                      (let [result (over/overh parent (lazy-shuffle subset))]
                        (log/debug (str "lightning-bolts: (optimizeme) surviving candidate heads: " (count result)))
@@ -147,9 +151,11 @@
                          parents))]
         (filter
          (fn [bolt]
-           (any-possible-complement?
-            bolt [:comp] language-model total-depth
-            :max-total-depth max-total-depth))
+           (do
+             (log/debug (str "bolt: " bolt))
+             (any-possible-complement?
+              bolt [:comp] language-model total-depth
+              :max-total-depth max-total-depth)))
          (if (lexemes-before-phrases total-depth max-total-depth)
            (lazy-cat lexical phrasal)
            (lazy-cat phrasal lexical))))))
@@ -216,8 +222,8 @@
                 (if (not (empty? indexed))
                   indexed
                   (do
-                    (log/warn (str "no candidate lexemes were found as a complement."))
-                    nil))))))
+                    (log/warn (str "no subset of lexicon was found via index lookup: will use entire lexicon as complement set."))
+                    (vals lexicon)))))))
         bolt-child-synsem (strip-refs (get-in bolt (concat path [:synsem]) :top))
         lexical-complements (lazy-shuffle
                              (filter (fn [lexeme]
@@ -300,12 +306,16 @@
               subset
               (let [index (:index language-model)
                     indexed (if index (get-lex immediate-parent :comp index))]
-                indexed))))
+                (or indexed
+                    (vals lexicon))))))
         bolt-child-synsem (strip-refs (get-in bolt (concat path [:synsem]) :top))
+        debug (log/debug (str "bolt-child-synsem: " bolt-child-synsem))
         lexical-complements (filter (fn [lexeme]
+                                      (log/debug (str "lexeme: " lexeme))
                                       (and (not-fail? (unify (strip-refs (get-in lexeme [:synsem] :top))
                                                              bolt-child-synsem))))
                                     complement-candidate-lexemes)]
+    (log/debug (str "lexical-complements: " (string/join "," lexical-complements)))
     (or (not (empty? lexical-complements))
         (not (empty?
               (filter #(not-fail? %)
