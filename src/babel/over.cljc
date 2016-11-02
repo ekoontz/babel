@@ -124,7 +124,9 @@
     (exception (str "don't call show-bolt with bolt=null."))
     (let [morph (:morph language-model)]
       (if (nil? morph)
-        (exception (str "don't call show-bolt with morph=null."))
+        (do
+          (log/warn (str "called show-bolt, but language-model has no 'morph' function."))
+          bolt)
         (str (if (get-in bolt [:rule]) (str "[" (get-in bolt [:rule]) " "))
              (let [head-bolt (get-in bolt [:head])]
                (if (nil? head-bolt)
