@@ -64,7 +64,9 @@
                                                     :truncate-children truncate-children)))]
         (if expression
           (log/debug (str "generate: generated "
-                          (morph-ps expression)
+                          (if (and morph-ps (morph-ps expression))
+                            (morph-ps expression)
+                            expression)
                           " for spec:" (strip-refs spec)))
           (log/warn (str "generate: no expression could be generated for spec:" (strip-refs spec))))
         expression))))
