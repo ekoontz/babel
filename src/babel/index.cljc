@@ -30,7 +30,7 @@
 ;; TODO: diagnostic function that is too specific currently (e.g. refers to ':english').
 (defn check-index [index]
   (if (not (= :top (get-in (first (:head (get index "nbar"))) [:english :agr :number])))
-    (throw (exception (str "CHECK INDEX FAILED! " (get index "nbar"))))))
+    (throw (exception (str "check-index failed! " (get index "nbar"))))))
   
 (defn build-lex-sch-index [phrases lexicon all-phrases]
   "Build a mapping of phrases onto subsets of the lexicon. The two values (subsets of the lexicon) to be
@@ -105,7 +105,7 @@
                              (log/trace (str "get-lex hit: head for parent: " (get-in parent [:rule])))
                              (:head (get index (get-in parent [:rule]))))
 
-                           (do (log/warn (str "INDEX MISS 1 for rule: " (get-in parent [:rule]) " h/c: " head-or-comp " :: index:" (type index)))
+                           (do (log/warn (str "index miss 1 for rule: " (get-in parent [:rule]) " h/c: " head-or-comp " :: index:" (type index)))
                                #{}))
 
                          (= :comp head-or-comp)
