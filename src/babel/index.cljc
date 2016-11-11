@@ -206,17 +206,20 @@
                            :dag_unify.core/serialized))))
   (let [result
         (reduce intersection-with-identity
-                (filter #(not (empty? %))
+                (filter #(not (keyword? %))
                         (map (fn [path]
                                (let [result
                                      (get (get indices path)
-                                          (get-in spec path ::undefined)
-                                          [])]
-                                 (if (not (empty? result))
-                                   (log/trace (str "subset for path:" path " => " (get-in spec path ::undefined)
-                                                   " = " (count result)))
-                                   (log/trace (str "empty result for path: " path "; spec=" (strip-refs spec))))
-                                 result))
+                                          (get-in spec path ::path-is-not-in-spec)
+                                          :value-is-not-in-index)]
+                                 (cond (and (not (keyword? result)))
+;;                                            (not (empty? result)))
+                                       (do
+                                         (log/debug (str "subset for path:" path " => " (get-in spec path ::undefined)
+                                                         " = " (count result)))
+                                         result)
+                                       true (do (log/debug (str "empty result for path: " path "; spec=" (strip-refs spec)))
+                                                result))))
                              index-lexicon-on-paths)))]
     (log/debug (str "indexed size returned: " (count result) " for spec: " (strip-refs spec)))
     (if (and false (empty? result))

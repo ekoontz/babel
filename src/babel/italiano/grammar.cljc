@@ -24,7 +24,12 @@
   [[:italiano :italiano]
    [:synsem :aux]
    [:synsem :cat]
-   [:synsem :sem :pred]])
+   [:synsem :infl]
+   [:synsem :sem :pred]
+   [:synsem :sem :reflexive]
+   [:synsem :subcat :2 :pronoun]
+
+   ])
 
 (defn fo-ps [expr]
   (parse/fo-ps expr fo))
@@ -499,7 +504,8 @@
                    (unify c21
                            root-is-head
                            {:head {:phrasal false
-                                   :synsem {:sem {:reflexive true}}}
+                                   :synsem {;:sem {:reflexive true}
+                                            }}
                             :comp {:synsem {:cat :noun
                                             :reflexive true
                                             :pronoun true}}
@@ -509,12 +515,16 @@
 
                    ;; e.g. used as: "io mi chiamo Luisa" -
                    ;; [s-present-phrasal 'io' [vp-pronoun-phrasal 'mi' [vp-32 'chiamo' 'Luisa']]]
+                   ;; TODO: make reflexive-sharing a general principle rather than simply
+                   ;; both being set to true for both vp-32 below and vp-pronoun-nonphrasal above.
                    (unify h32
                            root-is-head
                            {:rule "vp-32"
                             :head {:phrasal false
-                                   :synsem {:aux false}}
+                                   :synsem {;:sem {:reflexive true}
+                                            :aux false}}
                             :synsem {:aux false
+                                     :sem {:reflexive true}
                                      :infl {:not :past}
                                      :cat :verb}})
                    (unify h10

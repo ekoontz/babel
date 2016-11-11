@@ -918,7 +918,7 @@
      :synsem {:cat :verb
               :subcat {:1 {:cat :noun}
                        :2 {:cat :noun
-                           :pronoun {:not true} ;; accusative pronouns cause unbounded depth-first searches on the subject side. (TODO: not sure if this problem is still present)
+                           :pronoun false ;; accusative pronouns cause unbounded depth-first searches on the subject side. (TODO: not sure if this problem is still present)
                            :def {:not :demonstrativo}}}
               :sem {:pred :be
                     :activity false

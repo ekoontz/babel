@@ -120,13 +120,13 @@
                                    " : subset of candidate heads: "
                                    (count subset) " with spec: " (strip-refs spec)))
                    (log/debug (str "index returned a null set for spec:" (strip-refs spec))))
-                 (log/trace (str "lightning-bolts: " (get-in parent [:rule])
+                 (log/debug (str "lightning-bolts: " (get-in parent [:rule])
                                  " : head lexeme candidates: "
                                  (string/join ","
-                                              (map #((:morph language-model) %)
-                                                   subset))))
+                                              (sort (map #((:morph language-model) %)
+                                                         subset)))))
                                                      
-                 (log/trace (str "trying overh with parent: " (:rule parent) " and head constraints: " (get-in parent [:head])))
+                 (log/debug (str "trying overh with parent: " (:rule parent) " and head constraints: " (strip-refs (get-in parent [:head]))))
                  (let [result (over/overh parent (lazy-shuffle subset))]
                    (when (not (empty? subset))
                      (log/trace (str "lightning-bolts:  surviving candidate heads: " (count subset) " -(unify)-> " (count result))))
@@ -138,12 +138,13 @@
 
                    (if (and (not (empty? subset)) (empty? result)
                             (> (count subset)
-                               50))
+                               10))
                      ;; log/warn because it's very expensive to run
                      ;; over/overh: for every candidate, both parent
                      ;; and candidate head must be copied.
-                     (log/warn (str "tried: " (count subset) " lexical candidates with spec:"
-                                    (strip-refs spec) " and all of them failed as heads of parent:" (get-in parent [:rule]))))
+                     (log/warn (str "tried: " (count subset) " lexical candidates as head with spec:"
+                                    (strip-refs spec) " and all of them failed as heads of parent:"
+                                    (get-in parent [:rule]))))
                    (log/trace (str "returning bolts: count: " (count result)))
                    result)))
              (filter #(= false
