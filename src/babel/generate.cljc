@@ -83,10 +83,14 @@
            truncate-children true}}]
   (let [total-depth (if total-depth total-depth 0)]
     (if truncate-children
-      (->
-       (lightning-bolts language-model spec 0 total-depth :max-total-depth max-total-depth)
-       (add-all-comps language-model total-depth true max-total-depth spec)
-       (truncate-expressions [[:head]] language-model))
+      (let [lb
+            (lightning-bolts language-model spec 0 total-depth :max-total-depth max-total-depth)]
+        (if (empty? lb) nil
+            (do
+              (log/info (str "first lb:" ((:morph language-model) (first lb))))
+              (-> lb
+                  (add-all-comps language-model total-depth true max-total-depth spec)
+                  (truncate-expressions [[:head]] language-model)))))
       (->
        (lightning-bolts language-model spec 0 total-depth :max-total-depth max-total-depth)
        (add-all-comps language-model total-depth false max-total-depth spec)))))
@@ -159,15 +163,17 @@
   sequence of having added all possible complements at each node in
   the bolt."
   [bolts language-model total-depth truncate-children max-total-depth top-level-spec]
-  (log/trace (str "add-all-comps: bolt count: " (count bolts)))
-  (lazy-mapcat
-   (fn [bolt]
-     (log/debug (str "adding all comps to bolt: " (show-bolt bolt language-model)))
-     (add-all-comps-with-paths [bolt] language-model total-depth
-                               (find-comp-paths-in (bolt-depth bolt))
-                               truncate-children max-total-depth
-                               top-level-spec))
-   bolts))
+  (if (empty? bolts) nil
+      (do
+        (log/trace (str "add-all-comps: bolt count: " (count bolts)))
+        (lazy-mapcat
+         (fn [bolt]
+           (log/info (str "adding all comps to bolt: " (show-bolt bolt language-model)))
+           (add-all-comps-with-paths [bolt] language-model total-depth
+                                     (find-comp-paths-in (bolt-depth bolt))
+                                     truncate-children max-total-depth
+                                     top-level-spec))
+         bolts))))
 
 (defn add-all-comps-with-paths [bolts language-model total-depth comp-paths
                                 truncate-children max-total-depth top-level-spec]
@@ -250,8 +256,11 @@
                                  (do
                                    (log/debug (str "calling (generate-all) from add-complement-to-bolt with bolt:"
                                                    (show-bolt bolt language-model)))
-                                   (generate-all spec language-model (+ (count path) total-depth)
-                                                 :max-total-depth max-total-depth)))
+                                   (let [ga
+                                         (generate-all spec language-model (+ (count path) total-depth)
+                                                       :max-total-depth max-total-depth)]
+                                     (if (empty? ga) nil
+                                         ga))))
            lexemes-before-phrases (lexemes-before-phrases total-depth max-total-depth)]
        (cond (and lexemes-before-phrases
                   (empty? lexical-complements)
