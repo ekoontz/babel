@@ -11,6 +11,11 @@ as a map of implications"}
 ;; TODO: use clojure.core/isa? and clojure.core/derive where possible
 ;; in here, e.g.: (derive ::human ::animal)
 
+;; For now, we need to separate :subj and :obj for every
+;; predicate in order to match both transitive and intransitive verb senses.
+;; see {:pred :read} below for an example.
+;; TODO: However, it would be better to have a single rule that has both :subj and :obj
+;; which nevertheless matches both transitive and intransitive verbs.
 (def encyc
   {
    {:activity true}  {:animate false
@@ -464,8 +469,11 @@ as a map of implications"}
          :subj {:human true}
          :obj {:clothing true}}
         
+        ;; see above TODO.
         {:pred :read
-         :subj {:human true}
+         :subj {:human true}}
+
+        {:pred :read
          :obj {:legible true}}
 
         {:pred :say
