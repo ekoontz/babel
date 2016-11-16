@@ -105,10 +105,7 @@
         ;; this is the relative depth; that is, the depth from the top of the current lightning bolt.
         ;; total-depth, on the other hand, is the depth all the way to the top of the entire
         ;; expression, which might involve several parent lightning bolts.
-        parents
-        (let [parents (shuffle (candidate-parents grammar spec))]
-          (log/debug (str "candidate-parents:" (string/join "," (map :rule parents))))
-          parents)]
+        parents (shuffle (candidate-parents grammar spec))]
     (let [lexical ;; 1. generate list of all phrases where the head child of each parent is a lexeme.
           (when (= false (get-in spec [:head :phrasal] false))
             (lazy-mapcat
@@ -165,7 +162,7 @@
   (log/trace (str "add-all-comps: bolt count: " (count bolts)))
   (lazy-mapcat
    (fn [bolt]
-     (log/trace (str "adding all comps to bolt: " (show-bolt bolt language-model)))
+     (log/debug (str "adding all comps to bolt: " (show-bolt bolt language-model)))
      (add-all-comps-with-paths [bolt] language-model total-depth
                                (find-comp-paths-in (bolt-depth bolt))
                                truncate-children max-total-depth
@@ -243,7 +240,7 @@
                                        (and (not-fail? (unify (get-in lexeme [:synsem] :top)
                                                               bolt-child-synsem))))
                                      complement-candidate-lexemes))]
-    (log/debug (str "lexical-complements (post-over):"
+    (log/trace (str "lexical-complements (post-over):"
                     (string/join ","
                                  (map #((:morph language-model) %)
                                       lexical-complements))))
