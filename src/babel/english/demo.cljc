@@ -37,6 +37,14 @@
                                 :spec {:def :genitive
                                        :of {:pred :luisa}}}}}}
 
+         ;; No sentence is possible because babel.encyclopedia states that {:pred :read :subj {:human true}}, but
+         ;; {:pred :cat :human false}.
+         ;; TODO: this demo will run far too long because it will exhaustively try every possible [read [NP]] for all NPs before it gives up.
+         {:demo "Cats cannot read"
+          :synsem {:cat :verb
+                   :sem {:pred :read
+                         :subj {:pred :cat}}}}
+
          {:demo "Women who read books"
           :synsem {:cat :verb
                    :sem {:subj {:pred :woman}
