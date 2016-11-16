@@ -2689,7 +2689,8 @@
                          :sem {:obj {:pred :top}}}})
 
       (new-entries ;; remove the second argument and semantic object to make verbs intransitive.
-       {:synsem {:cat :verb
+       {:phrasal-verb false ;; don't intransitivize phrasal verbs: e.g. don't intransitivize "[I turn [up the radio]]" as "[I turn]"
+        :synsem {:cat :verb
                  :aux false
                  :sem {:obj {:top :top}
                        :shared-with-obj false
