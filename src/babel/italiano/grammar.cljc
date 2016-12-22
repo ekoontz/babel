@@ -344,22 +344,9 @@
                            root-is-head-root
                            {:head {:phrasal true ;; only a vp-aux may be the head child, not simply a lexical auxiliary verb.
                                    :synsem {:aux true}}
-                            :rule "s-aux-passato"
+                            :rule "s-aux"
                             :synsem {:infl :present
-                                     :cat :verb
-                                     :sem {:aspect :simple
-                                           :tense :past}}})
-
-                   (unify c10
-                           root-is-head-root
-                           {:head {:phrasal true ;; only a vp-aux may be the head child, not simply a lexical auxiliary verb.
-                                   :synsem {:aux true}}
-                            :rule "s-aux-trapassato"
-                            :synsem {:infl :imperfect
-                                     :cat :verb
-                                     :sem {:aspect :perfect
-                                           :tense :past}}})
-
+                                     :cat :verb}})
                    (unify c10
                            root-is-head-root
                            {:rule "s-future-phrasal"
@@ -436,49 +423,22 @@
                                      :cat :verb}})
                    (unify h21a
                            root-is-comp-root
-                           {:rule "vp-aux-phrasal-complement-passato"
+                           {:rule "vp-aux-phrasal-complement"
                             :head {:phrasal false
                                    :synsem {:aux true}}
                             :comp {:phrasal true}
                             :synsem {:aux true
                                      :infl :present
-                                     :sem {:tense :past
-                                           :aspect :simple}
                                      :cat :verb}})
 
                    (unify h21a
                            root-is-comp
-                           {:rule "vp-aux-nonphrasal-complement-passato"
+                           {:rule "vp-aux-nonphrasal-complement"
                             :head {:phrasal false
                                    :synsem {:aux true}}
                             :comp {:phrasal false}
                             :synsem {:aux true
                                      :infl :present
-                                     :sem {:tense :past
-                                           :aspect :simple}
-                                     :cat :verb}})
-                   (unify h21a
-                           root-is-comp-root
-                           {:rule "vp-aux-phrasal-complement-trapassato"
-                            :head {:phrasal false
-                                   :synsem {:aux true}}
-                            :comp {:phrasal true}
-                            :synsem {:aux true
-                                     :infl :imperfect
-                                     :sem {:tense :past
-                                           :aspect :perfect}
-                                     :cat :verb}})
-
-                   (unify h21a
-                           root-is-comp
-                           {:rule "vp-aux-nonphrasal-complement-trapassato"
-                            :head {:phrasal false
-                                   :synsem {:aux true}}
-                            :comp {:phrasal false}
-                            :synsem {:aux true
-                                     :infl :imperfect
-                                     :sem {:tense :past
-                                           :aspect :perfect}
                                      :cat :verb}})
                    
                    ;; these two following rules are kind of complicated and made more so by
@@ -491,29 +451,11 @@
                            (let [obj-agr (atom :top)]
                              {:head {:phrasal false
                                      :synsem {:aux true}}
-                              :rule "vp-aux-22-passato"
+                              :rule "vp-aux-22"
                               :synsem {:aux true
                                        :cat :verb
                                        :infl :present
-                                       :sem {:reflexive true
-                                             :tense :past
-                                             :aspect :simple}
-                                       :subcat {:2 {:agr obj-agr}}}
-                              :italiano {:b {:obj-agr obj-agr}}}))
-
-                   (unify h22
-                           root-is-comp
-                           vp-non-pronoun
-                           (let [obj-agr (atom :top)]
-                             {:head {:phrasal false
-                                     :synsem {:aux true}}
-                              :rule "vp-aux-22-trapassato"
-                              :synsem {:aux true
-                                       :cat :verb
-                                       :infl :imperfect
-                                       :sem {:reflexive true
-                                             :tense :past
-                                             :aspect :perfect}
+                                       :sem {:reflexive true}
                                        :subcat {:2 {:agr obj-agr}}}
                               :italiano {:b {:obj-agr obj-agr}}}))
                    
@@ -715,15 +657,12 @@
                      (= (:rule %) "s-future-nonphrasal")
                      (= (:rule %) "s-imperfect-phrasal")
                      (= (:rule %) "s-imperfect-nonphrasal")
-                     (= (:rule %) "s-aux-passato")
-                     (= (:rule %) "s-aux-trapassato")
+                     (= (:rule %) "s-aux")
                      (= (:rule %) "vp-32")
-                     (= (:rule %) "vp-aux-nonphrasal-complement-passato")
-                     (= (:rule %) "vp-aux-phrasal-complement-passato")
-                     (= (:rule %) "vp-aux-22-passato")
-                     (= (:rule %) "vp-aux-nonphrasal-complement-trapassato")
-                     (= (:rule %) "vp-aux-phrasal-complement-trapassato")
-                     (= (:rule %) "vp-aux-22-trapassato")
+                     (= (:rule %) "vp-aux-nonphrasal-complement")
+                     (= (:rule %) "vp-aux-22")
+                     (= (:rule %) "vp-aux-nonphrasal-complement")
+                     (= (:rule %) "vp-aux-phrasal-complement")
                      (= (:rule %) "vp-present")
                      (= (:rule %) "vp-pronoun-nonphrasal")
                      (= (:rule %) "vp-pronoun-phrasal")

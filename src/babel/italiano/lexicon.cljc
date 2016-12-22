@@ -199,9 +199,10 @@
        (let [;; whether a verb has essere or avere as its
              ;; auxiliary to form its past form:
              essere-binary-categorization (atom :top)
-             pred (atom :top)
-             sem (atom {:tense :past
-                        :pred pred})
+             ;; this shared semantics allows the auxilary verb
+             ;; (the syntactic head) to share the semantics of the
+             ;; auxiliary verb's complement, also a verb.
+             sem (atom {:pred :top})
              subject (atom :top)]
          {:synsem {:aux true
                    :cat :verb

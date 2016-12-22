@@ -239,6 +239,8 @@
       {:unify [avere-common]
        :note "avere(aux): takes trans"
        :synsem {:aux true
+                :sem {:aspect :simple
+                      :tense :past} ;; TODO: should be: :{tense future, aspect perfect}.
                 :subcat {:2 {:agr agr
                              :sem {:reflexive false}
                              :subcat {:2 {:agr agr
@@ -254,6 +256,8 @@
     {:unify [avere-common]
      :note "avere(aux): takes intrans"
      :synsem {:aux true
+              :sem {:aspect :simple
+                    :tense :past} ;; TODO: should be: :{tense future, aspect perfect}.
               :subcat {:2 {:sem {:reflexive false}
                            :essere false
                            :reflexive false ;; in Italian, reflexive verbs are always essere=false.
@@ -928,7 +932,9 @@
                     :discrete false}}}
     {:unify [essere-common essere-aux-subject-agreement]
      :notes "essere-aux"
-     :synsem {:aux true}
+     :synsem {:aux true
+              :sem {:aspect :simple
+                    :tense :past}}  ;; TODO: should be: :{tense future, aspect perfect}.
      :italiano {:notes "essere-aux"}}])
 
  "evitare"  {:synsem {:cat :verb
