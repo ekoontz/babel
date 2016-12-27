@@ -29,7 +29,8 @@
 
 (defn apply-default-if [tree test to-apply]
   (if (test tree)
-    (apply-default tree to-apply)
+    (do (log/debug (str "applying: " to-apply))
+        (apply-default tree to-apply))
     tree))
 
 ;;    [1]

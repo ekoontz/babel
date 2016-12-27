@@ -315,8 +315,8 @@
                           root-is-head-root
                           {:head {:phrasal true ;; only a vp-aux may be the head child, not simply a lexical auxiliary verb.
                                   :synsem {:aux true}}
-                             :rule "s-aux"
-                             :synsem {:cat :verb}})
+                           :rule "s-aux"
+                           :synsem {:cat :verb}})
 
                    ;; TODO: consolidate s-future-(non)phrasal,s-conditional-(non)phrasal,etc
                    ;; into fewer rules and use a default rule to choose among them.
@@ -324,11 +324,10 @@
                    (unify c10
                            root-is-head-root
                            {:rule "s-future-phrasal"
-                            :head {:phrasal true}
+                            :head {:phrasal true
+                                   :synsem {:finite true}}
                             :synsem {:aux false
-                                     :infl :future
-                                     :cat :verb
-                                     :sem {:tense :future}}})
+                                     :cat :verb}})
                    (unify c10
                            root-is-head
                            {:rule "s-future-nonphrasal"
@@ -489,6 +488,7 @@
                                             :pronoun true}}
                             :rule "vp-pronoun-nonphrasal"
                             :synsem {:cat :verb
+                                     :finite true
                                      :infl {:not :past}}})
 
                    ;; e.g. used as: "io mi chiamo Luisa" -
@@ -778,7 +778,34 @@
              verb-default?
              {:synsem {:cat :verb
                        :sem {:tense :conditional}
-                       :infl :conditional}}))]
+                       :infl :conditional}})
+            (apply-default-if
+             #(= :verb (get-in % [:synsem :cat]))
+             {:synsem {:wtf 42}})
+
+            (apply-default-if
+             #(and (= :verb (get-in % [:synsem :cat]))
+                   (= :infinitive (get-in % [:synsem :infl] ::unset)))
+             {:synsem {:finite false}})
+
+            (apply-default-if
+             #(and (= :verb (get-in % [:synsem :cat]))
+                   (not (= :infinitive (get-in % [:synsem :infl] ::unset))))
+             {:synsem {:finite true}})
+
+            (apply-default-if
+             #(= :verb (get-in % [:synsem :cat]))
+             {:synsem {:fuck 99}})
+
+;            (apply-default-if
+;             #(and (verb-default? %)
+;                   (= :infinitive (get-in % [:synsem :infl] ::unset)))
+;             {:synsem {:finite false}})
+;            (apply-default-if
+;             #(and (verb-default? %)
+;                   (not (= false (get-in % [:synsem :finite] false))))
+                                        ;             {:synsem {:finite true}}))
+            )]
     result))
 
 (defn medium []
