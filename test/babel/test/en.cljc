@@ -571,3 +571,17 @@
                                                                    :subj {:pred :woman}}
                                                  :subcat '()}}))))]
     (is (= 1 (count (take 1 (repeatedly to-run)))))))
+
+(deftest relative-clause []
+  (let [parse (first (parse "the man you see"))]
+    (is (not (nil? parse)))
+    (is (= (get-in parse [:synsem :cat])
+           :noun))
+    (is (= (get-in parse [:synsem :sem :mod :subj :pred])
+           :tu))
+    (is (= (get-in parse [:synsem :sem :mod :obj :pred])
+           :man))
+    (is (= (get-in parse [:synsem :sem :pred])
+           :man))))
+
+
