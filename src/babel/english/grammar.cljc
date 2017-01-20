@@ -356,7 +356,20 @@
                    (unify-check h10
                            {:head {:phrasal false
                                    :synsem {:cat :sent-modifier}}
-                            :rule "s-modifier"})))
+                            :rule "s-modifier"})
+
+                   (unify-check (let [first-arg (atom :top)
+                                      second-arg (atom :top)]
+                                  {:rule "relative-clause-complement"
+                                   :synsem {:subcat {:1 second-arg
+                                                     :2 '()}}
+                                   :comp {:synsem first-arg}
+                                   :head {:synsem {:subcat {:1 first-arg
+                                                            :2 second-arg}}}})
+                                head-principle
+                                {:first :comp}
+                                {:comp {:synsem {:subcat '()}}})))
+                   
 
 (defn aux-is-head-feature [phrase]
   (cond (= :verb (get-in phrase '(:synsem :cat)))
