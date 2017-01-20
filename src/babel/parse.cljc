@@ -224,7 +224,7 @@
    some language-dependent way."
   ([input model & [parse-with-truncate original-input]]
    (let [parse-with-truncate
-         (cond (= parse-with-truncate false)
+         (cond (or true (= parse-with-truncate false))
                false
                true true)
          original-input (if original-input original-input input)
