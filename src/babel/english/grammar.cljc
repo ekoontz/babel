@@ -382,6 +382,21 @@
                                    :synsem {:cat :sent-modifier}}
                             :rule "s-modifier"})
 
+                   ;;      noun-phrase3      ->  noun-phrase[1,2] relative-clause-complement
+                   ;; e.g. "the man you saw" ->  "the man"        "you saw"
+                   (unify-check {:rule "noun-phrase3"
+                                 :synsem {:cat :noun
+                                          :subcat '()}}
+                                head-principle
+                                (let [comp-sem (atom :top)
+                                      head-sem (atom {:mod comp-sem})]
+                                  {:synsem {:sem head-sem}
+                                   :head {:synsem {:sem head-sem}}
+                                   :comp {:synsem {:cat :verb
+                                                   :subcat {:1 :top
+                                                            :2 '()}
+                                                   :sem comp-sem}}}))
+
                    (unify-check (let [first-arg (atom :top)
                                       second-arg (atom :top)]
                                   {:rule "relative-clause-complement"
@@ -390,11 +405,11 @@
                                    :comp {:synsem first-arg}
                                    :head {:synsem {:subcat {:1 first-arg
                                                             :2 second-arg}}}})
-                                head-principle
-                                {:first :comp}
-                                {:comp {:synsem {:subcat '()}}})))
+                                (let [head-sem (atom :top)]
+                                  {:synsem {:sem {:mod head-sem}}
+                                   :head {:synsem {:sem head-sem}}}))
+                   ))
                    
-
 (defn aux-is-head-feature [phrase]
   (cond (= :verb (get-in phrase '(:synsem :cat)))
         (unify-check phrase
