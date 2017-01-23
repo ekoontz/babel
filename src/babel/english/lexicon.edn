@@ -359,10 +359,10 @@
                   :sem {:pred :bird}}}
  "black"
  {:synsem {:cat :adjective
-           :sem {:mod {:pred :black}
+           :sem {:pred :black
                  :comparative false
-                 :physical-object true
-                 :human false}}}
+                 :mod {:physical-object true
+                       :human false}}}}
 
  "boil" {:synsem {:cat :verb
                   :sem {:pred :boil}}}
@@ -731,7 +731,7 @@
                     :sem {:pred :finish}}}
 
  "first" {:synsem {:cat :adjective
-                   :sem {:mod {:pred :first}
+                   :sem {:pred :first
                          :comparative false}}}
 
  "fit" {:english {:past "fit"
@@ -1241,8 +1241,8 @@
                     :sem {:pred :insure}}}
 
  "intelligent" {:synsem {:cat :adjective
-                         :sem {:mod {:pred :intelligent}
-                               :human true
+                         :sem {:pred :intelligent
+                               :subj {:human true}
                                :comparative false}
                          :subcat {:1 {:cat :det}
                                   :2 '()}}}
@@ -1569,8 +1569,8 @@
                   :sem {:pred :need}}}
 
  "new" {:synsem {:cat :adjective
-                 :sem {:mod {:pred :new}
-                       :physical-object true}}}
+                 :sem {:pred :new
+                       :subj {:physical-object true}}}}
 
  "note" [{:synsem {:cat :verb
                    :sem {:pred :note}}}
@@ -1595,8 +1595,8 @@
                   :subcat '()}}
 
  "old" {:synsem {:cat :adjective
-                 :sem {:mod {:pred :old}
-                       :physical-object true}}}
+                 :sem {:pred :old
+                       :subj {:physical-object true}}}}
 
  "on" {:synsem {:cat :prep
                 :sem {:pred :on}
@@ -1772,10 +1772,10 @@
                      :sem {:pred :recover}}}
  "red"
  {:synsem {:cat :adjective
-           :sem {:mod {:pred :rosso}
+           :sem {:pred :rosso
                  :comparative false
-                 :physical-object true
-                 :human false}}}
+                 :subj {:physical-object true
+                        :human false}}}}
 
  "remain" [{:synsem {:cat :verb
                      :subcat {:2 {:cat :prep
@@ -1874,7 +1874,7 @@
                      :past "scrubbed"}}
 
  "second" {:synsem {:cat :adjective
-                    :sem {:mod {:pred :second}
+                    :sem {:pred :second
                           :comparative false}}}
 
  "see" (let [common {:english {:past "saw"
@@ -1939,15 +1939,15 @@
                   :sem {:pred :shoe}}}
  "short"
  [{:synsem {:cat :adjective
-            :sem {:mod {:pred :short}
+            :sem {:pred :short
                   :comparative false
-                  :physical-object true}
+                  :subj {:physical-object true}}
             :subcat {:1 {:cat :det}
                      :2 '()}}}
   {:synsem {:cat :adjective
-            :sem {:mod {:pred :short}
+            :sem {:pred :short
                   :comparative false
-                  :event true}
+                  :subj {:event true}}
             :subcat {:1 {:cat :det}
                      :2 '()}}}]
 
@@ -1991,7 +1991,7 @@
           :english {:past "slept"}}
  "small"
  {:synsem {:cat :adjective
-           :sem {:mod {:pred :small}
+           :sem {:pred :small
                  :comparative false}
            :subcat {:1 {:cat :det}
                     :2 '()}}}
@@ -2078,8 +2078,8 @@
            :english {:past "studied"}}
 
  "stupid" {:synsem {:cat :adjective
-                    :sem {:mod {:pred :stupid}
-                          :human true
+                    :sem {:pred :stupid
+                          :subj {:human true}
                           :comparative false}
                     :subcat {:1 {:cat :det}
                              :2 '()}}}
@@ -2119,8 +2119,8 @@
                         :sem {:pred :to}}}}}
  "tall"
  {:synsem {:cat :adjective
-           :sem {:mod {:pred :tall}
-                 :human true
+           :sem {:pred :tall
+                 :subj {:human true}
                  :comparative false}
            :subcat {:1 {:cat :det}
                     :2 '()}}}
@@ -2530,10 +2530,10 @@
                                :sem {:pred :at}}}}}
  "yellow"
  {:synsem {:cat :adjective
-           :sem {:mod {:pred :yellow}
+           :sem {:pred :yellow
                  :comparative false
-                 :physical-object true
-                 :human false}}}
+                 :subj {:physical-object true
+                        :human false}}}}
 
  "you"
  [{:english {:note "♂"}

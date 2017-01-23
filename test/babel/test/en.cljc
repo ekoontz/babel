@@ -241,8 +241,8 @@
 (deftest generate-with-possessive-2
   (let [result
         (generate {:synsem {:cat :noun
-                            :sem {:mod {:pred :rosso}
-                                  :number :sing
+                            :mod {:first {:pred :rosso}}
+                            :sem {:number :sing
                                   :spec {:pred :of
                                          :of {:pred :Juana}}
                                   :pred :dog}
