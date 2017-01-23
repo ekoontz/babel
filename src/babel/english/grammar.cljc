@@ -256,34 +256,39 @@
 
                    (unify-check c11-comp-subcat-1
                            (let [propernoun (atom :top)
-                                 head-sem (atom :top)]
+                                 head-sem (atom :top)
+                                 mod-sem (atom {:subj head-sem})]
                              {:modified true
                               :synsem {:reflexive false
-                                       :propernoun propernoun}
+                                       :propernoun propernoun
+                                       :mod {:first mod-sem
+                                             :rest '()}}
                               :comp {:synsem {:cat :adjective
-                                              :sem head-sem}}
+                                              :sem mod-sem}}
                               :head {:modified false
                                      :synsem {:cat :noun
                                               :propernoun propernoun
                                               :sem head-sem}}
                               :rule "nbar"}))
 
-                   ;; TODO: do we need noun-phrase1? its only distinction is its' [:sem :mod] = '()
-                   ;; and I'm not sure why this distinction is necessary.
+                   ;; np1 -> det nbar
                    (unify-check c10
                            comp-specs-head
                            (let [number-agreement (atom :top)
-                                 propernoun (atom :top)]
+                                 propernoun (atom :top)
+                                 mod (atom :top)]
                              {:rule "noun-phrase1"
                               :aliases (list "np1")
                               :synsem {:agr {:number number-agreement}
                                        :reflexive false
                                        :cat :noun
+                                       :mod mod
                                        :propernoun propernoun
-                                       :sem {:number number-agreement
-                                             :mod '()}}
-                              :head {:phrasal false
-                                     :synsem {:propernoun propernoun}}}))
+                                       :sem {:number number-agreement}}
+                              :head {:phrasal true
+                                     :synsem {:mod mod
+                                              :propernoun propernoun}}}))
+                   ;; np2 -> det noun
                    (unify-check c10
                            comp-specs-head
                            (let [number-agreement (atom :top)
@@ -291,14 +296,14 @@
                              {:rule "noun-phrase2"
                               :aliases (list "np2")
                               :synsem {:agr {:number number-agreement}
-                                       :cat :noun
                                        :reflexive false
+                                       :cat :noun
+                                       :mod '()
                                        :propernoun propernoun
-                                       :sem {:mod {:pred :top}
-                                             :number number-agreement}}
-                              :head {:phrasal true
+                                       :sem {:number number-agreement}}
+                              :head {:phrasal false
                                      :synsem {:propernoun propernoun}}}))
-
+                   
                    (let [sem (atom :top)
                          agr (atom :top)
                          reflexive (atom :top)]
