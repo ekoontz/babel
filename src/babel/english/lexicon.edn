@@ -1436,11 +1436,12 @@
          :english {:past "made"}}
 
  "man" {:english {:plur "men"}
-        :synsem {:agr {:gender :masc}
+        :synsem {:agr {:gender :masc
+                       :number :sing}
                  :cat :noun
                  :sem {:human true
-                       :pred :man
-                       :child false}}}
+                       :child false
+                       :pred :man}}}
 
  "manage" {:synsem {:cat :verb
                     :sem {:pred :manage}}}
