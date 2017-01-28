@@ -52,12 +52,19 @@
    (default
     (let [gender (atom :top)
           number (atom :top)]
-      {:synsem {:cat :noun
+      {:english {:number number
+                 :gender gender}
+       :synsem {:cat :noun
                 :pronoun true
                 :agr {:gender gender
                       :number number}
                 :sem {:gender gender
-                         :number number}}}))
+                      :number number}}}))
+
+   ;; pronouns take no arguments: e.g. "she", not "the she".
+   (default
+    {:synsem {:pronoun true
+              :subcat '()}})
    
    ;; propernouns have semantic number and gender.
    (default
