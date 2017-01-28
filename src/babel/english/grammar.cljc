@@ -139,7 +139,8 @@
      :comp {:english comp-english}
      :english {:a comp-english
                :agr agr
-               :b head-english}}))
+               :b head-english}
+     :first :comp}))
 
 ;; -- BEGIN SCHEMA DEFINITIONS
 (def c10
@@ -173,7 +174,6 @@
    head-last
    {
     :schema-symbol 'c11 ;; used by over-each-parent to know where to put children.
-    :first :head
     :comment "c11"}))
 
 ;; TODO: names like "c11-comp-subcat-1" have no human-discernible meaning:
@@ -345,7 +345,8 @@
                                 root-is-head
                                 {:rule "sentence-nonphrasal-head"
                                  :synsem {:cat :verb}
-                                 :head {:synsem {:participle false}}})
+                                 :head {:phrasal false
+                                        :synsem {:participle false}}})
 
                    (unify-check c10
                                 unmodified
@@ -384,30 +385,51 @@
 
                    ;;      noun-phrase3      ->  noun-phrase[1,2] relative-clause-complement
                    ;; e.g. "the man you saw" ->  "the man"        "you saw"
-                   (unify-check {:rule "noun-phrase3"
+                   (unify {:rule "noun-phrase3"
                                  :synsem {:cat :noun
                                           :subcat '()}}
-                                head-principle
-                                (let [comp-sem (atom :top)
-                                      head-sem (atom {:mod comp-sem})]
-                                  {:synsem {:sem head-sem}
-                                   :head {:synsem {:sem head-sem}}
-                                   :comp {:synsem {:cat :verb
-                                                   :subcat {:1 :top
-                                                            :2 '()}
-                                                   :sem comp-sem}}}))
+                          head-principle
+                          head-first
+                          (let [head-sem (atom :top)
+                                cat (atom :noun)
+                                comp-sem (atom {:obj head-sem})
+                                head-mod (atom :top)]
+                            {:phrasal true
+                             :synsem {:cat cat
+                                      :sem head-sem
+                                      :mod {:first comp-sem
+                                            :rest head-mod}}
+                             :head {:synsem {:cat cat
+                                             :subcat '()
+                                             :mod head-mod
+                                             :sem head-sem}}
+                             :comp {:phrasal true
+                                    :rule "relative-clause-complement"
+                                    :synsem {:sem comp-sem}}}))
 
-                   (unify-check (let [first-arg (atom :top)
-                                      second-arg (atom :top)]
-                                  {:rule "relative-clause-complement"
-                                   :synsem {:subcat {:1 second-arg
-                                                     :2 '()}}
-                                   :comp {:synsem first-arg}
-                                   :head {:synsem {:subcat {:1 first-arg
-                                                            :2 second-arg}}}})
-                                (let [head-sem (atom :top)]
-                                  {:synsem {:sem {:mod head-sem}}
-                                   :head {:synsem {:sem head-sem}}}))
+                   (unify (let [first-arg (atom :top)
+                                second-arg (atom {:reflexive false})]
+                            {:rule "relative-clause-complement"
+                             :phrasal true
+                             :synsem {:subcat {:1 second-arg
+                                               :2 '()}}
+                             :comp {:synsem first-arg}
+                             :head {:synsem {:subcat {:1 first-arg
+                                                      :2 second-arg}}}})
+                          (let [head-sem (atom :top)]
+                            {:synsem {:sem head-sem}
+                             :head {:synsem {:sem head-sem}}})
+
+                          (let [cat (atom :verb)]
+                            {:synsem {:cat cat}
+                             :head {:synsem {:cat cat}}})
+
+                          head-last
+                          
+                          {:head {:phrasal false} ;; for debugging
+                           :comp {:phrasal false}})
+                   
+                   
                    ))
                    
 (defn aux-is-head-feature [phrase]
