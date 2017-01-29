@@ -346,14 +346,24 @@
                                 {:rule "sentence-nonphrasal-head"
                                  :synsem {:cat :verb}
                                  :head {:phrasal false
-                                        :synsem {:participle false}}})
-
+                                        :synsem {:participle false}}}
+                                (let [subj-sem (atom :top)
+                                      sem (atom {:subj subj-sem})]
+                                  {:synsem {:sem sem}
+                                   :head {:synsem {:sem sem}}
+                                   :comp {:synsem {:sem subj-sem}}}))
+                                
                    (unify-check c10
                                 unmodified
                                 root-is-head-root
                                 {:head {:phrasal true}
                                  :rule "sentence-phrasal-head"
-                                 :synsem {:cat :verb}})
+                                 :synsem {:cat :verb}}
+                                (let [subj-sem (atom :top)
+                                      sem (atom {:subj subj-sem})]
+                                  {:synsem {:sem sem}
+                                   :head {:synsem {:sem sem}}
+                                   :comp {:synsem {:sem subj-sem}}}))
 
                    (unify-check h21
                                 root-is-head
