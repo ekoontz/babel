@@ -408,6 +408,28 @@
                               :rule "relative-clause-complement"
                               :synsem {:sem comp-sem}}}))
                    
+                   (unify-check
+                    (let [first-arg (atom :top)
+                          second-arg (atom {:reflexive false})]
+                      {:rule "relative-clause-complement"
+                       :phrasal true
+                       :synsem {:subcat {:1 second-arg
+                                         :2 '()}}
+                       :comp {:synsem first-arg}
+                       :head {:synsem {:subcat {:1 first-arg
+                                                :2 second-arg}}}})
+                    (let [head-sem (atom :top)]
+                      {:synsem {:sem head-sem}
+                       :head {:synsem {:sem head-sem}}})
+                    
+                    (let [cat (atom :verb)]
+                      {:synsem {:cat cat}
+                       :head {:synsem {:cat cat}}})
+                    
+                    head-last
+                    
+                    {:head {:phrasal false} ;; for debugging
+                     :comp {:phrasal false}})
                    
                    ))
                    
