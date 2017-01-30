@@ -63,7 +63,8 @@
 
    ;; pronouns take no arguments: e.g. "she", not "the she".
    (default
-    {:synsem {:pronoun true
+    {:synsem {:cat :noun
+              :pronoun true
               :subcat '()}})
    
    ;; propernouns have semantic number and gender.
