@@ -577,11 +577,12 @@
     (is (not (nil? parse)))
     (is (= (get-in parse [:synsem :cat])
            :noun))
-    (is (= (get-in parse [:synsem :sem :mod :subj :pred])
-           :tu))
-    (is (= (get-in parse [:synsem :sem :mod :obj :pred])
+    (is (= (get-in parse [:synsem :mod :first :obj :pred])
            :man))
-    (is (= (get-in parse [:synsem :sem :pred])
-           :man))))
+    (is (= (get-in parse [:synsem :mod :first :subj :pred])
+           :tu))
+    (is (= (get-in parse [:synsem :mod :first :pred])
+           :see))))
+
 
 
