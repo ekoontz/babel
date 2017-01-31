@@ -346,24 +346,14 @@
                                 {:rule "sentence-nonphrasal-head"
                                  :synsem {:cat :verb}
                                  :head {:phrasal false
-                                        :synsem {:participle false}}}
-                                (let [subj-sem (atom :top)
-                                      sem (atom {:subj subj-sem})]
-                                  {:synsem {:sem sem}
-                                   :head {:synsem {:sem sem}}
-                                   :comp {:synsem {:sem subj-sem}}}))
-                                
+                                        :synsem {:participle false}}})
                    (unify-check c10
                                 unmodified
                                 root-is-head-root
-                                {:head {:phrasal true}
+                                {:head {:phrasal true
+                                        :slash false}
                                  :rule "sentence-phrasal-head"
-                                 :synsem {:cat :verb}}
-                                (let [subj-sem (atom :top)
-                                      sem (atom {:subj subj-sem})]
-                                  {:synsem {:sem sem}
-                                   :head {:synsem {:sem sem}}
-                                   :comp {:synsem {:sem subj-sem}}}))
+                                 :synsem {:cat :verb}})
 
                    (unify-check h21
                                 root-is-head
@@ -423,6 +413,7 @@
                           second-arg (atom {:reflexive false})]
                       {:rule "relative-clause-complement"
                        :phrasal true
+                       :slash true
                        :synsem {:subcat {:1 second-arg
                                          :2 '()}}
                        :comp {:synsem first-arg}
