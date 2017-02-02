@@ -346,6 +346,7 @@
                                 {:rule "sentence-nonphrasal-head"
                                  :synsem {:cat :verb}
                                  :head {:phrasal false
+                                        :slash false
                                         :synsem {:participle false}}})
                    (unify-check c10
                                 unmodified
