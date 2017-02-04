@@ -619,3 +619,11 @@
 
 
 
+(deftest generate-with-relative-clause
+  (is (= "the man you see"
+         (morph (generate {:synsem {:cat :noun
+                                    :subcat '()
+                                    :sem {:pred :man}
+                                    :mod {:first {:pred :see}
+                                          :rest '()}}})))))
+
