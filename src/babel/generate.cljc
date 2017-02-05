@@ -164,7 +164,8 @@
         ;; expression, which might involve several parent lightning bolts.
         parents
         (let [parents (shufflefn (candidate-parents grammar spec))]
-          (log/trace (str "lightning-bolts: candidate-parents:" (string/join "," (map :rule parents))))
+          (if (not (empty? parents))
+            (log/debug (str "lightning-bolts: candidate-parents:" (string/join "," (map :rule parents)))))
           parents)]
     (let [lexical ;; 1. generate list of all phrases where the head child of each parent is a lexeme.
           (when (= false (get-in spec [:head :phrasal] false))
@@ -255,30 +256,35 @@
 (defn candidate-parents
   "find subset of _rules_ for which each member unifies successfully with _spec_"
   [rules spec]
-  (log/trace (str "candidate-parents: spec: " (strip-refs spec)))
+  (log/trace (str "candidate-parents: rules: " (clojure.string/join "," (map :rule rules))))
+  (log/debug (str "candidate-parents: spec: " (strip-refs spec)))
   (let [result
         (filter not-fail?
                 (mapfn (fn [rule]
                          (log/trace (str "candidate-parents: testing rule: " (:rule rule)))
-                         (if (and (not-fail? (unify (get-in rule [:synsem :cat] :top)
-                                                    (get-in spec [:synsem :cat] :top))))
+                         (if (not-fail? (unify (get-in rule [:synsem :cat] :top)
+                                               (get-in spec [:synsem :cat] :top)))
                            ;; TODO: add checks for [:synsem :subcat] valence as well as [:synsem :cat].
                            (do
-                             (log/trace (str "candidate-parents: " (:rule rule) " is a head candidate for spec:"
+                             (log/trace (str "candidate-parents: " (:rule rule) " is a cat-wise candidate for spec:"
                                              (strip-refs spec)))
-                             (unify spec rule))
+                             (let [unified (unify spec rule)]
+                               (if (= :fail unified)
+                                 (log/debug (str "candidate: " (:rule rule) " failed at:" (fail-path spec rule)))
+                                 (log/debug (str "candidate: " (:rule rule) " unified successfully with spec:" (strip-refs spec))))
+                               unified))
                            (do
                              (log/trace (str "candidate-parents: " (:rule rule) " is *not* a head candidate for spec:"
-                                             (strip-refs spec)))
+                                             spec))
                              :fail)))
                        rules))]
-    (log/trace (str "candidate-parents: "
+    (log/debug (str "candidate-parents: subset of possible rules: "
                     (string/join "," (map :rule result))
                     " for spec: " (strip-refs spec)))
     (if (empty? result)
       (log/trace (str "candidate-parents: "
                       "no parents found for spec: " (spec-info spec)))
-      (log/trace (str "candidate-parents: "
-                    (string/join "," (map :rule result))
-                    " for: " (spec-info spec))))
+      (log/debug (str "candidate-parents: returning: "
+                      (string/join "," (map :rule result))
+                      " for: " (spec-info spec))))
     result))
