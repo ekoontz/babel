@@ -2391,7 +2391,6 @@
  "wound" {:synsem {:cat :verb
                    :sem {:pred :wound}}}
 
-
  "worry" {:english {:past "worried"
                     :participle "worrying"
                     :past-participle "worried"}
@@ -2414,7 +2413,6 @@
            :sem {:pred :yellow
                  :subj {:physical-object true
                         :human false}}}}
-
  "you"
  {:synsem {:cat :noun
            :pronoun true
