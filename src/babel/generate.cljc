@@ -50,10 +50,10 @@
   (let [depth (or depth 0)
         truncate truncate
         max-depth (or max-depth max-total-depth)
-        spec (if (= ::none (get-in spec [:synsem :subcat] ::none))
+        spec (if (and false (= ::none (get-in spec [:synsem :subcat] ::none)))
                (unify spec {:synsem {:subcat '()}}) ;; add subcat '() if not supplied
                spec)]
-    (log/debug (str "generate-all:" depth "/" max-depth ";pred=" (get-in spec [:synsem :sem :pred])))
+    (log/debug (str "generate-all:" depth "/" max-depth ":" (spec-info spec)))
     (->>
      (lightning-bolts model spec depth max-depth)
 
@@ -120,18 +120,37 @@
 (defn comp-path-to-complements
   "return a lazy sequence of bolts for all possible complements that can be added to the end of the _path_ within _bolt_."
   [bolt path model depth max-depth]
-  (log/debug (str "comp-path-to-complements:" depth "/" max-depth ":" ((:morph-ps model) bolt) "@" path))
-  (let [spec (get-in bolt path)
+  (let [log-message-prefix (str "comp-path-to-complements:" depth "/" max-depth ":" ((:morph-ps model) bolt) "@" path)
+        debug (log/trace (str log-message-prefix ": start."))
+        spec (get-in bolt path)
         lexemes (shufflefn (get-lexemes model spec))
         bolts-at (if (< depth max-depth)
                    (lazy-seq (generate-all (get-in bolt path) model
                                            (+ 1 depth) max-depth)))
         lexemes-before-phrases
+        ;; TODO: remove this short-circuit (or)
         (or true (lexemes-before-phrases depth max-depth))]
+    (cond
+      (and (empty? lexemes) (empty? bolts-at))
+      (log/warn (str log-message-prefix ": neither lexemes nor bolts were found."))
+      (empty? lexemes)
+      (do (log/info (str log-message-prefix ": no lexemes found."))
+          (log/debug (str log-message-prefix ": sub-bolts found: first:"
+                          ((:morph-ps model)
+                           (first bolts-at)))))
+
+      (empty? bolts-at)
+      (do (log/info (str log-message-prefix ": no sub-bolts found."))
+          (log/debug (str log-message-prefix ":lexemes found: first:" ((:morph model) (first lexemes)))))
+      true
+      (log/debug (str log-message-prefix ": both lexemes and sub-bolts found.")))
+      
     (cond (nil? bolts-at)
           (lazy-seq lexemes)
+
           lexemes-before-phrases
           (lazy-cat lexemes bolts-at)
+
           true
           (lazy-cat bolts-at lexemes))))
 
@@ -151,8 +170,10 @@
   such that only the head children are generated. This sequence is used by (generate (above))
   to generate expressions by adding complements using (add-all-comps)."
   [language-model spec depth total-depth
-                       & {:keys [max-total-depth]
-                          :or {max-total-depth max-total-depth}}]
+                       & {:keys [max-total-depth at-bolt]
+                          :or {max-total-depth max-total-depth
+                               at-bolt nil}}]
+  (log/debug (str "lightning-bolts@: " (and at-bolt (babel.over/show-bolt at-bolt language-model))))
   (if (nil? spec)
     (throw (Exception. (str "given a null spec for lightning-bolts."))))
   (log/trace (str "lightning-bolts: depth: (" depth "/" max-total-depth ") and spec-info:"
@@ -185,10 +206,19 @@
                       (map #(assoc-in parent [:head] %)
                            (lightning-bolts language-model (get-in parent [:head])
                                             (+ 1 depth) (+ 1 total-depth)
+                                            :at-bolt (cons parent at-bolt)
                                             :max-total-depth max-total-depth)))
                     (filter #(= true
                                 (get-in % [:head :phrasal] true))
                             parents)))]
+      (if (not (empty? phrasal))
+        (log/debug (str "lightning-bolts: phrasal:" (string/join "," (map (fn [ph]
+                                                                            ((:morph-ps language-model) ph))
+                                                                          phrasal)))))
+      (if (not (empty? lexical))
+        (log/debug (str "lightning-bolts: lexical:" (string/join "," (map (fn [l]
+                                                                            ((:morph language-model) l))
+                                                                          lexical)))))
       (if (lexemes-before-phrases total-depth max-total-depth)
         (lazy-cat lexical phrasal)
         (lazy-cat phrasal lexical)))))
@@ -257,7 +287,7 @@
   "find subset of _rules_ for which each member unifies successfully with _spec_"
   [rules spec]
   (log/trace (str "candidate-parents: rules: " (clojure.string/join "," (map :rule rules))))
-  (log/debug (str "candidate-parents: spec: " (strip-refs spec)))
+  (log/debug (str "candidate-parents: spec: " (spec-info spec)))
   (let [result
         (filter not-fail?
                 (mapfn (fn [rule]
@@ -278,13 +308,10 @@
                                              spec))
                              :fail)))
                        rules))]
-    (log/debug (str "candidate-parents: subset of possible rules: "
-                    (string/join "," (map :rule result))
-                    " for spec: " (strip-refs spec)))
     (if (empty? result)
-      (log/trace (str "candidate-parents: "
-                      "no parents found for spec: " (spec-info spec)))
-      (log/debug (str "candidate-parents: returning: "
+      (log/warn (str "no rules matched spec:" (spec-info spec) ")"))
+      (log/debug (str "candidate-parents: subset of possible rules: "
                       (string/join "," (map :rule result))
-                      " for: " (spec-info spec))))
+                      " for spec: " (spec-info spec))))
     result))
+
