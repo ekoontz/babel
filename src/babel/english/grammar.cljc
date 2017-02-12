@@ -412,8 +412,13 @@
                                        :sem head-sem}}
                        :comp {:phrasal true
                               :rule "relative-clause-complement"
-                              :synsem {:sem comp-sem}}}))
-                   
+                              :synsem {:cat :verb
+                                       :sem comp-sem}}})
+
+                    (let [head-modified-by-comp (atom :top)]
+                      {:comp {:synsem {:subcat {:1 head-modified-by-comp}}}
+                       :head {:synsem head-modified-by-comp}}))
+                       
                    (unify-check
                     (let [first-arg (atom :top)
                           second-arg (atom {:reflexive false})]
