@@ -420,7 +420,8 @@
                       {:rule "relative-clause-complement"
                        :phrasal true
                        :slash true
-                       :synsem {:subcat {:1 second-arg
+                       :synsem {:cat :verb
+                                :subcat {:1 second-arg
                                          :2 '()}}
                        :comp {:synsem first-arg}
                        :head {:synsem {:subcat {:1 first-arg
