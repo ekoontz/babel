@@ -436,16 +436,26 @@
                        :head {:synsem {:sem head-sem}}})
                     
                     (let [cat (atom :verb)]
-                      {:synsem {:cat cat}
-                       :head {:synsem {:cat cat}}})
+                      {:synsem {:cat cat
+                                :aux false}
+                       :head {:synsem {:aux false
+                                       :cat cat}}})
                     
                     head-last
                     
-                    {:head {:phrasal false} ;; for debugging
-                     :comp {:phrasal false}})
-                   
-                   ))
-                   
+                    {:comp {:phrasal false}}
+
+                    {:comp {:synsem {:pronoun true
+                                     :case :nom
+                                     :cat :noun}}}
+
+                    (let [infl (atom :top)
+                          participle (atom false)]
+                      {:synsem {:infl infl
+                                :participle participle}
+                       :head {:synsem {:infl infl
+                                       :participle participle}}}))))
+
 (defn aux-is-head-feature [phrase]
   (cond (= :verb (get-in phrase '(:synsem :cat)))
         (unify-check phrase
