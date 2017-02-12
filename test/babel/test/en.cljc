@@ -620,10 +620,22 @@
 
 
 (deftest generate-with-relative-clause
+;  (is (not (empty?
+;            (morph (generate {:rule "relative-clause-complement"
+;                              :synsem {:subcat {:1 :top}}})))))
   (is (= "the man you see"
-         (morph (generate {:synsem {:cat :noun
+         (morph (generate {:rule "noun-phrase3"
+                           :head {:rule "noun-phrase2"
+                                  :comp {:synsem {:def :def}}}
+                           :comp {:rule "relative-clause-complement"}
+                           :synsem {:cat :noun
+                                    :agr {:number :sing}
                                     :subcat '()
                                     :sem {:pred :man}
-                                    :mod {:first {:pred :see}
-                                          :rest '()}}})))))
+                                    :mod {:first {:pred :see
+                                                  :tense :present
+                                                  :subj {:pred :tu}}}}}))))
+
+  )
+
 
