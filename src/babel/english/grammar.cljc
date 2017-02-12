@@ -393,15 +393,20 @@
                     head-principle
                     head-first
                     (let [head-sem (atom :top)
+                          agr (atom :top)
                           cat (atom :noun)
                           comp-sem (atom {:obj head-sem})
                           head-mod (atom :top)]
                       {:phrasal true
                        :synsem {:cat cat
+                                :agr agr
                                 :sem head-sem
                                 :mod {:first comp-sem
                                       :rest head-mod}}
-                       :head {:synsem {:cat cat
+                       :head {:rule "noun-phrase2"
+                              :synsem {:agr agr
+                                       :phrasal true
+                                       :cat cat
                                        :subcat '()
                                        :mod head-mod
                                        :sem head-sem}}
