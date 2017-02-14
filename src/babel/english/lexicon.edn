@@ -1399,8 +1399,7 @@
          :english {:past "made"}}
 
  "man" {:english {:plur "men"}
-        :synsem {:agr {:gender :masc
-                       :number :sing}
+        :synsem {:agr {:gender :masc}
                  :cat :noun
                  :sem {:human true
                        :child false
