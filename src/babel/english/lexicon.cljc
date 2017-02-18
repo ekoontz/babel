@@ -4,7 +4,7 @@
    [babel.encyclopedia :as encyc]
    [babel.english.morphology :as morph]
    [babel.lexiconfn :refer [apply-unify-key compile-lex default edn2lexicon
-                            new-entries verb-pred-defaults]]
+                            new-entries remove-vals verb-pred-defaults]]
    [clojure.java.io :refer [resource]]
    [clojure.tools.logging :as log]
    [dag_unify.core :refer [dissoc-paths fail? get-in strip-refs unify]]))
@@ -18,6 +18,13 @@
    (edn2lexicon (resource "babel/english/lexicon.edn"))
    (compile-lex exception-generator
                 phonize)
+
+   ;; for nouns with exceptional plural forms (e.g. "men","women"),
+   ;; exception-generator has generated both the plural and the singular forms
+   ;; as separate lexemes, so remove original lexeme.
+   (remove-vals #(and (= :top (get-in % [:synsem :agr :number]))
+                      (= :noun (get-in % [:synsem :cat]))
+                      (string? (get-in % [:english :plur]))))
 
    apply-unify-key
    
@@ -333,7 +340,11 @@
         (log/debug (str "exception generator: " root))
         (mapcat (fn [path-and-merge-fn]
                   (let [path (:path path-and-merge-fn)
+                        surface (:surface path-and-merge-fn)
                         merge-fn (:merge-fn path-and-merge-fn)]
+                    (log/info (str "root: " root))
+                    (log/info (str "path: " path))
+
                     ;; a lexeme-kv is a pair of a key and value. The key is a string (the word's surface form)
                     ;; and the value is a list of lexemes for that string.
                     (->> lexemes
@@ -342,26 +353,29 @@
                                    ;; non-maps like :top and :fail, would be useful:
                                    ;; would not need the (if (not (fail? lexeme)..)) check
                                    ;; to avoid a difficult-to-understand error:
-                                   ;; "java.lang.ClassCastException: clojure.lang.Keyword cannot be cast to clojure.lang.IPersistentMap"
-                                   (let [lexeme (cond (= lexeme :fail)
+                                   ;; "java.lang.ClassCastException:
+                                   ;;   clojure.lang.Keyword cannot be cast to clojure.lang.IPersistentMap"
+                                   ;; TODO: call (merge-fn root lexeme) once and save in a let, not over and over.
+                                   (let [merge (merge-fn root lexeme)
+                                         lexeme (cond (= lexeme :fail)
                                                       :fail
                                                       (= lexeme :top)
                                                       :top
                                                       true lexeme)
-                                         debug (if (string? (get-in lexeme path :none))
-                                                 (do (log/trace (str "lexeme:" (strip-refs lexeme)))
-                                                     (log/trace (str "merge-fn: " (strip-refs (merge-fn lexeme))))))
                                          synsem-check
                                          (if (string? (get-in lexeme path :none))
                                            (unify (get-in lexeme [:synsem])
-                                                  (get-in (merge-fn lexeme) [:synsem] :top)))]
+                                                  (get-in merge [:synsem] :top))
+                                           :fail)]
                                      (if (and (string? (get-in lexeme path :none))
-                                              (not (fail? synsem-check))) ;; TODO: (not (= :fail))
-                                       (list {(get-in lexeme path)
+                                              (not (= :fail synsem-check)))
+                                       (list {(if (= surface :use-root)
+                                                root
+                                                (get-in lexeme path))
                                               (unify
                                                (dissoc-paths lexeme [path
                                                                      [:english :english]])
-                                               (merge-fn lexeme)
+                                               merge
                                                {:synsem synsem-check}
                                                {:english {:root root
                                                           :exception true}})}))))))))
@@ -369,15 +383,23 @@
                  ;; 1. plural exceptions: e.g. "men","women":
                  {:path [:english :plur]
                   :merge-fn
-                  (fn [val]
+                  (fn [root val]
                     {:synsem {:cat :noun}
                      :english {:agr {:number :plur}
                                :english (get-in val [:english :plur])}})}
 
+                 {:path [:english :plur]
+                  :surface :use-root
+                  :merge-fn
+                  (fn [root val]
+                    {:synsem {:cat :noun}
+                     :english {:agr {:number :sing}
+                               :english root}})}
+
                  ;; <2. past exceptions: e.g. "sleep" -> "slept">
                  {:path [:english :past :1sing]
                   :merge-fn
-                  (fn [val]
+                  (fn [root val]
                     {:synsem {:cat :verb
                               :subcat {:1 {:agr {:number :sing
                                                  :person :1st}}}}
@@ -386,7 +408,7 @@
                  
                  {:path [:english :past :2sing]
                   :merge-fn
-                  (fn [val]
+                  (fn [root val]
                     {:synsem {:cat :verb
                               :subcat {:1 {:agr {:number :sing
                                                  :person :2nd}}}}
@@ -395,7 +417,7 @@
                  
                  {:path [:english :past :3sing]
                   :merge-fn
-                  (fn [val]
+                  (fn [root val]
                     {:synsem {:cat :verb
                               :subcat {:1 {:agr {:number :sing
                                                  :person :3rd}}}}
@@ -404,7 +426,7 @@
                  
                  {:path [:english :past :1plur]
                   :merge-fn
-                  (fn [val]
+                  (fn [root val]
                     {:synsem {:cat :verb
                               :subcat {:1 {:agr {:number :plur
                                                  :person :1st}}}}
@@ -413,7 +435,7 @@
                  
                  {:path [:english :past :2plur]
                   :merge-fn
-                  (fn [val]
+                  (fn [root val]
                     {:synsem {:cat :verb
                               :subcat {:1 {:agr {:number :plur
                                                  :person :2nd}}}}
@@ -422,7 +444,7 @@
                  
                  {:path [:english :past :3plur]
                   :merge-fn
-                  (fn [val]
+                  (fn [root val]
                     {:synsem {:cat :verb
                               :subcat {:1 {:agr {:number :plur
                                                  :person :3rd}}}}
@@ -431,7 +453,7 @@
                  
                  {:path [:english :past]
                   :merge-fn
-                  (fn [val]
+                  (fn [root val]
                     {:synsem {:cat :verb}
                      :english {:infl :past
                                :english (get-in val [:english :past])}})}
@@ -440,7 +462,7 @@
                  ;; <3. present exceptions: e.g. "be" -> "am">
                  {:path [:english :present :1sing]
                   :merge-fn
-                  (fn [val]
+                  (fn [root val]
                     {:synsem {:cat :verb
                               :subcat {:1 {:agr {:number :sing
                                                  :person :1st}}}}
@@ -449,7 +471,7 @@
                  
                  {:path [:english :present :2sing]
                   :merge-fn
-                  (fn [val]
+                  (fn [root val]
                     {:synsem {:cat :verb
                               :subcat {:1 {:agr {:number :sing
                                                  :person :2nd}}}}
@@ -458,7 +480,7 @@
                  
                  {:path [:english :present :3sing]
                   :merge-fn
-                  (fn [val]
+                  (fn [root val]
                     {:synsem {:cat :verb
                               :subcat {:1 {:agr {:number :sing
                                                  :person :3rd}}}}
@@ -467,7 +489,7 @@
                  
                  {:path [:english :present :1plur]
                   :merge-fn
-                  (fn [val]
+                  (fn [root val]
                     {:synsem {:cat :verb
                               :subcat {:1 {:agr {:number :plur
                                                  :person :1st}}}}
@@ -476,7 +498,7 @@
                  
                  {:path [:english :present :2plur]
                   :merge-fn
-                  (fn [val]
+                  (fn [root val]
                     {:synsem {:cat :verb
                               :subcat {:1 {:agr {:number :plur
                                                  :person :2nd}}}}
@@ -485,7 +507,7 @@
                  
                  {:path [:english :present :3plur]
                   :merge-fn
-                  (fn [val]
+                  (fn [root val]
                     {:synsem {:cat :verb
                               :subcat {:1 {:agr {:number :plur
                                                  :person :3rd}}}}
@@ -494,7 +516,7 @@
                  
                  {:path [:english :present]
                   :merge-fn
-                  (fn [val]
+                  (fn [root val]
                     {:synsem {:cat :verb}
                      :english {:infl :present
                                :english (get-in val [:english :present])}})}
@@ -502,7 +524,7 @@
                  
                  {:path [:english :participle]
                   :merge-fn
-                  (fn [val]
+                  (fn [root val]
                     {:synsem {:cat :verb}
                      :english {:infl :participle
                                :english (get-in val [:english :participle])}})}]))))))
