@@ -229,7 +229,11 @@
 
 (deftest generate-with-possessive-1
   (let [result
-        (generate {:synsem {:cat :noun
+        (generate {:synsem {
+                            ;; TODO: subcat '() should be part of language model's top-level generate defaults;
+                            ;; c.f. TODO on babel.test.translate/latin-to-english
+                            :subcat '()
+                            :cat :noun
                             :sem {:number :sing
                                   :mod '()
                                   :spec {:pred :of
