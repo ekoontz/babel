@@ -95,7 +95,7 @@
                        :sem {:aspect :pluperfect
                              :tense :past}
                        :infl :pluperfect}}))]
-    (log/debug (str "English: do-defaults (post) on tree: " (fo result)))
+    (log/debug (str "English: do-defaults (post) on tree: " (parse/fo-ps result fo)))
     (log/debug (str "aspect (post): " (strip-refs (get-in result
                                                          [:synsem :sem :aspect]
                                                          ::unset))))
