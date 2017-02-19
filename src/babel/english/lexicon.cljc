@@ -342,8 +342,8 @@
                   (let [path (:path path-and-merge-fn)
                         surface (:surface path-and-merge-fn)
                         merge-fn (:merge-fn path-and-merge-fn)]
-                    (log/info (str "root: " root))
-                    (log/info (str "path: " path))
+                    (log/debug (str "root: " root))
+                    (log/debug (str "path: " path))
 
                     ;; a lexeme-kv is a pair of a key and value. The key is a string (the word's surface form)
                     ;; and the value is a list of lexemes for that string.
