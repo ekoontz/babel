@@ -49,10 +49,7 @@
 (defn generate-all [spec model & [depth max-depth]]
   (let [depth (or depth 0)
         truncate truncate
-        max-depth (or max-depth max-total-depth)
-        spec (if (and false (= ::none (get-in spec [:synsem :subcat] ::none)))
-               (unify spec {:synsem {:subcat '()}}) ;; add subcat '() if not supplied
-               spec)]
+        max-depth (or max-depth max-total-depth)]
     (log/debug (str "generate-all:" depth "/" max-depth ":" (spec-info spec)))
     (->>
      (lightning-bolts model spec depth max-depth)
