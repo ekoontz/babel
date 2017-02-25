@@ -404,8 +404,8 @@
                                 :mod {:first comp-sem
                                       :rest head-mod}}
                        :head {:rule "noun-phrase2"
+                              :phrasal true
                               :synsem {:agr agr
-                                       :phrasal true
                                        :cat cat
                                        :subcat '()
                                        :mod head-mod
