@@ -625,12 +625,8 @@
 
 ;; generate "the woman she sees"
 (def spec-for-the-woman-she-sees
-  {:rule "noun-phrase3"
-   :head {:rule "noun-phrase2"
-          :comp {:synsem {:def :def}}}
-   :comp {:rule "relative-clause-complement"}
+  {:head {:comp {:synsem {:def :def}}}
    :synsem {:cat :noun
-            :agr {:number :sing}
             :subcat '()
             :sem {:pred :woman}
             :mod {:first {:pred :see
@@ -638,9 +634,6 @@
                           :subj {:pred :lei}}}}})
 
 (deftest generate-with-relative-clause
-;  (is (not (empty?
-;            (morph (generate {:rule "relative-clause-complement"
-;                              :synsem {:subcat {:1 :top}}})))))
   (is (= "the woman she sees"
          (morph (generate spec-for-the-woman-she-sees)))))
 
