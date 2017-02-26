@@ -625,7 +625,8 @@
 
 ;; generate "the woman she sees"
 (def spec-for-the-woman-she-sees
-  {:synsem {:cat :noun
+  {:synsem {:agr {:number :sing}
+            :cat :noun
             :sem {:pred :woman
                   :spec {:def :def}}
             :mod {:first {:pred :see
