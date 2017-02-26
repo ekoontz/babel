@@ -134,22 +134,6 @@
         lexemes-before-phrases
         ;; TODO: remove this short-circuit (or)
         (or true (lexemes-before-phrases depth max-depth))]
-    (log/debug (str "comp-path-to-complements:bolt: " ((:morph-ps model) bolt)))
-    (cond
-      (and (empty? lexemes) (empty? bolts-at))
-      (log/warn (str log-message-prefix ": neither lexemes nor bolts were found."))
-      (empty? lexemes)
-      (do (log/info (str log-message-prefix ": no lexemes found."))
-          (log/debug (str log-message-prefix ": sub-bolts found: first:"
-                          ((:morph-ps model)
-                           (first bolts-at)))))
-
-      (empty? bolts-at)
-      (do (log/info (str log-message-prefix ": no sub-bolts found."))
-          (log/debug (str log-message-prefix ":lexemes found: first:" ((:morph model) (first lexemes)))))
-      true
-      (log/debug (str log-message-prefix ": both lexemes and sub-bolts found.")))
-      
     (cond (nil? bolts-at)
           (lazy-seq lexemes)
 
