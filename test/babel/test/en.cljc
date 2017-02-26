@@ -6,7 +6,7 @@
             [babel.english.grammar :as grammar :refer [head-first head-last]]
             [babel.english.morphology :refer [get-string]]
 
-            [babel.generate :refer [assoc-in-paths get-lexemes lightning-bolts not-fail?]]
+            [babel.generate :refer [get-lexemes lightning-bolts not-fail?]]
             
             [babel.over :refer [over overc overh]]
             
