@@ -625,10 +625,9 @@
 
 ;; generate "the woman she sees"
 (def spec-for-the-woman-she-sees
-  {:head {:comp {:synsem {:def :def}}}
-   :synsem {:cat :noun
-            :subcat '()
-            :sem {:pred :woman}
+  {:synsem {:cat :noun
+            :sem {:pred :woman
+                  :spec {:def :def}}
             :mod {:first {:pred :see
                           :tense :present
                           :subj {:pred :lei}}}}})
