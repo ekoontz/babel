@@ -6,7 +6,7 @@
             [babel.english.grammar :as grammar :refer [head-first head-last]]
             [babel.english.morphology :refer [get-string]]
 
-            [babel.generate :refer [get-lexemes lightning-bolts not-fail?]]
+            [babel.generate :refer [assoc-in-paths get-lexemes lightning-bolts not-fail?]]
             
             [babel.over :refer [over overc overh]]
             
@@ -22,7 +22,7 @@
             #?(:cljs [cljs.test :refer-macros [deftest is]])
             #?(:clj [clojure.tools.logging :as log])
             #?(:cljs [babel.logjs :as log]) 
-            [dag_unify.core :refer [assoc-in fail? fail-path-between get-in strip-refs unify]]))
+            [dag_unify.core :refer [assoc-in dissoc-paths fail? fail-path-between get-in strip-refs unify]]))
 
 (defn display-expression [expr]
   {:en (morph expr)
@@ -623,23 +623,26 @@
 
 
 
+;; generate "the woman she sees"
+(def spec-for-the-woman-she-sees
+  {:rule "noun-phrase3"
+   :head {:rule "noun-phrase2"
+          :comp {:synsem {:def :def}}}
+   :comp {:rule "relative-clause-complement"}
+   :synsem {:cat :noun
+            :agr {:number :sing}
+            :subcat '()
+            :sem {:pred :woman}
+            :mod {:first {:pred :see
+                          :tense :present
+                          :subj {:pred :lei}}}}})
+
 (deftest generate-with-relative-clause
 ;  (is (not (empty?
 ;            (morph (generate {:rule "relative-clause-complement"
 ;                              :synsem {:subcat {:1 :top}}})))))
-  (is (= "the man you see"
-         (morph (generate {:rule "noun-phrase3"
-                           :head {:rule "noun-phrase2"
-                                  :comp {:synsem {:def :def}}}
-                           :comp {:rule "relative-clause-complement"}
-                           :synsem {:cat :noun
-                                    :agr {:number :sing}
-                                    :subcat '()
-                                    :sem {:pred :man}
-                                    :mod {:first {:pred :see
-                                                  :tense :present
-                                                  :subj {:pred :tu}}}}}))))
+  (is (= "the woman she sees"
+         (morph (generate spec-for-the-woman-she-sees)))))
 
-  )
 
 
