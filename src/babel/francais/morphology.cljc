@@ -7,7 +7,7 @@
    [clojure.string :refer (trim)]
    #?(:clj [clojure.tools.logging :as log])
    #?(:cljs [babel.logjs :as log])
-   [dag_unify.core :refer (copy dissoc-paths fail? get-in ref? strip-refs unifyc)]))
+   [dag_unify.core :refer (copy dissoc-paths fail? get-in ref? strip-refs unify unifyc)]))
 
 (def replace-patterns
   (concat
@@ -45,9 +45,87 @@
    element of replace-patterns where the element's :u unifies successfully with
    unify-with. If lexicon is supplied, look up infinitive in lexicon and use exceptional form of
    first return value, if any."
-  (let [exception (let [exception (first (get lexicon infinitive))]
+  (let [exception (let [exception (first (get lexicon infinitive))
+                        boot-stem1 (get-in exception [:français :boot-stem])
+                        boot-stem2 (get-in exception [:français :boot-stem2])
+                        present-1-sing (get-in exception [:français :present :1sing])
+                        present-2-sing (get-in exception [:français :present :2sing])
+                        present-3-sing (get-in exception [:français :present :3sing])]
                     (if exception
-                      [(cond true "buvons")]))
+                      [(cond
+                         (and present-1-sing
+                              (not (fail?
+                                    (unify {:synsem {:infl :present
+                                                     :subcat {:1 {:agr {:person :1st
+                                                                        :number :sing}}}}}
+                                           unify-with))))
+                         present-1-sing
+
+                         (and present-2-sing
+                              (not (fail?
+                                    (unify {:synsem {:infl :present
+                                                     :subcat {:1 {:agr {:person :2nd
+                                                                        :number :sing}}}}}
+                                           unify-with))))
+                         present-2-sing
+
+                         (and present-3-sing
+                              (not (fail?
+                                    (unify {:synsem {:infl :present
+                                                     :subcat {:1 {:agr {:person :3rd
+                                                                        :number :sing}}}}}
+                                           unify-with))))
+                         present-3-sing
+
+                         (and boot-stem1
+                              (not (fail?
+                                    (unify {:synsem {:infl :present
+                                                     :subcat {:1 {:agr {:person :1st
+                                                                        :number :sing}}}}}
+                                           unify-with))))
+                         (str boot-stem1 "s")
+
+                         (and boot-stem1
+                              (not (fail?
+                                    (unify {:synsem {:infl :present
+                                                     :subcat {:1 {:agr {:person :2nd
+                                                                        :number :sing}}}}}
+                                           unify-with))))
+                         (str boot-stem1 "s")
+
+                         (and boot-stem1
+                              (not (fail?
+                                    (unify {:synsem {:infl :present
+                                                     :subcat {:1 {:agr {:person :3rd
+                                                                        :number :sing}}}}}
+                                           unify-with))))
+                         (str boot-stem1 "t")
+
+                         (and boot-stem2
+                              (not (fail?
+                                    (unify {:synsem {:infl :present
+                                                     :subcat {:1 {:agr {:person :1st
+                                                                        :number :plur}}}}}
+                                           unify-with))))
+                         (str boot-stem2 "ons")
+
+                         (and boot-stem2
+                              (not (fail?
+                                    (unify {:synsem {:infl :present
+                                                     :subcat {:1 {:agr {:person :2nd
+                                                                        :number :plur}}}}}
+                                           unify-with))))
+                         (str boot-stem2 "ez")
+
+                         (and boot-stem1
+                              (not (fail?
+                                    (unify {:synsem {:infl :present
+                                                     :subcat {:1 {:agr {:person :3rd
+                                                                        :number :plur}}}}}
+                                           unify-with))))
+                         (str boot-stem1 "ent")
+
+                         true nil)]))
         result
         (or exception
             (take 1
@@ -79,7 +157,7 @@
 ;; TODO: separate part-of-speech -related functionality (e.g. the word is a verb) from
 ;; compositional functionality (e.g. the word has an :a and :b, so combine by concatenation, etc)
 ;; 
-(defn get-string [word & [b]]
+(defn get-string [word & [b lexicon]]
   (cond (and (nil? b)
              (seq? word))
         (let [result (get-string word)]
