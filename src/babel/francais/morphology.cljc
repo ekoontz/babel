@@ -40,20 +40,25 @@
                                 (get lexicon lex)))))))
            replace-patterns)))
 
-(defn conjugate [infinitive unify-with]
+(defn conjugate [infinitive unify-with & [lexicon]]
   "Conjugate an infinitive into a surface form by taking the first 
    element of replace-patterns where the element's :u unifies successfully with
-   unify-with."
-  (let [result
-        (take 1
-              (remove #(nil? %)
-                      (map
-                       (fn [replace-pattern]
-                         (let [from (nth (:g replace-pattern) 0)
-                               to (nth (:g replace-pattern) 1)
-                               unify-against (if (:u replace-pattern)
-                                               (:u replace-pattern)
-                                               :top)]
+   unify-with. If lexicon is supplied, look up infinitive in lexicon and use exceptional form of
+   first return value, if any."
+  (let [exception (let [exception (first (get lexicon infinitive))]
+                    (if exception
+                      [(cond true "buvons")]))
+        result
+        (or exception
+            (take 1
+                  (remove #(nil? %)
+                          (map
+                           (fn [replace-pattern]
+                             (let [from (nth (:g replace-pattern) 0)
+                                   to (nth (:g replace-pattern) 1)
+                                   unify-against (if (:u replace-pattern)
+                                                   (:u replace-pattern)
+                                                   :top)]
                             (if (and from to
                                      (re-matches from infinitive)
                                      (not (fail? (unifyc unify-against
@@ -65,11 +70,10 @@
                                 (log/debug (str "input spec: " (strip-refs unify-with)))
                                 (log/debug (str "pattern spec:"  (strip-refs unify-against)))
                                 (string/replace infinitive from to)))))
-                        replace-patterns)))]
+                           replace-patterns))))]
     (if (empty? result)
       (throw (Exception. (str "nothing found to match infinitive: " infinitive " ; "
                               " unify-with: " (strip-refs unify-with) ".")))
-
       (first result))))
 
 ;; TODO: separate part-of-speech -related functionality (e.g. the word is a verb) from
@@ -223,7 +227,7 @@
                                       ;; TODO: add checks for other -stem features, like :imperfect-stem.
                                       true
                                       (get-in word [:français]))]
-                 (log/info (str "conjugate: infinitive=" infinitive "; word=" word))
+                 (log/info (str "conjugate: infinitive=" infinitive "; word=" (strip-refs word)))
                  (conjugate infinitive word))))
            
            (and

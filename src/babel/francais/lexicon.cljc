@@ -103,7 +103,6 @@
 
    "boire" {:français {:past-participle "bu"
                        :boot-stem1 "boiv"
-                       ;; TODO: boot-stem2 is currently unsupported by babel.francais.morphology:
                        :boot-stem2 "buv"
                        :present {:1sing "bois"
                                  :2sing "boit"
