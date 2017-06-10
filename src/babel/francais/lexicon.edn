@@ -1,5 +1,25 @@
-{
- "abandoner" {:synsem {:cat :verb
+(let [verb-aux
+  (let [sem (atom {:aspect :perfect
+                   :tense :past})
+        subject (atom :top)]
+    {:synsem {:sem sem
+              :aux true
+              :subcat {:1 subject
+                       :2 {:infl :past-p
+                           :sem sem
+                           :cat :verb
+                           :aux false
+                           :subcat {:1 subject}}}}})
+
+      gender-pronoun-agreement
+      (let [gender (atom :top)]
+        {:synsem {:cat :noun
+                  :pronoun true
+                  :agr {:gender gender}
+                  :sem {:gender gender}
+                  :subcat '()}})]
+
+{"abandoner" {:synsem {:cat :verb
                        :sem {:pred :abandon}}}
  
  "abîmeer" {:synsem {:cat :verb
@@ -81,8 +101,8 @@
    [{:unify [common]
      :synsem {:sem {:pred :have
                     :subj {:human true}}}}
-    (unify common verb-aux
-           {:synsem {:subcat {:2 {:essere false}}}})])
+    {:unify [common verb-aux]
+     :synsem {:subcat {:2 {:essere false}}}}])
 
  "baisser" {:synsem {:cat :verb
                      :sem {:pred :lower}}}
@@ -185,10 +205,9 @@
                              :1plur "devons"
                              :2plur "devez"
                              :3plur "doivent"}}}]
-   (unify common {:synsem {:sem {:pred :have-to
-                                 :subj {:human true}}}}))
- 
- 
+   {:unify [common]
+    :synsem {:sem {:pred :have-to
+                   :subj {:human true}}}})
  
  "désirer" {:synsem {:cat :verb
                      :sem {:pred :desire}}}
@@ -225,10 +244,10 @@
                                :1plur "disons"
                                :2plur "dites"
                                :3plur "disent"}}}]
-     [(unify shared-part-of-dire
-             {:synsem {:sem {:pred :say}}})
-      (unify shared-part-of-dire
-             {:synsem {:sem {:pred :tell}}})])
+     [{:unify [shared-part-of-dire]
+       :synsem {:sem {:pred :say}}}
+      {:unify [shared-part-of-dire]
+       :synsem {:sem {:pred :tell}}}])
 
    "diviser" {:synsem {:cat :verb
                       :sem {:pred :divide}}}
@@ -338,9 +357,10 @@
                               :1plur "serons"
                               :2plur "serez"
                               :3plur "seront"}}}]
-     [(unify common {:synsem {:sem {:pred :be}}})
-      (unify common verb-aux
-             {:synsem {:subcat {:2 {:essere true}}}})])
+     [{:unify [common]
+       :synsem {:sem {:pred :be}}}
+      {:unify [common verb-aux]
+       :synsem {:subcat {:2 {:essere true}}}}])
    ;; ^^ in auxiliary form, "être" only allows essere=true verbs.
    ;; compare with "avoir", which only allows essere=false verbs.
 
@@ -387,10 +407,10 @@
                                   :2plur "faites"
                                   :3plur "font"}}}]
 
-        [(unify shared-part-of-faire
-             {:synsem {:sem {:pred :do}}})
-         (unify shared-part-of-faire
-                {:synsem {:sem {:pred :make}}})])
+        [{:unify [shared-part-of-faire]
+          :synsem {:sem {:pred :do}}}
+         {:unify [shared-part-of-faire]
+          :synsem {:sem {:pred :make}}}])
 
    "former" {:synsem {:cat :verb
                      :sem {:pred :form}}}
@@ -457,12 +477,10 @@
                          :sem {:human true
                                :pred :I}
                          :subcat '()}}]
-    [(unify gender-pronoun-agreement
-            common
-            {:synsem {:agr {:gender :fem}}})
-     (unify gender-pronoun-agreement
-            common
-            {:synsem {:agr {:gender :masc}}})])
+    [{:unify [gender-pronoun-agreement common]
+      :synsem {:agr {:gender :fem}}}
+     {:unify [gender-pronoun-agreement common]
+      :synsem {:agr {:gender :masc}}}])
 
    "Jean" {:synsem {:sem {:pred :Jean
                           :human true}
@@ -546,12 +564,10 @@
                                :number :plur}
                          :sem {:human true
                                :pred :noi}}}]
-    [(unify gender-pronoun-agreement
-            common
-            {:synsem {:agr {:gender :fem}}})
-     (unify gender-pronoun-agreement
-            common
-            {:synsem {:agr {:gender :masc}}})])
+    [{:unify [gender-pronoun-agreement common]
+      :synsem {:agr {:gender :fem}}}
+     {:unify [gender-pronoun-agreement common]
+      :synsem {:agr {:gender :masc}}}])
 
    "observer" {:synsem {:cat :verb
                        :sem {:pred :observe}}}
@@ -893,12 +909,10 @@
                                :number :sing}
                          :sem {:human true
                                :pred :tu}}}]
-    [(unify gender-pronoun-agreement
-            common
-            {:synsem {:agr {:gender :fem}}})
-     (unify gender-pronoun-agreement
-            common
-            {:synsem {:agr {:gender :masc}}})])
+    [{:unify [gender-pronoun-agreement common]
+      :synsem {:agr {:gender :fem}}}
+     {:unify [gender-pronoun-agreement common]
+      :synsem {:agr {:gender :masc}}}])
 
   "venir"
    (let [common
@@ -927,7 +941,4 @@
     [{:unify [gender-pronoun-agreement common]
       :synsem {:agr {:gender :fem}}}
      {:unify [gender-pronoun-agreement common]
-      :synsem {:agr {:gender :masc}}}])}
-
-
-   
+      :synsem {:agr {:gender :masc}}}])})
