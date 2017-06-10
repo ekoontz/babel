@@ -10,11 +10,15 @@
    [dag_unify.core :refer [get-in unify]]))
 
 (declare edn2lexicon)
+(declare edn2lexicon-small)
 
 (def lexicon (promise))
 (defn deliver-lexicon []
   (if (not (realized? lexicon))
-    (deliver lexicon (edn2lexicon (resource "babel/francais/lexicon.edn")))))
+    (deliver lexicon (edn2lexicon-small (resource "babel/francais/lexicon.edn")))))
+
+(defn edn2lexicon-small [resource]
+  (-> (lexiconfn/edn2lexicon resource)))
 
 (defn edn2lexicon [resource]
   (-> (lexiconfn/edn2lexicon resource)
