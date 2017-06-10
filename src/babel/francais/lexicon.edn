@@ -78,8 +78,9 @@
                              :1plur "avons"
                              :2plur "avez"
                              :3plur "ont"}}}]
-   [(unify common {:synsem {:sem {:pred :have
-                                  :subj {:human true}}}})
+   [{:unify [common]
+     :synsem {:sem {:pred :have
+                    :subj {:human true}}}}
     (unify common verb-aux
            {:synsem {:subcat {:2 {:essere false}}}})])
 
@@ -206,8 +207,9 @@
                                :1plur "devenons"
                                :2plur "devenez"
                                :3plur "deviennent"}}}]
-   (unify common {:synsem {:sem {:pred :become
-                                 :subj {:human true}}}}))
+   [{:unify [common]
+     :synsem {:sem {:pred :become
+                    :subj {:human true}}}}])
  
  
    "dire"
@@ -472,7 +474,7 @@
    "la" {:synsem {:cat :noun
                   :pronoun true
                   :reflexive true
-                  :case pronoun-acc
+                  :case :acc
                   :agr {:person :3rd
                         :gender :fem
                         :number :sing}
@@ -484,7 +486,7 @@
    "le" {:synsem {:cat :noun
                   :pronoun true
                   :reflexive true
-                  :case pronoun-acc
+                  :case :acc
                   :agr {:person :3rd
                         :gender :masc
                         :number :sing}
@@ -509,7 +511,7 @@
    "me" {:synsem {:cat :noun
                   :pronoun true
                   :reflexive true
-                  :case pronoun-acc
+                  :case :acc
                   :agr {:person :1st
                         :number :sing}
                   :subcat '()}}
@@ -606,12 +608,12 @@
                                :1plur "pouvons"
                                :2plur "pouvez"
                                :3plur "peuvent"}}}]
-     [(unify shared-part-of-pouvoir
-             {:synsem {:sem {:pred :can}}})
-      (unify shared-part-of-pouvoir
-             {:synsem {:sem {:pred :may}}})
-      (unify shared-part-of-pouvoir
-             {:synsem {:sem {:pred :be-able-to}}})])
+     [{:unify [shared-part-of-pouvoir]
+       :synsem {:sem {:pred :can}}}
+      {:unify [shared-part-of-pouvoir]
+       :synsem {:sem {:pred :may}}}
+      {:unify [shared-part-of-pouvoir]
+       :synsem {:sem {:pred :be-able-to}}}])
 
   "regarder" [{:synsem {:cat :verb
                         :sem {:pred :look}}}
@@ -651,7 +653,7 @@
    "se" {:synsem {:cat :noun
                   :pronoun true
                   :reflexive true
-                  :case pronoun-acc
+                  :case :acc
                   :agr {:person :3rd
                         :number :plur}
                   :subcat '()}}
@@ -869,7 +871,7 @@
    "te" {:synsem {:cat :noun
                   :pronoun true
                   :reflexive true
-                  :case pronoun-acc
+                  :case :acc
                   :agr {:person :2nd
                         :number :sing}
                   :subcat '()}}
@@ -912,8 +914,9 @@
                                :1plur "venons"
                                :2plur "venez"
                                :3plur "viennent"}}}]
-     (unify common {:synsem {:sem {:pred :come
-                                   :subj {:human true}}}}))
+     {:unify [common]
+      :synsem {:sem {:pred :come
+                     :subj {:human true}}}})
 
   "vous"
   (let [common {:synsem {:case :top
@@ -921,13 +924,10 @@
                                :number :plur}
                          :sem {:human true
                                :pred :voi}}}]
-    [(unify gender-pronoun-agreement
-            common
-            {:synsem {:agr {:gender :fem}}})
-     (unify gender-pronoun-agreement
-            common
-            {:synsem {:agr {:gender :masc}}})])
- 
- }
+    [{:unify [gender-pronoun-agreement common]
+      :synsem {:agr {:gender :fem}}}
+     {:unify [gender-pronoun-agreement common]
+      :synsem {:agr {:gender :masc}}}])}
+
 
    
