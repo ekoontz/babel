@@ -482,7 +482,7 @@
                 grammar)
         lexicon
         (into {}
-              (for [[k v] lexicon]
+              (for [[k v] @lexicon]
                 (let [filtered-v
                       (filter #(or (= (get-in % [:synsem :cat]) :verb)
                                    (= (get-in % [:synsem :propernoun]) true)
@@ -515,12 +515,12 @@
      :morph fo}))
 
 (defn analyze [arg]
-  (morph/analyze arg lexicon))
+  (morph/analyze arg @lexicon))
 
 (defn medium []
   (let [lexicon
         (into {}
-              (for [[k v] lexicon]
+              (for [[k v] @lexicon]
                 (let [filtered-v v]
                   (if (not (empty? filtered-v))
                     [k filtered-v]))))
