@@ -319,7 +319,7 @@
                                                  :2 '()}}}))]
           (if (fail? result)
             (throw (exception (str "fail when trying to create common-noun from lexical-entry: " lexical-entry
-                                   "subcat: " (get-in lexical-entry [:synsem :subcat])
+                                   "subcat: " (get-in lexical-entry [:synsem :subcat]) "; "
                                    "subcat emptyness: " (empty? (get-in lexical-entry [:synsem :subcat])))))
 
             result))
