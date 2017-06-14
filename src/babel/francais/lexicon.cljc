@@ -9,6 +9,30 @@
    [babel.pos :as pos :refer [pronoun-acc]]
    [dag_unify.core :refer [get-in unify]]))
 
+
+;; TODO: create lexicon compilation rules for:
+;(let [verb-aux
+;  (let [sem (atom {:aspect :perfect
+;                   :tense :past})
+;        subject (atom :top)]
+;    {:synsem {:sem sem
+ ;             :aux true
+  ;            :subcat {:1 subject
+  ;;                     :2 {:infl :past-p
+  ;                         :sem sem
+  ;                         :cat :verb
+  ;                         :aux false
+  ;                         :subcat {:1 subject}}}}});
+;
+;;      gender-pronoun-agreement
+ ;     (let [gender (atom :top)]
+ ;       {:synsem {:cat :noun
+  ;                :pronoun true
+   ;               :agr {:gender gender}
+   ;               :sem {:gender gender}
+   ;               :subcat '()}})]
+
+;; TODO: use lexiconfn/edn2lexicon
 (declare edn2lexicon)
 
 (def lexicon (promise))

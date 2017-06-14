@@ -1,24 +1,3 @@
-(let [verb-aux
-  (let [sem (atom {:aspect :perfect
-                   :tense :past})
-        subject (atom :top)]
-    {:synsem {:sem sem
-              :aux true
-              :subcat {:1 subject
-                       :2 {:infl :past-p
-                           :sem sem
-                           :cat :verb
-                           :aux false
-                           :subcat {:1 subject}}}}})
-
-      gender-pronoun-agreement
-      (let [gender (atom :top)]
-        {:synsem {:cat :noun
-                  :pronoun true
-                  :agr {:gender gender}
-                  :sem {:gender gender}
-                  :subcat '()}})]
-
 {"abandoner" {:synsem {:cat :verb
                        :sem {:pred :abandon}}}
  
@@ -101,8 +80,9 @@
    [{:unify [common]
      :synsem {:sem {:pred :have
                     :subj {:human true}}}}
-    {:unify [common verb-aux]
-     :synsem {:subcat {:2 {:essere false}}}}])
+    {:unify [common]
+     :synsem {:aux true
+              :subcat {:2 {:essere false}}}}])
 
  "baisser" {:synsem {:cat :verb
                      :sem {:pred :lower}}}
@@ -359,8 +339,9 @@
                               :3plur "seront"}}}]
      [{:unify [common]
        :synsem {:sem {:pred :be}}}
-      {:unify [common verb-aux]
-       :synsem {:subcat {:2 {:essere true}}}}])
+      {:unify [common]
+       :synsem {:aux true
+                :subcat {:2 {:essere true}}}}])
    ;; ^^ in auxiliary form, "être" only allows essere=true verbs.
    ;; compare with "avoir", which only allows essere=false verbs.
 
@@ -469,7 +450,8 @@
 ;;                         :sem {:pred :interest??}}}
 
   "je"
-  (let [common {:synsem {:cat :noun
+ (let [common {:gender-agreement-common true
+               :synsem {:cat :noun
                          :pronoun true
                          :case :nom
                          :agr {:person :1st
@@ -477,9 +459,9 @@
                          :sem {:human true
                                :pred :I}
                          :subcat '()}}]
-    [{:unify [gender-pronoun-agreement common]
+    [{:unify [common]
       :synsem {:agr {:gender :fem}}}
-     {:unify [gender-pronoun-agreement common]
+     {:unify [common]
       :synsem {:agr {:gender :masc}}}])
 
    "Jean" {:synsem {:sem {:pred :Jean
@@ -559,14 +541,15 @@
                      :sem {:pred :be-born}}}
 
   "nous"
-  (let [common {:synsem {:case :top
+ (let [common {:gender-pronoun-agreement true
+               :synsem {:case :top
                          :agr {:person :1st
                                :number :plur}
                          :sem {:human true
                                :pred :noi}}}]
-    [{:unify [gender-pronoun-agreement common]
+    [{:unify [common]
       :synsem {:agr {:gender :fem}}}
-     {:unify [gender-pronoun-agreement common]
+     {:unify [common]
       :synsem {:agr {:gender :masc}}}])
 
    "observer" {:synsem {:cat :verb
@@ -903,15 +886,17 @@
 
 
   "tu"
-  (let [common {:synsem {:cat :noun
-                         :case :nom
-                         :agr {:person :2nd
-                               :number :sing}
-                         :sem {:human true
-                               :pred :tu}}}]
-    [{:unify [gender-pronoun-agreement common]
+ (let [common {:gender-pronoun-agreement true
+               :synsem {:cat :noun
+                        :case :nom
+                        :pronoun true
+                        :agr {:person :2nd
+                              :number :sing}
+                        :sem {:human true
+                              :pred :tu}}}]
+    [{:unify [common]
       :synsem {:agr {:gender :fem}}}
-     {:unify [gender-pronoun-agreement common]
+     {:unify [common]
       :synsem {:agr {:gender :masc}}}])
 
   "venir"
@@ -933,12 +918,13 @@
                      :subj {:human true}}}})
 
   "vous"
-  (let [common {:synsem {:case :top
+ (let [common {:gender-pronoun-agreement true
+               :synsem {:case :top
                          :agr {:person :2nd
                                :number :plur}
                          :sem {:human true
                                :pred :voi}}}]
-    [{:unify [gender-pronoun-agreement common]
+    [{:unify [common]
       :synsem {:agr {:gender :fem}}}
-     {:unify [gender-pronoun-agreement common]
-      :synsem {:agr {:gender :masc}}}])})
+     {:unify [common]
+      :synsem {:agr {:gender :masc}}}])}
