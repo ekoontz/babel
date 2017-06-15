@@ -4,7 +4,8 @@
    [babel.francais.morphology :refer [exception-generator phonize]]
    [babel.francais.pos :refer [gender-pronoun-agreement intransitivize
                                transitivize verb-aux]]
-   [babel.lexiconfn :as lexiconfn :refer [compile-lex if-then map-function-on-map-vals]]
+   [babel.lexiconfn :as lexiconfn :refer [compile-lex default if-then
+                                          map-function-on-map-vals]]
    [clojure.java.io :refer [reader resource]]
    [babel.pos :as pos :refer [pronoun-acc]]
    [dag_unify.core :refer [get-in unify]]))
@@ -44,6 +45,9 @@
   (-> (lexiconfn/edn2lexicon resource)
       (compile-lex exception-generator phonize)
 
+      (default {:foo 42})
+;;      (default {:gender-pronoun-agreement false})
+      
       ;; make an intransitive version of every verb which has a path [:sem :obj].
       intransitivize
 

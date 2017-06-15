@@ -543,10 +543,11 @@
   "nous"
  (let [common {:gender-pronoun-agreement true
                :synsem {:case :top
-                         :agr {:person :1st
-                               :number :plur}
-                         :sem {:human true
-                               :pred :noi}}}]
+;                        :cat :noun
+                        :agr {:person :1st
+                              :number :plur}
+                        :sem {:human true
+                              :pred :noi}}}]
     [{:unify [common]
       :synsem {:agr {:gender :fem}}}
      {:unify [common]
