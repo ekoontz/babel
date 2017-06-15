@@ -486,7 +486,7 @@
         lexicon
         (into {}
               (for [[k v] @lexicon]
-                (let [debug (log/info (str "   k=" k))
+                (let [debug (log/debug (str "   lexeme=" k))
                       filtered-v
                       (filter #(or (= (get-in % [:synsem :cat]) :verb)
                                    (= (get-in % [:synsem :propernoun]) true)
@@ -494,7 +494,7 @@
                               v)]
                   (if (not (empty? filtered-v))
                     [k filtered-v]))))
-        debug (log/info (str "  indices.."))        
+        debug (log/info (str "  creating-indices.."))        
         indices (create-indices lexicon index-lexicon-on-paths)]
     {:name "small"
      :index-fn (fn [spec] (lookup-spec spec indices index-lexicon-on-paths))
