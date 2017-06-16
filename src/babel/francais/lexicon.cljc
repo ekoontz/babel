@@ -52,14 +52,14 @@
                                       :cat :verb
                                       :aux false
                                       :subcat {:1 verb-aux-subject}}}}})
-      ;; all pronouns are nouns
+      ;; All pronouns are nouns
       (default {:synsem {:cat :noun
                          :pronoun true}})
       
-      ;; make an intransitive version of every verb which has a path [:sem :obj].
+      ;; Make an intransitive version of every verb which has a path [:sem :obj].
       intransitivize
 
-      ;; if verb does specify a [:sem :obj], then fill it in with subcat info.
+      ;; If verb does specify a [:sem :obj], then fill it in with subcat info.
       transitivize
 
       (if-then {:synsem {:cat :verb
