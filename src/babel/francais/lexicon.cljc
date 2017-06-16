@@ -1,7 +1,7 @@
 (ns babel.francais.lexicon
   (:refer-clojure :exclude [get-in])
   (:require
-   [babel.francais.morphology :refer [exception-generator phonize]]
+   [babel.francais.morphology :as morph]
    [babel.francais.pos :refer [gender-pronoun-agreement intransitivize
                                transitivize verb-aux]]
    [babel.lexiconfn :as lexiconfn :refer [compile-lex default if-then
@@ -22,6 +22,16 @@
 (def verb-aux-sem (atom {:aspect :perfect
                          :tense :past}))
 (def verb-aux-subject (atom :top))
+
+(defn exception-generator [lexicon]
+  (let [exception-maps (morph/exception-generator lexicon)]
+    (if (not (empty? exception-maps))
+      (merge-with concat
+                  lexicon
+                  (reduce (fn [m1 m2]
+                            (merge-with concat m1 m2))
+                          (morph/exception-generator lexicon)))
+      lexicon)))
 
 (defn edn2lexicon [resource]
   (-> (lexiconfn/edn2lexicon resource)
