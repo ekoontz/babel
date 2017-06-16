@@ -471,7 +471,9 @@
                                          ;; this is where a unify/dissoc that supported
                                          ;; non-maps like :top and :fail, would be useful:
                                          ;; would not need the (if (not (fail? lexeme)..)) check
-                                         ;; to avoid a difficult-to-understand "java.lang.ClassCastException: clojure.lang.Keyword cannot be cast to clojure.lang.IPersistentMap" error.
+                                         ;; to avoid a difficult-to-understand
+                                         ;; "java.lang.ClassCastException: clojure.lang.Keyword
+                                         ;; cannot be cast to clojure.lang.IPersistentMap" error.
                                          (let [lexeme (cond (= lexeme :fail)
                                                             :fail
                                                             (= lexeme :top)
@@ -479,12 +481,26 @@
                                                             true
                                                             (copy lexeme))]
                                            (if (not (= :none (get-in lexeme path :none)))
-                                             (list {(get-in lexeme path :none)
-                                                    (unifyc
-                                                     (dissoc-paths lexeme [path
-                                                                           [:français :français]])
-                                                     (unifyc (apply merge-fn (list lexeme))
-                                                             {:français {:exception true}}))}))))
+                                             (let [exception-generation-result
+                                                   (apply merge-fn (list lexeme))]
+                                               (cond (seq? exception-generation-result)
+
+                                                     (map (fn [exception]
+                                                            {(get-in lexeme path :none)
+                                                             (unifyc
+                                                              (dissoc-paths lexeme [path
+                                                                                    [:français :français]])
+                                                              (unifyc exception
+                                                                      {:français {:exception true}}))})
+                                                          exception-generation-result)
+                                                     
+                                                     true
+                                                     (list {(get-in lexeme path :none)
+                                                            (unifyc
+                                                             (dissoc-paths lexeme [path
+                                                                                   [:français :français]])
+                                                             (unifyc (apply merge-fn (list lexeme))
+                                                                     {:français {:exception true}}))}))))))
                                        lexemes)))
                            [
                             ;; 1. past-tense exceptions
@@ -542,7 +558,57 @@
                                            :agr {:number :plur
                                                  :person :3rd}}})}
 
-                            ;; 3. imperfect-tense exceptions
+                            ;; 3. present-tense boot-stem exception: note that both
+                            ;; :boot-stem1 and :boot-stem2 must be present
+                            {:path [:français :boot-stem1]
+                             :merge-fn
+                             (let [exception1 (fn [val]
+                                                (if (nil? (get-in val [:français :boot-stem1]))
+                                                  (throw (Exception. (str "no :boot-stem1 supplied: " val ".")))))
+                                                  
+                                   exception2 (fn [val]
+                                                (if (nil? (get-in val [:français :boot-stem12]))
+                                                  (throw (Exception. (str "no :boot-stem2 supplied: " val ".")))))
+                                   debug (log/info (str "applying boot-stem exception rule."))]
+                               (fn [val]
+                                 [{:français {:infl :present
+                                              :français (str (get-in val [:français :boot-stem1]
+                                                                     (exception1 val))
+                                                             "e")
+                                              :agr {:number :sing
+                                                    :person :1st}}}
+                                  {:français {:infl :present
+                                              :français (str (get-in val [:français :boot-stem1]
+                                                                     (exception1 val))
+                                                             "es")
+                                              :agr {:number :sing
+                                                    :person :2nd}}}
+                                  {:français {:infl :present
+                                              :français (str (get-in val [:français :boot-stem1]
+                                                                     (exception1 val))
+                                                             "e")
+                                              :agr {:number :sing
+                                                    :person :3rd}}}
+                                  {:français {:infl :present
+                                              :français (str (get-in val [:français :boot-stem2]
+                                                                     (exception2 val))
+                                                             "e")
+                                              :agr {:number :plur
+                                                    :person :1st}}}
+                                  {:français {:infl :present
+                                              :français (str (get-in val [:français :boot-stem2]
+                                                                     (exception2 val))
+                                                             "e")
+                                              :agr {:number :plur
+                                                    :person :2nd}}}
+                                  {:français {:infl :present
+                                              :français (str (get-in val [:français :boot-stem1]
+                                                                     (exception1 val))
+                                                             "e")
+                                              :agr {:number :plur
+                                                    :person :3rd}}}]))}
+
+                            ;; 4. imperfect-tense exceptions
                             {:path [:français :imperfect :1sing]
                              :merge-fn
                              (fn [val]
@@ -590,7 +656,7 @@
                                            :agr {:number :plur
                                                  :person :3rd}}})}
 
-                            ;; 4. adjectives
+                            ;; 5. adjectives
                             {:path [:français :masc :plur]
                              :merge-fn
                              (fn [val]
@@ -602,10 +668,10 @@
                              (fn [val]
                                {:français {:agr {:gender :fem
                                                  :number :plur}}})}
-                            ])]
+                            
         (if (not (empty? result))
           (concat result (exception-generator (rest lexicon)))
-          (exception-generator (rest lexicon)))))))
+          (exception-generator (rest lexicon)))
 
 (defn phonize [a-map a-string]
   (let [common {:phrasal false}]
