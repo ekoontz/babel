@@ -10,29 +10,6 @@
    [babel.pos :as pos :refer [pronoun-acc]]
    [dag_unify.core :refer [get-in unify]]))
 
-
-;; TODO: create lexicon compilation rules for:
-;(let [verb-aux
-;  (let [sem (atom {:aspect :perfect
-;                   :tense :past})
-;        subject (atom :top)]
-;    {:synsem {:sem sem
- ;             :aux true
-  ;            :subcat {:1 subject
-  ;;                     :2 {:infl :past-p
-  ;                         :sem sem
-  ;                         :cat :verb
-  ;                         :aux false
-  ;                         :subcat {:1 subject}}}}});
-;
-;;      gender-pronoun-agreement
- ;     (let [gender (atom :top)]
- ;       {:synsem {:cat :noun
-  ;                :pronoun true
-   ;               :agr {:gender gender}
-   ;               :sem {:gender gender}
-   ;               :subcat '()}})]
-
 ;; TODO: use lexiconfn/edn2lexicon
 (declare edn2lexicon)
 
@@ -41,18 +18,40 @@
   (if (not (realized? lexicon))
     (deliver lexicon (edn2lexicon (resource "babel/francais/lexicon.edn")))))
 
+(def gender (atom :top))
+(def verb-aux-sem (atom {:aspect :perfect
+                         :tense :past}))
+(def verb-aux-subject (atom :top))
+
 (defn edn2lexicon [resource]
   (-> (lexiconfn/edn2lexicon resource)
       (compile-lex exception-generator phonize)
 
-
+      ;; Mark lexemes with no :cat with their own :cat to avoid matching any rules after this.
       (default {:gender-pronoun-agreement false
-                :synsem {:cat :unspecified-should-be-fixed}})
-
-      ;; TODO: put more pronoun agreement stuff here
+                :synsem {:cat :lexeme-with-an-unspecified-category}})
+      
+      ;; Agreement between subject pronouns and verbs
       (default {:gender-pronoun-agreement true
-                :synsem {:pronoun true}})
+                :synsem {:cat :noun
+                         :pronoun true
+                         :agr {:gender gender}
+                         :sem {:gender gender}
+                         :subcat '()}})
 
+      ;; Verbs are *not* aux unless explicitly stated as such..
+      (default {:synsem {:cat :verb
+                         :aux false}})
+     
+      ;; ..but for verbs that *are* aux, then:
+      (default {:synsem {:sem verb-aux-sem
+                         :aux true
+                         :subcat {:1 verb-aux-subject
+                                  :2 {:infl :past-p
+                                      :sem verb-aux-sem
+                                      :cat :verb
+                                      :aux false
+                                      :subcat {:1 verb-aux-subject}}}}})
       ;; all pronouns are nouns
       (default {:synsem {:cat :noun
                          :pronoun true}})
