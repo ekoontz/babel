@@ -668,10 +668,10 @@
                              (fn [val]
                                {:français {:agr {:gender :fem
                                                  :number :plur}}})}
-                            
+                            ])]
         (if (not (empty? result))
           (concat result (exception-generator (rest lexicon)))
-          (exception-generator (rest lexicon)))
+          (exception-generator (rest lexicon)))))))
 
 (defn phonize [a-map a-string]
   (let [common {:phrasal false}]
