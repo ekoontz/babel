@@ -45,8 +45,17 @@
   (-> (lexiconfn/edn2lexicon resource)
       (compile-lex exception-generator phonize)
 
-      (default {:foo 42})
-;;      (default {:gender-pronoun-agreement false})
+
+      (default {:gender-pronoun-agreement false
+                :synsem {:cat :unspecified-should-be-fixed}})
+
+      ;; TODO: put more pronoun agreement stuff here
+      (default {:gender-pronoun-agreement true
+                :synsem {:pronoun true}})
+
+      ;; all pronouns are nouns
+      (default {:synsem {:cat :noun
+                         :pronoun true}})
       
       ;; make an intransitive version of every verb which has a path [:sem :obj].
       intransitivize
