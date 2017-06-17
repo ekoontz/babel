@@ -16,8 +16,7 @@
 (defn deliver-lexicon []
   (->
    (edn2lexicon (resource "babel/english/lexicon.edn"))
-   (compile-lex exception-generator
-                phonize)
+   (compile-lex exception-generator phonize)
 
    ;; for nouns with exceptional plural forms (e.g. "men","women"),
    ;; exception-generator has generated both the plural and the singular forms
