@@ -567,7 +567,7 @@
                                                   (throw (Exception. (str "no :boot-stem1 supplied: " val ".")))))
                                                   
                                    exception2 (fn [val]
-                                                (if (nil? (get-in val [:français :boot-stem12]))
+                                                (if (nil? (get-in val [:français :boot-stem2]))
                                                   (throw (Exception. (str "no :boot-stem2 supplied: " val ".")))))
                                    debug (log/info (str "applying boot-stem exception rule."))]
                                (fn [val]
