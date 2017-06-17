@@ -35,7 +35,7 @@
 
 (defn edn2lexicon [resource]
   (-> (lexiconfn/edn2lexicon resource)
-      (compile-lex exception-generator phonize)
+      (compile-lex exception-generator morph/phonize)
 
       ;; Mark lexemes with no :cat with their own :cat to avoid matching any rules after this.
       (default {:gender-pronoun-agreement false
