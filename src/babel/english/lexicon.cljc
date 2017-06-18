@@ -3,8 +3,9 @@
   (:require
    [babel.encyclopedia :as encyc]
    [babel.english.morphology :as morph]
-   [babel.lexiconfn :refer [apply-unify-key compile-lex default edn2lexicon
-                            new-entries remove-vals verb-pred-defaults]]
+   [babel.lexiconfn :refer [apply-unify-key compile-lex default
+                            edn2lexicon listify new-entries
+                            remove-vals verb-pred-defaults]]
    [clojure.java.io :refer [resource]]
    [clojure.tools.logging :as log]
    [dag_unify.core :refer [dissoc-paths fail? get-in strip-refs unify]]))
@@ -16,8 +17,18 @@
 (defn deliver-lexicon []
   (->
    (edn2lexicon (resource "babel/english/lexicon.edn"))
-   (compile-lex exception-generator phonize)
+   (compile-lex nil phonize)
 
+   ((fn [lexicon]
+      (merge-with concat lexicon
+                  (listify 
+                   (let [tmp (map #(listify %)
+                                  (exception-generator lexicon))]
+                     (if (empty? tmp)
+                       nil
+                       (reduce #(merge-with concat %1 %2)
+                               tmp)))))))
+   
    ;; for nouns with exceptional plural forms (e.g. "men","women"),
    ;; exception-generator has generated both the plural and the singular forms
    ;; as separate lexemes, so remove original lexeme.

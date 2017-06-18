@@ -22,12 +22,15 @@
 (declare rules)
 (declare transform)
 
-;; TODO: compile-lex should simply be a pipeline rather than an argument-position-sensitive function.
+;; TODO 1: compile-lex should simply be a pipeline rather than an argument-position-sensitive function.
 ;; The current form is too complex because each argument has a slightly different signature.
 ;; Instead, it should be a pipeline where each argument is fn(lexicon) => lexicon (i.e. it takes a lexicon, 
 ;; and a lexicon is returned, where a lexicon is a map<string,vector>.
 ;; Or, perhaps more conveniently, fn(lexeme) => lexeme, where a lexeme is a vector of maps,
 ;; or fn(lexeme) => lexeme, where a lexeme is simply a map.
+;; TODO 2: remove exception-generator and phonize-fn: see
+;; babel.english/lexicon.cljc's use of (compile-lex) to see how
+;; we pass nil as exception-generator and use a pipelining approach instead
 (defn compile-lex [lexicon-source exception-generator phonize-fn]
   (let [;; take source lexicon (declared above) and compile it.
         ;; 1. canonicalize all lexical entries
@@ -44,10 +47,12 @@
                                            lexeme))
                                        v))))
 
-        phon-lexicon (map-function-on-map-vals
-                      remove-disable
-                      (fn [lexical-string lexical-val]
-                        (phonize-fn lexical-val lexical-string)))
+        phon-lexicon (if phonize-fn
+                       (map-function-on-map-vals
+                        remove-disable
+                        (fn [lexical-string lexical-val]
+                          (phonize-fn lexical-val lexical-string)))
+                       remove-disable)
 
         ;; 2. apply grammatical-category and semantic rules to each element in the lexicon
         lexicon-stage-2 (map-function-on-map-vals 
@@ -59,14 +64,17 @@
 
         ;; 3. generate exceptions
         ;; problem: merge is overwriting values: use a collator that accumulates values.
+
         exceptions
-        (listify 
-         (let [tmp (map #(listify %)
-                        (exception-generator lexicon-stage-2))]
-           (if (empty? tmp)
+        (if exception-generator
+          (listify 
+           (let [tmp (map #(listify %)
+                          (exception-generator lexicon-stage-2))]
+             (if (empty? tmp)
              nil
              (reduce #(merge-with concat %1 %2)
-                     tmp))))]
+                     tmp))))
+          {})]
 
     (merge-with concat lexicon-stage-2 exceptions)))
 
