@@ -592,19 +592,19 @@
                                   {:français {:infl :present
                                               :français (str (get-in val [:français :boot-stem2]
                                                                      (exception2 val))
-                                                             "e")
+                                                             "ons")
                                               :agr {:number :plur
                                                     :person :1st}}}
                                   {:français {:infl :present
                                               :français (str (get-in val [:français :boot-stem2]
                                                                      (exception2 val))
-                                                             "e")
+                                                             "ez")
                                               :agr {:number :plur
                                                     :person :2nd}}}
                                   {:français {:infl :present
                                               :français (str (get-in val [:français :boot-stem1]
                                                                      (exception1 val))
-                                                             "e")
+                                                             "ent")
                                               :agr {:number :plur
                                                     :person :3rd}}}]))}
 
