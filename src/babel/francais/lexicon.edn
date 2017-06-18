@@ -573,7 +573,6 @@
                          :sem {:pred :participate}}}
 
    "peindre" {:français {:boot-stem1 "pein"
-                         ;; TODO: boot-stem2 is currently unsupported by babel.francais.morphology:
                          :boot-stem2 "peign"
                          :passé "peint"
                          :future-stem "paindr"
