@@ -28,7 +28,7 @@
 ;; and a lexicon is returned, where a lexicon is a map<string,vector>.
 ;; Or, perhaps more conveniently, fn(lexeme) => lexeme, where a lexeme is a vector of maps,
 ;; or fn(lexeme) => lexeme, where a lexeme is simply a map.
-(defn compile-lex [lexicon-source exception-generator phonize-fn & [language-specific-rules]]
+(defn compile-lex [lexicon-source exception-generator phonize-fn]
   (let [;; take source lexicon (declared above) and compile it.
         ;; 1. canonicalize all lexical entries
         ;; (i.e. vectorize the values of the map).
@@ -57,32 +57,18 @@
                                   (transform lexeme rules))
                                 lexeme)))
 
-        ;; 3. apply language-specific grammatical rules to each element in the lexicon
-        ;; for an example of a language-specific rule,
-        ;; see italiano/morphology.clj:(defn agreement [lexical-entry]).
-        lexicon-stage-3 (if language-specific-rules
-                          (map-function-on-map-vals
-                           lexicon-stage-2
-                           (fn [lexical-string lexemes]
-                             (map (fn [lexeme]
-                                    (transform lexeme language-specific-rules))
-                                  lexemes)))
-                          ;; no language-specific rules: lexicon-stage-3 == lexicon-stage-2
-                          lexicon-stage-2)
-
-        ;; 4. generate exceptions
+        ;; 3. generate exceptions
         ;; problem: merge is overwriting values: use a collator that accumulates values.
-        exceptions (listify 
-                    (let [tmp (map #(listify %)
-                                   (exception-generator lexicon-stage-3))]
-                      (if (empty? tmp)
-                        nil
-                        (reduce #(merge-with concat %1 %2)
-                                tmp))))
+        exceptions
+        (listify 
+         (let [tmp (map #(listify %)
+                        (exception-generator lexicon-stage-2))]
+           (if (empty? tmp)
+             nil
+             (reduce #(merge-with concat %1 %2)
+                     tmp))))]
 
-        lexicon
-        (merge-with concat lexicon-stage-3 exceptions)]
-    lexicon))
+    (merge-with concat lexicon-stage-2 exceptions)))
 
 (declare get-fail-path)
 
