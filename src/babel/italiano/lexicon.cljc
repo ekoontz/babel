@@ -12,7 +12,7 @@
    #?(:clj [clojure.tools.logging :as log])
    #?(:cljs [babel.logjs :as log]) 
    [babel.italiano.morphology :as morph
-    :refer [agreement phonize2]]
+    :refer [phonize2]]
 
    [clojure.edn :as edn]
    [clojure.java.io :refer [reader resource]]
