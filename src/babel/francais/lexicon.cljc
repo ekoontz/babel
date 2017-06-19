@@ -10,31 +10,20 @@
    [babel.pos :as pos :refer [pronoun-acc]]
    [dag_unify.core :refer [get-in unify]]))
 
-;; TODO: use lexiconfn/edn2lexicon
-(declare edn2lexicon)
-
 (def lexicon (promise))
-(defn deliver-lexicon []
-  (if (not (realized? lexicon))
-    (deliver lexicon (edn2lexicon (resource "babel/francais/lexicon.edn")))))
-
 (def gender (atom :top))
 (def verb-aux-sem (atom {:aspect :perfect
                          :tense :past}))
 (def verb-aux-subject (atom :top))
+(declare exception-generator)
 
-(defn exception-generator [lexicon]
-  (let [exception-maps (morph/exception-generator lexicon)]
-    (if (not (empty? exception-maps))
-      (merge-with concat
-                  lexicon
-                  (reduce (fn [m1 m2]
-                            (merge-with concat m1 m2))
-                          (morph/exception-generator lexicon)))
-      lexicon)))
-
-(defn edn2lexicon [resource]
-  (-> (lexiconfn/edn2lexicon resource)
+(defn deliver-lexicon []
+  (if (not (realized? lexicon))
+    (deliver
+     lexicon
+     (->
+      (resource "babel/francais/lexicon.edn")
+      (lexiconfn/edn2lexicon)
       (compile-lex)
 
       (map-function-on-map-vals
@@ -62,11 +51,11 @@
                          :agr {:gender gender}
                          :sem {:gender gender}
                          :subcat '()}})
-
+      
       ;; Verbs are *not* aux unless explicitly stated as such..
       (default {:synsem {:cat :verb
                          :aux false}})
-     
+      
       ;; ..but for verbs that *are* aux, then:
       (default {:synsem {:sem verb-aux-sem
                          :aux true
@@ -82,14 +71,14 @@
       
       ;; Make an intransitive version of every verb which has a path [:sem :obj].
       intransitivize
-
+      
       ;; If verb does specify a [:sem :obj], then fill it in with subcat info.
       transitivize
-
+      
       (if-then {:synsem {:cat :verb
                          :subcat {:3 '()}}}
                {:synsem {:subcat {:3 '()}}})
-
+      
       ;; if object is not specified, then set to :unspec.
       ;; this prevents translations that may have actual objects - e.g. would allow translations like:
       ;; "Je mange" => "I eat the bread" whereas a better translation is "I eat".
@@ -99,7 +88,7 @@
                                :reflexive false
                                }}}
                {:synsem {:sem {:obj :unspec}}})
-
+      
       ;; default: reflexive=false.
       (if-then {:synsem {:cat :verb
                          :aux false
@@ -122,7 +111,7 @@
                       true ;; otherwise, leave the verb alone
                       val))
               vals)))
-
+      
       ;; Cleanup functions can go here. Number them for ease of reading.
       ;; 1. this filters out any verbs without an inflection:
       ;; infinitive verbs should have inflection ':infinitive',
@@ -131,4 +120,20 @@
        (fn [k vals]
          (filter #(or (not (= :verb (get-in % [:synsem :cat])))
                       (not (= :none (get-in % [:synsem :infl] :none))))
-                 vals)))))
+                 vals)))))))
+
+(def gender (atom :top))
+(def verb-aux-sem (atom {:aspect :perfect
+                         :tense :past}))
+(def verb-aux-subject (atom :top))
+
+(defn exception-generator [lexicon]
+  (let [exception-maps (morph/exception-generator lexicon)]
+    (if (not (empty? exception-maps))
+      (merge-with concat
+                  lexicon
+                  (reduce (fn [m1 m2]
+                            (merge-with concat m1 m2))
+                          (morph/exception-generator lexicon)))
+      lexicon)))
+
