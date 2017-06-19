@@ -30,36 +30,32 @@
 ;; or fn(lexeme) => lexeme, where a lexeme is simply a map.
 ;; TODO 2: remove phonize-fn.
 (defn compile-lex [lexicon-source phonize-fn]
-  (let [remove-disable
-        (-> lexicon-source
-            
-            ;; 1. canonicalize all lexical entries
-            ;; (i.e. vectorize the values of the map).
-            listify
-            
-            (map-function-on-map-vals
-             (fn [k v]
-               (remove #(= :fail %)
-                       (map (fn [lexeme]
-                              (if (= true (get-in lexeme [:disable]))
-                                :fail
-                                lexeme))
+  (-> lexicon-source
+      
+      ;; 1. canonicalize all lexical entries
+      ;; (i.e. vectorize the values of the map).
+      listify
+      
+      (map-function-on-map-vals
+       (fn [k v]
+         (remove #(= :fail %)
+                 (map (fn [lexeme]
+                        (if (= true (get-in lexeme [:disable]))
+                          :fail
+                          lexeme))
                             v))))
-    (let [phon-lexicon
-          (if phonize-fn
-            (map-function-on-map-vals
-             remove-disable
-             (fn [lexical-string lexical-val]
-               (phonize-fn lexical-val lexical-string)))
-            remove-disable)]
-
-      ;; 2. apply grammatical-category and semantic rules to each element in the lexicon
+      
+      ;; 2. phonize
+      (map-function-on-map-vals
+       (fn [lexical-string lexical-val]
+         (phonize-fn lexical-val lexical-string)))
+      
+      ;; 3. apply grammatical-category and semantic rules to each element in the lexicon
       (map-function-on-map-vals 
-       phon-lexicon
        (fn [lexical-string lexeme]
          (map (fn [lexeme]
                 (transform lexeme rules))
-              lexeme))))))
+              lexeme)))))
 
 (declare get-fail-path)
 
