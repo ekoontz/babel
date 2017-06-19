@@ -22,14 +22,7 @@
 (declare rules)
 (declare transform)
 
-;; TODO 1: compile-lex should simply be a pipeline rather than an argument-position-sensitive function.
-;; The current form is too complex because each argument has a slightly different signature.
-;; Instead, it should be a pipeline where each argument is fn(lexicon) => lexicon (i.e. it takes a lexicon, 
-;; and a lexicon is returned, where a lexicon is a map<string,vector>.
-;; Or, perhaps more conveniently, fn(lexeme) => lexeme, where a lexeme is a vector of maps,
-;; or fn(lexeme) => lexeme, where a lexeme is simply a map.
-;; TODO 2: remove phonize-fn.
-(defn compile-lex [lexicon-source phonize-fn]
+(defn compile-lex [lexicon-source]
   (-> lexicon-source
       
       ;; 1. canonicalize all lexical entries
@@ -44,13 +37,8 @@
                           :fail
                           lexeme))
                             v))))
-      
-      ;; 2. phonize
-      (map-function-on-map-vals
-       (fn [lexical-string lexical-val]
-         (phonize-fn lexical-val lexical-string)))
-      
-      ;; 3. apply grammatical-category and semantic rules to each element in the lexicon
+            
+      ;; 2. apply grammatical-category and semantic rules to each element in the lexicon
       (map-function-on-map-vals 
        (fn [lexical-string lexeme]
          (map (fn [lexeme]

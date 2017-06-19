@@ -16,9 +16,12 @@
 
 (defn edn2lexicon [resource]
   (-> (lexiconfn/edn2lexicon resource)
-      ;; see TODOs in lexiconfn/compile-lex (should be more of a pipeline as opposed to a
-      ;; argument-position-sensitive function.
-      (compile-lex morph/phonize)
+
+      (compile-lex)
+
+      (map-function-on-map-vals
+       (fn [lexical-string lexical-val]
+         (morph/phonize lexical-val lexical-string)))
 
       ((fn [lexicon]
          (merge-with concat lexicon

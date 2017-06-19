@@ -4,7 +4,8 @@
    [babel.encyclopedia :as encyc]
    [babel.english.morphology :as morph]
    [babel.lexiconfn :refer [apply-unify-key compile-lex default
-                            edn2lexicon listify new-entries
+                            edn2lexicon listify
+                            map-function-on-map-vals new-entries
                             remove-vals verb-pred-defaults]]
    [clojure.java.io :refer [resource]]
    [clojure.tools.logging :as log]
@@ -17,7 +18,11 @@
 (defn deliver-lexicon []
   (->
    (edn2lexicon (resource "babel/english/lexicon.edn"))
-   (compile-lex phonize)
+   (compile-lex)
+
+   (map-function-on-map-vals
+    (fn [lexical-string lexical-val]
+      (phonize lexical-val lexical-string)))
 
    ((fn [lexicon]
       (merge-with concat lexicon

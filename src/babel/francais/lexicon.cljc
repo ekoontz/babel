@@ -35,8 +35,12 @@
 
 (defn edn2lexicon [resource]
   (-> (lexiconfn/edn2lexicon resource)
-      (compile-lex morph/phonize)
+      (compile-lex)
 
+      (map-function-on-map-vals
+       (fn [lexical-string lexical-val]
+         (morph/phonize lexical-val lexical-string)))
+      
       ((fn [lexicon]
          (merge-with concat lexicon
                      (listify 
