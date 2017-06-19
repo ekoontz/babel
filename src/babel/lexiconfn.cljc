@@ -194,19 +194,6 @@
         true
         lexical-entry))
 
-(defn intransitive-verb-rule [lexical-entry]
-  (cond (and (= (get-in lexical-entry '(:synsem :cat))
-                :verb)
-             (= :none (get-in lexical-entry '(:synsem :sem :obj) :none))
-             (= :none (get-in lexical-entry '(:synsem :sem :location) :none))
-             (= :none (get-in lexical-entry '(:synsem :subcat :2) :none))
-             (not (= true (get-in lexical-entry '(:synsem :aux)))))
-        (unify
-         lexical-entry
-         intransitive)
-        true
-        lexical-entry))
-
 (defn modality-rule [lexical-entry]
   "prevent ratholes like 'Potere ... potere dormire (To be able...to be able to sleep)'"
   (cond (= true (get-in lexical-entry '(:synsem :modal)))
@@ -377,7 +364,6 @@
 ;; In other words, their function signature is map => seq(map).
 (defn apply-multi-rules [lexeme]
   (make-intransitive-variant lexeme))
-
 
 ;; This set of rules is monotonic and deterministic in the sense that
 ;; iterative application of the set of rules will result in the input
