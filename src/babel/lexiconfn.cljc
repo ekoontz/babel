@@ -30,36 +30,36 @@
 ;; or fn(lexeme) => lexeme, where a lexeme is simply a map.
 ;; TODO 2: remove phonize-fn.
 (defn compile-lex [lexicon-source phonize-fn]
-  (let [;; take source lexicon (declared above) and compile it.
-        ;; 1. canonicalize all lexical entries
-        ;; (i.e. vectorize the values of the map).
-        lexicon-stage-1 (listify lexicon-source)
+  (let [remove-disable
+        (-> lexicon-source
+            
+            ;; 1. canonicalize all lexical entries
+            ;; (i.e. vectorize the values of the map).
+            listify
+            
+            (map-function-on-map-vals
+             (fn [k v]
+               (remove #(= :fail %)
+                       (map (fn [lexeme]
+                              (if (= true (get-in lexeme [:disable]))
+                                :fail
+                                lexeme))
+                            v))))
+    (let [phon-lexicon
+          (if phonize-fn
+            (map-function-on-map-vals
+             remove-disable
+             (fn [lexical-string lexical-val]
+               (phonize-fn lexical-val lexical-string)))
+            remove-disable)]
 
-        remove-disable (map-function-on-map-vals
-                        lexicon-stage-1
-                        (fn [k v]
-                          (remove #(= :fail %)
-                                  (map (fn [lexeme]
-                                         (if (= true (get-in lexeme [:disable]))
-                                           :fail
-                                           lexeme))
-                                       v))))
-
-        phon-lexicon (if phonize-fn
-                       (map-function-on-map-vals
-                        remove-disable
-                        (fn [lexical-string lexical-val]
-                          (phonize-fn lexical-val lexical-string)))
-                       remove-disable)
-
-        ;; 2. apply grammatical-category and semantic rules to each element in the lexicon
-        lexicon-stage-2 (map-function-on-map-vals 
-                         phon-lexicon
-                         (fn [lexical-string lexeme]
-                           (map (fn [lexeme]
-                                  (transform lexeme rules))
-                                lexeme)))]
-    lexicon-stage-2))
+      ;; 2. apply grammatical-category and semantic rules to each element in the lexicon
+      (map-function-on-map-vals 
+       phon-lexicon
+       (fn [lexical-string lexeme]
+         (map (fn [lexeme]
+                (transform lexeme rules))
+              lexeme))))))
 
 (declare get-fail-path)
 
