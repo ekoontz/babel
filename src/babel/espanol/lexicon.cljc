@@ -18,7 +18,7 @@
   (-> (lexiconfn/edn2lexicon resource)
       ;; see TODOs in lexiconfn/compile-lex (should be more of a pipeline as opposed to a
       ;; argument-position-sensitive function.
-      (compile-lex nil morph/phonize)
+      (compile-lex morph/phonize)
 
       ((fn [lexicon]
          (merge-with concat lexicon

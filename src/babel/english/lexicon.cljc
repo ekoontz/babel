@@ -17,7 +17,7 @@
 (defn deliver-lexicon []
   (->
    (edn2lexicon (resource "babel/english/lexicon.edn"))
-   (compile-lex nil phonize)
+   (compile-lex phonize)
 
    ((fn [lexicon]
       (merge-with concat lexicon

@@ -28,10 +28,8 @@
 ;; and a lexicon is returned, where a lexicon is a map<string,vector>.
 ;; Or, perhaps more conveniently, fn(lexeme) => lexeme, where a lexeme is a vector of maps,
 ;; or fn(lexeme) => lexeme, where a lexeme is simply a map.
-;; TODO 2: remove exception-generator and phonize-fn: see
-;; babel.english/lexicon.cljc's use of (compile-lex) to see how
-;; we pass nil as exception-generator and use a pipelining approach instead
-(defn compile-lex [lexicon-source exception-generator phonize-fn]
+;; TODO 2: remove phonize-fn.
+(defn compile-lex [lexicon-source phonize-fn]
   (let [;; take source lexicon (declared above) and compile it.
         ;; 1. canonicalize all lexical entries
         ;; (i.e. vectorize the values of the map).
@@ -60,23 +58,8 @@
                          (fn [lexical-string lexeme]
                            (map (fn [lexeme]
                                   (transform lexeme rules))
-                                lexeme)))
-
-        ;; 3. generate exceptions
-        ;; problem: merge is overwriting values: use a collator that accumulates values.
-
-        exceptions
-        (if exception-generator
-          (listify 
-           (let [tmp (map #(listify %)
-                          (exception-generator lexicon-stage-2))]
-             (if (empty? tmp)
-             nil
-             (reduce #(merge-with concat %1 %2)
-                     tmp))))
-          {})]
-
-    (merge-with concat lexicon-stage-2 exceptions)))
+                                lexeme)))]
+    lexicon-stage-2))
 
 (declare get-fail-path)
 

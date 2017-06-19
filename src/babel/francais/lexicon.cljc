@@ -5,7 +5,7 @@
    [babel.francais.pos :refer [gender-pronoun-agreement intransitivize
                                transitivize verb-aux]]
    [babel.lexiconfn :as lexiconfn :refer [compile-lex default if-then
-                                          map-function-on-map-vals]]
+                                          listify map-function-on-map-vals]]
    [clojure.java.io :refer [reader resource]]
    [babel.pos :as pos :refer [pronoun-acc]]
    [dag_unify.core :refer [get-in unify]]))
@@ -35,8 +35,18 @@
 
 (defn edn2lexicon [resource]
   (-> (lexiconfn/edn2lexicon resource)
-      (compile-lex exception-generator morph/phonize)
+      (compile-lex morph/phonize)
 
+      ((fn [lexicon]
+         (merge-with concat lexicon
+                     (listify 
+                      (let [tmp (map #(listify %)
+                                     (exception-generator lexicon))]
+                        (if (empty? tmp)
+                          nil
+                          (reduce #(merge-with concat %1 %2)
+                                  tmp)))))))
+      
       ;; Mark lexemes with no :cat with their own :cat to avoid matching any rules after this.
       (default {:gender-pronoun-agreement false
                 :synsem {:cat :lexeme-with-an-unspecified-category}})
