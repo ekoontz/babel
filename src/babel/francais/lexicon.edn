@@ -88,11 +88,8 @@
                      :sem {:pred :lower}}}
  
  "boire" {:français {:past-participle "bu"
-                     :boot-stem1 "boiv"
-                     :boot-stem2 "buv"
-                     :present {:1sing "bois"
-                               :2sing "boit"
-                               :3sing "boit"}}
+                     :boot-stem1 "boi"
+                     :boot-stem2 "buv"}
           :synsem {:cat :verb
                    :sem {:pred :drink}}}
  
