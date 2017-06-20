@@ -570,7 +570,7 @@
                                                   :person :1st}}}
                                 {:français {:infl :present
                                             :français (str (get-in val [:français :boot-stem1])
-                                                             "es")
+                                                           "es")
                                             :agr {:number :sing
                                                   :person :2nd}}}
                                 {:français {:infl :present
