@@ -480,7 +480,7 @@
                                                             :top
                                                             true
                                                             (copy lexeme))]
-                                           (if (not (= :none (get-in lexeme path :none)))
+                                           (if (not (= ::none (get-in lexeme path ::none)))
                                              (let [exception-generation-result
                                                    (apply merge-fn (list lexeme))]
                                                (cond (seq? exception-generation-result)
@@ -518,6 +518,7 @@
                                            :français (get-in val [:français :present :1sing] :nothing)
                                            :agr {:number :sing
                                                  :person :1st}}})}
+
                             {:path [:français :present :2sing]
                              :merge-fn
                              (fn [val]
@@ -558,57 +559,47 @@
                                            :agr {:number :plur
                                                  :person :3rd}}})}
 
-                            ;; 3. present-tense boot-stem exception: note that both
-                            ;; :boot-stem1 and :boot-stem2 must be present
+                            ;; 3. present-tense boot-stem exception: :boot-stem1.
                             {:path [:français :boot-stem1]
                              :merge-fn
-                             (let [exception1 (fn [val]
-                                                (if (nil? (get-in val [:français :boot-stem1]))
-                                                  (throw (Exception. (str "no :boot-stem1 supplied: " val ".")))))
-                                                  
-                                   exception2 (fn [val]
-                                                (if (nil? (get-in val [:français :boot-stem2]))
-                                                  (throw (Exception. (str "no :boot-stem2 supplied: " val ".")))))
-                                   debug (log/info (str "applying boot-stem exception rule."))]
-                               (fn [val]
-                                 [{:français {:infl :present
-                                              :français (str (get-in val [:français :boot-stem1]
-                                                                     (exception1 val))
-                                                             "e")
-                                              :agr {:number :sing
-                                                    :person :1st}}}
-                                  {:français {:infl :present
-                                              :français (str (get-in val [:français :boot-stem1]
-                                                                     (exception1 val))
+                             (fn [val]
+                               [{:français {:infl :present
+                                            :français (str (get-in val [:français :boot-stem1])
+                                                           "e")
+                                            :agr {:number :sing
+                                                  :person :1st}}}
+                                {:français {:infl :present
+                                            :français (str (get-in val [:français :boot-stem1])
                                                              "es")
-                                              :agr {:number :sing
-                                                    :person :2nd}}}
-                                  {:français {:infl :present
-                                              :français (str (get-in val [:français :boot-stem1]
-                                                                     (exception1 val))
-                                                             "e")
-                                              :agr {:number :sing
-                                                    :person :3rd}}}
-                                  {:français {:infl :present
-                                              :français (str (get-in val [:français :boot-stem2]
-                                                                     (exception2 val))
-                                                             "ons")
-                                              :agr {:number :plur
-                                                    :person :1st}}}
-                                  {:français {:infl :present
-                                              :français (str (get-in val [:français :boot-stem2]
-                                                                     (exception2 val))
-                                                             "ez")
-                                              :agr {:number :plur
-                                                    :person :2nd}}}
-                                  {:français {:infl :present
-                                              :français (str (get-in val [:français :boot-stem1]
-                                                                     (exception1 val))
-                                                             "ent")
-                                              :agr {:number :plur
-                                                    :person :3rd}}}]))}
-
-                            ;; 4. imperfect-tense exceptions
+                                            :agr {:number :sing
+                                                  :person :2nd}}}
+                                {:français {:infl :present
+                                            :français (str (get-in val [:français :boot-stem1])
+                                                           "e")
+                                            :agr {:number :sing
+                                                  :person :3rd}}}
+                                {:français {:infl :present
+                                            :français (str (get-in val [:français :boot-stem1])
+                                                           "ent")
+                                            :agr {:number :plur
+                                                  :person :3rd}}}])}
+                           
+                            ;; 4. present-tense boot-stem exception: :boot-stem2.
+                            {:path [:français :boot-stem2]
+                             :merge-fn
+                             (fn [val]
+                               [{:français {:infl :present
+                                            :français (str (get-in val [:français :boot-stem2])
+                                                           "ons")
+                                            :agr {:number :plur
+                                                  :person :1st}}}
+                                {:français {:infl :present
+                                            :français (str (get-in val [:français :boot-stem2])
+                                                           "ez")
+                                            :agr {:number :plur
+                                                  :person :2nd}}}])}
+                            
+                            ;; 5. imperfect-tense exceptions
                             {:path [:français :imperfect :1sing]
                              :merge-fn
                              (fn [val]
