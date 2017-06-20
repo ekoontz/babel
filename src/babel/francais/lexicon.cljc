@@ -19,9 +19,9 @@
 (declare compile-lexicon)
 
 (defn deliver-lexicon []
-  (if (realized? lexicon)
-    lexicon
+  (if (not (realized? lexicon))
     (deliver
+     lexicon
      (compile-lexicon))))
 
 (defn compile-lexicon []
