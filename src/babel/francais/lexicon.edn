@@ -569,11 +569,15 @@
    "participer" {:synsem {:cat :verb
                          :sem {:pred :participate}}}
 
-   "peindre" {:français {:boot-stem1 "pein"
-                         :boot-stem2 "peign"
-                         :passé "peint"
-                         :future-stem "paindr"
-                         :imperfect "peign"}
+ "peindre" {:français {:present {:1sing "peins"
+                                 :2sing "peins"
+                                 :3sing "peins"
+                                 :1plur "peignons"
+                                 :2plur "peignez"
+                                 :3plur "peignent"}
+                       :passé "peint"
+                       :future-stem "paindr"
+                       :imperfect "peign"}
               :synsem {:cat :verb
                        :sem {:pred :paint}}}
 
