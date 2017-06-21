@@ -476,38 +476,31 @@
                                              ;; to avoid a difficult-to-understand
                                              ;; "java.lang.ClassCastException: clojure.lang.Keyword
                                              ;; cannot be cast to clojure.lang.IPersistentMap" error.
-                                             (let [lexeme (cond (= lexeme :fail)
-                                                                :fail
-                                                                (= lexeme :top)
-                                                                :top
-                                                                true
-                                                                (copy lexeme))]
-                                               (log/error "WHAT THE FUCK: " lexeme)
-                                               (log/error " path: " path)
-                                               (log/error " value: " (get-in lexeme path "NOTHING!!"))
-                                               (if (not (= ::none (get-in lexeme path ::none)))
-                                                 (let [exception-generation-result
-                                                       (apply merge-fn (list lexeme))]
-                                                   (log/error ("merge-fn: " merge-fn))
-                                                   (log/error ("egr: " exception-generation-result))
-                                                   (cond (seq? exception-generation-result)
-                                                         
-                                                         (map (fn [exception]
-                                                                {(get-in lexeme path :none)
-                                                                 (unifyc
-                                                                  (dissoc-paths lexeme [path
-                                                                                        [:français :français]])
-                                                                  (unifyc exception
-                                                                          {:français {:exception true}}))})
-                                                              exception-generation-result)
-                                                         
-                                                         true
-                                                         (list {(get-in lexeme path :none)
-                                                                (unifyc
-                                                                 (dissoc-paths lexeme [path
-                                                                                       [:français :français]])
-                                                                 (unifyc (apply merge-fn (list lexeme))
-                                                                         {:français {:exception true}}))}))))))
+                                             (log/debug "lexeme: " lexeme)
+                                             (log/debug " path: " path)
+                                             (log/debug " value: " (get-in lexeme path "NOTHING!!"))
+                                             (if (not (= ::none (get-in lexeme path ::none)))
+                                               (let [exception-generation-result
+                                                     (apply merge-fn (list lexeme))]
+                                                 (log/error " RESULT: " exception-generation-result)
+                                                 (cond (seq? exception-generation-result)
+                                                       
+                                                       (map (fn [exception]
+                                                              {(get-in lexeme path :none)
+                                                               (unifyc
+                                                                (dissoc-paths lexeme [path
+                                                                                      [:français :français]])
+                                                                (unifyc exception
+                                                                        {:français {:exception true}}))})
+                                                            exception-generation-result)
+                                                       
+                                                       true
+                                                       (list {(get-in lexeme path :none)
+                                                              (unifyc
+                                                               (dissoc-paths lexeme [path
+                                                                                     [:français :français]])
+                                                               (unifyc (apply merge-fn (list lexeme))
+                                                                       {:français {:exception true}}))})))))
                                            lexemes)))
                                [
                                 ;; 3. present-tense boot-stem exception: :boot-stem1.
@@ -516,22 +509,22 @@
                                  (fn [val]
                                    [{:français {:infl :present
                                                 :français (str (get-in val [:français :boot-stem1])
-                                                               "e")
+                                                               "s")
                                                 :agr {:number :sing
                                                       :person :1st}}}
                                     {:français {:infl :present
                                                 :français (str (get-in val [:français :boot-stem1])
-                                                               "es")
+                                                               "s")
                                                 :agr {:number :sing
                                                       :person :2nd}}}
                                     {:français {:infl :present
                                                 :français (str (get-in val [:français :boot-stem1])
-                                                               "e")
+                                                               "t")
                                                 :agr {:number :sing
                                                       :person :3rd}}}
                                     {:français {:infl :present
                                                 :français (str (get-in val [:français :boot-stem1])
-                                                               "ent")
+                                                               "vent")
                                                 :agr {:number :plur
                                                       :person :3rd}}}])}
                                 
