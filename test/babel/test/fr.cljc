@@ -380,7 +380,7 @@
                     {:synsem {:infl :present
                               :subcat {:1 {:agr {:person :1st
                                                  :number :plur}}}}}
-                    lexicon)
+                    @lexicon)
          "buvons")))
 
 (deftest have-fun
