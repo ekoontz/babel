@@ -15,7 +15,6 @@
 (def verb-aux-sem (atom {:aspect :perfect
                          :tense :past}))
 (def verb-aux-subject (atom :top))
-(declare exception-generator)
 (declare compile-lexicon)
 
 (defn deliver-lexicon []
