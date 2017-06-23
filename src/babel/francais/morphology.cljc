@@ -476,33 +476,146 @@
                                              ;; to avoid a difficult-to-understand
                                              ;; "java.lang.ClassCastException: clojure.lang.Keyword
                                              ;; cannot be cast to clojure.lang.IPersistentMap" error.
-                                             (log/debug "lexeme: " lexeme)
+                                             (log/debug "lexeme: " (get-in lexeme [:français :français]))
                                              (log/debug " path: " path)
-                                             (log/debug " value: " (get-in lexeme path "NOTHING!!"))
+                                             (if-let [value (get-in lexeme path)]
+                                               (log/debug " value@" path ": " value))
                                              (if (not (= ::none (get-in lexeme path ::none)))
-                                               (let [exception-generation-result
+                                               (let [exceptional-lexeme
                                                      (apply merge-fn (list lexeme))]
-                                                 (log/error " RESULT: " exception-generation-result)
-                                                 (cond (seq? exception-generation-result)
-                                                       
-                                                       (map (fn [exception]
-                                                              {(get-in lexeme path :none)
-                                                               (unifyc
-                                                                (dissoc-paths lexeme [path
-                                                                                      [:français :français]])
-                                                                (unifyc exception
-                                                                        {:français {:exception true}}))})
-                                                            exception-generation-result)
+                                                 (log/debug " exceptional-lexeme: " exceptional-lexeme)
+                                                 (cond (or (seq? exceptional-lexeme)
+                                                           (vector? exceptional-lexeme))
+                                                       (map (fn [exceptional-lexeme]
+                                                              (log/debug " RESULT(in-list): " exceptional-lexeme)
+                                                              (log/debug "   conjugated:"
+                                                                         (get-in exceptional-lexeme
+                                                                                 [:français :français]))
+                                                              (let [exceptional-lexeme
+                                                                    (unify
+                                                                     exceptional-lexeme
+                                                                     (dissoc-paths lexeme [path
+                                                                                           [:français :français]])
+                                                                     {:français {:exception true}})]
+                                                                (log/debug " RESULT(in-list)1: "
+                                                                           (dissoc
+                                                                            exceptional-lexeme
+                                                                            :dag_unify.core/serialized))
+                                                                {(get-in exceptional-lexeme [:français :français])
+                                                                 exceptional-lexeme}))
+                                                            exceptional-lexeme)
                                                        
                                                        true
-                                                       (list {(get-in lexeme path :none)
-                                                              (unifyc
-                                                               (dissoc-paths lexeme [path
-                                                                                     [:français :français]])
-                                                               (unifyc (apply merge-fn (list lexeme))
-                                                                       {:français {:exception true}}))})))))
+                                                       (let [exceptional-lexeme
+                                                             (unify
+                                                              exceptional-lexeme
+                                                              (dissoc-paths lexeme [path
+                                                                                    [:français :français]])
+                                                              {:français {:exception true}})]
+                                                         (log/debug " RESULT1: "
+                                                                    (unify
+                                                                     exceptional-lexeme
+                                                                     (dissoc-paths lexeme [path
+                                                                                           [:français :français]])))
+                                                         (log/debug " RESULT2: "
+                                                                    (dissoc
+                                                                     exceptional-lexeme
+                                                                     :dag_unify.core/serialized))
+                                                         (list {(get-in exceptional-lexeme [:français :français])
+                                                                exceptional-lexeme}))))))
                                            lexemes)))
-                               [
+                               [;; 1. past-tense exceptions
+                                {:path [:français :past-participle]
+                                 :merge-fn
+                                 (fn [val]
+                                   {:français {:infl :past-p
+                                               :français (get-in val [:français :past-participle] :nothing)}})}
+                                ;; 2. present-tense exceptions
+                                {:path [:français :present :1sing]
+                                 :merge-fn
+                                 (fn [val]
+                                   {:français {:infl :present
+                                               :français (get-in val [:français :present :1sing] :nothing)
+                                               :agr {:number :sing
+                                                     :person :1st}}})}
+                                {:path [:français :present :2sing]
+                                 :merge-fn
+                                 (fn [val]
+                                   {:français {:infl :present
+                                               :français (get-in val [:français :present :2sing] :nothing)
+                                               :agr {:number :sing
+                                                     :person :2nd}}})}
+                                {:path [:français :present :3sing]
+                                 :merge-fn
+                                 (fn [val]
+                                   {:français {:infl :present
+                                               :français (get-in val [:français :present :3sing] :nothing)
+                                               :agr {:number :sing
+                                                     :person :3rd}}})}
+                                {:path [:français :present :1plur]
+                                 :merge-fn
+                                 (fn [val]
+                                   {:français {:infl :present
+                                               :français (get-in val [:français :present :1plur] :nothing)
+                                               :agr {:number :plur
+                                                     :person :1st}}})}
+                                {:path [:français :present :2plur]
+                                 :merge-fn
+                                 (fn [val]
+                                   {:français {:infl :present
+                                               :français (get-in val [:français :present :2plur] :nothing)
+                                               :agr {:number :plur
+                                                     :person :2nd}}})}
+                                {:path [:français :present :3plur]
+                                 :merge-fn
+                                 (fn [val]
+                                   {:français {:infl :present
+                                               :français (get-in val [:français :present :3plur] :nothing)
+                                               :agr {:number :plur
+                                                     :person :3rd}}})}
+                                ;; 3. imperfect-tense exceptions
+                                {:path [:français :imperfect :1sing]
+                                 :merge-fn
+                                 (fn [val]
+                                   {:français {:infl :imperfect
+                                               :français (get-in val [:français :imperfect :1sing] :nothing)
+                                               :agr {:number :sing
+                                                     :person :1st}}})}
+                                {:path [:français :imperfect :2sing]
+                                 :merge-fn
+                                 (fn [val]
+                                   {:français {:infl :imperfect
+                                               :français (get-in val [:français :imperfect :2sing] :nothing)
+                                               :agr {:number :sing
+                                                     :person :2nd}}})}
+                                {:path [:français :imperfect :3sing]
+                                 :merge-fn
+                                 (fn [val]
+                                   {:français {:infl :imperfect
+                                               :français (get-in val [:français :imperfect :3sing] :nothing)
+                                               :agr {:number :sing
+                                                     :person :3rd}}})}
+                                {:path [:français :imperfect :1plur]
+                                 :merge-fn
+                                 (fn [val]
+                                   {:français {:infl :imperfect
+                                               :français (get-in val [:français :imperfect :1plur] :nothing)
+                                               :agr {:number :plur
+                                                     :person :1st}}})}
+                                {:path [:français :imperfect :2plur]
+                                 :merge-fn
+                                 (fn [val]
+                                   {:français {:infl :imperfect
+                                               :français (get-in val [:français :imperfect :2plur] :nothing)
+                                               :agr {:number :plur
+                                                     :person :2nd}}})}
+                                {:path [:français :imperfect :3plur]
+                                 :merge-fn
+                                 (fn [val]
+                                   {:français {:infl :imperfect
+                                               :français (get-in val [:français :imperfect :3plur] :nothing)
+                                               :agr {:number :plur
+                                                     :person :3rd}}})}
                                 ;; 3. present-tense boot-stem exception: :boot-stem1.
                                 {:path [:français :boot-stem1]
                                  :merge-fn
@@ -527,7 +640,33 @@
                                                                "vent")
                                                 :agr {:number :plur
                                                       :person :3rd}}}])}
+
+                                {:path [:français :boot-stem2]
+                                 :merge-fn
+                                 (fn [val]
+                                   [{:français {:infl :present
+                                                :français (str (get-in val [:français :boot-stem2])
+                                                               "ons")
+                                                :agr {:number :plur
+                                                      :person :1st}}}
+                                    {:français {:infl :present
+                                                :français (str (get-in val [:français :boot-stem2])
+                                                               "ez")
+                                                :agr {:number :plur
+                                                      :person :2nd}}}])}
+
                                 
+                                ;; 4. adjectives
+                                {:path [:français :masc :plur]
+                                 :merge-fn
+                                 (fn [val]
+                                   {:français {:agr {:gender :masc
+                                                     :number :plur}}})}
+                                {:path [:français :fem :plur]
+                                 :merge-fn
+                                 (fn [val]
+                                   {:français {:agr {:gender :fem
+                                                     :number :plur}}})}
                                 ])]
             result))
    lexicon))
