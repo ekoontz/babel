@@ -267,7 +267,11 @@
           {:keys [from-language show-notes]
            :or {from-language nil
                 show-notes false}}]
-  (cond 
+  (cond
+    (and (map? input)
+         (:surface input))
+    (:surface input)
+    
     (nil? input)
     nil
     
