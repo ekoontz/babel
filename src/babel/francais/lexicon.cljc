@@ -92,18 +92,23 @@
 
    ;; set {<tense> {:regular false}} if {<tense> {:1sing}} exists for
    ;; <tense> is any of {:present,:future,:imperfect}.
+   (default {:français {:future :regular}})
    (if-then {:synsem {:cat :verb}
              :français {:future {:1sing :top}}}
-            {:français {:future {:regular false}}})
+            {:français {:future {:regular false}}
+             :d-verb-irreg-future true})
 
+   (default {:français {:imperfect :regular}})
    (if-then {:synsem {:cat :verb}
              :français {:imperfect {:1sing :top}}}
-            {:français {:imperfect {:regular false}}})
+            {:français {:imperfect {:regular false}}
+             :d-verb-irreg-imperfect true})
 
+   (default {:français {:present :regular}})
    (if-then {:synsem {:cat :verb}
              :français {:present {:1sing :top}}}
-            {:français {:present {:regular false}}})
-
+            {:français {:present {:regular false}}
+             :d-verb-irreg-present true})
 
    ;; set {<tense> {:regular true}} otherwise for
    ;; <tense> is any of {:present,:future,:imperfect}.
