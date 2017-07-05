@@ -117,8 +117,16 @@
                                             [:top])))))
                             (list {:synsem {:sem {:tense :conditional}}}
                                   {:synsem {:sem {:tense :future}}}
+
+                                  ;; TODO: follow convention of e.g. Italiano:
+                                  ;; aspect should be :simple, not :progressive:
                                   {:synsem {:sem {:aspect :progressive
                                                   :tense :present}}}
+
+                                  ;; TODO: imperfetto
+                                  ;;{:synsem {:sem {:aspect :progressive
+                                  ;; :tense :past}}}
+
                                   {:synsem {:sem {:aspect :perfect
                                                   :tense :past}}})))))
             root-verb-array))))
