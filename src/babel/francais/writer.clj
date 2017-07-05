@@ -117,9 +117,9 @@
                                             [:top])))))
                             (list {:synsem {:sem {:tense :conditional}}}
                                   {:synsem {:sem {:tense :future}}}
-                                  {:synsem {:sem {:tense :present}}}
+                                  {:synsem {:sem {:aspect :progressive
+                                                  :tense :present}}}
                                   {:synsem {:sem {:aspect :perfect
-                                                  :tense :past}}}
-                                  )))))
+                                                  :tense :past}}})))))
             root-verb-array))))
 
