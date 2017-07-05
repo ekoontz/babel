@@ -43,12 +43,39 @@
          true
          (over/over grammar arg1 arg2))))
 
-(deftest generate-present
+(deftest generate-present-by-semantics-regular-1
+  (let [result (generate {:synsem {:subcat '()
+                                   :sem {:pred :abandon
+                                         :subj {:pred :I}
+                                         :tense :present
+                                         :aspect :progressive}}}
+                         :model (small))]
+    (is (= "j'abandone" (fo result)))))
+
+(deftest generate-present-by-root-regular-1
+  (let [result (generate {:synsem {:subcat '()
+                                   :sem {:aspect :progressive
+                                         :tense :present}}
+                          :root {:français {:français "abandoner"}}
+                          :comp {:synsem {:agr {:person :1st, :number :sing}}}}
+                         :model (small))]
+    (is (= "j'abandone" (fo result)))))
+
+(deftest generate-present-by-semantics-irregular-1
   (let [result (generate {:synsem {:subcat '()
                                    :sem {:pred :sleep
                                          :subj {:pred :I}
                                          :tense :present
                                          :aspect :progressive}}}
+                         :model (small))]
+    (is (= "je dors" (fo result)))))
+
+(deftest generate-present-by-root-irregular-1
+  (let [result (generate {:synsem {:subcat '()
+                                   :sem {:aspect :progressive
+                                         :tense :present}}
+                          :root {:français {:français "dormir"}}
+                          :comp {:synsem {:agr {:person :1st, :number :sing}}}}
                          :model (small))]
     (is (= "je dors" (fo result)))))
 
@@ -60,7 +87,7 @@
                          :model (small))]
     (is (= "je dormirais" (fo result)))))
 
-(deftest generate-present-irregular
+(deftest generate-present-irregular-2
   (let [result (generate {:synsem {:subcat '()
                                    :sem {:pred :be
                                          :subj {:pred :I}
