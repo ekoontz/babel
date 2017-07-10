@@ -83,16 +83,18 @@
    first return value, if any."
   (if (nil? infinitive)
     (throw (Exception. (str "conjugate passed null infinitive."))))
+
   (if (= :top (get-in conjugate-with [:synsem :cat] :top))
     (if false (throw (Exception. (str "conjugate: no [:synsem :cat] supplied: infinitive: " infinitive "; conjugate-with: " (strip-refs conjugate-with))))
         (do
           (log/warn (str "conjugate: no [:synsem :cat] supplied: infinitive: " infinitive "; conjugate-with: " (strip-refs conjugate-with))))))
+
   (if (and
        (= :verb (get-in conjugate-with [:synsem :cat]))
        (= :top (get-in conjugate-with [:synsem :agr] :top)))
     (do
-      (log/warn (str "conjugate: no [:synsem :agr] supplied: infinitive: " infinitive "; conjugate-with: " (strip-refs conjugate-with)))
-      nil))
+      (log/debug (str "conjugate: no [:synsem :agr] supplied: infinitive: " infinitive "; conjugate-with: " (strip-refs conjugate-with)))
+      (str "unconjugated: " infinitive)))
 
   (let [diag
         (log/debug (str "conjugate: infinitive=" infinitive "; conjugate-with: "
@@ -116,9 +118,17 @@
                            conjugate-with
                            {:français {:infinitive infinitive
                                        :exception true}}))))
-        exceptional-lexemes
-        (lookup-in lexicon
-                   {:spec lookup-spec})
+
+        error (if (= :fail lookup-spec)
+                (throw (Exception. (str "conjugate was given conjugate-with=:fail; "
+                                        "arg1="
+                                        (strip-refs (dissoc-paths
+                                                     conjugate-with [[:français :exception]])) "; "
+                                        "arg2="
+                                        {:français {:infinitive infinitive
+                                                    :exception true}}))))
+
+        exceptional-lexemes (lookup-in lexicon {:spec lookup-spec})
         
         exceptional-surface-forms
         (map #(get-in % [:français :français])
