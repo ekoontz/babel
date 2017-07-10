@@ -43,6 +43,17 @@
          true
          (over/over grammar arg1 arg2))))
 
+(deftest generate-present-by-root-regular-1
+  (let [result (generate {:synsem {:subcat '()
+                                   :sem {:pred :top
+                                         :subj {:pred :I}
+                                         :tense :present
+                                         :aspect :progressive}}
+                          :root {:français {:français "parler"}}
+                          :rule "s-present-nonphrasal"}
+                         :model (small))]
+    (is (= "je parle" (fo result)))))
+
 (deftest generate-present-by-semantics-regular-1
   (let [result (generate {:synsem {:subcat '()
                                    :sem {:pred :abandon
