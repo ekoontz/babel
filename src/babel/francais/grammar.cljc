@@ -443,7 +443,6 @@
                                      :sem {:tense :present}
                                      :cat :verb}})
 
-
                    ;; e.g. used as: "je m'appelle Jean" -
                    ;; [s-present-phrasal 'je' [vp-pronoun-phrasal 'm'' [vp32 'se appeler' 'Jean']]]
                    (unify h32
