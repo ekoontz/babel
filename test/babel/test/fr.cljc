@@ -63,7 +63,7 @@
                          :model (small))]
     (is (= "j'abandone" (fo result)))))
 
-(deftest generate-present-by-root-regular-1
+(deftest generate-present-by-root-regular-2
   (let [result (generate {:synsem {:subcat '()
                                    :sem {:aspect :progressive
                                          :tense :present}}
