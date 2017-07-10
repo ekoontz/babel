@@ -33,30 +33,6 @@
    (map-function-on-map-vals
     (fn [lexical-string lexical-val]
       (phonize lexical-val lexical-string)))
-
-   (map-function-on-map-vals
-    (fn [lexical-string lexical-vals]
-      (map (fn [lexical-val]
-             (if (and (= (string? (get-in lexical-val [:français :imperfect :1sing])))
-                      (= :verb (get-in lexical-val [:synsem :cat])))
-               (unify {:français {:imperfect {:regular false}}}
-                      lexical-val)
-               lexical-val))
-           lexical-vals)))
-
-   (default {:synsem {:cat :verb}
-             :français {:imperfect {:regular true}}
-             :d2 true})
-
-   (map-function-on-map-vals
-    (fn [lexical-string lexical-vals]
-      (map (fn [lexical-val]
-             (if (and (= (string? (get-in lexical-val [:français :future :1sing])))
-                      (= :verb (get-in lexical-val [:synsem :cat])))
-               (unify {:français {:future {:regular false}}}
-                      lexical-val)
-               lexical-val))
-           lexical-vals)))
    
    ;; Mark lexemes with no :cat with their own :cat to avoid matching any rules after this.
    (default {:gender-pronoun-agreement false
@@ -76,10 +52,6 @@
                       :sem {:gender gender}
                       :subcat '()}
              :d-gpa true})
-
-   (default {:synsem {:cat :verb}
-             :français {:future {:regular true}}
-             :d-future true})
    
    ((fn [lexicon]
       (let [exceptions (apply merge-with concat
@@ -90,37 +62,25 @@
         (apply merge-with concat
                [exceptions lexicon]))))
 
-   ;; set {<tense> {:regular false}} if {<tense> {:1sing}} exists for
+   ;; set {<tense> {:regular true}} otherwise for
    ;; <tense> is any of {:present,:future,:imperfect}.
    (default {:français {:future :regular}})
-   (if-then {:synsem {:cat :verb}
-             :français {:future {:1sing :top}}}
-            {:français {:future {:regular false}}
+   (default {:synsem {:cat :verb}
+             :français {:future {:1sing :top
+                                 :regular false}}
              :d-verb-irreg-future true})
 
    (default {:français {:imperfect :regular}})
-   (if-then {:synsem {:cat :verb}
-             :français {:imperfect {:1sing :top}}}
-            {:français {:imperfect {:regular false}}
+   (default {:synsem {:cat :verb}
+             :français {:imperfect {:1sing :top
+                                 :regular false}}
              :d-verb-irreg-imperfect true})
 
    (default {:français {:present :regular}})
-   (if-then {:synsem {:cat :verb}
-             :français {:present {:1sing :top}}}
-            {:français {:present {:regular false}}
+   (default {:synsem {:cat :verb}
+             :français {:present {:1sing :top
+                                  :regular false}}
              :d-verb-irreg-present true})
-
-   ;; set {<tense> {:regular true}} otherwise for
-   ;; <tense> is any of {:present,:future,:imperfect}.
-   (default {:synsem {:cat :verb}
-             :d-verb-reg-future true
-             :français {:future {:regular true}}})
-   (default {:synsem {:cat :verb}
-             :d-verb-reg-imperfect true
-             :français {:imperfect {:regular true}}})
-   (default {:synsem {:cat :verb}
-             :d-verb-reg-present true
-             :français {:present {:regular true}}})
    
    ;; Prevent irregular infinitives ({:present :regular false})
    ;; from matching phrase structure rules intended for non-infinitives.
