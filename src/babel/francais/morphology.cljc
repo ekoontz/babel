@@ -129,10 +129,10 @@
                                                     :exception true}}))))
 
         exceptional-lexemes
-        ;; stub
         (if (and
-             (= :1st (get-in lookup-spec [:français :agr :person])))
-          [{:français {:français "dors"}}]
+             (= :1st (get-in lookup-spec [:français :agr :person]))
+             (= :sing (get-in lookup-spec [:français :agr :number])))
+          [{:français {:français (get-in lookup-spec [:français :present :1sing])}}]
           (lookup-in lexicon {:spec lookup-spec}))
         
         exceptional-surface-forms
