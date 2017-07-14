@@ -128,7 +128,12 @@
                                         {:français {:infinitive infinitive
                                                     :exception true}}))))
 
-        exceptional-lexemes (lookup-in lexicon {:spec lookup-spec})
+        exceptional-lexemes
+        ;; stub
+        (if (and
+             (= :1st (get-in lookup-spec [:français :agr :person])))
+          [{:français {:français "dors"}}]
+          (lookup-in lexicon {:spec lookup-spec}))
         
         exceptional-surface-forms
         (map #(get-in % [:français :français])
