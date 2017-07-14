@@ -129,11 +129,29 @@
                                                     :exception true}}))))
 
         exceptional-lexemes
-        (if (and
-             (= :1st (get-in lookup-spec [:français :agr :person]))
-             (= :sing (get-in lookup-spec [:français :agr :number])))
-          [{:français {:français (get-in lookup-spec [:français :present :1sing])}}]
-          (lookup-in lexicon {:spec lookup-spec}))
+        (cond (and
+               (= :1st (get-in lookup-spec [:français :agr :person]))
+               (= :sing (get-in lookup-spec [:français :agr :number]))
+               (= :verb (get-in lookup-spec [:synsem :cat]))
+               (= :present (get-in lookup-spec [:synsem :infl])))
+              [{:français {:français (get-in lookup-spec [:français :present :1sing])}}]
+
+              (and
+               (= :2nd (get-in lookup-spec [:français :agr :person]))
+               (= :sing (get-in lookup-spec [:français :agr :number]))
+               (= :verb (get-in lookup-spec [:synsem :cat]))
+               (= :present (get-in lookup-spec [:synsem :infl])))
+              [{:français {:français (get-in lookup-spec [:français :present :2sing])}}]
+
+              (and
+               (= :3rd (get-in lookup-spec [:français :agr :person]))
+               (= :sing (get-in lookup-spec [:français :agr :number]))
+               (= :verb (get-in lookup-spec [:synsem :cat]))
+               (= :present (get-in lookup-spec [:synsem :infl])))
+              [{:français {:français (get-in lookup-spec [:français :present :3sing])}}]
+              
+              true
+              (lookup-in lexicon {:spec lookup-spec}))
         
         exceptional-surface-forms
         (map #(get-in % [:français :français])
