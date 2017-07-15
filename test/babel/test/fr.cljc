@@ -350,19 +350,22 @@
 
 (deftest conjugate-present-er
   (is (= "parlons" (conjugate "parler"
-                              {:synsem {:cat :verb
+                              {:français {:present :regular}
+                               :synsem {:cat :verb
                                         :infl :present
                                          :subcat {:1 {:agr {:number :plur
                                                             :person :1st}}}}}))))
 (deftest conjugate-present-er-with-g
   (is (= "mangeons" (conjugate "manger"
-                               {:synsem {:cat :verb
+                               {:français {:present :regular}
+                                :synsem {:cat :verb
                                          :infl :present
                                          :subcat {:1 {:agr {:number :plur
                                                             :person :1st}}}}}))))
 (deftest conjugate-present-re-with-d
   (is (= "apprenons" (conjugate "apprendre"
-                                {:synsem {:cat :verb
+                                {:français {:present :regular}
+                                 :synsem {:cat :verb
                                           :infl :present
                                           :subcat {:1 {:agr {:number :plur
                                                              :person :1st}}}}}))))
@@ -432,9 +435,10 @@
                                                  :number :plur}}}}})
          "blessées")))
 
-(deftest conjugate7
+(deftest conjugate8
   (is (= (conjugate "se blesser"
-                    {:synsem {:cat :verb
+                    {:français {:present :regular}
+                     :synsem {:cat :verb
                               :infl :present
                               :subcat {:1 {:agr {:person :2nd
                                                  :number :sing}}}}})
@@ -442,7 +446,10 @@
 
 (deftest conjugate-irregular
   (is (= (conjugate "boire"
-                    {:synsem {:cat :verb
+                    {:français {:boot-stem2 "buv"
+                                :present {:boot-stem2 true}
+                                :français "boire"}
+                     :synsem {:cat :verb
                               :infl :present
                               :subcat {:1 {:agr {:person :1st
                                                  :number :plur}}}}}
