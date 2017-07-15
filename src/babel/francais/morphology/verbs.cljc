@@ -1105,13 +1105,50 @@
                                  :number :plur}
                            :infl :imperfect}
                   :français {:imperfect {:stem true}}}}
+
+
+    {:surface-fn #(str (get-in % [:français :boot-stem1]) "s")
+     :unify-with {:synsem {:cat :verb
+                           :agr {:person :1st
+                                 :number :sing}
+                           :infl :present}
+                  :français {:present {:boot-stem1 true}}}}
+
+    {:surface-fn #(str (get-in % [:français :boot-stem1]) "s")
+     :unify-with {:synsem {:cat :verb
+                           :agr {:person :2nd
+                                 :number :sing}
+                           :infl :present}
+                  :français {:present {:boot-stem1 true}}}}
+
+    {:surface-fn #(str (get-in % [:français :boot-stem1]) "t")
+     :unify-with {:synsem {:cat :verb
+                           :agr {:person :3rd
+                                 :number :sing}
+                           :infl :present}
+                  :français {:present {:boot-stem1 true}}}}
     
     {:surface-fn #(str (get-in % [:français :boot-stem2]) "ons")
      :unify-with {:synsem {:cat :verb
                            :agr {:person :1st
                                  :number :plur}
                            :infl :present}
+                  :français {:present {:boot-stem2 true}}}}
+
+    {:surface-fn #(str (get-in % [:français :boot-stem2]) "ez")
+     :unify-with {:synsem {:cat :verb
+                           :agr {:person :2nd
+                                 :number :plur}
+                           :infl :present}
+                  :français {:present {:boot-stem2 true}}}}
+
+    {:surface-fn #(str (get-in % [:français :boot-stem1]) "ent")
+     :unify-with {:synsem {:cat :verb
+                           :agr {:person :3rd
+                                 :number :plur}
+                           :infl :present}
                   :français {:present {:boot-stem1 true}}}}]
+    
    (mapcat (fn [infl]
              [{:surface-fn #(get-in % [:français infl :1sing])
                :unify-with {:français {infl {:regular false}
