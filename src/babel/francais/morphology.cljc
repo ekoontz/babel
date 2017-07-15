@@ -129,30 +129,17 @@
                                                     :exception true}}))))
 
         exceptional-lexemes
-        (cond (and
-               (= :1st (get-in lookup-spec [:français :agr :person]))
-               (= :sing (get-in lookup-spec [:français :agr :number]))
-               (= :verb (get-in lookup-spec [:synsem :cat]))
-               (= :present (get-in lookup-spec [:synsem :infl])))
+        (cond (not (fail? (unify lookup-spec
+                                 {:français {:present {:regular false}
+                                             :agr {:person :1st
+                                                   :number :sing}}
+                                  :synsem {:cat :verb
+                                           :infl :present}})))
               [{:français {:français (get-in lookup-spec [:français :present :1sing])}}]
-
-              (and
-               (= :2nd (get-in lookup-spec [:français :agr :person]))
-               (= :sing (get-in lookup-spec [:français :agr :number]))
-               (= :verb (get-in lookup-spec [:synsem :cat]))
-               (= :present (get-in lookup-spec [:synsem :infl])))
-              [{:français {:français (get-in lookup-spec [:français :present :2sing])}}]
-
-              (and
-               (= :3rd (get-in lookup-spec [:français :agr :person]))
-               (= :sing (get-in lookup-spec [:français :agr :number]))
-               (= :verb (get-in lookup-spec [:synsem :cat]))
-               (= :present (get-in lookup-spec [:synsem :infl])))
-              [{:français {:français (get-in lookup-spec [:français :present :3sing])}}]
               
               true
-              (lookup-in lexicon {:spec lookup-spec}))
-        
+              nil)
+
         exceptional-surface-forms
         (map #(get-in % [:français :français])
              exceptional-lexemes)
@@ -173,7 +160,8 @@
                                 (re-matches from infinitive))
                          (string/replace infinitive from to))))
                  regular-patterns))]
-    (first (take 1 (concat exceptional-surface-forms regulars [infinitive])))))
+    (let [results (concat exceptional-surface-forms regulars [infinitive])]
+      (first results))))
 
 (defn pre-conjugate [spec]
   "add structure-sharing so that (defn conjugate) can conjugate words correctly."
@@ -192,7 +180,8 @@
 ;; compositional functionality (e.g. the word has an :a and :b, so combine by concatenation, etc)
 ;; 
 (defn get-string [word & [b lexicon]]
-  (cond (and (nil? b)
+  (cond 
+        (and (nil? b)
              (seq? word))
         (let [result (get-string word)]
           (if (string? result)
@@ -228,6 +217,7 @@
                            (list (get-string word)
                                  (if b (get-string b)
                                      ""))))
+
         (string? word)
         word
         
@@ -285,7 +275,7 @@
 
             (nil? (get-in word [:français]))
             ""
-              
+
             true
             (let [infinitive (get-in word [:français])
                   debug (log/debug (str "input to conjugate: infinitive: " infinitive "; spec:"
