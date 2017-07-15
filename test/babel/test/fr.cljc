@@ -90,6 +90,15 @@
                          :model (small))]
     (is (= "je dors" (fo result)))))
 
+(deftest generate-present-by-root-with-boot-stem
+  (let [result (generate {:synsem {:subcat '()
+                                   :sem {:subj {:pred :noi}
+                                         :tense :present
+                                         :aspect :progressive}}
+                          :root {:français {:français "boire"}}}
+                         :model (small))]
+    (is (= "nous buvons" (fo result)))))
+
 (deftest generate-conditional
   (let [result (generate {:synsem {:subcat '()
                                    :sem {:pred :sleep
