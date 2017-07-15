@@ -469,7 +469,8 @@
 
 (deftest se-plaindre
   (is (= (conjugate "se plaindre"
-                    {:synsem {:cat :verb
+                    {:français {:present :regular}
+                     :synsem {:cat :verb
                               :agr {:number :sing,
                                     :person :1st,
                                     :gender :masc},
