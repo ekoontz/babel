@@ -4,8 +4,8 @@
    [babel.francais.morphology :as morph :refer [phonize]]
    [babel.francais.pos :refer [gender-pronoun-agreement intransitivize
                                transitivize verb-aux]]
-   [babel.lexiconfn :as lexiconfn :refer [compile-lex default edn2lexicon if-then
-                                          listify map-function-on-map-vals]]
+   [babel.lexiconfn :as lexiconfn :refer [compile-lex default edn2lexicon if-has
+                                          if-then listify map-function-on-map-vals]]
    [clojure.java.io :refer [reader resource]]
    [babel.pos :as pos :refer [pronoun-acc]]
    [dag_unify.core :refer [get-in unify]]))
@@ -70,18 +70,29 @@
                                  :regular false}}
              :d-verb-irreg-future true})
 
+   (if-has [:français :imperfect-stem] :top
+           {:français {:imperfect {:stem true}}})
+   (if-has [:français :boot-stem1] :top
+           {:français {:present {:boot-stem1 true}}})
+   (if-has [:français :boot-stem2] :top
+           {:français {:present {:boot-stem2 true}}})
+   
    (default {:français {:imperfect :regular}})
    (default {:synsem {:cat :verb}
              :français {:imperfect {:1sing :top
-                                 :regular false}}
+                                    :regular false}}
              :d-verb-irreg-imperfect true})
-
+   (default {:français {:imperfect {:regular false
+                                    :stem false}}})
+   
    (default {:français {:present :regular}})
    (default {:synsem {:cat :verb}
              :français {:present {:1sing :top
-                                  :regular false}}
+                                  :regular false
+                                  :boot-stem1 false
+                                  :boot-stem2 false}}
              :d-verb-irreg-present true})
-   
+
    ;; Prevent irregular infinitives ({:present :regular false})
    ;; from matching phrase structure rules intended for non-infinitives.
    (default {:synsem {:cat :verb}
