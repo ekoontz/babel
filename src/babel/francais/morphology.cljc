@@ -76,6 +76,7 @@
                (or (log/debug (str "lookup-in: matched: " (strip-refs lexeme))) true)))
             lexemes)))
 
+;; TODO: remove optional '& [lexicon]'
 (defn conjugate [infinitive conjugate-with & [lexicon]]
   "Conjugate an infinitive into a surface form by taking the first 
    element of regular-patterns where the element's :u unifies successfully with
@@ -100,11 +101,12 @@
         (log/debug (str "conjugate: infinitive=" infinitive "; conjugate-with: "
                         (strip-refs conjugate-with)))
         
-        lookup-spec (strip-refs (unify
-                                 (dissoc-paths
-                                  conjugate-with [[:français :exception]])
-                                 {:français {:infinitive infinitive
-                                             :exception true}}))
+        lookup-spec (strip-refs
+                     (unify
+                      (dissoc-paths
+                       conjugate-with [[:français :exception]])
+                      {:français {:infinitive infinitive
+                                  :exception true}}))
         diag
         (log/debug (str "conjugate: lookup-spec: " lookup-spec))
         
@@ -128,21 +130,13 @@
                                         {:français {:infinitive infinitive
                                                     :exception true}}))))
 
-        exceptional-lexemes
-        (cond (not (fail? (unify lookup-spec
-                                 {:français {:present {:regular false}
-                                             :agr {:person :1st
-                                                   :number :sing}}
-                                  :synsem {:cat :verb
-                                           :infl :present}})))
-              [{:français {:français (get-in lookup-spec [:français :present :1sing])}}]
-              
-              true
-              nil)
-
         exceptional-surface-forms
-        (map #(get-in % [:français :français])
-             exceptional-lexemes)
+        (remove nil?
+         (map #(let [{surface-fn :surface-fn
+                      unify-with :unify-with} %]
+                 (if (not (fail? (unify unify-with lookup-spec)))
+                   (surface-fn lookup-spec)))
+              verbs/irregular-conjugations))
         
         regulars
         (remove nil?
@@ -279,7 +273,7 @@
             true
             (let [infinitive (get-in word [:français])
                   debug (log/debug (str "input to conjugate: infinitive: " infinitive "; spec:"
-                                         (strip-refs word)))
+                                        (strip-refs word)))
                   synsemize ;; convert _word_ back into what (defn conjugate) can deal with.
                   (pre-conjugate {:français word})
                   result (conjugate infinitive synsemize)]
