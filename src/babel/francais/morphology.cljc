@@ -191,11 +191,14 @@
   (unify spec
          (let [cat (atom :top)
                agr (atom :top)
-               infl (atom :top)]
+               infl (atom :top)
+               essere (atom :top)]
            {:synsem {:cat cat
+                     :essere essere
                      :infl infl
                      :agr agr}
             :français {:cat cat
+                       :essere essere
                        :infl infl
                        :agr agr}})))
 
