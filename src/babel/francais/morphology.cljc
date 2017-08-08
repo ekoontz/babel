@@ -308,6 +308,7 @@
                                         (strip-refs word)))
                   synsemize ;; convert _word_ back into what (defn conjugate) can deal with.
                   (pre-conjugate {:français word})
+                  debug (log/debug (str "synsemized: " (strip-refs synsemize)))
                   result (conjugate infinitive synsemize)]
               (log/debug (str "result of conjugate: " result))
               result)))))
