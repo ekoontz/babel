@@ -454,6 +454,30 @@
     (is (not (nil? result)))
     (is (= (fo result) "nous sommes allées"))))
 
+(deftest generate-passe-compose-essere-false
+  (let [result (generate {:synsem {:subcat '()
+                                   :sem {:subj {:pred :tu
+                                                :gender :fem}
+                                         :aspect :perfect
+                                         :tense :past}}
+                          :root {:français {:français "couper"}}})]
+    (is (not (nil? result)))
+    (is (= (fo result) "tu as coupé"))))
+
+(deftest generate-passe-compose-irregular
+  (is (not (empty? (get (:lexicon (small)) "pris"))))
+  (is (= false (get-in (first (get (:lexicon (small)) "prendre"))
+                       [:français :past-p :regular])))
+  (let [result (generate {:synsem {:subcat '()
+                                   :sem {:subj {:pred :noi}
+                                         :aspect :perfect
+                                         :tense :past}}
+                          :root {:français {:français "prendre"}}}
+                         :model (small))]
+
+    (is (not (nil? result)))
+    (is (= (fo result) "nous avons pris"))))
+
 (deftest generate-reflexive-present
   (let [rules {:s-present-phrasal
                (first (filter #(= (get % :rule) "s-present-phrasal")

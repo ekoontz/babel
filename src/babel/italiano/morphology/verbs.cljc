@@ -243,7 +243,8 @@
    (expand-replace-patterns
     {:synsem {:infl :past}}
     [
-     {:agr {:synsem {:subcat {:1 {:agr {:number :sing
+     {:agr {:synsem {:essere true
+                     :subcat {:1 {:agr {:number :sing
                                         :gender :fem}}}}}
       :p [
           #"(.*)esa"       "$1eso"
@@ -260,7 +261,8 @@
           ]
       }
 
-     {:agr {:synsem {:subcat {:1 {:agr {:number :plur
+     {:agr {:synsem {:essere true
+                     :subcat {:1 {:agr {:number :plur
                                         :gender :fem}}}}}
       :p [
           #"(.*)ese"       "$1eso"
@@ -281,7 +283,8 @@
           ]
       }
 
-     {:agr {:synsem {:subcat {:1 {:agr {:number :plur
+     {:agr {:synsem {:essere true
+                     :subcat {:1 {:agr {:number :plur
                                         :gender :masc}}}}}
       :p [
           #"(.*)esi"       "$1eso"
@@ -294,7 +297,8 @@
           ]
       }
 
-     {:agr {:synsem {:subcat {:1 {:agr {:number :plur}}}}}
+     {:agr {:synsem {:essere true
+                     :subcat {:1 {:agr {:number :plur}}}}}
       :p [
           #"(.*)iti" "$1ire"
           #"(.*)iti" "$1irsi"

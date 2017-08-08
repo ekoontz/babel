@@ -1329,7 +1329,7 @@
                                              :number :plur}}
                             :synsem {:cat :verb
                                      :infl infl}}}])
-           [:conditional :future :imperfect :present])))
+           [:conditional :future :imperfect :past-p :present])))
 
 (defn exception [error-string]
   #?(:clj
