@@ -144,14 +144,18 @@
                                        unify-with :unify-with} %]
                                   (log/debug (str "irregular: trying unify-with: " unify-with))
                                   (if (not (= :fail (unify unify-with spec)))
-                                    (cond (and (not (nil? prefix))
-                                               (not (nil? suffix)))
-                                          (str (get-in spec [:français prefix]) suffix)
+                                    (do
+                                      (log/debug (str "irregular succeeded with: " %))
+                                      (cond (and (not (nil? prefix))
+                                                 (not (nil? suffix)))
+                                            (str (get-in spec [:français prefix]) suffix)
+                                            
+                                            (and (not (nil? path))
+                                                 (not (nil? (get-in spec path nil))))
+                                            (do (log/debug (str "path:" path "; value: " (get-in spec path)))
+                                                (get-in spec path))
                                           
-                                          (not (nil? path))
-                                          (get-in spec path)
-                                          
-                                          true (throw (Exception. (str "problem with irregular pattern:" %))))
+                                            true (throw (Exception. (str "problem with irregular pattern:" %)))))
                                     (do (log/debug (str "irregular: unify failed: fail-path: "
                                                         (dag_unify.core/fail-path unify-with spec)))
                                         nil)))
