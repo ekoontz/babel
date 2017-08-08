@@ -111,21 +111,24 @@
 
 (deftest conjugate2
   (is (= (conjugate "s'amuser"
-                    {:synsem {:cat :verb
+                    {:français {:past-p {:regular true}}
+                     :synsem {:cat :verb
                               :infl :past-p
                               :agr {:number :sing}}})
          "amusé")))
          
 (deftest conjugate3
   (is (= (conjugate "s'amuser"
-                    {:synsem {:cat :verb
+                    {:français {:past-p {:regular true}}
+                     :synsem {:cat :verb
                               :infl :past-p
                               :agr {:number :plur}}})
          "amusés")))
 
 (deftest conjugate4
   (is (= (conjugate "s'amuser"
-                    {:synsem {:cat :verb
+                    {:français {:past-p {:regular true}}
+                     :synsem {:cat :verb
                               :infl :past-p
                               :agr {:gender :masc
                                     :number :plur}}})
@@ -133,7 +136,8 @@
 
 (deftest conjugate5
   (is (= (conjugate "s'amuser"
-                    {:synsem {:cat :verb
+                    {:français {:past-p {:regular true}}
+                     :synsem {:cat :verb
                               :infl :past-p
                               :agr {:gender :fem
                                     :number :plur}}})
@@ -141,7 +145,8 @@
 
 (deftest conjugate6
   (is (= (conjugate "se blesser"
-                    {:synsem {:cat :verb
+                    {:français {:past-p {:regular true}}
+                     :synsem {:cat :verb
                               :infl :past-p
                               :agr {:gender :masc
                                     :number :sing}}})
@@ -149,7 +154,8 @@
 
 (deftest conjugate7
   (is (= (conjugate "se blesser"
-                    {:synsem {:cat :verb
+                    {:français {:past-p {:regular true}}
+                     :synsem {:cat :verb
                               :infl :past-p
                               :agr {:gender :fem
                                     :number :plur}}})
@@ -385,6 +391,7 @@
               :cat :noun
               :français "nous"},
           :b {:b {:cat :verb
+                  :past-p {:regular true}
                   :future-stem "ir",
                   :agr {:number :plur,
                         :gender :fem
