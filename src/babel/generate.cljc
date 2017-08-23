@@ -77,7 +77,7 @@
 
      ;; 2. debug logging.
      (map (fn [bolt]
-            (do (log/debug (str "bolt:" (show-bolt bolt model)))
+            (do (log/debug (str "bolt(1):" (show-bolt bolt model)))
                 bolt)))
 
      ;; 3. For each bolt, create a map:
@@ -94,8 +94,29 @@
             (let [paths (find-comp-paths bolt)]
               {:bolt bolt
                :paths paths
-               :comps (map #(comp-path-to-complements bolt % model depth max-depth) paths)})))
+               :comps (map (fn [path]
+                             (let [comps
+                                   (comp-path-to-complements bolt path model depth max-depth)]
+                               (log/info (str "bolt(2): " (show-bolt bolt model) "; path:"  path))
+                               comps))
+                           paths)})))
 
+     (map (fn [{bolt :bolt paths :paths comps :comps}]
+            (let [all-comps-ok?
+                  (empty? (remove #(= false %)
+                                  (map empty? comps)))]
+              {:bolt (if all-comps-ok?
+                       bolt :fail)
+               :paths (if all-comps-ok?
+                        paths)
+               :comps (if all-comps-ok? comps)})))
+                 
+     (map (fn [{bolt :bolt paths :paths comps :comps}]
+            (do (log/debug (str "bolt tuple(1):" (show-bolt bolt model)))
+                {:bolt bolt
+                 :paths paths
+                 :comps comps})))
+    
      ;; 4. Create the cartesian product of all the possible complements at all paths within each bolt.
      ;; B1:P1_1:C1_1 P1_2:C1_1,...,P1_n:C1_1
      ;; B1:P1_2:C1_1 P2_2:C1_1,...,P1_n:C1_2
@@ -108,6 +129,13 @@
                        :trellis each-path-through-trellis})
                     (lazy-seq (apply combo/cartesian-product comps)))))
 
+     ;; 2. debug logging.
+     (map (fn [{bolt :bolt paths :paths trellis :trellis}]
+            (do (log/info (str "bolt(3):" (show-bolt bolt model)))
+                {:bolt bolt
+                 :paths paths
+                 :trellis trellis})))
+     
      ;; 5. For each bolt, create tree parts for each path-complement pair of the bolt.
      (map (fn [{bolt :bolt paths :paths trellis :trellis}]
             (cons bolt
