@@ -648,10 +648,12 @@
          (= "the woman that she sees"
             (morph result))))))
 
+(def model (medium))
+
+(def spec {:synsem {:cat :verb :sem {:pred :sleep} :subcat '()}})
 
 (defn foo [spec]
-  (let [model (medium)
-        my-bolt (first (babel.generate/bolt2 model spec 0 2))
+  (let [my-bolt (first (babel.generate/bolt2 model spec 0 2))
         my-np1 (first (babel.generate/bolt2 model (get-in my-bolt [:comp]) 0 2))]
     (->
      my-bolt
@@ -662,9 +664,19 @@
                               
      ((:default-fn model)))))
 
-
-
-
-
-
-  
+    
+(defn foo2 [spec]
+  (let [my-bolt (first (babel.generate/bolt2 model spec 0 2))]
+    (if (and (= true (get-in my-bolt [:phrasal]))
+             (= true (get-in my-bolt [:comp :phrasal] true)))
+      (->
+       my-bolt
+       (dag_unify.core/assoc-in [:comp]
+                                (foo2 (get-in my-bolt [:comp])))
+       ((:default-fn model)))
+      (->
+       my-bolt
+       (dag_unify.core/assoc-in [:comp]
+                                (first (babel.generate/bolt2 model (get-in my-bolt [:comp]) 0 2)))
+                                 
+       ((:default-fn model))))))
