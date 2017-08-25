@@ -698,18 +698,14 @@
                                             each-foo)
                    ((:default-fn model))))
                 (foo3 (get-in my-bolt [:comp]) nil))
-           (if false
-             [(-> my-bolt
-                  (dag_unify.core/assoc-in [:comp]
-                                           (first (babel.generate/bolt2 model (get-in my-bolt [:comp]) 0 2)))
-                  ((:default-fn model)))]
-             (if true
-               (map (fn [each-foo]
-                      (-> my-bolt
-                          (dag_unify.core/assoc-in [:comp]
-                                                   each-foo)
-                          ((:default-fn model))))
-                    [(first (babel.generate/bolt2 model (get-in my-bolt [:comp]) 0 2))])))))
+           (map (fn [each-foo]
+                  (-> my-bolt
+                      (dag_unify.core/assoc-in [:comp]
+                                               each-foo)
+                      ((:default-fn model))))
+                (if true
+                  [(first (babel.generate/bolt2 model (get-in my-bolt [:comp]) 0 2))]
+                  (take 1 (babel.generate/bolt2 model (get-in my-bolt [:comp]) 0 2))))))
        (foo3 spec (rest my-bolts))))))
 
 
