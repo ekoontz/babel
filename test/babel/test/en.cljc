@@ -648,3 +648,23 @@
          (= "the woman that she sees"
             (morph result))))))
 
+
+(defn foo [spec]
+  (let [model (medium)
+        my-bolt (first (babel.generate/bolt2 model spec 0 2))
+        my-np1 (first (babel.generate/bolt2 model (get-in my-bolt [:comp]) 0 2))]
+    (->
+     my-bolt
+     (dag_unify.core/assoc-in [:comp]
+                              (dag_unify.core/assoc-in my-np1 [:comp]
+                                                       (first (babel.generate/bolt2 model
+                                                                                    (get-in my-np1 [:comp]) 0 2))))
+                              
+     ((:default-fn model)))))
+
+
+
+
+
+
+  
