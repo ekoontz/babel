@@ -194,6 +194,24 @@
   (log/debug (str "(generate) with model named: " (:name language-model)))
   (first (generate-all spec language-model)))
 
+(defn bolt2 [model spec depth max-depth]
+  (let [grammar (:grammar model)
+        lexemes (get-lexemes model spec)]
+    (if (< depth max-depth)
+      (lazy-cat
+       lexemes
+       (flatten
+        (->> (shufflefn (candidate-parents grammar spec))
+             (map (fn [candidate-parent]
+                    (let [unified-candidate-parent (unify candidate-parent spec)]
+                      (->> (bolt2 model
+                                  (get-in unified-candidate-parent [:head])
+                                  (+ 1 depth)
+                                  max-depth)
+                           (map (fn [head]
+                                  (assoc-in unified-candidate-parent [:head] head)))
+                           (remove #(= :fail %))))))))))))
+
 (defn lightning-bolts
   "Returns a lazy sequence of all possible bolts given a spec, where a bolt is a tree
   such that only the head children are generated. This sequence is used by (generate (above))
