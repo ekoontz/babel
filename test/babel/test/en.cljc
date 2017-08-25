@@ -705,7 +705,7 @@
                       ((:default-fn model))))
                 (if true
                   [(first (babel.generate/bolt2 model (get-in my-bolt [:comp]) 0 2))]
-                  (take 1 (babel.generate/bolt2 model (get-in my-bolt [:comp]) 0 2))))))
+                  (babel.generate/bolt2 model (get-in my-bolt [:comp]) 0 2)))))
        (foo3 spec (rest my-bolts))))))
 
 
