@@ -653,36 +653,7 @@
 
 (def spec {:synsem {:cat :verb :sem {:pred :sleep} :subcat '()}})
 
-(defn foo [spec]
-  (let [my-bolt (first (babel.generate/bolt2 model spec 0 2))
-        my-np1 (first (babel.generate/bolt2 model (get-in my-bolt [:comp]) 0 2))]
-    (->
-     my-bolt
-     (dag_unify.core/assoc-in [:comp]
-                              (dag_unify.core/assoc-in my-np1 [:comp]
-                                                       (first (babel.generate/bolt2 model
-                                                                                    (get-in my-np1 [:comp]) 0 2))))
-                              
-     ((:default-fn model)))))
-
-    
-(defn foo2 [spec]
-  (let [my-bolt (first (babel.generate/bolt2 model spec 0 2))]
-    (if (and (= true (get-in my-bolt [:phrasal]))
-             (= true (get-in my-bolt [:comp :phrasal] true)))
-      (->
-       my-bolt
-       (dag_unify.core/assoc-in [:comp]
-                                (foo2 (get-in my-bolt [:comp])))
-       ((:default-fn model)))
-      (->
-       my-bolt
-       (dag_unify.core/assoc-in [:comp]
-                                (first (babel.generate/bolt2 model (get-in my-bolt [:comp]) 0 2)))
-                                 
-       ((:default-fn model))))))
-
-(defn foo3 [spec my-bolts]
+(defn gen [spec my-bolts]
   (let [my-bolts 
         (if (nil? my-bolts)
           (babel.generate/bolt2 model spec 0 2)
@@ -699,7 +670,7 @@
                        (dag_unify.core/assoc-in [:comp]
                                                 each-foo)
                        ((:default-fn model))))
-                    (foo3 (get-in my-bolt [:comp]) nil))
+                    (gen (get-in my-bolt [:comp]) nil))
 
                (not (nil? (get-in my-bolt [:comp])))
                (map (fn [each-foo]
@@ -711,7 +682,7 @@
 
                true
                [my-bolt]))
-       (foo3 spec (rest my-bolts))))))
+       (gen spec (rest my-bolts))))))
 
 
 
