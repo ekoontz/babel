@@ -49,6 +49,57 @@
 (declare show-bolt)
 (declare spec-info)
 (declare unify-and-log)
+
+(defn bolt2 [model spec depth max-depth]
+  (let [grammar (:grammar model)
+        lexemes (shuffle (get-lexemes model spec))]
+    (if (< depth max-depth)
+      (lazy-cat
+       lexemes
+       (lazy-seq
+        (reduce concat
+                (->> (shufflefn (candidate-parents grammar spec))
+                     (map (fn [candidate-parent]
+                            (let [unified-candidate-parent (unify candidate-parent spec)]
+                              (->> (bolt2 model
+                                          (get-in unified-candidate-parent [:head])
+                                          (+ 1 depth)
+                                          max-depth)
+                                   (map (fn [head]
+                                          (assoc-in unified-candidate-parent [:head] head)))
+                                   (remove #(= :fail %)))))))))))))
+
+(defn gen [spec model & [bolts]]
+  (let [bolts 
+        (if (nil? bolts)
+          (bolt2 model spec 0 2)
+          bolts)]
+    (if (not (empty? bolts))
+      (lazy-cat
+       (let [my-bolt (first bolts)]
+         (cond (and (= true (get-in my-bolt [:phrasal]))
+                    (get-in my-bolt [:comp])
+                    (= true (get-in my-bolt [:comp :phrasal] true)))
+               (pmap (fn [each-comp]
+                      (->
+                       my-bolt
+                       (dag_unify.core/assoc-in [:comp]
+                                                each-comp)
+                       ((:default-fn model))))
+                    (gen (get-in my-bolt [:comp]) model nil))
+
+               (not (nil? (get-in my-bolt [:comp])))
+               (pmap (fn [each-comp]
+                      (-> my-bolt
+                          (dag_unify.core/assoc-in [:comp]
+                                                   each-comp)
+                          ((:default-fn model))))
+                    (babel.generate/bolt2 model (get-in my-bolt [:comp]) 0 2))
+
+               true
+               [my-bolt]))
+       (gen spec model (rest bolts))))))
+
 ;; TODO: demote 'depth' and 'max-depth' down to lower-level functions.
 (defn generate-all [spec model & [depth max-depth]]
   (let [depth (or depth 0)
@@ -193,25 +244,6 @@
            take-n 1}}]
   (log/debug (str "(generate) with model named: " (:name language-model)))
   (first (generate-all spec language-model)))
-
-(defn bolt2 [model spec depth max-depth]
-  (let [grammar (:grammar model)
-        lexemes (shuffle (get-lexemes model spec))]
-    (if (< depth max-depth)
-      (lazy-cat
-       lexemes
-       (lazy-seq
-        (reduce concat
-                (->> (shufflefn (candidate-parents grammar spec))
-                     (map (fn [candidate-parent]
-                            (let [unified-candidate-parent (unify candidate-parent spec)]
-                              (->> (bolt2 model
-                                          (get-in unified-candidate-parent [:head])
-                                          (+ 1 depth)
-                                          max-depth)
-                                   (map (fn [head]
-                                          (assoc-in unified-candidate-parent [:head] head)))
-                                   (remove #(= :fail %)))))))))))))
 
 (defn lightning-bolts
   "Returns a lazy sequence of all possible bolts given a spec, where a bolt is a tree
