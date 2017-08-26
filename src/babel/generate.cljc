@@ -80,8 +80,6 @@
                      (get-in my-bolt [:comp])
                      (= true (get-in my-bolt [:comp :phrasal] true)))
                 (gen (get-in my-bolt [:comp]) model nil)
-                (not (nil? (get-in my-bolt [:comp])))
-                (babel.generate/bolt2 model (get-in my-bolt [:comp]) 0 max-depth)
                 true
                 [my-bolt])
           (pmap (fn [each-comp]
