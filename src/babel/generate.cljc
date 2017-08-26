@@ -69,35 +69,26 @@
                                           (assoc-in unified-candidate-parent [:head] head)))
                                    (remove #(= :fail %)))))))))))))
 
-(defn gen [spec model & [bolts]]
-  (let [bolts 
-        (if (nil? bolts)
-          (bolt2 model spec 0 2)
-          bolts)]
+(defn gen [spec model & [bolts max-depth]]
+  (let [max-depth (or max-depth 2)
+        bolts (or bolts (bolt2 model spec 0 max-depth))]
     (if (not (empty? bolts))
       (lazy-cat
        (let [my-bolt (first bolts)]
-         (cond (and (= true (get-in my-bolt [:phrasal]))
-                    (get-in my-bolt [:comp])
-                    (= true (get-in my-bolt [:comp :phrasal] true)))
-               (pmap (fn [each-comp]
-                      (->
-                       my-bolt
-                       (dag_unify.core/assoc-in [:comp]
-                                                each-comp)
-                       ((:default-fn model))))
-                    (gen (get-in my-bolt [:comp]) model nil))
-
-               (not (nil? (get-in my-bolt [:comp])))
-               (pmap (fn [each-comp]
-                      (-> my-bolt
-                          (dag_unify.core/assoc-in [:comp]
-                                                   each-comp)
-                          ((:default-fn model))))
-                    (babel.generate/bolt2 model (get-in my-bolt [:comp]) 0 2))
-
-               true
-               [my-bolt]))
+         (pmap (fn [each-comp]
+                 (->
+                  my-bolt
+                  (dag_unify.core/assoc-in [:comp]
+                                           each-comp)
+                  ((:default-fn model))))
+               (cond (and (= true (get-in my-bolt [:phrasal]))
+                          (get-in my-bolt [:comp])
+                          (= true (get-in my-bolt [:comp :phrasal] true)))
+                     (gen (get-in my-bolt [:comp]) model nil)
+                     (not (nil? (get-in my-bolt [:comp])))
+                     (babel.generate/bolt2 model (get-in my-bolt [:comp]) 0 max-depth)
+                     true
+                     [my-bolt])))
        (gen spec model (rest bolts))))))
 
 ;; TODO: demote 'depth' and 'max-depth' down to lower-level functions.
