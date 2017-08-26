@@ -187,7 +187,7 @@
                                         :pred pred}}
                               :3 '()}}})
          ;; "be + PP": "I am at the beach"
-         (let [pred (atom :top)
+         (let [pred (atom {:not :be-called})
                obj (atom :top)
                ;; Needed because {:pred :top} to prevent matching of {:obj :unspec}
                ;; yielding incorrect translations.
