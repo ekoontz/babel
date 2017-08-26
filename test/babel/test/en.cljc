@@ -703,9 +703,10 @@
                       (dag_unify.core/assoc-in [:comp]
                                                each-foo)
                       ((:default-fn model))))
-                (if true
-                  [(first (babel.generate/bolt2 model (get-in my-bolt [:comp]) 0 2))]
-                  (babel.generate/bolt2 model (get-in my-bolt [:comp]) 0 2)))))
+                (if (get-in my-bolt [:comp])
+                  (babel.generate/bolt2 model (get-in my-bolt [:comp]) 0 2)
+                  [my-bolt]
+                  ))))
        (foo3 spec (rest my-bolts))))))
 
 
