@@ -633,6 +633,7 @@
 (def spec-for-the-woman-she-sees
   {:synsem {:agr {:number :sing}
             :cat :noun
+            :subcat '()
             :sem {:pred :woman
                   :spec {:def :def}}
             :mod {:first {:pred :see
