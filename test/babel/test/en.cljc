@@ -209,14 +209,14 @@
 (deftest her-name-is-luisa
   (is (= "her name is Luisa"
          (morph (generate {:modified false
-                        :synsem {:cat :verb
-                                 :sem {:mod '()
-                                       :iobj {:pred :luisa}
-                                       :pred :be-called
-                                       :subj {:pred :lei}
-                                       :tense :present}
-                                 :subcat '()}}
-                       :truncate false)))))
+                           :synsem {:cat :verb
+                                    :sem {:mod '()
+                                          :iobj {:pred :luisa}
+                                          :pred :be-called
+                                          :subj {:pred :lei}
+                                          :tense :present}
+                                    :subcat '()}}
+                          :truncate false)))))
                                        
 (deftest jean-s
   (is (not (empty? (parse "Jean's")))))
