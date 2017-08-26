@@ -689,24 +689,27 @@
     (if (not (empty? my-bolts))
       (lazy-cat
        (let [my-bolt (first my-bolts)]
-         (if (and (= true (get-in my-bolt [:phrasal]))
-                  (= true (get-in my-bolt [:comp :phrasal] true)))
-           (map (fn [each-foo]
-                  (->
-                   my-bolt
-                   (dag_unify.core/assoc-in [:comp]
-                                            each-foo)
-                   ((:default-fn model))))
-                (foo3 (get-in my-bolt [:comp]) nil))
-           (map (fn [each-foo]
-                  (-> my-bolt
-                      (dag_unify.core/assoc-in [:comp]
-                                               each-foo)
-                      ((:default-fn model))))
-                (if (get-in my-bolt [:comp])
-                  (babel.generate/bolt2 model (get-in my-bolt [:comp]) 0 2)
-                  [my-bolt]
-                  ))))
+         (cond (and (= true (get-in my-bolt [:phrasal]))
+                    (get-in my-bolt [:comp])
+                    (= true (get-in my-bolt [:comp :phrasal] true)))
+               (map (fn [each-foo]
+                      (->
+                       my-bolt
+                       (dag_unify.core/assoc-in [:comp]
+                                                each-foo)
+                       ((:default-fn model))))
+                    (foo3 (get-in my-bolt [:comp]) nil))
+
+               (not (nil? (get-in my-bolt [:comp])))
+               (map (fn [each-foo]
+                      (-> my-bolt
+                          (dag_unify.core/assoc-in [:comp]
+                                                   each-foo)
+                          ((:default-fn model))))
+                    (babel.generate/bolt2 model (get-in my-bolt [:comp]) 0 2))
+
+               true
+               [my-bolt]))
        (foo3 spec (rest my-bolts))))))
 
 
