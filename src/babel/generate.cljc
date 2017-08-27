@@ -74,20 +74,19 @@
         bolts (or bolts (bolt2 model spec 0 max-depth))]
     (if (not (empty? bolts))
       (lazy-cat
-       (let [my-bolt (first bolts)]
-         (->>
-          (cond (and (= true (get-in my-bolt [:phrasal]))
-                     (get-in my-bolt [:comp])
-                     (= true (get-in my-bolt [:comp :phrasal] true)))
-                (gen (get-in my-bolt [:comp]) model nil)
-                true
-                [my-bolt])
-          (pmap (fn [each-comp]
-                  (->
-                   my-bolt
-                   (dag_unify.core/assoc-in [:comp]
-                                            each-comp)
-                   ((:default-fn model)))))))
+       (let [bolt (first bolts)]
+         (cond (and (= true (get-in bolt [:phrasal]))
+                    (get-in bolt [:comp])
+                    (= true (get-in bolt [:comp :phrasal] true)))
+               (->>
+                (gen (get-in bolt [:comp]) model nil)
+                (pmap (fn [each-comp]
+                        (->
+                         bolt
+                         (dag_unify.core/assoc-in [:comp]
+                                                  each-comp)
+                         ((:default-fn model))))))
+               true [bolt]))
        (gen spec model (rest bolts))))))
 
 ;; TODO: demote 'depth' and 'max-depth' down to lower-level functions.
