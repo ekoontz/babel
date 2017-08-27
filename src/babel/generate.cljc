@@ -72,26 +72,41 @@
 (declare gen)
 
 (defn add-at-path [bolt path model]
-  (cond (and (= true (get-in bolt [:phrasal]))
-             (= true (get-in bolt (concat path [:phrasal]) true)))
-        (->>
-         (gen (get-in bolt path) model nil)
-         (pmap (fn [each-comp]
-                 (->
-                  bolt
-                  (dag_unify.core/assoc-in path
-                                           each-comp)
-                  ((:default-fn model))))))
-        true [bolt]))
+  (cond
+    ;; if the path _path_ exists for _bolt_:
+    (and (= true (get-in bolt [:phrasal]))
+         (not (nil? (get-in bolt path)))
+         (= true (get-in bolt (concat path [:phrasal]) true)))
+
+    (->>
+     ;; set of all complements at _path_ for _bolt_:
+     (gen (get-in bolt path) model nil)
+     
+     ;; add each member _each_comp_ of this set to _bolt_:
+     (pmap (fn [each-comp]
+             (->
+              bolt
+              (dag_unify.core/assoc-in path
+                                       each-comp)
+              ((:default-fn model))))))
+    
+    ;; no, the path does not exist; just return the bolt.
+    true [bolt]))
+
+(defn add-at-path2 [bolts path model]
+  (if (not (empty? bolts))
+    (lazy-cat
+     (add-at-path (first bolts) path model)
+     (add-at-path2 (rest bolts) path model))))
 
 (defn gen [spec model & [bolts max-depth]]
   (let [max-depth (or max-depth 3)
         bolts (or bolts (bolt2 model spec 0 max-depth))]
     (if (not (empty? bolts))
       (lazy-cat
-       (let [bolt (first bolts)
-             path [:comp]]
-         (add-at-path bolt path model))
+       (add-at-path2 
+        (add-at-path (first bolts) [:comp] model)
+        [:head :comp] model)
        (gen spec model (rest bolts))))))
 
 ;; TODO: demote 'depth' and 'max-depth' down to lower-level functions.
