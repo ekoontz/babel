@@ -100,7 +100,7 @@
      (add-at-path2 (rest bolts) path model))))
 
 (defn gen [spec model depth & [bolts]]
-  (if (< depth 4)
+  (if (< depth 5)
     (lazy-cat
      (let [bolts (or bolts (bolt2 model spec 0 depth))]
        (if (not (empty? bolts))

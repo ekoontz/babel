@@ -657,6 +657,16 @@
                   :subj {:pred :cat}}
             :subcat '()}})
 
+(def cspec {:modified false
+            :synsem {:cat :verb
+                     :sem {:mod ()
+                           :iobj {:pred :luisa}
+                           :pred :be-called
+                           :subj {:pred :lei
+                                  :human true
+                                  :number :sing} :tense :present}
+                     :subcat ()}})
+
 ;; (map #(println (morph %)) (take 100 (gen spec model)))
 
 
