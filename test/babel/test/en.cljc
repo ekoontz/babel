@@ -667,6 +667,6 @@
                                   :number :sing} :tense :present}
                      :subcat ()}})
 
-;; (map #(println (morph %)) (take 100 (gen spec model)))
+;; (map #(println (morph %)) (take 100 (gen spec model 0)))
 
 

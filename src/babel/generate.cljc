@@ -99,16 +99,22 @@
      (add-at-path (first bolts) path model)
      (add-at-path2 (rest bolts) path model))))
 
+(defn paths-for-bolt [bolt]
+  [[:comp]
+   [:head :comp]])
+
+(defn add-at-paths [bolt model paths-for-bolt]
+  (-> 
+   (add-at-path bolt (first paths-for-bolt) model)
+   (add-at-path2 (first (rest paths-for-bolt)) model)))
+  
 (defn gen [spec model depth & [bolts]]
   (if (< depth 5)
     (lazy-cat
      (let [bolts (or bolts (bolt2 model spec 0 depth))]
        (if (not (empty? bolts))
          (lazy-cat
-          (->
-           (add-at-path (first bolts) [:comp] model)
-           (add-at-path2 
-            [:head :comp] model))
+          (add-at-paths (first bolts) model (paths-for-bolt (first bolts)))
           (gen spec model depth (rest bolts)))))
      (let [spec (dag_unify.core/strip-refs spec)]
        (println (str "trying depth:" (+ 1 depth) "; spec=" spec))
