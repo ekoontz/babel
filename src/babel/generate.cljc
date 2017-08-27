@@ -80,7 +80,7 @@
 
     (->>
      ;; set of all complements at _path_ for _bolt_:
-     (gen (get-in bolt path) model nil)
+     (gen (get-in bolt path) model 0)
      
      ;; add each member _each_comp_ of this set to _bolt_:
      (pmap (fn [each-comp]
@@ -99,15 +99,20 @@
      (add-at-path (first bolts) path model)
      (add-at-path2 (rest bolts) path model))))
 
-(defn gen [spec model & [bolts max-depth]]
-  (let [max-depth (or max-depth 3)
-        bolts (or bolts (bolt2 model spec 0 max-depth))]
-    (if (not (empty? bolts))
-      (lazy-cat
-       (add-at-path2 
-        (add-at-path (first bolts) [:comp] model)
-        [:head :comp] model)
-       (gen spec model (rest bolts))))))
+(defn gen [spec model depth & [bolts]]
+  (if (< depth 4)
+    (lazy-cat
+     (let [bolts (or bolts (bolt2 model spec 0 depth))]
+       (if (not (empty? bolts))
+         (lazy-cat
+          (->
+           (add-at-path (first bolts) [:comp] model)
+           (add-at-path2 
+            [:head :comp] model))
+          (gen spec model depth (rest bolts)))))
+     (let [spec (dag_unify.core/strip-refs spec)]
+       (println (str "trying depth:" (+ 1 depth) "; spec=" spec))
+       (gen spec model (+ 1 depth))))))
 
 ;; TODO: demote 'depth' and 'max-depth' down to lower-level functions.
 (defn generate-all [spec model & [depth max-depth]]
