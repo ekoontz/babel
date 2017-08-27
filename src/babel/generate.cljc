@@ -70,7 +70,7 @@
                                    (remove #(= :fail %)))))))))))))
 
 (defn gen [spec model & [bolts max-depth]]
-  (let [max-depth (or max-depth 2)
+  (let [max-depth (or max-depth 5)
         bolts (or bolts (bolt2 model spec 0 max-depth))]
     (if (not (empty? bolts))
       (lazy-cat
