@@ -69,24 +69,29 @@
                                           (assoc-in unified-candidate-parent [:head] head)))
                                    (remove #(= :fail %)))))))))))))
 
+(declare gen)
+
+(defn add-at-path [bolt path model]
+  (cond (and (= true (get-in bolt [:phrasal]))
+             (= true (get-in bolt (concat path [:phrasal]) true)))
+        (->>
+         (gen (get-in bolt path) model nil)
+         (pmap (fn [each-comp]
+                 (->
+                  bolt
+                  (dag_unify.core/assoc-in path
+                                           each-comp)
+                  ((:default-fn model))))))
+        true [bolt]))
+
 (defn gen [spec model & [bolts max-depth]]
-  (let [max-depth (or max-depth 5)
+  (let [max-depth (or max-depth 3)
         bolts (or bolts (bolt2 model spec 0 max-depth))]
     (if (not (empty? bolts))
       (lazy-cat
-       (let [bolt (first bolts)]
-         (cond (and (= true (get-in bolt [:phrasal]))
-                    (get-in bolt [:comp])
-                    (= true (get-in bolt [:comp :phrasal] true)))
-               (->>
-                (gen (get-in bolt [:comp]) model nil)
-                (pmap (fn [each-comp]
-                        (->
-                         bolt
-                         (dag_unify.core/assoc-in [:comp]
-                                                  each-comp)
-                         ((:default-fn model))))))
-               true [bolt]))
+       (let [bolt (first bolts)
+             path [:comp]]
+         (add-at-path bolt path model))
        (gen spec model (rest bolts))))))
 
 ;; TODO: demote 'depth' and 'max-depth' down to lower-level functions.
