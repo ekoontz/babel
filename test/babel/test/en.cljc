@@ -668,5 +668,6 @@
                      :subcat ()}})
 
 ;; (map #(println (morph %)) (take 100 (gen spec model 0)))
+;; (map #(println (morph %)) (take 1 (gen cspec model 0)))
 
 
