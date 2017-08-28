@@ -70,19 +70,21 @@
           (gen spec model depth (rest bolts)))))
      (gen spec model (+ 1 depth)))))
 
-(defn bolts [model spec depth max-depth]
+(defn bolts [model spec depth max-depth & [use-candidate-parents]]
   (if (< depth max-depth)
-    (let [grammar (:grammar model)]
-      (reduce concat
-              (->> (shufflefn (candidate-parents grammar spec))
-                   (map (fn [candidate-parent]
-                          (let [unified-candidate-parent (unify candidate-parent spec)]
-                            (->> (bolts model
-                                        (get-in unified-candidate-parent [:head])
-                                        (+ 1 depth)
-                                        max-depth)
-                                 (map (fn [head]
-                                        (assoc-in unified-candidate-parent [:head] head))))))))))
+    (let [candidate-parents (or use-candidate-parents
+                                (shufflefn (candidate-parents (:grammar model) spec)))]
+      (if (not (empty? candidate-parents))
+        (let [candidate-parent (first candidate-parents)]
+          (lazy-cat
+           (let [unified-candidate-parent (unify candidate-parent spec)]
+             (->> (bolts model
+                         (get-in unified-candidate-parent [:head])
+                         (+ 1 depth)
+                         max-depth)
+                  (map (fn [head]
+                         (assoc-in unified-candidate-parent [:head] head)))))
+           (bolts model spec depth max-depth (rest candidate-parents))))))
     (shuffle (get-lexemes model spec))))
 
 (defn add-paths-to-bolt
