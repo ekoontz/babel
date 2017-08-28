@@ -88,6 +88,7 @@
           (paths-for-bolt (- depth 1)))))
 
 (defn add-at-path [bolt path model]
+  "bolt + path => partial trees"
   (cond
     ;; if the path _path_ exists for _bolt_:
     (and (= true (get-in bolt [:phrasal]))
@@ -109,18 +110,20 @@
     ;; no, the path does not exist; just return the bolt.
     true [bolt]))
 
-(defn add-at-path2 [bolts path model]
+(defn add-at-path2
+  "bolts + path => partial trees"
+  [bolts path model]
   (if (not (empty? bolts))
     (lazy-cat
      (add-at-path (first bolts) path model)
      (add-at-path2 (rest bolts) path model))))
 
-(defn add-at-paths [bolt model paths-for-bolt]
-  (let [results-for-this-path
-        (add-at-path bolt (first paths-for-bolt) model)]
-    (if (not (empty? results-for-this-path))
-      (-> results-for-this-path
-          (add-at-path2 (first (rest paths-for-bolt)) model)))))
+(defn add-at-paths
+  "bolt + paths => trees"
+  [bolt model paths-for-bolt]
+  (add-at-path2
+   (add-at-path bolt (first paths-for-bolt) model)
+   (first (rest paths-for-bolt)) model))
   
 (defn gen [spec model depth & [bolts]]
   (if (< depth 4)
