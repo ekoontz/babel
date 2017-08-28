@@ -125,7 +125,7 @@
 (defn gen
   "spec => trees"
   [spec model depth & [bolts]]
-;;  (println (str "trying depth:" depth "; spec=" (dag_unify.core/strip-refs spec)))
+  (println (str "trying depth:" depth "; spec=" (dag_unify.core/strip-refs spec)))
   (if (< depth 5)
     (lazy-cat
      (let [bolts (or bolts (bolt2 model spec 0 depth))]
