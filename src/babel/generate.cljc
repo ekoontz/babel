@@ -128,7 +128,7 @@
        (if (not (empty? bolts))
          (lazy-cat
           (add-paths-to-bolt (first bolts) model
-                             (reverse (paths-for-bolt depth [:head])))
+                             (paths-for-bolt depth [:head]))
           (gen spec model depth (rest bolts)))))
      (let [spec (dag_unify.core/strip-refs spec)]
        (println (str "trying depth:" (+ 1 depth) "; spec=" spec))
