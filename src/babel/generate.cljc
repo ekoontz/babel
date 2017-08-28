@@ -71,6 +71,22 @@
 
 (declare gen)
 
+(defn paths-for-bolt [depth]
+  (cond
+    false
+    [[:comp]
+     [:head :comp]]
+    (= depth 0)
+    []
+    (= depth 1)
+    [[:comp]]
+    (= depth 2)
+    (cons [:head :comp]
+          (paths-for-bolt (- depth 1)))
+    (= depth 3)
+    (cons [:head :head :comp]
+          (paths-for-bolt (- depth 1)))))
+
 (defn add-at-path [bolt path model]
   (cond
     ;; if the path _path_ exists for _bolt_:
@@ -99,22 +115,21 @@
      (add-at-path (first bolts) path model)
      (add-at-path2 (rest bolts) path model))))
 
-(defn paths-for-bolt [bolt]
-  [[:comp]
-   [:head :comp]])
-
 (defn add-at-paths [bolt model paths-for-bolt]
-  (-> 
-   (add-at-path bolt (first paths-for-bolt) model)
-   (add-at-path2 (first (rest paths-for-bolt)) model)))
+  (let [results-for-this-path
+        (add-at-path bolt (first paths-for-bolt) model)]
+    (if (not (empty? results-for-this-path))
+      (-> results-for-this-path
+          (add-at-path2 (first (rest paths-for-bolt)) model)))))
   
 (defn gen [spec model depth & [bolts]]
-  (if (< depth 5)
+  (if (< depth 4)
     (lazy-cat
      (let [bolts (or bolts (bolt2 model spec 0 depth))]
        (if (not (empty? bolts))
          (lazy-cat
-          (add-at-paths (first bolts) model (paths-for-bolt (first bolts)))
+          (add-at-paths (first bolts) model
+                        (reverse (paths-for-bolt depth)))
           (gen spec model depth (rest bolts)))))
      (let [spec (dag_unify.core/strip-refs spec)]
        (println (str "trying depth:" (+ 1 depth) "; spec=" spec))
