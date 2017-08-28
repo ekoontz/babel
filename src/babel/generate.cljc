@@ -118,12 +118,12 @@
 (defn add-to-bolt-at-path
   "bolt + path => partial trees"
   [bolt path model]
-  (cond
-    ;; if the path _path_ exists for _bolt_:
-    (and (= true (get-in bolt [:phrasal]))
-         (not (nil? (get-in bolt path)))
-         (= true (get-in bolt (concat path [:phrasal]) true)))
-
+  (if
+      ;; if the path _path_ exists for _bolt_:
+      (and (= true (get-in bolt [:phrasal]))
+           (not (nil? (get-in bolt path)))
+           (= true (get-in bolt (concat path [:phrasal]) true)))
+    
     (->>
      ;; set of all complements at _path_ for _bolt_:
      (gen (get-in bolt path) model 0)
@@ -134,10 +134,7 @@
              bolt
              (dag_unify.core/assoc-in path
                                       each-comp)
-             ((:default-fn model))))))
-    
-    ;; no, the path does not exist; just return the bolt.
-    true [bolt]))
+             ((:default-fn model))))))))
 
 ;; TODO: demote 'depth' and 'max-depth' down to lower-level functions.
 (defn generate-all [spec model & [depth max-depth]]
