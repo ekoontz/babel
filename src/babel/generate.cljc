@@ -50,7 +50,27 @@
 (declare spec-info)
 (declare unify-and-log)
 
-(defn bolt2 [model spec depth max-depth]
+(declare bolt)
+(declare add-paths-to-bolt)
+(declare paths-for-bolt)
+(declare add-path-to-bolts)
+(declare add-to-bolt-at-path)
+
+(defn gen
+  "spec => trees"
+  [spec model depth & [bolts]]
+  (println (str "trying depth:" depth "; spec=" (dag_unify.core/strip-refs spec)))
+  (if (< depth 5)
+    (lazy-cat
+     (let [bolts (or bolts (bolt model spec 0 depth))]
+       (if (not (empty? bolts))
+         (lazy-cat
+          (add-paths-to-bolt (first bolts) model
+                             (paths-for-bolt depth [:head]))
+          (gen spec model depth (rest bolts)))))
+     (gen spec model (+ 1 depth)))))
+
+(defn bolt [model spec depth max-depth]
   (let [grammar (:grammar model)
         lexemes (shuffle (get-lexemes model spec))]
     (if (< depth max-depth)
@@ -60,7 +80,7 @@
                (->> (shufflefn (candidate-parents grammar spec))
                     (map (fn [candidate-parent]
                            (let [unified-candidate-parent (unify candidate-parent spec)]
-                             (->> (bolt2 model
+                             (->> (bolt model
                                          (get-in unified-candidate-parent [:head])
                                          (+ 1 depth)
                                          max-depth)
@@ -68,7 +88,23 @@
                                          (assoc-in unified-candidate-parent [:head] head)))
                                   (remove #(= :fail %))))))))))))
 
-(declare gen)
+(defn add-paths-to-bolt
+  "bolt + paths => trees"
+  [bolt model paths-for-bolt]
+  (if (not (empty? paths-for-bolt))
+    (add-path-to-bolts 
+     (add-paths-to-bolt bolt model (rest paths-for-bolt))
+     (first paths-for-bolt)
+     model)
+    [bolt]))
+
+(defn add-path-to-bolts
+  "bolts + path => partial trees"
+  [bolts path model]
+  (if (not (empty? bolts))
+    (lazy-cat
+     (add-to-bolt-at-path (first bolts) path model)
+     (add-path-to-bolts (rest bolts) path model))))
 
 (defn paths-for-bolt [depth prefix]
   (cond
@@ -103,38 +139,6 @@
     
     ;; no, the path does not exist; just return the bolt.
     true [bolt]))
-
-(defn add-path-to-bolts
-  "bolts + path => partial trees"
-  [bolts path model]
-  (if (not (empty? bolts))
-    (lazy-cat
-     (add-to-bolt-at-path (first bolts) path model)
-     (add-path-to-bolts (rest bolts) path model))))
-
-(defn add-paths-to-bolt
-  "bolt + paths => trees"
-  [bolt model paths-for-bolt]
-  (if (not (empty? paths-for-bolt))
-    (add-path-to-bolts 
-     (add-paths-to-bolt bolt model (rest paths-for-bolt))
-     (first paths-for-bolt)
-     model)
-    [bolt]))
-  
-(defn gen
-  "spec => trees"
-  [spec model depth & [bolts]]
-  (println (str "trying depth:" depth "; spec=" (dag_unify.core/strip-refs spec)))
-  (if (< depth 5)
-    (lazy-cat
-     (let [bolts (or bolts (bolt2 model spec 0 depth))]
-       (if (not (empty? bolts))
-         (lazy-cat
-          (add-paths-to-bolt (first bolts) model
-                             (paths-for-bolt depth [:head]))
-          (gen spec model depth (rest bolts)))))
-     (gen spec model (+ 1 depth)))))
 
 ;; TODO: demote 'depth' and 'max-depth' down to lower-level functions.
 (defn generate-all [spec model & [depth max-depth]]
