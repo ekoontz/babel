@@ -129,12 +129,12 @@
      (gen (get-in bolt path) model 0)
      
      ;; add each member _each_comp_ of this set to _bolt_:
-     (pmap (fn [each-comp]
-             (->
-              bolt
-              (dag_unify.core/assoc-in path
-                                       each-comp)
-              ((:default-fn model))))))
+     (map (fn [each-comp]
+            (->
+             bolt
+             (dag_unify.core/assoc-in path
+                                      each-comp)
+             ((:default-fn model))))))
     
     ;; no, the path does not exist; just return the bolt.
     true [bolt]))
