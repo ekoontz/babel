@@ -56,18 +56,17 @@
     (if (< depth max-depth)
       (lazy-cat
        lexemes
-       (lazy-seq
-        (reduce concat
-                (->> (shufflefn (candidate-parents grammar spec))
-                     (map (fn [candidate-parent]
-                            (let [unified-candidate-parent (unify candidate-parent spec)]
-                              (->> (bolt2 model
-                                          (get-in unified-candidate-parent [:head])
-                                          (+ 1 depth)
-                                          max-depth)
-                                   (map (fn [head]
-                                          (assoc-in unified-candidate-parent [:head] head)))
-                                   (remove #(= :fail %)))))))))))))
+       (reduce concat
+               (->> (shufflefn (candidate-parents grammar spec))
+                    (map (fn [candidate-parent]
+                           (let [unified-candidate-parent (unify candidate-parent spec)]
+                             (->> (bolt2 model
+                                         (get-in unified-candidate-parent [:head])
+                                         (+ 1 depth)
+                                         max-depth)
+                                  (map (fn [head]
+                                         (assoc-in unified-candidate-parent [:head] head)))
+                                  (remove #(= :fail %))))))))))))
 
 (declare gen)
 
