@@ -58,11 +58,11 @@
 
 (defn gen
   "spec => trees"
-  [spec model depth & [bolts]]
+  [spec model depth & [from-bolts]]
   (println (str "trying depth:" depth "; spec=" (dag_unify.core/strip-refs spec)))
   (if (< depth 5)
     (lazy-cat
-     (let [bolts (or bolts (bolts model spec 0 depth))]
+     (let [bolts (or from-bolts (bolts model spec 0 depth))]
        (if (not (empty? bolts))
          (lazy-cat
           (add-paths-to-bolt (first bolts) model
@@ -71,11 +71,9 @@
      (gen spec model (+ 1 depth)))))
 
 (defn bolts [model spec depth max-depth]
-  (let [grammar (:grammar model)
-        lexemes (shuffle (get-lexemes model spec))]
-    (if (< depth max-depth)
-      (lazy-cat
-       lexemes
+  (if (< depth max-depth)
+    (let [grammar (:grammar model)]
+      (lazy-seq
        (reduce concat
                (->> (shufflefn (candidate-parents grammar spec))
                     (map (fn [candidate-parent]
@@ -85,8 +83,9 @@
                                          (+ 1 depth)
                                          max-depth)
                                   (map (fn [head]
-                                         (assoc-in unified-candidate-parent [:head] head)))
-                                  (remove #(= :fail %))))))))))))
+                                         (assoc-in unified-candidate-parent [:head] head)))))))))))
+    (shuffle (get-lexemes model spec))))
+
 (defn add-paths-to-bolt
   "bolt + paths => trees"
   [bolt model paths-for-bolt]
