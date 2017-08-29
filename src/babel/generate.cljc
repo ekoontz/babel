@@ -96,23 +96,23 @@
            (lightning-bolts model spec depth max-depth (rest candidate-parents))))))
     (shuffle (get-lexemes model spec))))
 
-(defn add-paths-to-bolt
+(defn add-comps-to-bolt
   "bolt + paths => trees"
   [bolt model paths-for-bolt]
   (if (not (empty? paths-for-bolt))
-    (add-path-to-bolts 
-     (add-paths-to-bolt bolt model (rest paths-for-bolt))
+    (add-comp-to-bolts 
+     (add-comps-to-bolt bolt model (rest paths-for-bolt))
      (first paths-for-bolt)
      model)
     [bolt]))
 
-(defn add-path-to-bolts
+(defn add-comp-to-bolts
   "bolts + path => partial trees"
   [bolts path model]
   (if (not (empty? bolts))
     (lazy-cat
      (add-to-bolt-at-path (first bolts) path model)
-     (add-path-to-bolts (rest bolts) path model))))
+     (add-comp-to-bolts (rest bolts) path model))))
 
 (defn paths-for-bolt [depth]
   (cond
@@ -131,7 +131,7 @@
 
 (defn add-to-bolt-at-path
   "bolt + path => partial trees"
-  [bolt path model & [truncate?]]
+  [bolt path model]
   (if
       ;; if the path _path_ exists for _bolt_:
       (and (= true (get-in bolt [:phrasal]))
