@@ -132,26 +132,20 @@
 (defn add-to-bolt-at-path
   "bolt + path => partial trees"
   [bolt path model]
-  (if
-      ;; if the path _path_ exists for _bolt_:
-      (and (= true (get-in bolt [:phrasal]))
-           (not (nil? (get-in bolt path)))
-           (= true (get-in bolt (concat path [:phrasal]) true)))
-    
-    (->>
-     ;; set of all complements at _path_ for _bolt_:
-     (gen (get-in bolt path) model 0)
+  (->>
+   ;; set of all complements at _path_ for _bolt_:
+   (gen (get-in bolt path) model 0)
      
-     ;; add each member _each_comp_ of this set to _bolt_:
-     (map (fn [each-comp]
-            (->
-             bolt
-             (dag_unify.core/assoc-in path
-                                      each-comp)
-             ((fn [tree]
-                (if (:default-fn model)
-                  ((:default-fn model) tree)
-                  tree)))))))))
+   ;; add each member _each_comp_ of this set to _bolt_:
+   (map (fn [each-comp]
+          (->
+           bolt
+           (dag_unify.core/assoc-in path
+                                    each-comp)
+           ((fn [tree]
+              (if (:default-fn model)
+                ((:default-fn model) tree)
+                tree))))))))
 
 (defn candidate-parents
   "find subset of _rules_ for which each member unifies successfully with _spec_"
