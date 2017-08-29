@@ -36,9 +36,9 @@
 (declare candidate-parents)
 (declare get-lexemes)
 (declare lightning-bolts)
-(declare add-paths-to-bolt)
+(declare add-comps-to-bolt)
 (declare paths-for-bolt)
-(declare add-path-to-bolts)
+(declare add-comp-to-bolts)
 (declare add-to-bolt-at-path)
 
 (declare gen)
@@ -58,7 +58,7 @@
      (let [bolts (or from-bolts (lightning-bolts model spec 0 depth))]
        (if (not (empty? bolts))
          (lazy-cat
-          (add-paths-to-bolt (first bolts) model
+          (add-comps-to-bolt (first bolts) model
                              (paths-for-bolt depth))
           (gen spec model depth (rest bolts)))))
      (gen spec model (+ 1 depth)))))
