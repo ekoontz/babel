@@ -153,7 +153,10 @@
              bolt
              (dag_unify.core/assoc-in path
                                       each-comp)
-             ((:default-fn model))))))))
+             ((fn [tree]
+                (if (:default-fn model)
+                  ((:default-fn model) tree)
+                  tree)))))))))
 
 (defn candidate-parents
   "find subset of _rules_ for which each member unifies successfully with _spec_"
