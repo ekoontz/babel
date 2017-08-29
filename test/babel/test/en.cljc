@@ -629,8 +629,7 @@
                                                                 :tense :present}}
                                                  :comp {:synsem {:agr {:gender :fem}
                                                                  :sem {:pred :I}}}}
-                                                model
-                                                :truncate-children false)
+                                                model)
         :from-language "it"))))
 
 
