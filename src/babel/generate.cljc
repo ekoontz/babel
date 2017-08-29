@@ -136,7 +136,7 @@
 
 (defn add-to-bolt-at-path
   "bolt + path => partial trees"
-  [bolt path model]
+  [bolt path model & [truncate?]]
   (if
       ;; if the path _path_ exists for _bolt_:
       (and (= true (get-in bolt [:phrasal]))
@@ -153,6 +153,14 @@
              bolt
              (dag_unify.core/assoc-in path
                                       each-comp)
+             ((fn [tree]
+                (if truncate?
+                  (dag_unify.core/dissoc-paths [path
+                                                (concat
+                                                 (butlast path)
+                                                 [:head])])
+                  tree)))
+             
              ((fn [tree]
                 (if (:default-fn model)
                   ((:default-fn model) tree)
