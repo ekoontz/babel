@@ -390,8 +390,7 @@
                                             :infl :imperfect
                                             :sem {:pred :have
                                                   :subj {:pred :I}}}}
-                                  (small)
-                                  :truncate-children false)]
+                                  (small))]
     (is (not (nil? result)))
     (is (= "av" (get-in result [:head :français :imperfect-stem])))
     (is (= "j'avais" (fo result)))))
@@ -491,7 +490,8 @@
     (is (= (fo result) "nous sommes allées"))))
 
 (deftest generate-passe-compose
-  (let [result (generate {:synsem {:subcat '()
+  (let [result (generate {:synsem {:cat :verb
+                                   :subcat '()
                                    :sem {:pred :go
                                          :subj {:pred :noi
                                                 :gender :fem}
@@ -541,13 +541,16 @@
 
 (deftest generate-have-fun-sentence
   (let [result (generate
-                {:synsem {:sem {:pred :have-fun}}})]
+                {:synsem {:cat :verb
+                          :subcat '()
+                          :sem {:pred :have-fun}}})]
     (is (= (get-in result [:synsem :sem :pred]) :have-fun))))
 
 (deftest generate-vp-aux-reflexive
   (let [result
         (generate
-         {:synsem {:subcat '()
+         {:synsem {:cat :verb
+                   :subcat '()
                    :sem {:subj {:pred :lei}
                          :pred :have-fun
                          :tense :present
@@ -557,7 +560,8 @@
 (deftest generate-vp-present-reflexive
   (let [result
         (generate
-         {:synsem {:subcat '() :sem {:subj {:pred :lei}
+         {:synsem {:cat :verb
+                   :subcat '() :sem {:subj {:pred :lei}
                                      :pred :have-fun
                                      :aspect :simple
                                      :tense :present}}})]
@@ -566,7 +570,8 @@
 (deftest generate-named-sentence
   (let [result
         (generate
-         {:synsem {:subcat '()
+         {:synsem {:cat :verb
+                   :subcat '()
                    :sem {:pred :be-called
                          :aspect :simple
                          :tense :present
@@ -634,6 +639,7 @@
   (let [have-fun-expression
         (generate
          {:synsem {:subcat '()
+                   :cat :verb
                    :sem {:subj {:pred :lui}
                          :pred :have-fun
                          :tense :present
@@ -671,53 +677,61 @@
   ;; these should all take relatively the same time, but
   ;; for now, the more general the spec, the longer it takes to generate.
   (log/info (str "speed-test-1"))
-  (speed-test {:synsem {:subcat '()
+  (speed-test {:synsem {:cat :verb
+                        :subcat '()
                         :sem {:pred :speak
                               :subj {:pred :noi}
                               :tense :past
                               :aspect :progressive}}}))
 (deftest speed-test-2
   (log/info (str "speed-test-2"))
-  (speed-test {:synsem {:subcat '()
+  (speed-test {:synsem {:cat :verb
+                        :subcat '()
                         :sem {:pred :speak
                               :subj {:pred :noi}
                               :tense :conditional}}}))
 (deftest speed-test-3
   (log/info (str "speed-test-3"))
-  (speed-test {:synsem {:subcat '()
-                        :cat :verb
+  (speed-test {:synsem {:cat :verb
+                        :subcat '()
                         :sem {:pred :speak
                               :tense :conditional}}}))
 (deftest speed-test-4
   (log/info (str "speed-test-4"))
-  (speed-test {:synsem {:subcat '()
+  (speed-test {:synsem {:cat :verb
+                        :subcat '()
                         :sem {:pred :speak}}}))
 (deftest speed-test-5
   (log/info (str "speed-test-5"))
-  (speed-test {:synsem {:subcat '()
+  (speed-test {:synsem {:cat :verb
+                        :subcat '()
                         :sem {:tense :conditional}}}))
 (deftest speed-test-6
   (log/info (str "speed-test-6"))
-  (speed-test {:synsem {:subcat '()
+  (speed-test {:synsem {:cat :verb
+                        :subcat '()
                         :sem {:pred :speak
                               :subj {:pred :noi}
                               :tense :present
                               :aspect :perfect}}}))
 (deftest speed-test-7
   (log/info (str "speed-test-7"))
-  (speed-test {:synsem {:subcat '()
+  (speed-test {:synsem {:cat :verb
+                        :subcat '()
                         :sem {:pred :speak
                               :tense :present
                               :aspect :perfect}}}))
 (deftest speed-test-8
   (log/info (str "speed-test-8"))
-  (speed-test {:synsem {:subcat '()
+  (speed-test {:synsem {:cat :verb
+                        :subcat '()
                         :sem {:tense :present
                               :reflexive false
                               :aspect :perfect}}}))
 (deftest speed-test-9
   (log/info (str "speed-test-9"))
-  (speed-test {:synsem {:subcat '()}}))
+  (speed-test {:synsem {:cat :verb
+                        :subcat '()}}))
 
 (deftest speed-test-10
   (log/info (str "speed-test-10"))
