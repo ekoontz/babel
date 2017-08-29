@@ -198,6 +198,7 @@
 
 (deftest generate-present-by-root-regular-1
   (let [result (generate {:synsem {:subcat '()
+                                   :cat :verb
                                    :sem {:pred :top
                                          :subj {:pred :I}
                                          :tense :present
@@ -209,6 +210,7 @@
 
 (deftest generate-present-by-semantics-regular-1
   (let [result (generate {:synsem {:subcat '()
+                                   :cat :verb
                                    :sem {:pred :abandon
                                          :subj {:pred :I}
                                          :tense :present
@@ -218,6 +220,7 @@
 
 (deftest generate-present-by-root-regular-2
   (let [result (generate {:synsem {:subcat '()
+                                   :cat :verb
                                    :sem {:aspect :simple
                                          :tense :present}}
                           :root {:français {:français "abandoner"}}
@@ -236,6 +239,7 @@
 
 (deftest generate-present-by-root-irregular-1
   (let [result (generate {:synsem {:subcat '()
+                                   :cat :verb
                                    :sem {:aspect :simple
                                          :tense :present}}
                           :root {:français {:français "dormir"}}
@@ -245,6 +249,7 @@
 
 (deftest generate-present-by-root-with-boot-stem
   (let [result (generate {:synsem {:subcat '()
+                                   :cat :verb
                                    :sem {:subj {:pred :noi}
                                          :tense :present
                                          :aspect :simple}}
@@ -262,6 +267,7 @@
 
 (deftest generate-regular-conditional
   (let [result (generate {:synsem {:subcat '()
+                                   :cat :verb
                                    :sem {:subj {:pred :I}
                                          :tense :conditional}}
                           :root {:français {:français "dormir"}}}
@@ -270,6 +276,7 @@
 
 (deftest generate-future-with-irregular-future-stem-1
   (let [result (generate {:synsem {:subcat '()
+                                   :cat :verb
                                    :sem {:pred :call
                                          :subj {:pred :tu}
                                          :tense :future}}}
@@ -278,6 +285,7 @@
 
 (deftest generate-future-with-irregular-future-stem-2
   (let [result (generate {:synsem {:subcat '()
+                                   :cat :verb
                                    :sem {:subj {:pred :tu}
                                          :tense :future}}
                           :root {:français {:français "appeler"}}}
@@ -286,6 +294,7 @@
 
 (deftest generate-regular-conditional-reflexive
   (let [result (generate {:synsem {:subcat '()
+                                   :cat :verb
                                    :sem {:subj {:pred :I}
                                          :tense :conditional}}
                           :root {:français {:français "s'amuser"}}}
@@ -294,6 +303,7 @@
 
 (deftest generate-present-irregular-2
   (let [result (generate {:synsem {:subcat '()
+                                   :cat :verb
                                    :sem {:pred :be
                                          :subj {:pred :I}
                                          :tense :present
@@ -303,6 +313,7 @@
 
 (deftest generate-imparfait-regular-er
   (let [result (generate {:synsem {:subcat '()
+                                   :cat :verb
                                    :sem {:pred :study
                                          :subj {:pred :I}
                                          :tense :past
@@ -313,6 +324,7 @@
 
 (deftest imparfait-insert-e-before-g
   (let [result (generate {:synsem {:subcat '()
+                                   :cat :verb
                                    :sem {:subj {:pred :I}
                                          :tense :past
                                          :aspect :progressive}}
@@ -321,6 +333,7 @@
 
 (deftest imparfait-insert-cedilla-before-c
   (let [result (generate {:synsem {:subcat '()
+                                   :cat :verb
                                    :sem {:subj {:pred :loro
                                                 :gender :fem}
                                          :tense :past
@@ -330,6 +343,7 @@
 
 (deftest generate-imparfait-regular-ir
   (let [result (generate {:synsem {:subcat '()
+                                   :cat :verb
                                    :agr {:gender :masc}
                                    :sem {:pred :sleep
                                          :subj {:pred :loro
@@ -342,6 +356,7 @@
 
 (deftest generate-imparfait-regular-re
   (let [result (generate {:synsem {:subcat '()
+                                   :cat :verb
                                    :sem {:pred :sell
                                          :subj {:pred :voi}
                                          :tense :past
@@ -352,6 +367,7 @@
 
 (deftest generate-imparfait-finir
   (let [result (generate {:synsem {:subcat '()
+                                   :cat :verb
                                    :sem {:subj {:pred :noi}
                                          :tense :past
                                          :aspect :progressive}}
@@ -361,6 +377,7 @@
 
 (deftest generate-imperfect-irregular-être
   (let [result (generate {:synsem {:subcat '()
+                                   :cat :verb
                                    :infl :imperfect
                                    :sem {:pred :be
                                          :subj {:pred :I}}}}
@@ -369,6 +386,7 @@
 
 (deftest generate-imperfect-irregular-avoir
   (let [result (generate/generate {:synsem {:subcat '()
+                                            :cat :verb
                                             :infl :imperfect
                                             :sem {:pred :have
                                                   :subj {:pred :I}}}}
@@ -667,6 +685,7 @@
 (deftest speed-test-3
   (log/info (str "speed-test-3"))
   (speed-test {:synsem {:subcat '()
+                        :cat :verb
                         :sem {:pred :speak
                               :tense :conditional}}}))
 (deftest speed-test-4
@@ -703,6 +722,7 @@
 (deftest speed-test-10
   (log/info (str "speed-test-10"))
   (speed-test {:synsem {:subcat '()
+                        :cat :verb
                         :sem {:tense :present
                               :reflexive true
                               :aspect :perfect}}}))
