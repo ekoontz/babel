@@ -169,7 +169,7 @@
                      } ;; synsem {
             }) ;; end of map
          ;; "be + PP": "I am at the beach"
-         (let [pred (atom {:not :be-called})
+         (let [pred (atom :top)
                ;; Needed because {:pred :top} to prevent matching of {:obj :unspec}
                ;; yielding incorrect translations.
                obj (atom {:top :top})]
@@ -188,7 +188,7 @@
                                         :pred pred}}
                               :3 '()}}})
          ;; "be + PP": reflexive
-         (let [pred (atom {:not :be-called})
+         (let [pred (atom :top)
                obj (atom :top)
                ;; Needed because {:pred :top} to prevent matching of {:obj :unspec}
                ;; yielding incorrect translations.
