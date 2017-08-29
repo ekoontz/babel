@@ -1,12 +1,12 @@
 (ns babel.test.en
   (:refer-clojure :exclude [assoc-in get-in])
   (:require [babel.directory :refer [models]]
-            [babel.english :refer [analyze fo-ps lookup generate generate-all
+            [babel.english :refer [analyze fo-ps lookup generate
                                    medium morph parse sentences]]
             [babel.english.grammar :as grammar :refer [head-first head-last]]
             [babel.english.morphology :refer [get-string]]
 
-            [babel.generate :refer [gen get-lexemes lightning-bolts not-fail?]]
+            [babel.generate :refer [get-lexemes lightning-bolts]]
             
             [babel.over :refer [over overc overh]]
             
