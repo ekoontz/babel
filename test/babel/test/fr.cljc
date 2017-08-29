@@ -230,6 +230,7 @@
 
 (deftest generate-present-by-semantics-irregular-1
   (let [result (generate {:synsem {:subcat '()
+                                   :cat :verb
                                    :sem {:pred :sleep
                                          :subj {:pred :I}
                                          :tense :present
