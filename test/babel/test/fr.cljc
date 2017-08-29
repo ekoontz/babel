@@ -726,13 +726,3 @@
                         :sem {:tense :present
                               :reflexive true
                               :aspect :perfect}}}))
-
-
-  
-
-  
-
-
-
-
-
