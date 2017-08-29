@@ -73,10 +73,6 @@
        (conj {:surface (fo result)}
              result)))))
 
-(defn lightning-bolts [spec]
-  (let [medium medium]
-    (generate/lightning-bolts (:grammar medium) (:lexicon medium) spec 0 (:index medium) nil (:morph medium))))
-
 (def tokenizer #"[ '\n,’».]")
 
 (defn tokenize [input]
