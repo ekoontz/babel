@@ -667,7 +667,7 @@
                                   :number :sing} :tense :present}
                      :subcat ()}})
 
-;; (map #(println (morph %)) (take 100 (gen spec model 0)))
-;; (map #(println (morph %)) (take 1 (gen cspec model 0)))
+;; (map #(println (morph %)) (take 100 (repeatedly #(generate spec :model model))))
+;; (morph (generate cspec :model model))
 
 
