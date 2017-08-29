@@ -64,7 +64,7 @@
        (if (not (empty? bolts))
          (lazy-cat
           (add-paths-to-bolt (first bolts) model
-                             (paths-for-bolt depth [:head]))
+                             (paths-for-bolt depth))
           (gen spec model depth (rest bolts)))))
      (gen spec model (+ 1 depth)))))
 
@@ -119,15 +119,20 @@
      (add-to-bolt-at-path (first bolts) path model)
      (add-path-to-bolts (rest bolts) path model))))
 
-(defn paths-for-bolt [depth prefix]
+(defn paths-for-bolt [depth]
   (cond
     (= depth 0)
     []
     (= depth 1)
     [[:comp]]
+    (= depth 2)
+    [[:head :comp][:comp]]
+    (= depth 3)
+    [[:head :head :comp][:head :comp][:comp]]
     true
-    (cons (concat prefix [:comp])
-          (paths-for-bolt (- depth 1) (cons :head prefix)))))
+    (cons
+     (concat (take (- depth 1) (repeatedly (fn [] :head))) [:comp])
+     (paths-for-bolt (- depth 1)))))
 
 (defn add-to-bolt-at-path
   "bolt + path => partial trees"
