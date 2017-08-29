@@ -229,7 +229,7 @@
 
 (deftest generate-with-possessive-1
   (let [result
-        (generate {:synsem {
+        (generate {:synsem {:pronoun false
                             ;; TODO: subcat '() should be part of language model's top-level generate defaults;
                             ;; c.f. TODO on babel.test.translate/latin-to-english
                             :subcat '()
@@ -245,6 +245,7 @@
 (deftest generate-with-possessive-2
   (let [result
         (generate {:synsem {:cat :noun
+                            :pronoun false
                             :mod {:first {:pred :rosso}}
                             :sem {:number :sing
                                   :spec {:pred :of
@@ -271,6 +272,7 @@
 
 (deftest in-front-of
   (let [expr (generate {:synsem {:cat :prep
+                                 :subcat '()
                                  :reflexive false
                                  :sem {:pred :in-front-of
                                        :obj {:pred :table
@@ -380,13 +382,16 @@
                            :subj {:pred :cat}}
                      :subcat '()}})
 
+;; TODO: consider removing this test: generation is
+;; less susceptible to the problems for which it was
+;; added.
 (deftest rathole-check-2
   (let [med (medium)
         spec {:synsem {:cat :verb
                        :sem {:pred :read
                              :subj {:pred :woman}}
                        :subcat '()}}
-        lbs (lightning-bolts med spec 0 6)
+        lbs (lightning-bolts med spec 0 2)
         good-lb (first (filter #(and (= (get-in % [:head :rule])
                                         "transitive-vp-nonphrasal-head")
                                      (= (get-in % [:head :head :english :english])
@@ -396,7 +401,7 @@
         comp-spec (get-in good-lb [:comp])]
 
     (is (not (empty? (babel.generate/lightning-bolts med (get-in good-lb [:head :comp]) 0 0))))
-    (is (not (empty? (babel.generate/lightning-bolts med (get-in good-lb [:comp]) 0 0))))))
+    (is (not (empty? (babel.generate/lightning-bolts med (get-in good-lb [:comp]) 0 1))))))
 
 (deftest take-advantage-present
   (let [result (generate {:synsem {:sem {:pred :take-advantage-of
@@ -581,7 +586,8 @@
            (filter #(= :verb (get-in % [:synsem :cat]))
                    (parse "I speak")))
         spec (strip-refs (unify
-                          {:synsem {:cat :verb}}
+                          {:synsem {:subcat '()
+                                    :cat :verb}}
                           {:synsem {:sem (get-in p [:synsem :sem])}}
                           {:synsem {:sem {:subj {:gender :masc}}}}))
         generated (generate spec)
@@ -632,6 +638,7 @@
 ;; generate "the woman she sees"
 (def spec-for-the-woman-she-sees
   {:synsem {:agr {:number :sing}
+            :pronoun false
             :cat :noun
             :subcat '()
             :sem {:pred :woman
