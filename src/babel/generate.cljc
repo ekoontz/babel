@@ -45,12 +45,7 @@
 
 (defn generate
   "Return one expression matching spec _spec_ given the model _model_."
-  [spec language-model
-   & {:keys [max-total-depth truncate-children? lexicon take-n]
-      :or {max-total-depth max-total-depth
-           lexicon nil
-           shuffle? nil
-           truncate-children? true}}]
+  [spec language-model]
   (log/debug (str "(generate) with model named: " (:name language-model)))
   (first (gen spec language-model 0)))
 
@@ -153,14 +148,6 @@
              bolt
              (dag_unify.core/assoc-in path
                                       each-comp)
-             ((fn [tree]
-                (if truncate?
-                  (dag_unify.core/dissoc-paths [path
-                                                (concat
-                                                 (butlast path)
-                                                 [:head])])
-                  tree)))
-             
              ((fn [tree]
                 (if (:default-fn model)
                   ((:default-fn model) tree)
