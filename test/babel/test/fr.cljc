@@ -8,6 +8,7 @@
             [babel.generate :as generate]
             [babel.over :as over]
             [babel.parse :as parse]
+            [clojure.repl :refer [doc]]
             [clojure.string :as string]
             #?(:clj [clojure.test :refer [deftest is]])
             #?(:cljs [cljs.test :refer-macros [deftest is]])
