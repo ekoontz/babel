@@ -65,10 +65,7 @@
                  model (medium)
                  truncate true}}]
    (log/debug (str "generating with spec: " (strip-refs spec) " with max-total-depth: " max-total-depth))
-   (let [result (generate/generate spec model
-                                   :do-enrich do-enrich
-                                   :max-total-depth max-total-depth
-                                   :truncate-children truncate)]
+   (let [result (generate/generate spec model)]
      (if result
        (conj {:surface (fo result)}
              result)))))
