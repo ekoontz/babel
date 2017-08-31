@@ -33,15 +33,15 @@
 ;; for performance.
 (def ^:const truncate false)
 
+(declare add-comp-to-bolts)
+(declare add-comps-to-bolt)
+(declare add-to-bolt-at-path)
 (declare candidate-parents)
 (declare get-lexemes)
 (declare lightning-bolts)
-(declare add-comps-to-bolt)
 (declare paths-for-bolt)
-(declare add-comp-to-bolts)
-(declare add-to-bolt-at-path)
-
 (declare gen)
+(declare show-spec)
 
 (defn generate
   "Return one expression matching spec _spec_ given the model _model_."
@@ -52,7 +52,7 @@
 (defn gen
   "spec => trees"
   [spec model depth & [from-bolts]]
-;;  (println (str "trying depth:" depth "; spec=" (dag_unify.core/strip-refs spec)))
+  (log/debug (str "gen@" depth "; spec=" (show-spec spec)))
   (if (< depth 5)
     (lazy-cat
      (let [bolts (or from-bolts (lightning-bolts model spec 0 depth))]
@@ -82,7 +82,7 @@
   ;; up to the maximum depth.
   (if (< depth max-depth)
     (let [candidate-parents (or use-candidate-parents
-                                (shufflefn (candidate-parents (:grammar model) spec)))]
+                                (shufflefn (candidate-parents (:grammar model) spec depth)))]
       (if (not (empty? candidate-parents))
         (let [candidate-parent (first candidate-parents)]
           (lazy-cat
@@ -148,15 +148,16 @@
                 tree))))))))
 
 (defn candidate-parents
-  "find subset of _rules_ for which each member unifies successfully with _spec_"
-  [rules spec]
+  "find subset of _rules_ for which each member unifies successfully with _spec_; _depth_ is only used for diagnostic logging."
+  [rules spec depth]
   (filter #(not (= :fail %))
           (mapfn (fn [rule]
-                   (log/trace (str "candidate-parents: testing rule: " (:rule rule)))
+                   (log/trace (str "candidate-parents: testing rule: " (:rule rule) "; depth: " depth))
                    (let [unified (unify spec rule)]
                      (if (= :fail unified)
-                       (log/debug (str "candidate parent: " (:rule rule) " failed at:" (fail-path spec rule)))
-                       (log/debug (str "candidate parent: " (:rule rule) " unified successfully with spec:" (strip-refs spec))))
+                       (log/trace (str "candidate parent: " (:rule rule) " failed at:" (fail-path spec rule)))
+                       (log/debug (str "candidate parent: " (:rule rule) " spec:" (show-spec spec)
+                                       "; depth: " depth)))
                      unified))
                  rules)))
 
@@ -174,3 +175,14 @@
 
    (map #(unify % spec))
    (filter #(not (= :fail %)))))
+
+(defn show-spec [spec]
+  (str "cat=" (get-in spec [:synsem :cat])
+       (if (get-in spec [:rule])
+         (str "; rule=" (strip-refs (get-in spec [:rule]))))
+       (if (get-in spec [:synsem :subcat :1 :cat])
+         (str "; subcat1=" (strip-refs (get-in spec [:synsem :subcat :1 :cat]))))
+       (if (get-in spec [:synsem :subcat :2 :cat])
+         (str "; subcat2=" (strip-refs (get-in spec [:synsem :subcat :2 :cat]))))
+       (if (get-in spec [:synsem :subcat :3 :cat])
+         (str "; subcat3=" (strip-refs (get-in spec [:synsem :subcat :3 :cat]))))))
