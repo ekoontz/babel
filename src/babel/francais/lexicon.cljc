@@ -133,7 +133,11 @@
    (default {:synsem {:cat :noun
                       :pronoun true}
              :d-noun true})
-     
+
+   (default {:synsem {:cat :verb
+                      :essere true
+                      :sem {:reflexive true}}})
+   
    ;; Make an intransitive version of every verb which has a path [:sem :obj].
    intransitivize
    
