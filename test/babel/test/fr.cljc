@@ -735,6 +735,37 @@
   (speed-test {:synsem {:cat :verb
                         :subcat '()}}))
 
+(defn add-heads [rule]
+  (let [grammar (grammar/medium)]
+    (remove #(= :fail %)
+            (map (fn [lexeme]
+                   (dag_unify.core/assoc-in
+                    (get-in grammar
+                            [:grammar-map rule]) [:head] lexeme))
+                 (flatten (vals (get-in grammar [:lexicon])))))))
+
+(defn heads [rule]
+  (map morph (add-heads rule)))
+
+(defn add-comps [rule]
+  (let [grammar (grammar/medium)
+        rule (cond (keyword? rule)
+                   (get-in grammar [:grammar-map rule])
+                   (map? rule)
+                   rule
+                   true (throw (Exception. (str "rule must be either a keyword or a map, not: " (type rule)))))]
+    (remove #(= :fail %)
+            (map (fn [lexeme]
+                   (do
+                     (println "assoc-in candidate comp lexeme: " (morph lexeme))
+                     (dag_unify.core/assoc-in
+                      rule
+                      [:comp] lexeme)))
+                 (flatten (vals (get-in grammar [:lexicon])))))))
+    
+(defn comps [rule]
+  (map morph (add-comps rule)))
+
 (deftest speed-test-10
   (log/info (str "speed-test-10"))
   (speed-test {:synsem {:subcat '()
