@@ -670,8 +670,8 @@
 
 
 (defn speed-test [spec]
-  (is (= 10
-         (count (take 10
+  (is (= 1
+         (count (take 1
                       (repeatedly
                        #(time (println (fo (generate spec
                                                      :model (medium)))))))))))
