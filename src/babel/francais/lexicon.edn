@@ -746,6 +746,8 @@
    ;;                                     :3 {:cat :adverb
    ;;                                         :sem {:pred :bad}}}}})
 
+
+ ;; TODO: remove :essere=true from these: handled by lexical default rule instead.
   "s'endormir" (let [subject-semantics (atom {:human true})
                     subject-agr (atom :top)]
                 {:synsem {:cat :verb
