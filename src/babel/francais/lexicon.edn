@@ -81,6 +81,7 @@
                     :subj {:human true}}}}
     {:unify [common]
      :synsem {:aux true
+              :sem {:reflexive false}
               :subcat {:2 {:essere false}}}}])
 
  "baisser" {:synsem {:cat :verb
