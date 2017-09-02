@@ -48,8 +48,10 @@
 (defn parse
   "parse a string in French into zero or more (hopefully more) phrase structure trees"
   
-  ([input]
-   (parse input (medium)))
+  ([input & {:keys [parse-with-truncate model]}]
+   (parse/parse input (or model (medium))
+                :parse-with-truncate (if (nil? parse-with-truncate)
+                                       true
+                                       parse-with-truncate))))
 
-  ([input model]
-   (parse/parse input model)))
+
