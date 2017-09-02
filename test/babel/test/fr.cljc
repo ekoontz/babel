@@ -670,8 +670,8 @@
 
 
 (defn speed-test [spec]
-  (is (= 1
-         (count (take 1
+  (is (= 10
+         (count (take 10
                       (repeatedly
                        #(time (println (fo (generate spec (medium)))))))))))
 (deftest speed-test-1
