@@ -673,8 +673,7 @@
   (is (= 1
          (count (take 1
                       (repeatedly
-                       #(time (println (fo (generate spec
-                                                     :model (medium)))))))))))
+                       #(time (println (fo (generate spec (medium)))))))))))
 (deftest speed-test-1
   ;; these should all take relatively the same time, but
   ;; for now, the more general the spec, the longer it takes to generate.
