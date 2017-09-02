@@ -134,7 +134,16 @@
                       :pronoun true}
              :d-noun true})
 
+   (default {:synsem {:aux false
+                      :sem {:reflexive false}}})
+   
    (default {:synsem {:cat :verb
+                      :aux false
+                      :sem {:reflexive false}
+                      :essere false}})
+   
+   (default {:synsem {:cat :verb
+                      :aux false
                       :essere true
                       :sem {:reflexive true}}})
    
