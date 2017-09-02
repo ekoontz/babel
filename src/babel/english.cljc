@@ -83,7 +83,7 @@
    (parse (preprocess input) (medium) truncate?))
 
   ([input model truncate?]
-   (parse/parse (preprocess input) model truncate?)))
+   (parse/parse (preprocess input) model :parse-with-truncate truncate?)))
 
 (def tree-variants
   [

@@ -56,13 +56,13 @@
   (println (str "gen@" depth "; spec=" (show-spec spec)))
   (if (< depth 5)
     (lazy-cat
-     (let [throw-exception-if-bolt-fails true
+     (let [throw-exception-if-bolt-fails false
            bolts (or from-bolts (lightning-bolts model spec 0 depth))]
        (if (not (empty? bolts))
          (do
            (if (get-in (first bolts) [:phrasal])
-             (println (str "bolt: " ((:morph-ps model) (first bolts)) " at: " at-path))
-             (println (str "bolt:" ((:morph model) (first bolts)) " at: " at-path)))
+             (println (str "bolt@" depth ":'" ((:morph-ps model) (first bolts)) "' at: " at-path))
+             (println (str "lexeme@" depth ":'" ((:morph model) (first bolts)) "' at: " at-path)))
            (lazy-cat
             (let [for-this-bolt
                   (add-comps-to-bolt (first bolts) model
