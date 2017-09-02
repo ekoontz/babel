@@ -224,10 +224,14 @@
 
 (defn parse
   "return a list of all possible parse trees for a string or a sequence of tokens.
-   If the input is a string, then use a language-independent tokenizer to turn the string into a sequence of tokens.
-   In the latter case, the tokens are assumed to be produced by splitting a string in 
-   some language-dependent way."
-  ([input model & [parse-with-truncate original-input]]
+   If the input is a string, then use a language-independent tokenizer
+  to turn the string into a sequence of tokens.  In the latter case,
+  the tokens are assumed to be produced by splitting a string in some
+  language-dependent way. If parse-with-truncate is false, then at
+  each step of parsing the input, the entire tree will be preserved
+  rather than just the immediate parents of the root node. Preserving
+  the entire tree costs about 20% time than truncating it."
+  ([input model & {:keys [parse-with-truncate original-input]}]
    (let [parse-with-truncate
          (cond (= parse-with-truncate false)
                false
@@ -241,7 +245,9 @@
              (log/debug (str "parsing input: '" input "'"))
              ;; tokenize input (more than one tokenization is possible), and parse each tokenization.
              (let [tokenizations (filter #(not (empty? %)) (string/split input tokenizer))
-                   result (parse tokenizations model parse-with-truncate original-input)]
+                   result (parse tokenizations model
+                                 :parse-with-truncate parse-with-truncate
+                                 :original-input original-input)]
                (if (empty? result)
                  (log/warn (str "could not parse: \"" input "\". Tokenizations attempted: "
                                 (string/join ";" tokenizations)))
