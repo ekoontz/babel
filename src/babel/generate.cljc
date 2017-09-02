@@ -51,17 +51,28 @@
 
 (defn gen
   "spec => trees"
-  [spec model depth & [from-bolts]]
+  [spec model depth & [from-bolts at-path]]
   (log/debug (str "gen@" depth "; spec=" (show-spec spec)))
+  (println (str "gen@" depth "; spec=" (show-spec spec)))
   (if (< depth 5)
     (lazy-cat
-     (let [bolts (or from-bolts (lightning-bolts model spec 0 depth))]
+     (let [throw-exception-if-bolt-fails true
+           bolts (or from-bolts (lightning-bolts model spec 0 depth))]
        (if (not (empty? bolts))
-         (lazy-cat
-          (add-comps-to-bolt (first bolts) model
-                             (paths-for-bolt depth))
-          (gen spec model depth (rest bolts)))))
-     (gen spec model (+ 1 depth)))))
+         (do
+           (if (get-in (first bolts) [:phrasal])
+             (println (str "bolt: " ((:morph-ps model) (first bolts)) " at: " at-path))
+             (println (str "bolt:" ((:morph model) (first bolts)) " at: " at-path)))
+           (lazy-cat
+            (let [for-this-bolt
+                  (add-comps-to-bolt (first bolts) model
+                                     (paths-for-bolt depth))]
+              (if (and (empty? for-this-bolt) throw-exception-if-bolt-fails)
+                (throw (Exception. (str "entire bolt failed:"
+                                        ((:morph-ps model) (first bolts))))))
+              for-this-bolt)
+            (gen spec model depth (rest bolts) at-path)))))
+     (gen spec model (+ 1 depth) nil at-path))))
 
 (defn lightning-bolts
   [model spec depth max-depth & [use-candidate-parents]]
@@ -134,7 +145,7 @@
   [bolt path model]
   (->>
    ;; set of all complements at _path_ for _bolt_:
-   (gen (get-in bolt path) model 0)
+   (gen (get-in bolt path) model 0 nil path)
      
    ;; add each member _each_comp_ of this set to _bolt_:
    (map (fn [each-comp]
