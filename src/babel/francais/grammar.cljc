@@ -401,6 +401,7 @@
                           {:rule "vp-aux"
                            :synsem {:aux true
                                     :sem {:aspect :perfect
+                                          :reflexive false
                                           :tense :present}
                                     :cat :verb}})
                    
