@@ -178,7 +178,8 @@
   (let [do-this-many 10
         expressions (take do-this-many
                           (repeatedly #(generate
-                                        {:synsem {:sem {:mod {:pred :top}
+                                        {:synsem {:subcat ()
+                                                  :sem {:mod {:pred :top}
                                                         :number :top
                                                         :pred :top
                                                         :spec {:def :top}}}}
