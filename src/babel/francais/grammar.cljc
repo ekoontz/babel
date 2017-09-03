@@ -178,7 +178,8 @@
    subcat-2-principle
    head-principle
    head-last
-   {:comp {:synsem {:subcat '()
+   {:comp {:phrasal false
+           :synsem {:subcat '()
                     :pronoun true}}
     :schema-symbol 'c21 ;; used by over-each-parent to know where to put children.
     :first :comp
@@ -385,7 +386,8 @@
                            root-is-head-root
                            {:head {:phrasal true
                                    :infl {:not :past-p}}
-                            :comp {:synsem {:cat :noun
+                            :comp {:phrasal false
+                                   :synsem {:cat :noun
                                             :pronoun true}}
                             :rule "vp-pronoun-phrasal"
                             :synsem {:cat :verb}})
