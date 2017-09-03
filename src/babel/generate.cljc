@@ -66,7 +66,7 @@
            (lazy-cat
             (let [for-this-bolt
                   (add-comps-to-bolt (first bolts) model
-                                     (paths-for-bolt depth))]
+                                     (reverse (paths-for-bolt depth)))]
               (if (and (empty? for-this-bolt) throw-exception-if-bolt-fails)
                 (throw (Exception. (str "entire bolt failed:"
                                         ((:morph-ps model) (first bolts))))))
