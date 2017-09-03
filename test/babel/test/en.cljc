@@ -335,7 +335,7 @@
 
 (deftest past-and-gender-agreement
   (= (morph (generate {:synsem {:sem {:pred :go
-                                   :aspect :perfect
+                                      :aspect :perfect
                                    :tense :present
                                    :subj {:gender :fem
                                           :pred :loro}}}}))
