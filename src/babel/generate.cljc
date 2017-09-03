@@ -200,6 +200,8 @@
   (str "cat=" (get-in spec [:synsem :cat])
        (if (get-in spec [:rule])
          (str "; rule=" (strip-refs (get-in spec [:rule]))))
+       (if (not (= (get-in spec [:synsem :agr] ::none) ::none))
+         (str "; agr=" (strip-refs (get-in spec [:synsem :agr]))))
        (if (get-in spec [:synsem :subcat :1 :cat])
          (str "; subcat1=" (strip-refs (get-in spec [:synsem :subcat :1 :cat]))))
        (if (get-in spec [:synsem :subcat :2 :cat])
