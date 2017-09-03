@@ -35,16 +35,16 @@
      (if result
        (conj {:surface (fo result)}
              result))))
-  ([spec] 
-   (let [result (generate/generate spec (medium))]
-     (if result
-       (conj {:surface (fo result)}
-             result))))
-  ([spec model]
+  ([spec & {:keys [max-total-depth model truncate-children]
+            :or {max-total-depth generate/max-total-depth
+                 truncate-children true
+                 model (medium)}}]
    (let [result (generate/generate spec model)]
-     (if result
-       (conj {:surface (fo result)}
+     (if (keyword? result)
+       (throw (Exception. (str "please don't send me a keyword :( : this is what you sent me: " result)))
+       (conj {:surface (morph result)}
              result)))))
+
 (defn parse
   "parse a string in French into zero or more (hopefully more) phrase structure trees"
   
