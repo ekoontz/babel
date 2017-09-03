@@ -194,6 +194,9 @@
                    (or (:lexicon (:generate model)) (:lexicon model)))))))
 
    (map #(unify % spec))
+   (filter #(or (= false (get-in % [:exception] false))
+                (not (= :verb (get-in % [:synsem :cat])))))
+   
    (filter #(not (= :fail %)))))
 
 (defn show-spec [spec]
