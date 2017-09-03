@@ -299,8 +299,7 @@
                                    :cat :verb
                                    :sem {:subj {:pred :I}
                                          :tense :conditional}}
-                          :root {:français {:français "s'amuser"}}}
-                         :model (small))]
+                          :root {:français {:français "s'amuser"}}})]
     (is (= "je m'amuserais" (fo result)))))
 
 (deftest generate-present-irregular-2
