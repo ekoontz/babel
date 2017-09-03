@@ -60,7 +60,7 @@
            bolts (or from-bolts (lightning-bolts model spec 0 depth))]
        (if (not (empty? bolts))
          (do
-           (if (get-in (first bolts) [:phrasal])
+           (if (get-in (first bolts) [:phrasal] false)
              (println (str "bolt@" depth ":'" ((:morph-ps model) (first bolts)) "' at: " at-path))
              (println (str "lexeme@" depth ":'" ((:morph model) (first bolts)) "' at: " at-path)))
            (lazy-cat
@@ -71,8 +71,11 @@
                 (throw (Exception. (str "entire bolt failed:"
                                         ((:morph-ps model) (first bolts))))))
               for-this-bolt)
-            (gen spec model depth (rest bolts) at-path)))))
-     (gen spec model (+ 1 depth) nil at-path))))
+            (gen spec model depth
+                 (rest bolts)
+                 at-path)))))
+     (if (not (= false (get-in spec [:phrasal] true)))
+       (gen spec model (+ 1 depth) nil at-path)))))
 
 (defn lightning-bolts
   [model spec depth max-depth & [use-candidate-parents]]
@@ -97,13 +100,14 @@
       (if (not (empty? candidate-parents))
         (let [candidate-parent (first candidate-parents)]
           (lazy-cat
-           (let [unified-candidate-parent (unify candidate-parent spec)]
-             (->> (lightning-bolts model
-                                   (get-in unified-candidate-parent [:head])
-                                   (+ 1 depth)
-                                   max-depth)
-                  (map (fn [head]
-                         (assoc-in unified-candidate-parent [:head] head)))))
+           (if (not (= false (get-in spec [:phrasal] true)))
+             (let [unified-candidate-parent (unify candidate-parent spec)]
+               (->> (lightning-bolts model
+                                     (get-in unified-candidate-parent [:head])
+                                     (+ 1 depth)
+                                     max-depth)
+                    (map (fn [head]
+                           (assoc-in unified-candidate-parent [:head] head))))))
            (lightning-bolts model spec depth max-depth (rest candidate-parents))))))
     (shuffle (get-lexemes model spec))))
 
@@ -122,7 +126,12 @@
   [bolts path model]
   (if (not (empty? bolts))
     (lazy-cat
-     (add-to-bolt-at-path (first bolts) path model)
+     (let [result
+           (add-to-bolt-at-path (first bolts) path model)]
+       (if (empty? result)
+         (println "could not add any comps at path:" path " to bolt: " ((:morph-ps model) (first bolts)))
+         (println "found one or more comps at path:" path " to bolt: " ((:morph-ps model) (first bolts))))
+       result)
      (add-comp-to-bolts (rest bolts) path model))))
 
 (defn paths-for-bolt [depth]
@@ -196,4 +205,7 @@
        (if (get-in spec [:synsem :subcat :2 :cat])
          (str "; subcat2=" (strip-refs (get-in spec [:synsem :subcat :2 :cat]))))
        (if (get-in spec [:synsem :subcat :3 :cat])
-         (str "; subcat3=" (strip-refs (get-in spec [:synsem :subcat :3 :cat]))))))
+         (str "; subcat3=" (strip-refs (get-in spec [:synsem :subcat :3 :cat]))))
+       (if (not (= (get-in spec [:phrasal] ::none) ::none))
+         (str "; phrasal=" (strip-refs (get-in spec [:phrasal]))))))
+
