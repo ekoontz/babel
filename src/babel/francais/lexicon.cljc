@@ -14,7 +14,6 @@
 (def gender (atom :top))
 (def verb-aux-sem (atom {:aspect :perfect
                          :tense :present}))
-(def verb-aux-subject (atom :top))
 (declare compile-lexicon)
 
 (defn deliver-lexicon []
@@ -119,15 +118,19 @@
              :d-verb-aux false})
    
    ;; ..but for verbs that *are* aux, then:
-   (default {:synsem {:sem verb-aux-sem
-                      :aux true
-                      :subcat {:1 verb-aux-subject
-                               :2 {:infl :past-p
-                                   :sem verb-aux-sem
-                                   :cat :verb
-                                   :aux false
-                                   :subcat {:1 verb-aux-subject}}}}
-             :d-verb-aux true})
+   (default
+    (let [verb-agr (atom :top)
+          verb-aux-subject (atom {:agr verb-agr})]
+      {:synsem {:sem verb-aux-sem
+                :agr verb-agr
+                :aux true
+                :subcat {:1 verb-aux-subject
+                         :2 {:infl :past-p
+                             :sem verb-aux-sem
+                             :cat :verb
+                             :aux false
+                             :subcat {:1 verb-aux-subject}}}}
+       :d-verb-aux true}))
    
    ;; All pronouns are nouns.
    (default {:synsem {:cat :noun
