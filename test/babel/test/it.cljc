@@ -383,6 +383,7 @@
 
 (deftest casa-generate
   (let [result (generate {:synsem {:subcat ()
+                                   :pronoun false
                                    :cat :noun
                                    :agr {:number :sing}
                                    :sem {:pred :house
@@ -393,6 +394,7 @@
 
 (deftest case-generate
   (let [result (generate {:synsem {:subcat ()
+                                   :pronoun false
                                    :cat :noun
                                    :agr {:number :plur}
                                    :sem {:pred :house
