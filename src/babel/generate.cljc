@@ -92,18 +92,21 @@
   ;; up to the maximum depth.
   (if (< depth max-depth)
     (let [candidate-parents (or use-candidate-parents
-                                (shufflefn (candidate-parents (:grammar model) spec depth)))]
+                                (->>
+                                 (candidate-parents (:grammar model) spec depth)
+                                 (map #(unify % spec))
+                                 (filter #(not (= :fail %)))
+                                 (shufflefn)))]
       (if (not (empty? candidate-parents))
         (let [candidate-parent (first candidate-parents)]
           (lazy-cat
            (if (not (= false (get-in spec [:phrasal] true)))
-             (let [unified-candidate-parent (unify candidate-parent spec)]
-               (->> (lightning-bolts model
-                                     (get-in unified-candidate-parent [:head])
-                                     (+ 1 depth)
-                                     max-depth)
-                    (map (fn [head]
-                           (assoc-in unified-candidate-parent [:head] head))))))
+             (->> (lightning-bolts model
+                                   (get-in candidate-parent [:head])
+                                   (+ 1 depth)
+                                   max-depth)
+                  (map (fn [head]
+                         (assoc-in candidate-parent [:head] head)))))
            (lightning-bolts model spec depth max-depth (rest candidate-parents))))))
     (shuffle (get-lexemes model spec))))
 
