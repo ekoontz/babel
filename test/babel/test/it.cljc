@@ -618,10 +618,10 @@
                                           :pred :exist
                                           :reflexive false
                                           :aspect :simple
-                                          :tense :present}
+                                          :tense :present}}
                            :root {:italiano {:italiano "essere"}}
-                           :comp {:synsem {:agr {:number :sing}}}}}
-                       :model (small)))
+                           :comp {:synsem {:agr {:number :sing}}}}
+                          :model (small)))
          "c'è")))
 
 (deftest bisogno
