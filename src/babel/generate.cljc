@@ -108,7 +108,7 @@
                   (map (fn [head]
                          (assoc-in candidate-parent [:head] head)))))
            (lightning-bolts model spec depth max-depth (rest candidate-parents))))))
-    (shuffle (get-lexemes model spec))))
+    (shufflefn (get-lexemes model spec))))
 
 (defn add-comps-to-bolt
   "bolt + paths => trees"
