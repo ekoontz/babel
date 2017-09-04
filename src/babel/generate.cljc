@@ -43,6 +43,25 @@
 (declare gen)
 (declare show-spec)
 
+(defn get-bolts-for [model spec default depth]
+  (let [result
+        (unify spec
+               {:synsem {:subcat ()
+                         :cat :verb
+                         :sem {:tense :present
+                               :reflexive true
+                               :aspect :perfect}}})]
+    (cond
+      true default
+      (and (not (= result :fail))
+           (not (= depth 3)))
+      []
+      (or (not (= depth 3)) (= result :fail))
+      default
+      (not (nil? (:reflexive-bolt model)))
+      (:reflexive-bolt model)
+      true default)))
+  
 (defn generate
   "Return one expression matching spec _spec_ given the model _model_."
   [spec language-model]
@@ -53,10 +72,13 @@
   "spec => trees"
   [spec model depth & [from-bolts at-path]]
   (log/debug (str "gen@" depth "; spec=" (show-spec spec)))
+  (println (str "gen@" depth "; spec=" (show-spec spec)))
   (if (< depth 5)
     (lazy-cat
      (let [throw-exception-if-bolt-fails false
-           bolts (or from-bolts (lightning-bolts model spec 0 depth))]
+           bolts (get-bolts-for model spec 
+                                (lightning-bolts model spec 0 depth)
+                                depth)]
        (if (not (empty? bolts))
          (do
            (lazy-cat
