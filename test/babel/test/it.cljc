@@ -118,6 +118,7 @@
 (deftest passato-prossimo-reflexive
   (let [result (generate {:comp {:synsem {:agr {:gender :fem}}}
                           :synsem {:subcat ()
+                                   :cat :verb
                                    :sem {:pred :get-up
                                          :subj {:pred :I}
                                          :tense :present
@@ -128,6 +129,7 @@
 
 (deftest present-ditransitive
   (let [result (generate {:synsem {:subcat ()
+                                   :cat :verb
                                    :sem {:pred :be-called
                                          :tense :present
                                          :aspect :simple
@@ -571,6 +573,7 @@
 
 (deftest past-and-gender-agreement
   (is (= (morph (generate {:synsem {:subcat ()
+                                    :cat :verb
                                     :sem {:pred :go
                                           :aspect :perfect
                                           :tense :present
