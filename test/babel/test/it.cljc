@@ -35,6 +35,7 @@
 
 (deftest present-irregular
   (let [result (generate {:synsem {:subcat ()
+                                   :cat :verb
                                    :sem {:pred :be
                                          :subj {:pred :I}
                                          :aspect :simple
