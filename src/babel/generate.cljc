@@ -72,7 +72,6 @@
   "spec => trees"
   [spec model depth & [from-bolts at-path]]
   (log/debug (str "gen@" depth "; spec=" (show-spec spec)))
-  (println (str "gen@" depth "; spec=" (show-spec spec)))
   (if (< depth 5)
     (lazy-cat
      (let [throw-exception-if-bolt-fails false
