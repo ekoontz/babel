@@ -146,6 +146,7 @@
         
 (deftest round-trip-1
   (let [expr (generate {:synsem {:subcat ()
+                                 :cat :noun
                                  :sem {:spec {:def :def} 
                                        :mod {:pred :difficile}
                                        :number :sing
