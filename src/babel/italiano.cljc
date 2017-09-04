@@ -135,7 +135,7 @@
                 (analyze-tokens (string/trim input)))
 
            (or (seq? input) (vector? input))
-           (parse/parse input model original-input)
+           (parse/parse input model :original-input original-input)
         
            true
            (str "don't know how to parse input: " (type input))))))
