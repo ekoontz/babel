@@ -372,7 +372,8 @@
 
 (deftest gestiscono
   (let [result
-        (generate {:synsem {:subat ()
+        (generate {:synsem {:subcat ()
+                            :cat :verb
                             :sem {:subj {:pred :loro}
                                   :pred :manage
                                   :aspect :simple
@@ -500,7 +501,8 @@
 
 (deftest davanti-il-tavolo
   (let [parse-result (mapcat :parses (parse "davanti il tavolo"))
-        gen-result (generate {:synsem {:cat :prep 
+        gen-result (generate {:synsem {:subcat ()
+                                       :cat :prep 
                                        :sem {:pred :in-front-of
                                              :obj {:pred :table
                                                    :number :sing
@@ -515,7 +517,8 @@
 
 (deftest davanti-lo-studente
   (let [parse-result (mapcat :parses (parse "davanti lo studente"))
-        gen-result (generate {:synsem {:cat :prep 
+        gen-result (generate {:synsem {:subcat ()
+                                       :cat :prep 
                                        :sem {:pred :in-front-of
                                              :obj {:pred :student
                                                    :number :sing
