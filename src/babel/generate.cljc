@@ -206,11 +206,9 @@
          (log/warn (str "get-lexemes: no index found: using entire lexicon."))
          (flatten (vals
                    (or (:lexicon (:generate model)) (:lexicon model)))))))
-
-   (map #(unify % spec))
    (filter #(or (= false (get-in % [:exception] false))
                 (not (= :verb (get-in % [:synsem :cat])))))
-   
+   (map #(unify % spec))
    (filter #(not (= :fail %)))))
 
 (defn show-spec [spec]
