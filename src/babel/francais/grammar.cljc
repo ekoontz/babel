@@ -585,28 +585,36 @@
                             (= (:rule %) "vp-aux"))
                           grammar)))
         indices (create-indices lexicon index-lexicon-on-paths)]
-    {:name "medium"
-     :index-fn (fn [spec] (lookup-spec spec indices index-lexicon-on-paths))
-     :enrich enrich
-     :grammar grammar
-     ;; Will throw exception if more than 1 rule has the same :rule value:
-     :grammar-map (zipmap
-                   (map #(keyword (get-in % [:rule]))
-                        grammar)
-                   grammar)
-     :lexical-cache (atom (cache/fifo-cache-factory {} :threshold 1024))
-     :lexicon lexicon
-     :morph-walk-tree (fn [tree]
-                        (do
-                          (merge tree
-                                 (morph-walk-tree tree))))
-     :morph-ps fo-ps
-     :language "fr"
-     :language-keyword :français
-     :lookup (fn [arg]
-               (morph/analyze arg lexicon))
-     :morph fo
-     }))
+    (let [retval
+          {:name "medium"
+           :index-fn (fn [spec] (lookup-spec spec indices index-lexicon-on-paths))
+           :enrich enrich
+           :grammar grammar
+           ;; Will throw exception if more than 1 rule has the same :rule value:
+           :grammar-map (zipmap
+                         (map #(keyword (get-in % [:rule]))
+                              grammar)
+                         grammar)
+           :lexical-cache (atom (cache/fifo-cache-factory {} :threshold 1024))
+           :lexicon lexicon
+           :morph-walk-tree (fn [tree]
+                              (do
+                                (merge tree
+                                       (morph-walk-tree tree))))
+           :morph-ps fo-ps
+           :language "fr"
+           :language-keyword :français
+           :lookup (fn [arg]
+                     (morph/analyze arg lexicon))
+           :morph fo}]
+      (merge retval
+             {:reflexive-bolts (babel.generate/lightning-bolts retval
+                                                               {:synsem {:subcat ()
+                                                                         :cat :verb
+                                                                         :sem {:tense :present
+                                                                               :reflexive true
+                                                                               :aspect :perfect}}}
+                                                               0 3)}))))
 
 (defn parse [surface]
   (parse/parse surface

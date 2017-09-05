@@ -45,21 +45,16 @@
 
 (defn get-bolts-for [model spec default depth]
   (let [result
-        (unify spec
-               {:synsem {:subcat ()
-                         :cat :verb
-                         :sem {:tense :present
-                               :reflexive true
-                               :aspect :perfect}}})]
+        (and (= () (get-in spec [:synsem :subcat]))
+             (= :verb (get-in spec [:synsem :cat]))
+             (= :present (get-in spec [:synsem :sem :tense]))
+             (= true (get-in spec [:synsem :sem :reflexive]))
+             (= :perfect (get-in spec [:synsem :sem :aspect]))
+             (not (nil? (:reflexive-bolts model))))]
     (cond
-      true default
-      (and (not (= result :fail))
-           (not (= depth 3)))
-      []
-      (or (not (= depth 3)) (= result :fail))
-      default
-      (not (nil? (:reflexive-bolt model)))
-      (:reflexive-bolt model)
+      (and (= depth 3) (= result true))
+      (:reflexive-bolts model)
+      (= result true) []
       true default)))
   
 (defn generate
