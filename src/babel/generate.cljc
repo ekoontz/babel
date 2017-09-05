@@ -43,7 +43,7 @@
 (declare gen)
 (declare show-spec)
 
-(defn get-bolts-for [model spec default depth]
+(defn get-bolts-for [model spec depth]
   (let [result
         (and (= () (get-in spec [:synsem :subcat]))
              (= :verb (get-in spec [:synsem :cat]))
@@ -55,7 +55,7 @@
       (and (= depth 3) (= result true))
       (:reflexive-bolts model)
       (= result true) []
-      true default)))
+      true (lightning-bolts model spec 0 depth))))
   
 (defn generate
   "Return one expression matching spec _spec_ given the model _model_."
@@ -72,7 +72,6 @@
      (let [throw-exception-if-bolt-fails false
            bolts (or from-bolts
                      (get-bolts-for model spec 
-                                    (lightning-bolts model spec 0 depth)
                                     depth))]
        (if (not (empty? bolts))
          (do
