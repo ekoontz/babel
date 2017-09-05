@@ -75,24 +75,27 @@
   (if (< depth 5)
     (lazy-cat
      (let [throw-exception-if-bolt-fails false
-           bolts (get-bolts-for model spec 
-                                (lightning-bolts model spec 0 depth)
-                                depth)]
+           bolts (or from-bolts
+                     (get-bolts-for model spec 
+                                    (lightning-bolts model spec 0 depth)
+                                    depth))]
        (if (not (empty? bolts))
          (do
            (lazy-cat
             (let [for-this-bolt
                   (add-comps-to-bolt (first bolts) model
                                      (reverse (paths-for-bolt depth)))]
-              (if (and (empty? for-this-bolt) throw-exception-if-bolt-fails)
-                (throw (Exception. (str "entire bolt failed:"
-                                        ((:morph-ps model) (first bolts))))))
+              (if (empty? for-this-bolt)
+                (if throw-exception-if-bolt-fails
+                  (throw (Exception. (str "entire bolt failed:"
+                                          ((:morph-ps model) (first bolts)))))
+                  (log/debug (str "could not find comps for: " ((:morph-ps model) (first bolts))))))
               for-this-bolt)
             (gen spec model depth
                  (rest bolts)
-                 at-path)))))
-     (if (not (= false (get-in spec [:phrasal] true)))
-       (gen spec model (+ 1 depth) nil at-path)))))
+                 at-path)))
+         (if (not (= false (get-in spec [:phrasal] true)))
+           (gen spec model (+ 1 depth) nil at-path)))))))
 
 (defn lightning-bolts
   [model spec depth max-depth & [use-candidate-parents]]
