@@ -201,7 +201,7 @@
 
    (if (= false (get-in spec [:phrasal] false))
      (if-let [index-fn (:index-fn model)]
-       (lazy-seq (index-fn spec))
+       (index-fn spec)
        (do
          (log/warn (str "get-lexemes: no index found: using entire lexicon."))
          (flatten (vals
