@@ -53,7 +53,9 @@
              (not (nil? (:reflexive-bolts model))))]
     (cond
       (and (= depth 3) (= result true))
-      (shufflefn (:reflexive-bolts model))
+      (shufflefn (->> (:reflexive-bolts model)
+                      (map #(unify spec %))
+                      (filter #(not (= :fail %)))))
       (= result true) []
       true (lightning-bolts model spec 0 depth))))
   
