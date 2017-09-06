@@ -204,6 +204,9 @@
   "generate(model,spec) and insert _num_ expressions into the _expression_ database table. source-language may be used to affect how source expression appears in the _expression_ table's _surface_ column."
   [num model spec & [source-language]]
   (let [spec (if spec spec :top)
+        spec (if spec (unify spec
+                             {:synsem {:cat :verb
+                                       :subcat ()}}))
         language (:language model)
         debug (log/debug (str "populate-with-language: spec: " spec "; language: " language))]
     (dotimes [n num]
