@@ -37,54 +37,11 @@
 (declare add-comps-to-bolt)
 (declare add-to-bolt-at-path)
 (declare candidate-parents)
-(declare get-bolts-for)
 (declare get-lexemes)
 (declare lightning-bolts)
 (declare paths-for-bolt)
 (declare gen)
 (declare show-spec)
-
-(def ^:const max-depth 5)
-
-(defn generate
-  "Return one expression matching spec _spec_ given the model _model_."
-  [spec language-model]
-  (log/debug (str "(generate) with model named: " (:name language-model)))
-  (first (gen spec language-model 1 [] true)))
-
-(defn gen
-  "spec => trees"
-  [spec model depth & [from-bolts at-path ascending?]]
-  (log/debug (str "gen@" depth "; spec=" (show-spec spec)))
-  (if (and (< depth max-depth)
-           (> depth -1))
-    (lazy-cat
-     (let [throw-exception-if-bolt-fails false
-           bolts (or from-bolts
-                     (get-bolts-for model spec 
-                                    depth))
-           ascending? (if (nil? ascending?) true
-                          ascending?)]
-       (if (not (empty? bolts))
-         (do
-           (lazy-cat
-            (let [for-this-bolt
-                  (add-comps-to-bolt (first bolts) model
-                                     (reverse (paths-for-bolt depth)))]
-              (if (empty? for-this-bolt)
-                (if throw-exception-if-bolt-fails
-                  (throw (Exception. (str "entire bolt failed:"
-                                          ((:morph-ps model) (first bolts)))))
-                  (log/debug (str "could not find comps for: " ((:morph-ps model) (first bolts))))))
-              for-this-bolt)
-            (gen spec model depth
-                 (rest bolts)
-                 at-path)))
-         (if (not (= false (get-in spec [:phrasal] true)))
-           (gen spec model
-                (or (and ascending? (+ 1 depth))
-                    (- depth 1))
-                nil at-path ascending?)))))))
 
 (defn get-bolts-for [model spec depth]
   (let [result
@@ -101,6 +58,40 @@
                       (filter #(not (= :fail %)))))
       (= result true) []
       true (lightning-bolts model spec 0 depth))))
+  
+(defn generate
+  "Return one expression matching spec _spec_ given the model _model_."
+  [spec language-model]
+  (log/debug (str "(generate) with model named: " (:name language-model)))
+  (first (gen spec language-model 0)))
+
+(defn gen
+  "spec => trees"
+  [spec model depth & [from-bolts at-path]]
+  (log/debug (str "gen@" depth "; spec=" (show-spec spec)))
+  (if (< depth 5)
+    (lazy-cat
+     (let [throw-exception-if-bolt-fails false
+           bolts (or from-bolts
+                     (get-bolts-for model spec 
+                                    depth))]
+       (if (not (empty? bolts))
+         (do
+           (lazy-cat
+            (let [for-this-bolt
+                  (add-comps-to-bolt (first bolts) model
+                                     (reverse (paths-for-bolt depth)))]
+              (if (empty? for-this-bolt)
+                (if throw-exception-if-bolt-fails
+                  (throw (Exception. (str "entire bolt failed:"
+                                          ((:morph-ps model) (first bolts)))))
+                  (log/debug (str "could not find comps for: " ((:morph-ps model) (first bolts))))))
+              for-this-bolt)
+            (gen spec model depth
+                 (rest bolts)
+                 at-path)))
+         (if (not (= false (get-in spec [:phrasal] true)))
+           (gen spec model (+ 1 depth) nil at-path)))))))
 
 (defn lightning-bolts
   [model spec depth max-depth & [use-candidate-parents]]
