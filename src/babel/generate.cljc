@@ -12,6 +12,7 @@
 ;; during generation, will not decend deeper than this when creating a tree:
 ;; TODO: should also be possible to override per-language.
 (def ^:const max-depth 5)
+(def ^:const max-total-depth max-depth)
 
 ;; use map or pmap.
 (def ^:const mapfn map)
