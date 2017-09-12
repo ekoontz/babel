@@ -11,7 +11,7 @@
                                         
 ;; during generation, will not decend deeper than this when creating a tree:
 ;; TODO: should also be possible to override per-language.
-(def ^:const max-total-depth 8)
+(def ^:const max-depth 5)
 
 ;; use map or pmap.
 (def ^:const mapfn map)
@@ -37,28 +37,13 @@
 (declare add-comps-to-bolt)
 (declare add-to-bolt-at-path)
 (declare candidate-parents)
+(declare get-bolts-for)
 (declare get-lexemes)
 (declare lightning-bolts)
 (declare paths-for-bolt)
 (declare gen)
 (declare show-spec)
 
-(defn get-bolts-for [model spec depth]
-  (let [result
-        (and (= () (get-in spec [:synsem :subcat]))
-             (= :verb (get-in spec [:synsem :cat]))
-             (= :present (get-in spec [:synsem :sem :tense]))
-             (= true (get-in spec [:synsem :sem :reflexive]))
-             (= :perfect (get-in spec [:synsem :sem :aspect]))
-             (not (nil? (:reflexive-bolts model))))]
-    (cond
-      (and (= depth 3) (= result true))
-      (shufflefn (->> (:reflexive-bolts model)
-                      (map #(unify spec %))
-                      (filter #(not (= :fail %)))))
-      (= result true) []
-      true (lightning-bolts model spec 0 depth))))
-  
 (defn generate
   "Return one expression matching spec _spec_ given the model _model_."
   [spec language-model]
@@ -92,6 +77,26 @@
                  at-path)))
          (if (not (= false (get-in spec [:phrasal] true)))
            (gen spec model (+ 1 depth) nil at-path)))))))
+
+(defn get-bolts-for [model spec depth]
+  (let [result
+        ;; TODO: this is an example of obtaining pre-computed bolts
+        ;; from a model given a spec and a depth.
+        ;; This is a contrived example - should be
+        ;; for the model to provide these given a spec and a depth.
+        (and (= () (get-in spec [:synsem :subcat]))
+             (= :verb (get-in spec [:synsem :cat]))
+             (= :present (get-in spec [:synsem :sem :tense]))
+             (= true (get-in spec [:synsem :sem :reflexive]))
+             (= :perfect (get-in spec [:synsem :sem :aspect]))
+             (not (nil? (:reflexive-bolts model))))]
+    (cond
+      (and (= depth 3) (= result true))
+      (shufflefn (->> (:reflexive-bolts model)
+                      (map #(unify spec %))
+                      (filter #(not (= :fail %)))))
+      (= result true) []
+      true (lightning-bolts model spec 0 depth))))
 
 (defn lightning-bolts
   [model spec depth max-depth & [use-candidate-parents]]
@@ -227,4 +232,3 @@
          (str "; subcat3=" (strip-refs (get-in spec [:synsem :subcat :3 :cat]))))
        (if (not (= (get-in spec [:phrasal] ::none) ::none))
          (str "; phrasal=" (strip-refs (get-in spec [:phrasal]))))))
-
