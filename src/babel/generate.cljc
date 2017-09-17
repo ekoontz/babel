@@ -65,8 +65,13 @@
          (do
            (lazy-cat
             (let [for-this-bolt
-                  (add-comps-to-bolt (first bolts) model
-                                     (reverse (paths-for-bolt depth)))]
+                  (if (= false (get-in (first bolts) [:phrasal] true))
+                    [(first bolts)]
+                    (add-comps-to-bolt (first bolts) model
+                                       (reverse
+                                        (paths-for-bolt depth)
+                                        )
+                                       ))]
               (if (empty? for-this-bolt)
                 (if throw-exception-if-bolt-fails
                   (throw (Exception. (str "entire bolt failed:"
