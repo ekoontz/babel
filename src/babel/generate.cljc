@@ -66,7 +66,10 @@
            (lazy-cat
             (let [for-this-bolt
                   (if (= false (get-in (first bolts) [:phrasal] true))
+                    ;; This is not a bolt but rather simply a lexical head, so just return a list with this lexical head.
                     [(first bolts)]
+                    ;; otherwise it's a phrase so return the lazy sequence of adding all possible complements at every possible
+                    ;; position at the bolt.
                     (add-comps-to-bolt (first bolts) model
                                        (reverse
                                         (paths-for-bolt depth)
