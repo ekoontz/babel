@@ -156,19 +156,31 @@
        result)
      (add-comp-to-bolts (rest bolts) path model))))
 
-(defn paths-for-bolt [depth]
+(defn paths-for-bolt
+  "Find all paths to all complements (both terminal and non-terminal) given a depth. Returned in 
+   ascending length (shortest first)."
+  ;; e.g., a tree of depth 2
+  ;; will have the following paths:
+  ;;   [:comp] [:head :comp]
+  ;;   because it looks like:
+  ;; 
+  ;;   H
+  ;;  /=\
+  ;; C   H
+  ;;    /=\
+  ;;   H   C
+  ;;
+  [depth]
   (cond
     (= depth 0)
     []
     (= depth 1)
-    [[:comp]]
-    (= depth 2)
-    [[:head :comp][:comp]]
-    (= depth 3)
-    [[:head :head :comp][:head :comp][:comp]]
+    (list [:comp])
     true
     (cons
-     (concat (take (- depth 1) (repeatedly (fn [] :head))) [:comp])
+     (concat (take (- depth 1)
+                   (repeatedly (fn [] :head)))
+             [:comp])
      (paths-for-bolt (- depth 1)))))
 
 (defn add-to-bolt-at-path
