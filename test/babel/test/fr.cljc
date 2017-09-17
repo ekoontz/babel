@@ -766,10 +766,14 @@
 (defn comps [rule]
   (map morph (add-comps rule)))
 
+(def spec-10
+  {:synsem {:subcat '()
+            :cat :verb
+            :sem {:tense :present
+                  :reflexive true
+                  :aspect :perfect}}})
+
 (deftest speed-test-10
   (log/info (str "speed-test-10"))
-  (speed-test {:synsem {:subcat '()
-                        :cat :verb
-                        :sem {:tense :present
-                              :reflexive true
-                              :aspect :perfect}}}))
+  (speed-test spec-10))
+
