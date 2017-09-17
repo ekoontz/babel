@@ -52,7 +52,7 @@
   (first (gen spec language-model 0)))
 
 (defn gen
-  "spec => trees"
+  "Return a lazy sequence of every possible tree given a specification and a model."
   [spec model depth & [from-bolts at-path]]
   (log/debug (str "gen@" depth "; spec=" (show-spec spec)))
   (if (< depth 5)
