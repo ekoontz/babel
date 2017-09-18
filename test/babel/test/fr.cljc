@@ -716,13 +716,15 @@
                               :subj {:pred :noi}
                               :tense :present
                               :aspect :perfect}}}))
-(deftest speed-test-7
-  (log/info (str "speed-test-7"))
-  (speed-test {:synsem {:cat :verb
+(def spec-7  {:synsem {:cat :verb
                         :subcat '()
                         :sem {:pred :speak
                               :tense :present
-                              :aspect :perfect}}}))
+                              :aspect :perfect}}})
+(deftest speed-test-7
+  (log/info (str "speed-test-7"))
+  (speed-test spec-7))
+
 (deftest speed-test-8
   (log/info (str "speed-test-8"))
   (speed-test {:synsem {:cat :verb
