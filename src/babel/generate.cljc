@@ -41,7 +41,7 @@
 (declare get-bolts-for)
 (declare get-lexemes)
 (declare lightning-bolts)
-(declare paths-for-bolt)
+(declare comp-paths)
 (declare gen)
 (declare show-spec)
 
@@ -74,9 +74,9 @@
                     (do
                       (println (str "lexical-bolt: " ((:morph-ps model) bolt)))
                       (add-comps-to-bolt bolt model
-;                                         (reverse
-                                          (paths-for-bolt depth)
-;                                          )
+                                         (reverse
+                                          (comp-paths depth)
+                                          )
                                          )))]
               for-this-bolt)
             (gen spec model depth
@@ -144,19 +144,17 @@
 
 (defn add-comps-to-bolt
   "bolt + paths => trees"
-  [bolt model paths-for-bolt]
-  (println (str "add-comps-to-bolt with first path:" (vec (first paths-for-bolt))))
-  (if (not (empty? paths-for-bolt))
+  [bolt model comp-paths]
+  (if (not (empty? comp-paths))
     (add-comp-to-bolts 
-     (add-comps-to-bolt bolt model (rest paths-for-bolt))
-     (first paths-for-bolt)
+     (add-comps-to-bolt bolt model (rest comp-paths))
+     (first comp-paths)
      model)
     [bolt]))
 
 (defn add-comp-to-bolts
   "bolts + path => partial trees"
   [bolts path model]
-  (println (str "add-comp-to-bolts with path:" (vec path) " and first bolt: " ((:morph-ps model) (first bolts))))
   (if (not (empty? bolts))
     (lazy-cat
      (let [result
@@ -164,7 +162,7 @@
        result)
      (add-comp-to-bolts (rest bolts) path model))))
 
-(defn paths-for-bolt
+(defn comp-paths
   "Find all paths to all complements (both terminal and non-terminal) given a depth. Returned in 
    ascending length (shortest first)."
   ;; e.g., a tree of depth 2
@@ -189,7 +187,7 @@
      (concat (take (- depth 1)
                    (repeatedly (fn [] :head)))
              [:comp])
-     (paths-for-bolt (- depth 1)))))
+     (comp-paths (- depth 1)))))
 
 (defn add-to-bolt-at-path
   "bolt + path => partial trees"
