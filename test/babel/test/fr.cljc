@@ -670,7 +670,7 @@
 
 (def standard-number-of-times 10)
 (defn speed-test [spec & [times]]
-  (let [times (or times (standard-number-of-times))]
+  (let [times (or times standard-number-of-times)]
     (is (= times
            (count (take times
                         (repeatedly
