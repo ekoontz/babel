@@ -668,12 +668,13 @@
     (is (= "nous acheterons" (fo generated)))))
 
 
-(defn speed-test [spec]
-  (is (= 10
-         (count (take 10
-                      (repeatedly
-                       #(time (println (fo (generate spec :model (medium)))))))))))
-
+(def standard-number-of-times 10)
+(defn speed-test [spec & [times]]
+  (let [times (or times (standard-number-of-times))]
+    (is (= times
+           (count (take times
+                        (repeatedly
+                         #(time (println (fo (generate spec :model (medium))))))))))))
 (deftest speed-test-1
   ;; these should all take relatively the same time, but
   ;; for now, the more general the spec, the longer it takes to generate.
