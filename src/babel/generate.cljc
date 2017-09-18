@@ -64,22 +64,20 @@
        (if (not (empty? bolts))
          (do
            (lazy-cat
-            (let [for-this-bolt
-                  (if (= false (get-in (first bolts) [:phrasal] true))
+            (let [bolt (first bolts)
+                  for-this-bolt
+                  (if (= false (get-in bolt [:phrasal] true))
                     ;; This is not a bolt but rather simply a lexical head, so just return a list with this lexical head.
                     [(first bolts)]
                     ;; otherwise it's a phrase so return the lazy sequence of adding all possible complements at every possible
                     ;; position at the bolt.
-                    (add-comps-to-bolt (first bolts) model
-                                       (reverse
-                                        (paths-for-bolt depth)
-                                        )
-                                       ))]
-              (if (empty? for-this-bolt)
-                (if throw-exception-if-bolt-fails
-                  (throw (Exception. (str "entire bolt failed:"
-                                          ((:morph-ps model) (first bolts)))))
-                  (log/debug (str "could not find comps for: " ((:morph-ps model) (first bolts))))))
+                    (do
+                      (println (str "lexical-bolt: " ((:morph-ps model) bolt)))
+                      (add-comps-to-bolt bolt model
+;                                         (reverse
+                                          (paths-for-bolt depth)
+;                                          )
+                                         )))]
               for-this-bolt)
             (gen spec model depth
                  (rest bolts)
@@ -147,6 +145,7 @@
 (defn add-comps-to-bolt
   "bolt + paths => trees"
   [bolt model paths-for-bolt]
+  (println (str "add-comps-to-bolt with first path:" (vec (first paths-for-bolt))))
   (if (not (empty? paths-for-bolt))
     (add-comp-to-bolts 
      (add-comps-to-bolt bolt model (rest paths-for-bolt))
@@ -157,6 +156,7 @@
 (defn add-comp-to-bolts
   "bolts + path => partial trees"
   [bolts path model]
+  (println (str "add-comp-to-bolts with path:" (vec path) " and first bolt: " ((:morph-ps model) (first bolts))))
   (if (not (empty? bolts))
     (lazy-cat
      (let [result
