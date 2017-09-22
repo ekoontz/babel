@@ -302,7 +302,6 @@
   "return a human-readable string of a phrase structure tree. leaves of the tree are printed
    by calling the supplied _fo_ function"
   (let [head-first? (get-in tree [:first] :none)
-        pred (get-in tree [:synsem :sem :pred])
         cat (str (get-in tree [:synsem :cat]) "")]
     (if (= true (get-in tree [:phrasal]))
       (do (log/debug (str "fo-ps: rule at top of tree: " (get-in tree [:rule])))
@@ -312,13 +311,11 @@
       (and (= :none (get-in tree [:head] :none))
            (= :none (get-in tree [:comp] :none))
            (not (= :none (get-in tree [:rule] :none))))
-      (str "[" (get-in tree [:rule]) "/" cat
-           pred
+      (str "[" (get-in tree [:rule])
            " '" (fo tree) "']")
 
       (= head-first? :none)
-      (str " '" (fo tree) "'/" cat
-           pred)
+      (str " '" (fo tree) "'")
 
       (= head-first? :comp)
       (str "[" (get-in tree [:rule]) " "
