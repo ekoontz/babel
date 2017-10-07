@@ -57,8 +57,7 @@
   (log/debug (str "gen@" depth "; spec=" (show-spec spec)))
   (if (< depth 5)
     (lazy-cat
-     (let [throw-exception-if-bolt-fails false
-           bolts (or from-bolts
+     (let [bolts (or from-bolts
                      (get-bolts-for model spec 
                                     depth))]
        (if (not (empty? bolts))

@@ -676,4 +676,20 @@
 ;; (map #(println (morph %)) (take 100 (repeatedly #(generate spec :model model))))
 ;; (morph (generate cspec :model model))
 
+;; An expensive and also one with a wide
+;; divergence in timing: e.g. could be
+;; as fast as 0.433 sec or as slow as 1.7 sec.
+(def foo
+  (take 
+   10 
+   (repeatedly 
+    #(println 
+      (morph 
+       (time (generate 
+              {:synsem {:subcat '()
+                        :cat :verb
+                        :sem {:pred :be-called
+                              :subj {:pred :tu}
+                              :obj {:top :top}}}})))))))
 
+       
