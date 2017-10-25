@@ -6,6 +6,7 @@
    #?(:cljs [babel.logjs :as log]) 
    [babel.francais.lexicon :refer [deliver-lexicon lexicon]]
    [babel.francais.morphology :as morph :refer [fo]]
+   [babel.generate :refer [lightning-bolts]]
    [babel.index :refer [build-lex-sch-index create-indices lookup-spec]]
    [babel.parse :as parse]
    [babel.ug :refer [comp-modifies-head comp-specs-head head-principle
@@ -608,13 +609,13 @@
                      (morph/analyze arg lexicon))
            :morph fo}]
       (merge retval
-             {:reflexive-bolts (babel.generate/lightning-bolts retval
-                                                               {:synsem {:subcat ()
-                                                                         :cat :verb
-                                                                         :sem {:tense :present
-                                                                               :reflexive true
-                                                                               :aspect :perfect}}}
-                                                               0 3)}))))
+             {:reflexive-bolts (lightning-bolts retval
+                                                {:synsem {:subcat ()
+                                                          :cat :verb
+                                                          :sem {:tense :present
+                                                                :reflexive true
+                                                                :aspect :perfect}}}
+                                                0 3)}))))
 
 (defn parse [surface]
   (parse/parse surface
