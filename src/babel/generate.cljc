@@ -138,7 +138,8 @@
 (defn add-comps-to-bolt
   "bolt + paths => trees"
   [bolt model comp-paths]
-  (log/debug (str "add-comps-to-bolt: " ((:morph-ps model) bolt) " with this many paths: " (count comp-paths)))
+  ;;  (log/debug (str "add-comps-to-bolt: " ((:morph-ps model) bolt) " with this many paths: " (count comp-paths)))
+  (println (str "add-comps-to-bolt: " ((:morph-ps model) bolt) " with this many paths: " (count comp-paths)))
   (if (not (empty? comp-paths))
     (add-comp-to-bolts 
      (add-comps-to-bolt bolt model (rest comp-paths))

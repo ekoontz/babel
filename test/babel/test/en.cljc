@@ -692,4 +692,20 @@
                               :subj {:pred :tu}
                               :obj {:top :top}}}})))))))
 
+;; might run in 450ms or forever...
+(def rathole
+  (take 
+   1
+   (repeatedly 
+    #(println 
+      (morph 
+       (time (generate 
+              {:synsem {:subcat '()
+                        :cat :verb
+                        :sem {:pred :be-called
+                              :subj {:pred :top}
+                              :obj {:top :top}}}}))
+       :show-notes false)))))
+
+
        
