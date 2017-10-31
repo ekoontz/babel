@@ -602,16 +602,13 @@
     (is (not (nil? model)))
     (is (map? model))
     (= "I (♀) speak"
-       ((:morph model) (babel.generate/generate {:synsem {:cat :verb
-                                                          :sem {:pred :speak
-                                                                :tense :present}}
-                                                 :comp {:synsem {:agr {:gender :fem}
-                                                                 :sem {:pred :I}}}}
-                                                model
-                                                :truncate-children false)
+       ((:morph model) (generate {:synsem {:cat :verb
+                                           :sem {:pred :speak
+                                                 :tense :present}}
+                                  :comp {:synsem {:agr {:gender :fem}
+                                                  :sem {:pred :I}}}}
+                                 :model model)
         :from-language "it"))))
-
-
 
 ;; generate "the woman she sees"
 (def spec-for-the-woman-she-sees
@@ -627,6 +624,7 @@
 
 (deftest generate-with-relative-clause
   (let [result (generate spec-for-the-woman-she-sees)]
+    (println (str "result: " (morph result)))
     (is (or
          (= "the woman she sees"
             (morph result))
