@@ -234,6 +234,7 @@
                             ;; c.f. TODO on babel.test.translate/latin-to-english
                             :subcat '()
                             :cat :noun
+                            :pronoun false
                             :sem {:number :sing
                                   :mod '()
                                   :spec {:pred :of
@@ -245,6 +246,7 @@
 (deftest generate-with-possessive-2
   (let [result
         (generate {:synsem {:cat :noun
+                            :pronoun false
                             :mod {:first {:pred :rosso}}
                             :sem {:number :sing
                                   :spec {:pred :of
@@ -615,6 +617,7 @@
 (def spec-for-the-woman-she-sees
   {:synsem {:agr {:number :sing}
             :cat :noun
+            :pronoun false
             :sem {:pred :woman
                   :spec {:def :def}}
             :mod {:first {:pred :see
