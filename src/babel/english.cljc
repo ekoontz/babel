@@ -42,10 +42,11 @@
                  truncate-children true
                  model (medium)}}]
    (log/debug (str "generating with spec: " (strip-refs spec) " with max-total-depth: " max-total-depth))
-   (let [result (generate/generate spec model
-                                   :max-total-depth max-total-depth
-                                   :truncate truncate-children)]
-     (if (keyword? result)
+   (let [spec (if (= :top (get-in spec [:synsem :subcat] :top))
+                (dag_unify.core/unify spec {:synsem {:subcat '()}})
+                spec)
+         result (generate/generate spec model)]
+    (if (keyword? result)
        (throw (Exception. (str "please don't send me a keyword :( : this is what you sent me: " result)))
        (conj {:surface (morph result)}
              result)))))
