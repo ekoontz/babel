@@ -55,6 +55,7 @@
   "Return a lazy sequence of every possible tree given a specification and a model."
   [spec model depth & [from-bolts at-path]]
   (log/debug (str "gen@" depth "; spec=" (show-spec spec)))
+;;  (println (str "gen@" depth "; spec=" (show-spec spec)))
   (if (< depth max-depth)
     (let [bolts (or from-bolts
                     (get-bolts-for model spec 
@@ -139,6 +140,11 @@
   "bolt + paths => trees"
   [bolt model comp-paths]
   ;;  (log/debug (str "add-comps-to-bolt: " ((:morph-ps model) bolt) " with this many paths: " (count comp-paths)))
+  (println (str "add-comps-to-bolt: " ((:morph-ps model) bolt) " rule: " (:rule bolt)
+                "; head " (cond (true? (get-in bolt [:head :phrasal]))
+                                (str "rule: " (get-in bolt [:head :rule]) " with head sense: " (get-in bolt [:head :head :sense]))
+                                true
+                                (str "sense: " (dag_unify.core/strip-refs (get-in bolt [:head :sense]))))))
   (if (not (empty? comp-paths))
     (add-comp-to-bolts 
      (add-comps-to-bolt bolt model (rest comp-paths))
@@ -149,6 +155,13 @@
 (defn add-comp-to-bolts
   "bolts + path => partial trees"
   [bolts path model]
+  (println (str "add-comp-to-bolts: " ((:morph-ps model) (first bolts))
+                " rule: " (:rule (first bolts))
+                "; head " (cond (true? (get-in (first bolts) [:head :phrasal]))
+                                (str "rule: " (get-in (first bolts) [:head :rule]))
+                                true
+                                (str "sense: " (dag_unify.core/strip-refs (get-in (first bolts) [:head :sense]))))))
+                                      
   (if (not (empty? bolts))
     (do
       (log/debug (str "add-comp-to-bolts: path=" (vec path) "; first bolt=" ((:morph-ps model) (first bolts))))

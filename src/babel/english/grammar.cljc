@@ -354,7 +354,6 @@
                             :sem {:number number-agreement}}
                    :head {:phrasal false
                           :synsem {:propernoun propernoun}}}))
-   
    (let [sem (atom :top)
          agr (atom :top)
          reflexive (atom :top)]
@@ -371,7 +370,7 @@
                             :sem sem}
                    :head {:synsem {:sem sem
                                    :subcat {:1 {:agr agr
-                                                :reflexive reflexive}}}}}))
+                                               :reflexive reflexive}}}}}))
    (unify-check c10
                 unmodified
                 root-is-head
