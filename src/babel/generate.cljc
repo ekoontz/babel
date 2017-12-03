@@ -118,22 +118,25 @@
   (if (< depth max-depth)
     (let [candidate-parents (or use-candidate-parents
                                 (->>
-                                 (candidate-parents (:grammar model) spec depth)
+                                 (-> ((:grammar-shuffle model))
+                                     (candidate-parents spec depth))
                                  (map #(unify % spec))
-                                 (filter #(not (= :fail %)))
-                                 (shufflefn)))]
-      (if (not (empty? candidate-parents))
+                                 (filter #(not (= :fail %))))
+                                shuffle)]
+      (when (not (empty? candidate-parents))
+        (log/debug (str "(count candidate-parents)=" (count candidate-parents)))
         (let [candidate-parent (first candidate-parents)]
           (lazy-cat
            (if (not (= false (get-in spec [:phrasal] true)))
              (->> (lightning-bolts model
-                                   (get-in candidate-parent [:head])
-                                   (+ 1 depth)
-                                   max-depth)
+                                           (get-in candidate-parent [:head])
+                                           (+ 1 depth)
+                                           max-depth)
                   (map (fn [head]
-                         (assoc-in candidate-parent [:head] head)))))
+                         (assoc-in candidate-parent [:head] head)))
+                  (take 1)))
            (lightning-bolts model spec depth max-depth (rest candidate-parents))))))
-    (shufflefn (get-lexemes model spec))))
+    (get-lexemes model spec)))
 
 (defn add-comps-to-bolt
   "bolt + paths => trees"
@@ -207,20 +210,20 @@
   "find subset of _rules_ for which each member unifies successfully with _spec_; _depth_ is only used for diagnostic logging."
   [rules spec depth]
   (filter #(not (= :fail %))
-          (mapfn (fn [rule]
-                   (log/trace (str "candidate-parents: testing rule: " (:rule rule) "; depth: " depth))
-                   (let [unified (unify spec rule)]
-                     (if (= :fail unified)
-                       (log/trace (str "candidate parent: " (:rule rule) " failed at:" (fail-path spec rule)))
-                       (log/debug (str "candidate parent: " (:rule rule) " spec:" (show-spec spec)
-                                       "; depth: " depth)))
-                     unified))
-                 rules)))
+          (map (fn [rule]
+                 (log/debug (str "candidate-parents: testing rule: " (:rule rule) "; depth: " depth))
+                 (let [unified (unify spec rule)]
+                   (if (= :fail unified)
+                     (log/trace (str "candidate parent: " (:rule rule) " failed space at:" (fail-path spec rule)))
+                     (log/debug (str "candidate parent: " (:rule rule) " matches spec:" (show-spec spec)
+                                    "; depth: " depth)))
+                   unified))
+               rules)))
 
 (defn get-lexemes [model spec]
   "Get lexemes matching the spec. Use a model's index if available, where the index is a function that we call with _spec_ to get a set of indices. otherwise use the model's entire lexeme."
+  (log/debug (str "get-lexemes: spec: " (strip-refs spec)))
   (->>
-
    (if (= false (get-in spec [:phrasal] false))
      (if-let [index-fn (:index-fn model)]
        (index-fn spec)

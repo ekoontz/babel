@@ -19,11 +19,9 @@
   (->
    (edn2lexicon (resource "babel/english/lexicon.edn"))
    (compile-lex)
-
    (map-function-on-map-vals
     (fn [lexical-string lexical-val]
       (phonize lexical-val lexical-string)))
-
    ((fn [lexicon]
       (merge-with concat lexicon
                   (listify 

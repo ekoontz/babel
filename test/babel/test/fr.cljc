@@ -735,7 +735,7 @@
 (deftest speed-test-9
   (log/info (str "speed-test-9"))
   (speed-test {:synsem {:cat :verb
-                        :subcat '()}}))
+                        :subcat []}}))
 
 (defn add-heads [rule & [spec]]
   (let [grammar (grammar/medium)]

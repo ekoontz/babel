@@ -530,7 +530,7 @@
                               v)]
                   (if (not (empty? filtered-v))
                     [k filtered-v]))))
-        debug (log/info (str "  creating-indices.."))        
+        debug (log/info (str "  creating indices.."))        
         indices (create-indices lexicon index-lexicon-on-paths)]
     {:name "small"
      :index-fn (fn [spec] (lookup-spec spec indices index-lexicon-on-paths))
@@ -566,7 +566,6 @@
                 (let [filtered-v v]
                   (if (not (empty? filtered-v))
                     [k filtered-v]))))
-
         grammar 
         (seq (set (filter #(or ;; small grammar ..
                             (= (:rule %) "vp-pronoun-nonphrasal")
@@ -585,12 +584,18 @@
                             (= (:rule %) "s-aux")
                             (= (:rule %) "vp-aux"))
                           grammar)))
-        indices (create-indices lexicon index-lexicon-on-paths)]
+        indices (create-indices lexicon index-lexicon-on-paths)
+;        grammar-shuffled (repeatedly #(shuffle grammar))
+        ]
     (let [retval
           {:name "medium"
            :index-fn (fn [spec] (lookup-spec spec indices index-lexicon-on-paths))
            :enrich enrich
            :grammar grammar
+           :grammar-shuffle
+           (fn [] (shuffle grammar))
+;;           (fn [] (nth grammar-shuffled (rand-int (count grammar-shuffled))))
+           
            ;; Will throw exception if more than 1 rule has the same :rule value:
            :grammar-map (zipmap
                          (map #(keyword (get-in % [:rule]))

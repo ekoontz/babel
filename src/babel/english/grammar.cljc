@@ -513,12 +513,14 @@
      {:head (morph-walk-tree (get-in tree [:head]))})))
 
 (defn medium []
-  (let [lexicon
+  (let [debug (log/info (str "medium: compiling lexicon.."))
+        lexicon
         (into {}
               (for [[k v] (deliver-lexicon)]
                 (let [filtered-v v]
                   (if (not (empty? filtered-v))  ;; TODO: this empty-filtering should be done in lexicon.cljc, not here.
                     [k filtered-v]))))
+        debug (log/info (str "medium: compiled lexicon."))
         indices (create-indices lexicon index-lexicon-on-paths)
         ;; this function 'morph' is identical to: babel.english/morph
         morph (fn [expr & {:keys [from-language show-notes]
@@ -527,6 +529,9 @@
                 (fo expr
                     :from-language from-language :from-notes show-notes
                     :lexicon lexicon))
+
+        grammar-shuffled (take 10 (repeatedly #(shuffle grammar)))
+
         model
         {:name "medium"
          :default-fn default-fn
@@ -537,7 +542,7 @@
                        grammar)
          
          :grammar grammar
-         
+         :grammar-shuffle (fn [] (first (shuffle grammar-shuffled)))
          :language "en"
          :language-keyword :english
          
