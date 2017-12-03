@@ -236,7 +236,7 @@
     (map #(unify % spec))
     (filter #(not (= :fail %))))
    (shuffle)
-   ((fn [x] (take 1 x)))))
+   ((fn [x] (take 1000 x)))))
 
 (defn show-spec [spec]
   (str "cat=" (get-in spec [:synsem :cat])
