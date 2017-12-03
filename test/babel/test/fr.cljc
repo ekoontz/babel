@@ -780,3 +780,43 @@
   (log/info (str "speed-test-10"))
   (speed-test spec-10))
 
+
+;; This spec is used internally by babel.generate/generate when running speed-test-10.
+(def past-participle-verb
+  {:synsem {:subcat {:3 (),
+                     :2 {:pronoun true,
+                         :subcat (),
+                         :cat :noun,
+                         :aux false,
+                         :sem {:gender :top,
+                               :reflexive false},
+                         :agr {:number :plur,
+                               :person :3rd,
+                               :gender :top},
+                         :case :acc,
+                         :reflexive true,
+                         :propernoun false},
+                     :1 {:agr {:gender :masc,
+                               :number :plur,
+                               :person :3rd},
+                         :sem {:gender :masc,
+                               :pred :loro,
+                               :reflexive false},
+                         :case :nom,
+                         :cat :noun,
+                         :subcat (),
+                         :aux false,
+                         :pronoun true,
+                         :propernoun false}},
+            :aux false,
+            :cat :verb,
+            :sem {:aspect :perfect,
+                  :reflexive true,
+                  :tense :present,
+                  :subj {:gender :masc,
+                         :pred :loro,
+                         :reflexive false}},
+            :infl :past-p,
+            :essere true},
+   :français {:initial false}})
+
