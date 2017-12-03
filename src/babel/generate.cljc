@@ -24,9 +24,9 @@
 (def ^:const shufflefn
   (fn [x]
     ;; deterministic generation:
-;;    x
+    x
     ;; nondeterministic generation
-    (lazy-seq (shuffle x))
+;;    (lazy-seq (shuffle x))
 
     ))
 
