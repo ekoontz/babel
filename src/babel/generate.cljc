@@ -150,13 +150,9 @@
   "bolts + path => partial trees"
   [bolts path model]
   (if (not (empty? bolts))
-    (do
-      (log/trace (str "add-comp-to-bolts: path=" (vec path) "; first bolt=" ((:morph-ps model) (first bolts))))
-      (lazy-cat
-       (let [result
-             (add-to-bolt-at-path (first bolts) path model)]
-         result)
-       (add-comp-to-bolts (rest bolts) path model)))))
+    (lazy-cat
+     (add-to-bolt-at-path (first bolts) path model)
+     (add-comp-to-bolts (rest bolts) path model))))
 
 (defn comp-paths
   "Find all paths to all complements (both terminal and non-terminal) given a depth. Returned in 
