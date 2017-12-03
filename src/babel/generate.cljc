@@ -133,8 +133,7 @@
                                            (+ 1 depth)
                                            max-depth)
                   (map (fn [head]
-                         (assoc-in candidate-parent [:head] head)))
-                  (take 1)))
+                         (assoc-in candidate-parent [:head] head)))))
            (lightning-bolts model spec depth max-depth (rest candidate-parents))))))
     (get-lexemes model spec)))
 
