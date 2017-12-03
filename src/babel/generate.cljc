@@ -118,7 +118,7 @@
   (if (< depth max-depth)
     (let [candidate-parents (or use-candidate-parents
                                 (->>
-                                 (-> ((:grammar-shuffle model))
+                                 (-> (:grammar model)
                                      (candidate-parents spec depth))
                                  (map #(unify % spec))
                                  (filter #(not (= :fail %))))
