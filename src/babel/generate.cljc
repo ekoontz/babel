@@ -223,18 +223,21 @@
 (defn get-lexemes [model spec]
   "Get lexemes matching the spec. Use a model's index if available, where the index is a function that we call with _spec_ to get a set of indices. otherwise use the model's entire lexeme."
   (log/debug (str "get-lexemes: spec: " (strip-refs spec)))
-  (->>
-   (if (= false (get-in spec [:phrasal] false))
-     (if-let [index-fn (:index-fn model)]
-       (index-fn spec)
-       (do
-         (log/warn (str "get-lexemes: no index found: using entire lexicon."))
-         (flatten (vals
-                   (or (:lexicon (:generate model)) (:lexicon model)))))))
-   (filter #(or (= false (get-in % [:exception] false))
-                (not (= :verb (get-in % [:synsem :cat])))))
-   (map #(unify % spec))
-   (filter #(not (= :fail %)))))
+  (->
+   (->>
+    (if (= false (get-in spec [:phrasal] false))
+      (if-let [index-fn (:index-fn model)]
+        (index-fn spec)
+        (do
+          (log/warn (str "get-lexemes: no index found: using entire lexicon."))
+          (flatten (vals
+                    (or (:lexicon (:generate model)) (:lexicon model)))))))
+    (filter #(or (= false (get-in % [:exception] false))
+                 (not (= :verb (get-in % [:synsem :cat])))))
+    (map #(unify % spec))
+    (filter #(not (= :fail %))))
+   (shuffle)
+   ((fn [x] (take 1 x)))))
 
 (defn show-spec [spec]
   (str "cat=" (get-in spec [:synsem :cat])
