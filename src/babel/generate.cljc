@@ -222,10 +222,23 @@
 (defn get-lexemes [model spec]
   "Get lexemes matching the spec. Use a model's index if available, where the index is a function that we call with _spec_ to get a set of indices. otherwise use the model's entire lexeme."
   (->>
-
-   (if (= false (get-in spec [:phrasal] false))
+   (when (= false (get-in spec [:phrasal] false))
      (if-let [index-fn (:index-fn model)]
-       (index-fn spec)
+       (do 
+;;         (println (str "get-lexemes spec: " (dag_unify.core/strip-refs spec)))
+         (let [results (index-fn spec)]
+           (do
+             (log/trace (str "get-lexemes results: " (string/join "," (map (:morph model) results))))
+             (println (str "get-lexemes results (pre filter): " (count results)))
+             (println (str "get-lexemes results (postfilter): "
+                           ;;(dag_unify.core/strip-refs spec) " : "
+                           (count (->>
+                                   results
+                                   (filter #(or (= false (get-in % [:exception] false))
+                                                (not (= :verb (get-in % [:synsem :cat])))))
+                                   (map #(unify % spec))
+                                   (filter #(not (= :fail %)))))))
+             results)))
        (do
          (log/warn (str "get-lexemes: no index found: using entire lexicon."))
          (flatten (vals
@@ -233,7 +246,10 @@
    (filter #(or (= false (get-in % [:exception] false))
                 (not (= :verb (get-in % [:synsem :cat])))))
    (map #(unify % spec))
-   (filter #(not (= :fail %)))))
+   (filter #(not (= :fail %)))
+   (filter #(do
+              (println (str "result: " (dag_unify.core/strip-refs spec) " : " ((:morph model) %)))
+              (not (= :fail %))))))
 
 (defn show-spec [spec]
   (str "cat=" (get-in spec [:synsem :cat])
