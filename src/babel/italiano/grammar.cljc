@@ -332,76 +332,18 @@
                              :rule "s-aux"
                              :synsem {:cat :verb}})
 
-                   ;; TODO: consolidate s-future-(non)phrasal,s-conditional-(non)phrasal,etc
-                   ;; into fewer rules and use a default rule to choose among them.
                    (unify c10
                            root-is-head-root
-                           {:rule "s-future-phrasal"
+                           {:rule "s-phrasal"
                             :head {:phrasal true}
                             :synsem {:aux false
-                                     :infl :future
-                                     :cat :verb
-                                     :sem {:tense :future}}})
-                   (unify c10
-                           root-is-head
-                           {:rule "s-future-nonphrasal"
-                            :head {:phrasal false}
-                            :synsem {:aux false
-                                     :infl :future
-                                     :cat :verb
-                                     :sem {:tense :future}}})
+                                     :cat :verb}})
                    (unify c10
                            root-is-head-root
-                           {:rule "s-conditional-phrasal"
-                            :head {:phrasal true}
-                            :synsem {:aux false
-                                     :infl :conditional
-                                     :cat :verb
-                                     :sem {:tense :conditional}}})
-                   (unify c10
-                           root-is-head
-                           {:rule "s-conditional-nonphrasal"
+                           {:rule "s-nonphrasal"
                             :head {:phrasal false}
                             :synsem {:aux false
-                                     :infl :conditional
-                                     :cat :verb
-                                     :sem {:tense :conditional}}})
-                   (unify c10
-                           root-is-head-root
-                           {:rule "s-imperfect-phrasal"
-                            :head {:phrasal true}
-                            :synsem {:aux false
-                                     :infl :imperfect
-                                     :cat :verb
-                                     :sem {:aspect :progressive
-                                           :tense :past}}})
-                   (unify c10
-                           root-is-head
-                           {:rule "s-imperfect-nonphrasal"
-                            :head {:phrasal false}
-                            :synsem {:aux false
-                                     :infl :imperfect
-                                     :cat :verb
-                                     :sem {:aspect :progressive
-                                           :tense :past}}})
-                   (unify c10
-                           root-is-head
-                           {:rule "s-present-nonphrasal"
-                            :head {:phrasal false}
-                            :synsem {:aux false
-                                     :infl :present
-                                     :cat :verb
-                                     :sem {:aspect :simple
-                                           :tense :present}}})
-                   (unify c10
-                           root-is-head-root
-                           {:rule "s-present-phrasal"
-                            :head {:phrasal true}
-                            :synsem {:aux false
-                                     :infl :present
-                                     :cat :verb
-                                     :sem {:aspect :simple
-                                           :tense :present}}})
+                                     :cat :verb}})
                    (unify h21
                            root-is-head
                            {:rule "vp-infinitive"
@@ -678,6 +620,12 @@
             (apply-default-if
              verb-default?
              {:synsem {:cat :verb
+                       :sem {:tense :past
+                             :aspect :progressive}
+                       :infl :imperfect}})
+            (apply-default-if
+             verb-default?
+             {:synsem {:cat :verb
                        :sem {:tense :present
                              :aspect :simple}
                        :infl :present}})
@@ -686,7 +634,9 @@
              {:synsem {:cat :verb
                        :sem {:tense :present
                              :aspect :progressive}
-                       :infl :present-progressive}})
+                       :infl :present
+                       :aux true}
+              :head {:phrasal true}})
             (apply-default-if
              verb-default?
              {:synsem {:cat :verb
@@ -697,6 +647,7 @@
              {:synsem {:cat :verb
                        :sem {:tense :conditional}
                        :infl :conditional}}))]
+    (log/debug (str "result: " (dag_unify.core/strip-refs result)))
     result))
 
 (defn medium []

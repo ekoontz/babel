@@ -85,11 +85,11 @@
   ;;   And then all trees of depth=2 that satisfy the spec:
   ;;
   ;; 
-  ;;       H            H
-  ;;      / \          / \
-  ;;  .. H   C  ..    C   H .. 
-  ;;    /            / \
-  ;;   H            C   H
+  ;;       H            H         H
+  ;;      / \          / \       / \
+  ;;  .. H   C  ..    H   C ..  C   H  ..
+  ;;    /            / \             \
+  ;;   H            C   H             H
   ;;
   ;; And so on.
   ;;
