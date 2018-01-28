@@ -635,8 +635,13 @@
                        :sem {:tense :present
                              :aspect :progressive}
                        :infl :present
-                       :aux true}
-              :head {:phrasal true}})
+                       :aux true}})
+            (apply-default-if
+             verb-default?
+             {:synsem {:cat :verb
+                       :sem {:tense :present
+                             :aspect :perfect}
+                       :aux true}})
             (apply-default-if
              verb-default?
              {:synsem {:cat :verb
@@ -646,8 +651,12 @@
              verb-default?
              {:synsem {:cat :verb
                        :sem {:tense :conditional}
-                       :infl :conditional}}))]
-    (log/debug (str "result: " (dag_unify.core/strip-refs result)))
+                       :infl :conditional}})
+            (apply-default-if
+             verb-default?
+             {:synsem {:cat :verb
+                       :aux true}
+              :head {:phrasal true}}))]
     result))
 
 (defn medium []
