@@ -44,7 +44,10 @@
     (cond (nil? default-fn)
           pre-default
           true
-          (map default-fn pre-default))))
+          (map (fn [x]
+                 (let [result (default-fn x)]
+                   (first result)))
+               pre-default))))
 
 ;; TODO: use dag_unify/assoc-in rather than over/over, so that we can remove babel.over.
 (defn over [grammar left right morph default-fn]
@@ -52,7 +55,9 @@
   (if default-fn
     (->>
      (over/over grammar left right)
-     (map default-fn))
+     (map (fn [x]
+            (let [result (default-fn x)]
+              (first result)))))
     (over/over grammar left right)))
 
 (defn square-cross-product [x]
