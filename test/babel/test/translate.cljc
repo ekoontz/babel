@@ -21,13 +21,15 @@
 ;; In English we indicate feminine and masculine gender with ♀ and ♂,
 ;; respectively.
 
+(def italiano-model @((get models :it)))
+
 ;; Test that gender agreement is correctly translated.
 (deftest past-and-gender-agreement-feminine
   (let [italian "loro sono andate"
 
         italian-structure
         (-> italian
-            babel.italiano/parse
+            (babel.italiano/parse italiano-model)
             first
             :parses
             first)
@@ -50,7 +52,7 @@
 
         italian-structure
         (-> italian
-            babel.italiano/parse
+            (babel.italiano/parse italiano-model)
             first
             :parses
             first)
