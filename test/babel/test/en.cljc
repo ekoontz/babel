@@ -23,7 +23,7 @@
             #?(:cljs [babel.logjs :as log]) 
             [dag_unify.core :refer [assoc-in dissoc-paths fail? fail-path-between get-in strip-refs unify]]))
 
-(def model @((get models :en)))
+(def model @(get models :en))
 
 (defn morph [expression]
   (english/morph expression model))

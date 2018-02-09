@@ -114,7 +114,7 @@
           basic-spec))
 
         ;; TODO: catch possible deref NPE exception that can happen when model is not yet loaded.
-        source-model @((get models source-language))
+        source-model @(get models source-language)
 
         source-expression
         (source-timing-fn (generate source-spec source-model))]
@@ -127,7 +127,7 @@
            :sem (unify/get-in target-expression [:synsem :sem])
            :subj (unify/get-in target-expression [:synsem :sem :subj :pred])
            :source (if source-expression
-                     ((:morph @((get models source-language)))
+                     ((:morph @(get models source-language))
                       source-expression
                       :from-language target-language-str))}]
       (if (:source pairing)

@@ -62,19 +62,15 @@
                               {:tenses babel.italiano.grammar/tenses})))))}))
 
 (def models
-  (let [en (promise)
-        es (promise)
+  (let [es (promise)
         fr (promise)
         la (promise)]
-    {:en (fn []
-           (if (realized? en)
-             en
-             (deliver en 
-                      (do (log/debug (str "starting to load english model.."))
-                          (let [model (babel.english.grammar/medium)]
-                            (log/info (str "finished loading english model: "
-                                           (:name model)))
-                            model)))))
+    {:en (delay
+          (do (log/debug (str "starting to load english model.."))
+              (let [model (babel.english.grammar/medium)]
+                (log/info (str "finished loading english model: "
+                               (:name model)))
+                model)))
      :es (fn []
            (if (realized? es)
              es
