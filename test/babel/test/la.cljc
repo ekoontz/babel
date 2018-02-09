@@ -12,14 +12,14 @@
 
 (def source-language :en)
 
-(defn latin-model [] @(get models :la))
+(def model @(get models :la))
 
 (defn generate [spec]
-  ((-> (latin-model) :generate-fn) spec))
+  ((-> model :generate-fn) spec))
 
 ;; https://en.wikipedia.org/wiki/Latin_conjugation#Present_indicative
 (deftest analyze-ere
-  (let [lexicon (-> ((-> models :la)) deref :lexicon)]
+  (let [lexicon (:lexicon model)]
     (is (= :verb
            (-> (analyze "ardeo" lexicon)
                first
