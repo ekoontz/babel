@@ -630,19 +630,14 @@
                           :from-language "it")))))
 
 (deftest generate-as-writer-does
-  (let [model @((:en models))]
-    (is (not (nil? model)))
-    (is (map? model))
-    (= "I (♀) speak"
-       ((:morph model) (babel.generate/generate {:synsem {:cat :verb
-                                                          :sem {:pred :speak
-                                                                :tense :present}}
-                                                 :comp {:synsem {:agr {:gender :fem}
-                                                                 :sem {:pred :I}}}}
-                                                model)
-        :from-language "it"))))
-
-
+  (= "I (♀) speak"
+     ((:morph model) (babel.generate/generate {:synsem {:cat :verb
+                                                        :sem {:pred :speak
+                                                              :tense :present}}
+                                               :comp {:synsem {:agr {:gender :fem}
+                                                               :sem {:pred :I}}}}
+                                              model)
+      :from-language "it")))
 
 ;; generate "the woman she sees"
 (def spec-for-the-woman-she-sees
