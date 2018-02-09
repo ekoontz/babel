@@ -3,7 +3,7 @@
   (:require
    [babel.directory :refer [models]]
    [babel.generate :as generate]
-   [babel.italiano :as italiano :refer [analyze fo-ps morph
+   [babel.italiano :as italiano :refer [fo-ps morph
                                         np-grammar preprocess]]
    [babel.italiano.grammar :as grammar]
    [babel.italiano.morphology :as morph :refer [analyze-regular]]
@@ -29,11 +29,20 @@
                 `[(log/info (str "done with test: " ~test-name))])]
     `(realtest/deftest ~test-name ~@wrapped-arguments)))
 
-(defn generate [spec]
-  (italiano/generate spec model))
+(defn generate
+  ([spec]
+   (italiano/generate spec model))
+  ([spec model]
+   (italiano/generate spec model)))
 
-(defn parse [spec]
-  (italiano/parse spec model))
+(defn parse
+  ([spec]
+   (italiano/parse spec model))
+  ([spec model]
+   (italiano/parse spec model)))
+
+(defn analyze [str]
+  (italiano/analyze str model))
 
 (deftest analyze-1
   (let [singular (analyze "compito")
