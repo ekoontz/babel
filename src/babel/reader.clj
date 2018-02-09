@@ -154,8 +154,8 @@
                         (dissoc-paths [[:unify/serialized]]))]
     (cond (= target-language "la") ;; TODO: should not have a special case for one language.
           (babel.latin/read-one :top  ;; TODO: use target-spec
-                                @((-> models :la))
-                                @((-> models :en)))
+                                @(-> models :la)
+                                @(-> models :en))
           true
           (let [;; normalize for JSON lookup:
                 json-input-spec
