@@ -12,6 +12,9 @@
             #?(:cljs [babel.logjs :as log]) 
             [dag_unify.core :refer [get-in]]))
 
+;; TODO: use this model in all tests, as we do in other languages.
+(def model @(get models :es))
+
 (deftest generate-regular-conditional
   (let [result (generate {:synsem {:subcat '()
                                    :cat :verb
