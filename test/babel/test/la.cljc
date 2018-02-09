@@ -12,7 +12,7 @@
 
 (def source-language :en)
 
-(defn latin-model [] (-> ((-> models :la)) deref))
+(defn latin-model [] @(get models :la))
 
 (defn generate [spec]
   ((-> (latin-model) :generate-fn) spec))
