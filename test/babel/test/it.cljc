@@ -19,7 +19,7 @@
    [clojure.set :as set]
    [dag_unify.core :refer [copy fail? get-in strip-refs unify]]))
 
-(def model @((get models :it)))
+(def model @(get models :it))
 
 (def np-grammar (delay (grammar/np-grammar)))
 

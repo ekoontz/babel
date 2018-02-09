@@ -65,8 +65,7 @@
   (let [en (promise)
         es (promise)
         fr (promise)
-        la (promise)
-        it (promise)]
+        la (promise)]
     {:en (fn []
            (if (realized? en)
              en
@@ -131,26 +130,23 @@
                             (conj model
                                   {:generate-fn (fn [spec]
                                                   (la/generate spec model))}))))))
-     :it (fn []
-           (if (realized? it)
-             it
-             (deliver it
-                      (let [model (babel.italiano.grammar/medium)]
-                        (conj model
-                              {:generate-fn (fn [spec]
-                                              (it/generate spec :model model))
-                               :tenses babel.italiano.grammar/tenses
-                               :root-verb-specs
-                               (into {}
-                                     (map (fn [root]
-                                            [root {:root {:italiano {:italiano root}}}])
-                                          (sort
-                                           (remove nil? (map (fn [val]
-                                                               (dag_unify.core/get-in val [:italiano :italiano]))
-                                                             (filter (fn [v]
-                                                                       (and (= :top (dag_unify.core/get-in v [:synsem :infl]))
-                                                                            (= :verb (dag_unify.core/get-in v [:synsem :cat]))))
-                                                                     (flatten (vals (:lexicon model)))))))))})))))}))
+     :it (delay
+          (let [model (babel.italiano.grammar/medium)]
+            (conj model
+                  {:generate-fn (fn [spec]
+                                  (it/generate spec :model model))
+                   :tenses babel.italiano.grammar/tenses
+                   :root-verb-specs
+                   (into {}
+                         (map (fn [root]
+                                [root {:root {:italiano {:italiano root}}}])
+                              (sort
+                               (remove nil? (map (fn [val]
+                                                   (dag_unify.core/get-in val [:italiano :italiano]))
+                                                 (filter (fn [v]
+                                                           (and (= :top (dag_unify.core/get-in v [:synsem :infl]))
+                                                                (= :verb (dag_unify.core/get-in v [:synsem :cat]))))
+                                                         (flatten (vals (:lexicon model)))))))))})))}))
   
 (declare generate)
 
