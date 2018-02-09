@@ -91,7 +91,7 @@
         source-language (keyword source-language)
         target-language (keyword target-language)
         ;; TODO: catch possible deref NPE exception that can happen when model is not yet loaded.
-        target-model @((get models target-language))
+        target-model @(get models target-language)
 
         lexical-filter-fn (if lexical-filter-fn
                             lexical-filter-fn
