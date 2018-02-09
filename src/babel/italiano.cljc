@@ -14,7 +14,7 @@
    [clojure.string :as string]
    [dag_unify.core :refer [fail-path-between get-in strip-refs unifyc]]))
 
-(defonce np-grammar-model (promise))
+(defonce np-grammar-model (delay))
 (defn np-grammar []
   (if (realized? np-grammar-model)
     @np-grammar-model
