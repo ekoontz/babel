@@ -118,7 +118,7 @@
 
         source-expression
         (source-timing-fn (generate source-spec source-model))]
-    (let [italiano-model @((get models :it))
+    (let [italiano-model @(get models :it)
           pairing
           {:target ((:morph italiano-model) target-expression) ;; TODO: hard-wired to Italian.
            :pred (unify/strip-refs
