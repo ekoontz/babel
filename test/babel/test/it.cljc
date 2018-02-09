@@ -21,6 +21,8 @@
 
 (def model @((get models :it)))
 
+(def np-grammar (delay (grammar/np-grammar)))
+
 (defmacro deftest [test-name & arguments]
   (let [wrapped-arguments
         (concat `[(log/info (str "starting test: " ~test-name))]
@@ -162,20 +164,20 @@
                                                 :mod {:pred :difficile}
                                                 :number :sing
                                                 :pred :donna}}}
-                                (np-grammar))]
+                                @np-grammar)]
     (is (or (= (morph expr) "la donna difficile")
             (= (morph expr) "la difficile donna")))
     (is (not (empty? (reduce concat (map
-                                     :parses (parse (morph expr) (np-grammar)))))))))
+                                     :parses (parse (morph expr) @np-grammar))))))))
 
 (deftest forbid-mispelling
- (is (empty? (:parses (parse (morph "la donna difficila") (np-grammar))))))
+ (is (empty? (:parses (parse (morph "la donna difficila") @np-grammar)))))
 
 (deftest generate-and-parse-noun-phrase-with-specifier
   ;; create a noun phrase where the determiner is "ventotto", but the head of the noun phrase
   ;; might be anything.
   (let [result (generate {:synsem {:sem {:spec {:def :twentyeight}}}}
-                         (np-grammar))]
+                         @np-grammar)]
     (is (not (= "" (morph result))))
     (is (= :twentyeight (get-in result [:synsem :sem :spec :def])))
     (is (not (empty? (parse (morph result)))))))
@@ -202,12 +204,12 @@
                                         ;; generic spec to something more specific
                                         ;; if this test fails and you want to investigate
                                         ;; why.
-                                        (np-grammar))))]
+                                        @np-grammar)))]
     (is (= do-this-many
            (count (map-fn (fn [expr] 
                             (let [surface (morph expr)
                                   parsed (reduce concat (map :parses
-                                                             (parse surface (np-grammar))))]
+                                                             (parse surface @np-grammar)))]
                               (if (not (empty? parsed))
                                 (log/info (str "roundtrip-np-grammar: " surface))
                                 (log/error (str "parse failed: " surface)))
