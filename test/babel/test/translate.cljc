@@ -22,6 +22,8 @@
 ;; respectively.
 
 (def italiano-model @(get models :it))
+(def english-model @(get models :en))
+(def latin-model @(get models :la))
 
 ;; Test that gender agreement is correctly translated.
 (deftest past-and-gender-agreement-feminine
@@ -41,9 +43,9 @@
         
         english-structure
         (->  {:synsem {:sem semantics}}
-             (babel.english/generate (-> ((-> models :en)) deref)))
+             (babel.english/generate english-model))
 
-        english (babel.english/morph english-structure (-> ((-> models :en)) deref))]
+        english (babel.english/morph english-structure english-model)]
 
     (= "they (♀) went" english)))
 
@@ -64,15 +66,14 @@
         
         english-structure
         (->  {:synsem {:sem semantics}}
-             (babel.english/generate (-> ((-> models :en)) deref)))
+             (babel.english/generate english-model))
 
-        english (babel.english/morph english-structure (-> ((-> models :en)) deref))]
+        english (babel.english/morph english-structure english-model)]
 
     (= "they (♂) went" english)))
 
 (deftest latin-to-english
   (let [latin "ardebam"
-        latin-model (-> ((-> models :la)) deref)
         latin-structure
         (-> latin
             (babel.latin/parse latin-model)
@@ -91,10 +92,10 @@
               :synsem {:sem semantics
                        :cat :verb
                        :subcat '()}}
-             (babel.english/generate (-> ((-> models :en)) deref)))
+             (babel.english/generate english-model))
         
         english (babel.english/morph english-structure
-                                     (-> ((-> models :en)) deref)
+                                     english-model
                                      :show-notes false)]
     
     (log/debug (str "babel.translate/latin-to-english: english-structure" english-structure))
