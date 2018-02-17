@@ -109,14 +109,14 @@
     (is (= "io avevo bevuto" (morph result)))))
 
 (deftest trapassato-reflexive
-  (let [result (generate {:root {:italiano {:italiano "addormentarsi"}}
-                          :modified false
-                          :synsem {:cat :verb
-                                   :subcat []
-                                   :sem {:aspect :pluperfect
-                                         :subj {:pred :I
-                                                :gender :fem}
-                                         :tense :past}}})]
+  (let [result (time (generate {:root {:italiano {:italiano "addormentarsi"}}
+                                :modified false
+                                :synsem {:cat :verb
+                                         :subcat []
+                                         :sem {:aspect :pluperfect
+                                               :subj {:pred :I
+                                                      :gender :fem}
+                                               :tense :past}}}))]
     (is (= "io mi ero addormentata" (morph result)))))
 
 (deftest parse-ci-before-vowel
