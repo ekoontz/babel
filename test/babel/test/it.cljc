@@ -15,6 +15,7 @@
    #?(:cljs [cljs.test :refer-macros [is]])
    #?(:clj [clojure.tools.logging :as log])
    #?(:clj [clojure.repl :refer [doc]])
+   [clojure.pprint :as pprint]
    [clojure.string :as string]
    [clojure.set :as set]
    [dag_unify.core :refer [copy fail? get-in strip-refs unify]]))
@@ -22,6 +23,13 @@
 (def model @(get models :it))
 
 (def np-grammar (delay (grammar/np-grammar)))
+
+(defn pprint [obj]
+  (cond
+    (map? obj)
+    (pprint/pprint (dissoc obj :dag_unify.core/serialized))
+    true
+    (pprint/pprint obj)))
 
 (defmacro deftest [test-name & arguments]
   (let [wrapped-arguments
