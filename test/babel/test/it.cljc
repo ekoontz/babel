@@ -48,7 +48,6 @@
 (defn fo-ps [expr]
   (morph-ps expr))
 
-
 (defn analyze [str]
   (italiano/analyze str model))
 
@@ -100,16 +99,34 @@
     (is (not (nil? result)))
     (is (= "io avevo bevuto" (morph result)))))
 
+(def trapassato-reflexive-spec
+  {:root {:italiano {:italiano "addormentarsi"}}
+   :modified false
+   :synsem {:cat :verb
+            :subcat []
+            :sem {:aspect :pluperfect
+                  :subj {:pred :I
+                         :gender :fem}
+                  :tense :past}}})
+  
 (deftest trapassato-reflexive
-  (let [result (generate {:root {:italiano {:italiano "addormentarsi"}}
-                          :modified false
-                          :synsem {:cat :verb
-                                   :subcat []
-                                   :sem {:aspect :pluperfect
-                                         :subj {:pred :I
-                                                :gender :fem}
-                                         :tense :past}}})]
+  (let [result (generate trapassato-reflexive-spec)]
     (is (= "io mi ero addormentata" (morph result)))))
+
+;; ^^ can be made much faster by adding the following
+;; to spec:
+(def speed-up-trapassato-reflexive-phrase-structure
+ {:phrasal true
+  :head {:phrasal true
+         :head {:phrasal true
+                :comp {:phrasal false}}
+         :comp {:phrasal false}}
+  :comp {:phrasal false}})
+
+;; more speedup and variance-reduction:
+(def speed-up-trapassato-reflexive-agreement
+  {:synsem {:agr {:person :1st
+                  :number :sing}}})
 
 (deftest parse-ci-before-vowel
   (let [result (:parses (first (parse "c'è stato")))]
