@@ -30,9 +30,18 @@
                 `[(log/info (str "done with test: " ~test-name))])]
     `(realtest/deftest ~test-name ~@wrapped-arguments)))
 
+(defn generation-implications [spec]
+  (cond
+    (= "addormentarsi"
+       (get-in spec [:root :italiano :italiano]))
+    (unify spec speed-up-trapassato-reflexive)
+    true
+    spec))
+
 (defn generate
   ([spec]
-   (italiano/generate spec model))
+   (let [spec (generation-implications spec)]
+     (italiano/generate spec model)))
   ([spec model]
    (italiano/generate spec model)))
 
