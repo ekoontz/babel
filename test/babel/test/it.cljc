@@ -784,7 +784,7 @@
 (defn generate-speed-test [spec & [times]]
   (btest/generate-speed-test spec model times))
 
-(defn foo []
+(defn run-passato-prossimo-test []
   (generate-speed-test {:synsem {:cat :verb :subcat []
                                  :sem {:reflexive true
                                        :tense :present
