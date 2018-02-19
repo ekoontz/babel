@@ -173,7 +173,7 @@
                   :tense :past}}})
 
 (deftest trapassato-reflexive
-  (let [result (generate trapassato-reflexive-spec)]
+  (let [result (generate addormentarsi-is-slow)]
     (is (= "io mi ero addormentata" (morph result)))))
 
 (deftest parse-ci-before-vowel
