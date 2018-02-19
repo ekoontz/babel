@@ -4,7 +4,7 @@
    [babel.directory :refer [models]]
    [babel.generate :as generate]
    [babel.italiano :as italiano :refer [morph preprocess]]
-   [babel.italiano.grammar :as grammar :refer [generation-implications]]
+   [babel.italiano.grammar :as grammar]
    [babel.italiano.morphology :as morph :refer [analyze-regular]]
    [babel.italiano.morphology.nouns :as nouns]
    [babel.italiano.morphology.verbs :as verbs]
@@ -33,17 +33,9 @@
 ;; (repeatedly #(println (morph (time (generate reflexive-passato-is-slow)))))
 (defn generate
   ([spec]
-   (let [orig-spec spec
-         spec (generation-implications spec model)]
-     (if (= :fail spec)
-       (throw (Exception. (str "spec failed when generation-implications applied:" orig-spec)))
-       (italiano/generate spec model))))
+   (italiano/generate spec model))
   ([spec model]
-   (let [orig-spec spec
-         spec (generation-implications spec model)] 
-     (if (= :fail spec)
-       (throw (Exception. (str "spec failed when generation-implications applied:" orig-spec)))
-       (italiano/generate spec model)))))
+   (italiano/generate spec model)))
 
 (defn parse
   ([spec]
