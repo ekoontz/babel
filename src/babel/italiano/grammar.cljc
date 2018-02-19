@@ -892,13 +892,11 @@
 
 (defn roots-to-sem [spec lexicon]
   (cond
-    (or
-     (and
-      (not (nil? (get-in spec [:root :italiano :italiano])))
-      (some?
-       (map #(= true
-                (get-in % [:synsem :sem :reflexive]))
-            (get lexicon (get-in spec [:root :italiano :italiano]))))))
+    (and
+     (not (nil? (get-in spec [:root :italiano :italiano])))
+     (some true?
+           (map #(get-in % [:synsem :sem :reflexive])
+                (get lexicon (get-in spec [:root :italiano :italiano])))))
     (unify spec {:synsem {:sem {:reflexive true}}})
     true spec))
 
@@ -911,8 +909,11 @@
            spec (roots-to-sem spec (:lexicon model))]
        (if ((:if gen-impl) spec)
          (generation-implications (reduce unify
-                                          [spec (:then gen-impl)
-                                          comp-clampdown modified-false])
+                                          [spec
+                                           (:then gen-impl)
+                                           comp-clampdown
+                                           modified-false
+                                           ])
                                   (rest gen-impls)
                                   model)
          (generation-implications spec (rest gen-impls) model)))
