@@ -835,21 +835,15 @@
      :rules rules
      :rule-map (zipmap rules grammar)}))
 
-
-
-(def reflexive-phrase-structure-trapassato
+;; TODO: move h-h-h and h-h to babel.ug so they
+;; can be used by similar functionality in other languages
+;; i.e. improve generation speed.
+(def h-h-h 
   {:phrasal true
    :head {:phrasal true
           :head {:phrasal true
                  :comp {:phrasal false}}}})
-
-(def reflexive-phrase-structure-passato
-  {:phrasal true
-   :head {:phrasal true
-          :head {:phrasal true
-                 :comp {:phrasal false}}}})
-
-(def reflexive-phrase-structure-simple-present
+(def h-h
   {:phrasal true
    :head {:phrasal true
           :head {:phrasal false
@@ -872,7 +866,7 @@
                  :past)
               (= (get-in % [:synsem :sem :aspect])
                  :pluperfect))
-    :then reflexive-phrase-structure-trapassato}
+    :then h-h-h}
 
    {:if #(and (= (get-in % [:synsem :sem :reflexive])
                  true)
@@ -880,7 +874,7 @@
                  :present)
               (= (get-in % [:synsem :sem :aspect])
                  :perfect))
-    :then reflexive-phrase-structure-passato}
+    :then h-h-h}
 
    {:if #(and (= (get-in % [:synsem :sem :reflexive])
                  true)
@@ -888,7 +882,7 @@
                  :present)
               (= (get-in % [:synsem :sem :aspect])
                  :simple))
-    :then reflexive-phrase-structure-simple-present}])
+    :then h-h}])
 
 (defn roots-to-sem [spec lexicon]
   (cond
