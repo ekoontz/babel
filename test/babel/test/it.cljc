@@ -34,9 +34,7 @@
   {:phrasal true
    :head {:phrasal true
           :head {:phrasal true
-                 :comp {:phrasal false}}
-          :comp {:phrasal false}}
-   :comp {:phrasal false}})
+                 :comp {:phrasal false}}}})
 
 (def reflexive-phrase-structure-simple-present
   {:phrasal true
@@ -44,6 +42,11 @@
           :head {:phrasal false
                  :comp {:phrasal false}}}
    :comp {:phrasal false}})
+
+;; force complements to be {:phrasal false}.
+(def comp-clampdown
+  {:comp {:phrasal false}
+   :head {:comp {:phrasal false}}})
 
 (def gen-impls
   [{:if #(and (= (get-in % [:synsem :sem :reflexive])
@@ -79,8 +82,9 @@
     (let [gen-impl (first gen-impls)
           spec (roots-to-sem spec (:lexicon model))]
       (if ((:if gen-impl) spec)
-        (generation-implications (unify spec (:then gen-impl))
-                          (rest gen-impls))
+        (generation-implications (reduce unify
+                                         [spec (:then gen-impl) comp-clampdown])
+                                 (rest gen-impls))
         (generation-implications spec (rest gen-impls))))
     spec))
 
