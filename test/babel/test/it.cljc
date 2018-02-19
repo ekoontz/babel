@@ -38,6 +38,13 @@
           :comp {:phrasal false}}
    :comp {:phrasal false}})
 
+(def reflexive-phrase-structure-simple-present
+  {:phrasal true
+   :head {:phrasal true
+          :head {:phrasal false
+                 :comp {:phrasal false}}}
+   :comp {:phrasal false}})
+
 (def gen-impls
   [{:if #(and (= (get-in % [:synsem :sem :reflexive])
                  true)
@@ -45,7 +52,15 @@
                  :past)
               (= (get-in % [:synsem :sem :aspect])
                  :pluperfect))
-    :then reflexive-phrase-structure-trapassato}])
+    :then reflexive-phrase-structure-trapassato}
+
+   {:if #(and (= (get-in % [:synsem :sem :reflexive])
+                 true)
+              (= (get-in % [:synsem :sem :tense])
+                 :present)
+              (= (get-in % [:synsem :sem :aspect])
+                 :simple))
+    :then reflexive-phrase-structure-simple-present}])
 
 (defn roots-to-sem [spec lexicon]
   (cond
