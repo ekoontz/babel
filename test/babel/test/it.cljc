@@ -188,6 +188,25 @@
                          :gender :fem}
                   :tense :past}}})
 
+(def reflexive-trapassato-is-slow
+  {:synsem {:cat :verb
+            :subcat []
+            :sem {:reflexive true
+                  :aspect :pluperfect
+                  :subj {:pred :I
+                         :gender :fem}
+                  :tense :past}}})
+
+(def reflexive-present-is-slow
+  {:modified false
+   :synsem {:cat :verb
+            :subcat []
+            :sem {:reflexive true
+                  :aspect :simple
+                  :subj {:pred :I
+                         :gender :fem}
+                  :tense :present}}})
+
 (deftest trapassato-reflexive
   (let [result (generate addormentarsi-is-slow)]
     (is (= "io mi ero addormentata" (morph result)))))
