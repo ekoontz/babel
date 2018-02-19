@@ -30,6 +30,21 @@
                 `[(log/info (str "done with test: " ~test-name))])]
     `(realtest/deftest ~test-name ~@wrapped-arguments)))
 
+;; ^^ can be made much faster by adding the following
+;; to spec:
+(def speed-up-trapassato-reflexive-phrase-structure
+ {:phrasal true
+  :head {:phrasal true
+         :head {:phrasal true
+                :comp {:phrasal false}}
+         :comp {:phrasal false}}
+  :comp {:phrasal false}})
+
+;; more speedup and variance-reduction:
+(def speed-up-trapassato-reflexive-agreement
+  {:synsem {:agr {:person :1st
+                  :number :sing}}})
+
 (defn generation-implications [spec]
   (cond
     (= "addormentarsi"
@@ -121,21 +136,6 @@
 (deftest trapassato-reflexive
   (let [result (generate trapassato-reflexive-spec)]
     (is (= "io mi ero addormentata" (morph result)))))
-
-;; ^^ can be made much faster by adding the following
-;; to spec:
-(def speed-up-trapassato-reflexive-phrase-structure
- {:phrasal true
-  :head {:phrasal true
-         :head {:phrasal true
-                :comp {:phrasal false}}
-         :comp {:phrasal false}}
-  :comp {:phrasal false}})
-
-;; more speedup and variance-reduction:
-(def speed-up-trapassato-reflexive-agreement
-  {:synsem {:agr {:person :1st
-                  :number :sing}}})
 
 (deftest parse-ci-before-vowel
   (let [result (:parses (first (parse "c'è stato")))]
