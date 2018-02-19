@@ -43,10 +43,14 @@
                  :comp {:phrasal false}}}
    :comp {:phrasal false}})
 
-;; force complements to be {:phrasal false}.
+;; force complements to be {:phrasal false}: significantly improves speed.
 (def comp-clampdown
   {:comp {:phrasal false}
    :head {:comp {:phrasal false}}})
+
+;; another significant speedup:
+(def modified-false
+  {:modified false})
 
 (def gen-impls
   [{:if #(and (= (get-in % [:synsem :sem :reflexive])
@@ -83,7 +87,8 @@
           spec (roots-to-sem spec (:lexicon model))]
       (if ((:if gen-impl) spec)
         (generation-implications (reduce unify
-                                         [spec (:then gen-impl) comp-clampdown])
+                                         [spec (:then gen-impl)
+                                          comp-clampdown modified-false])
                                  (rest gen-impls))
         (generation-implications spec (rest gen-impls))))
     spec))
@@ -139,7 +144,6 @@
 
 (deftest passato-prossimo
   (let [result (generate {:root {:italiano {:italiano "bere"}}
-                          :modified false
                           :synsem {:cat :verb
                                    :subcat []
                                    :sem {:aspect :perfect
@@ -151,7 +155,6 @@
 
 (deftest trapassato
   (let [result (generate {:root {:italiano {:italiano "bere"}}
-                          :modified false
                           :synsem {:cat :verb
                                    :subcat []
                                    :sem {:aspect :pluperfect
@@ -164,7 +167,6 @@
 
 (def alzarsi-is-slow
   {:root {:italiano {:italiano "alzarsi"}}
-   :modified false
    :synsem {:cat :verb
             :subcat []
             :sem {:aspect :pluperfect
@@ -174,7 +176,6 @@
 
 (def addormentarsi-is-slow
   {:root {:italiano {:italiano "addormentarsi"}}
-   :modified false
    :synsem {:cat :verb
             :subcat []
             :sem {:aspect :pluperfect
@@ -184,7 +185,6 @@
 
 (def pettinarsi-is-slow
   {:root {:italiano {:italiano "pettinarsi"}}
-   :modified false
    :synsem {:cat :verb
             :subcat []
             :sem {:aspect :pluperfect
@@ -202,8 +202,7 @@
                   :tense :past}}})
 
 (def reflexive-present-is-slow
-  {:modified false
-   :synsem {:cat :verb
+  {:synsem {:cat :verb
             :subcat []
             :sem {:reflexive true
                   :aspect :simple
