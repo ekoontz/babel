@@ -55,9 +55,7 @@
            "addormentarsi")
         (= (get-in spec [:root :italiano :italiano])
            "pettinarsi"))
-    (unify spec {:synsem {:sem {:reflexive true
-                                :tense :past
-                                :aspect :pluperfect}}})
+    (unify spec {:synsem {:sem {:reflexive true}}})
     true spec))
 
 (defn generation-implications [spec gen-impls]
@@ -72,8 +70,11 @@
 
 (defn generate
   ([spec]
-   (let [spec (generation-implications spec gen-impls)]
-     (italiano/generate spec model)))
+   (let [orig-spec spec
+         spec (generation-implications spec gen-impls)]
+     (if (= :fail spec)
+       (throw (Exception. (str "spec failed when generation-implications applied:" orig-spec)))
+       (italiano/generate spec model))))
   ([spec model]
    (italiano/generate spec model)))
 
