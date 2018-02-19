@@ -30,18 +30,16 @@
                 `[(log/info (str "done with test: " ~test-name))])]
     `(realtest/deftest ~test-name ~@wrapped-arguments)))
 
-(def speed-up-trapassato-reflexive-phrase-structure
- {:phrasal true
-  :head {:phrasal true
-         :head {:phrasal true
-                :comp {:phrasal false}}
-         :comp {:phrasal false}}
-  :comp {:phrasal false}})
-
 (def gen-impls
   [{:if #(and (= (get-in % [:root :italiano :italiano])
                  "addormentarsi"))
-    :then speed-up-trapassato-reflexive-phrase-structure}])
+    :then
+    {:phrasal true
+     :head {:phrasal true
+            :head {:phrasal true
+                   :comp {:phrasal false}}
+            :comp {:phrasal false}}
+     :comp {:phrasal false}}}])
 
 (defn generation-implications [spec gen-impls]
   (if (not (empty? gen-impls))
