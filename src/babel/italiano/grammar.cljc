@@ -882,7 +882,24 @@
                  :present)
               (= (get-in % [:synsem :sem :aspect])
                  :simple))
-    :then h-h}])
+    :then h-h}
+
+
+   {:if #(and (= (get-in % [:synsem :sem :reflexive])
+                 true)
+              (= (get-in % [:synsem :sem :tense])
+                 :future))
+    :then h-h}
+
+   {:if #(and (= (get-in % [:synsem :sem :reflexive])
+                 true)
+              (= (get-in % [:synsem :sem :tense])
+                 :present)
+              (= (get-in % [:synsem :sem :aspect])
+                 :progressive))
+    :then h-h}
+
+   ])
 
 (defn roots-to-sem [spec lexicon]
   (cond

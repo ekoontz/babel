@@ -143,6 +143,14 @@
                          :gender :fem}
                   :tense :present}}})
 
+(def reflexive-future-is-slow
+  {:synsem {:cat :verb
+            :subcat []
+            :sem {:reflexive true
+                  :subj {:pred :I
+                         :gender :fem}
+                  :tense :future}}})
+
 (def reflexive-present-is-slow
   {:synsem {:cat :verb
             :subcat []
