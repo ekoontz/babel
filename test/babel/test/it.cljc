@@ -30,20 +30,28 @@
                 `[(log/info (str "done with test: " ~test-name))])]
     `(realtest/deftest ~test-name ~@wrapped-arguments)))
 
+(def reflexive-phrase-structure
+  {:phrasal true
+   :head {:phrasal true
+          :head {:phrasal true
+                 :comp {:phrasal false}}
+          :comp {:phrasal false}}
+   :comp {:phrasal false}})
+
 (def gen-impls
-  [{:if #(and (= (get-in % [:root :italiano :italiano])
-                 "addormentarsi"))
-    :then
-    {:phrasal true
-     :head {:phrasal true
-            :head {:phrasal true
-                   :comp {:phrasal false}}
-            :comp {:phrasal false}}
-     :comp {:phrasal false}}}])
+  [{:if #(or (= (get-in % [:root :italiano :italiano])
+                "addormentarsi")
+             (= (get-in % [:root :italiano :italiano])
+                "pettinarsi"))
+    :then reflexive-phrase-structure}])
+
+(defn roots-to-sem [spec lexicon]
+  spec)
 
 (defn generation-implications [spec gen-impls]
   (if (not (empty? gen-impls))
-    (let [gen-impl (first gen-impls)]
+    (let [gen-impl (first gen-impls)
+          spec (roots-to-sem spec (:lexicon model))]
       (if ((:if gen-impl) spec)
         (generation-implications (unify spec (:then gen-impl))
                           (rest gen-impls))
@@ -120,7 +128,7 @@
     (is (not (nil? result)))
     (is (= "io avevo bevuto" (morph result)))))
 
-(def trapassato-reflexive-spec
+(def addormentarsi-is-slow
   {:root {:italiano {:italiano "addormentarsi"}}
    :modified false
    :synsem {:cat :verb
@@ -129,7 +137,17 @@
                   :subj {:pred :I
                          :gender :fem}
                   :tense :past}}})
-  
+
+(def pettinarsi-is-slow
+  {:root {:italiano {:italiano "pettinarsi"}}
+   :modified false
+   :synsem {:cat :verb
+            :subcat []
+            :sem {:aspect :pluperfect
+                  :subj {:pred :I
+                         :gender :fem}
+                  :tense :past}}})
+
 (deftest trapassato-reflexive
   (let [result (generate trapassato-reflexive-spec)]
     (is (= "io mi ero addormentata" (morph result)))))
