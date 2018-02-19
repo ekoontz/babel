@@ -36,6 +36,12 @@
           :head {:phrasal true
                  :comp {:phrasal false}}}})
 
+(def reflexive-phrase-structure-passato
+  {:phrasal true
+   :head {:phrasal true
+          :head {:phrasal true
+                 :comp {:phrasal false}}}})
+
 (def reflexive-phrase-structure-simple-present
   {:phrasal true
    :head {:phrasal true
@@ -60,6 +66,14 @@
               (= (get-in % [:synsem :sem :aspect])
                  :pluperfect))
     :then reflexive-phrase-structure-trapassato}
+
+   {:if #(and (= (get-in % [:synsem :sem :reflexive])
+                 true)
+              (= (get-in % [:synsem :sem :tense])
+                 :present)
+              (= (get-in % [:synsem :sem :aspect])
+                 :perfect))
+    :then reflexive-phrase-structure-passato}
 
    {:if #(and (= (get-in % [:synsem :sem :reflexive])
                  true)
