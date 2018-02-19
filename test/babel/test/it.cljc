@@ -101,7 +101,11 @@
        (throw (Exception. (str "spec failed when generation-implications applied:" orig-spec)))
        (italiano/generate spec model))))
   ([spec model]
-   (italiano/generate spec model)))
+   (let [orig-spec spec
+         spec (generation-implications spec gen-impls)] 
+     (if (= :fail spec)
+       (throw (Exception. (str "spec failed when generation-implications applied:" orig-spec)))
+       (italiano/generate spec model)))))
 
 (defn parse
   ([spec]
