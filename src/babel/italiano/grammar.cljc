@@ -835,3 +835,86 @@
      :rules rules
      :rule-map (zipmap rules grammar)}))
 
+
+
+(def reflexive-phrase-structure-trapassato
+  {:phrasal true
+   :head {:phrasal true
+          :head {:phrasal true
+                 :comp {:phrasal false}}}})
+
+(def reflexive-phrase-structure-passato
+  {:phrasal true
+   :head {:phrasal true
+          :head {:phrasal true
+                 :comp {:phrasal false}}}})
+
+(def reflexive-phrase-structure-simple-present
+  {:phrasal true
+   :head {:phrasal true
+          :head {:phrasal false
+                 :comp {:phrasal false}}}
+   :comp {:phrasal false}})
+
+;; force complements to be {:phrasal false}: significantly improves speed.
+(def comp-clampdown
+  {:comp {:phrasal false}
+   :head {:comp {:phrasal false}}})
+
+;; another significant speedup:
+(def modified-false
+  {:modified false})
+
+(def gen-impls
+  [{:if #(and (= (get-in % [:synsem :sem :reflexive])
+                 true)
+              (= (get-in % [:synsem :sem :tense])
+                 :past)
+              (= (get-in % [:synsem :sem :aspect])
+                 :pluperfect))
+    :then reflexive-phrase-structure-trapassato}
+
+   {:if #(and (= (get-in % [:synsem :sem :reflexive])
+                 true)
+              (= (get-in % [:synsem :sem :tense])
+                 :present)
+              (= (get-in % [:synsem :sem :aspect])
+                 :perfect))
+    :then reflexive-phrase-structure-passato}
+
+   {:if #(and (= (get-in % [:synsem :sem :reflexive])
+                 true)
+              (= (get-in % [:synsem :sem :tense])
+                 :present)
+              (= (get-in % [:synsem :sem :aspect])
+                 :simple))
+    :then reflexive-phrase-structure-simple-present}])
+
+(defn roots-to-sem [spec lexicon]
+  (cond
+    (or
+     (and
+      (not (nil? (get-in spec [:root :italiano :italiano])))
+      (some?
+       (map #(= true
+                (get-in % [:synsem :sem :reflexive]))
+            (get lexicon (get-in spec [:root :italiano :italiano]))))))
+    (unify spec {:synsem {:sem {:reflexive true}}})
+    true spec))
+
+(defn generation-implications
+  ([spec model]
+   (generation-implications spec gen-impls model))
+  ([spec gen-impls model]
+   (if (not (empty? gen-impls))
+     (let [gen-impl (first gen-impls)
+           spec (roots-to-sem spec (:lexicon model))]
+       (if ((:if gen-impl) spec)
+         (generation-implications (reduce unify
+                                          [spec (:then gen-impl)
+                                          comp-clampdown modified-false])
+                                  (rest gen-impls)
+                                  model)
+         (generation-implications spec (rest gen-impls) model)))
+     spec)))
+
