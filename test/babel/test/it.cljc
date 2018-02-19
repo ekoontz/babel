@@ -30,21 +30,23 @@
                 `[(log/info (str "done with test: " ~test-name))])]
     `(realtest/deftest ~test-name ~@wrapped-arguments)))
 
-(def gen-impl
-  {:if #(and (= (get-in % [:root :italiano :italiano])
-                "addormentarsi"))
-   :then speed-up-trapassato-reflexive})
+(def gen-impls
+  [{:if #(and (= (get-in % [:root :italiano :italiano])
+                 "addormentarsi"))
+    :then speed-up-trapassato-reflexive}])
 
-(defn generation-implications [spec]
-  (cond
-    ((:if gen-impl) spec)
-    (unify spec (:then gen-impl))
-    true
+(defn generation-implications [spec gen-impls]
+  (if (not (empty? gen-impls))
+    (let [gen-impl (first gen-impls)]
+      (if ((:if gen-impl) spec)
+        (generation-implications (unify spec (:then gen-impl))
+                          (rest gen-impls))
+        (generation-implications spec (rest gen-impls))))
     spec))
 
 (defn generate
   ([spec]
-   (let [spec (generation-implications spec)]
+   (let [spec (generation-implications spec gen-impls)]
      (italiano/generate spec model)))
   ([spec model]
    (italiano/generate spec model)))
