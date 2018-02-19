@@ -64,12 +64,13 @@
 
 (defn roots-to-sem [spec lexicon]
   (cond
-    (or (= (get-in spec [:root :italiano :italiano])
-           "alzarsi")
-        (= (get-in spec [:root :italiano :italiano])
-           "addormentarsi")
-        (= (get-in spec [:root :italiano :italiano])
-           "pettinarsi"))
+    (or
+     (and
+      (not (nil? (get-in spec [:root :italiano :italiano])))
+      (some?
+       (map #(= true
+                (get-in % [:synsem :sem :reflexive]))
+            (get lexicon (get-in spec [:root :italiano :italiano]))))))
     (unify spec {:synsem {:sem {:reflexive true}}})
     true spec))
 
