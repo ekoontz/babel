@@ -219,6 +219,15 @@
                          :gender :fem}
                   :tense :past}}})
 
+(def reflexive-passato-is-slow
+  {:synsem {:cat :verb
+            :subcat []
+            :sem {:reflexive true
+                  :aspect :perfect
+                  :subj {:pred :I
+                         :gender :fem}
+                  :tense :present}}})
+
 (def reflexive-present-is-slow
   {:synsem {:cat :verb
             :subcat []
