@@ -182,7 +182,6 @@
     (is (not (nil? result)))
     (is (= "io avevo bevuto" (morph result)))))
 
-
 (def alzarsi-is-slow
   {:root {:italiano {:italiano "alzarsi"}}
    :synsem {:cat :verb
