@@ -30,7 +30,7 @@
                 `[(log/info (str "done with test: " ~test-name))])]
     `(realtest/deftest ~test-name ~@wrapped-arguments)))
 
-(def reflexive-phrase-structure
+(def reflexive-phrase-structure-trapassato
   {:phrasal true
    :head {:phrasal true
           :head {:phrasal true
@@ -39,14 +39,26 @@
    :comp {:phrasal false}})
 
 (def gen-impls
-  [{:if #(or (= (get-in % [:root :italiano :italiano])
-                "addormentarsi")
-             (= (get-in % [:root :italiano :italiano])
-                "pettinarsi"))
-    :then reflexive-phrase-structure}])
+  [{:if #(and (= (get-in % [:synsem :sem :reflexive])
+                 true)
+              (= (get-in % [:synsem :sem :tense])
+                 :past)
+              (= (get-in % [:synsem :sem :aspect])
+                 :pluperfect))
+    :then reflexive-phrase-structure-trapassato}])
 
 (defn roots-to-sem [spec lexicon]
-  spec)
+  (cond
+    (or (= (get-in spec [:root :italiano :italiano])
+           "alzarsi")
+        (= (get-in spec [:root :italiano :italiano])
+           "addormentarsi")
+        (= (get-in spec [:root :italiano :italiano])
+           "pettinarsi"))
+    (unify spec {:synsem {:sem {:reflexive true
+                                :tense :past
+                                :aspect :pluperfect}}})
+    true spec))
 
 (defn generation-implications [spec gen-impls]
   (if (not (empty? gen-impls))
@@ -127,6 +139,17 @@
                                          :tense :past}}})]
     (is (not (nil? result)))
     (is (= "io avevo bevuto" (morph result)))))
+
+
+(def alzarsi-is-slow
+  {:root {:italiano {:italiano "alzarsi"}}
+   :modified false
+   :synsem {:cat :verb
+            :subcat []
+            :sem {:aspect :pluperfect
+                  :subj {:pred :I
+                         :gender :fem}
+                  :tense :past}}})
 
 (def addormentarsi-is-slow
   {:root {:italiano {:italiano "addormentarsi"}}
