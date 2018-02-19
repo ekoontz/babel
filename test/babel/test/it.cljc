@@ -30,26 +30,15 @@
                 `[(log/info (str "done with test: " ~test-name))])]
     `(realtest/deftest ~test-name ~@wrapped-arguments)))
 
-;; ^^ can be made much faster by adding the following
-;; to spec:
-(def speed-up-trapassato-reflexive-phrase-structure
- {:phrasal true
-  :head {:phrasal true
-         :head {:phrasal true
-                :comp {:phrasal false}}
-         :comp {:phrasal false}}
-  :comp {:phrasal false}})
-
-;; more speedup and variance-reduction:
-(def speed-up-trapassato-reflexive-agreement
-  {:synsem {:agr {:person :1st
-                  :number :sing}}})
+(def gen-impl
+  {:if #(and (= (get-in % [:root :italiano :italiano])
+                "addormentarsi"))
+   :then speed-up-trapassato-reflexive})
 
 (defn generation-implications [spec]
   (cond
-    (= "addormentarsi"
-       (get-in spec [:root :italiano :italiano]))
-    (unify spec speed-up-trapassato-reflexive)
+    ((:if gen-impl) spec)
+    (unify spec (:then gen-impl))
     true
     spec))
 
