@@ -288,7 +288,7 @@
 
             ]
 
-        (log/info (str target-language ": '" target-sentence-surface "'"))
+        (log/debug (str "populate: " target-language ": '" target-sentence-surface "'"))
         (insert-expression target-sentence ;; underlying structure
                            target-sentence-surface ; surface string
                            spec
@@ -472,7 +472,7 @@
     (loop [remain canonicals
            result 0]
       (let [[canonical & remaining] remain]
-        (log/info (str language ":" canonical))
+        (log/debug (str "(write-lexicon " language ":" canonical ")"))
         (insert-lexeme canonical (get lexicon canonical) language)
         (if (empty? remaining)
           (+ 1 result)
