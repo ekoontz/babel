@@ -27,27 +27,21 @@
             (let [model (babel.espanol.grammar/small)]
               (log/debug (str "finished loading Espanol model."))
               (conj model
-                    {:generate-fn (fn [spec]
-                                    (es/generate spec :model model))
-                     :tenses babel.espanol.grammar/tenses}))))
+                    {:tenses babel.espanol.grammar/tenses}))))
    :fr (delay
         (do (log/debug (str "starting to load French model.."))
             (let [model (babel.francais.grammar/medium)]
               (log/debug (str "finished loading French model."))
               (conj model
-                    {:generate-fn (fn [spec]
-                                    (fr/generate spec :model model))
-                     :tenses babel.francais.grammar/tenses}))))
+                    {:tenses babel.francais.grammar/tenses}))))
    :la (delay
         (do (log/info (str "starting to load latin model.."))
             (let [model (la/model)]
               (log/info (str "finished loading latin model."))
-              (conj model
-                    {:generate-fn (fn [spec]
-                                    (la/generate spec model))}))))
+              model)))
+
    :it (delay
         (let [model (babel.italiano.grammar/medium)]
           (conj model
-                {:generate-fn (fn [spec]
-                                (it/generate spec :model model))
-                 :tenses babel.italiano.grammar/tenses})))})
+                {:tenses babel.italiano.grammar/tenses})))})
+
