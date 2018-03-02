@@ -1,6 +1,7 @@
 (ns babel.latin
   (:refer-clojure :exclude [get-in])
   (:require
+   [babel.english :as en]
    [babel.index :refer [build-lex-sch-index create-indices lookup-spec]]
    [babel.latin.morphology :as morph]
    [babel.lexiconfn :refer [default listify map-function-on-map-vals
@@ -178,7 +179,7 @@
                                               :agr (get-in spec [:synsem :agr])}}}
         debug (log/debug (str "read-one: source-specification:" source-specification))
         question-to-pose-to-user
-        (babel.english/morph (babel.generate/generate source-specification
+        (en/morph (babel.generate/generate source-specification
                                                       source-model)
                              source-model
                              :show-notes false) ;; TODO: use {:from-language :la}
