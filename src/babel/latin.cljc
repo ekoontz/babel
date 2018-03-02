@@ -43,22 +43,22 @@
 (declare generate)
 
 (defn model []
-  (let [lexicon
-        (-> (edn2lexicon (resource "babel/latin/lexicon.edn"))
-          
-            (default ;; intransitive verbs' :obj is :unspec.
-             {:synsem {:cat :verb
-                       :subcat {:1 {:top :top}
-                                :2 '()}
-                       :sem {:obj :unspec}}})
-            
-            (verb-pred-defaults encyc/verbs))
-        indices (create-indices lexicon index-lexicon-on-paths)]
-    {:lexicon lexicon
-     :index-fn (fn [spec] (lookup-spec spec indices index-lexicon-on-paths))
-     :morph morph
-     :generate-fn generate}))
-
+  (let [the-model
+        (let [lexicon
+              (-> (edn2lexicon (resource "babel/latin/lexicon.edn"))
+                  (default ;; intransitive verbs' :obj is :unspec.
+                   {:synsem {:cat :verb
+                             :subcat {:1 {:top :top}
+                                      :2 '()}
+                             :sem {:obj :unspec}}})
+                  (verb-pred-defaults encyc/verbs))
+              indices (create-indices lexicon index-lexicon-on-paths)]
+          {:lexicon lexicon
+           :index-fn (fn [spec] (lookup-spec spec indices index-lexicon-on-paths))
+           :morph morph})]
+    (merge the-model
+           {:generate-fn (fn [spec]
+                           (generate spec the-model))})))
 (def tenses
   [{:tense :present}
    {:tense :past
