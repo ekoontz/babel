@@ -87,19 +87,11 @@
              :sem {:number :sing
                    :person :3rd}}}
  "la tua"
- [{:synsem {:cat :det
-            :def :possessive
-            :agr {:gender :fem
-                  :number :sing}
-            :sem {:number :sing
-                  :person :2nd}}}
-
-  {:synsem {:cat :det
-            :def :possessive
-            :agr {:gender :fem
-                  :number :sing}
-            :sem {:number :plur
-                  :person :2nd}}}]
+ {:synsem {:cat :det
+           :def :possessive
+           :agr {:gender :fem
+                 :number :sing}
+           :sem {:person :2nd}}}
  
  "le"
  {:synsem {:cat :det
@@ -111,20 +103,11 @@
            :def :def
            :agr {:gender :masc
                  :number :sing}}}
- "l'" [
-       {:generate-with false
-        :synsem {:cat :det
-                 :def :def
-                 :agr {:gender :fem
-                       :number :sing}}}
-       
-       {:generate-with false
-        :use-with-vowel true
-        :synsem {:cat :det
-                 :def :def
-                 :agr {:gender :masc
-                       :number :sing}}}]
 
+ "l'" {:generate-with false
+       :synsem {:cat :det
+                :def :def
+                :agr {:number :sing}}}
  "qualche"
  {:synsem {:cat :det
            :def :indef
@@ -155,7 +138,5 @@
            :mass false
            :agr {:gender :masc
                  :number :sing}}}
-
-
  }
  
