@@ -745,23 +745,6 @@
                      :2 []}}
   :italiano {:initial true}}
 
- "di la"
- {:synsem {:cat :det
-           :def :partitivo
-           :agr {:number :sing
-                 :gender :fem}
-           :mass true}}
- "di le"
- {:synsem {:cat :det
-           :def :partitivo
-           :agr {:number :plur
-                 :gender :fem}}}
- "di il"
- {:synsem {:cat :det
-           :def :partitivo
-           :mass true
-           :agr {:number :sing
-                 :gender :masc}}}
  "difficile"
  ;; non-comparative
  ;; TODO: add comparative
@@ -1128,20 +1111,10 @@
 
  "guidare"  {:synsem {:cat :verb
                       :sem {:pred :drive}}}
- "i"
- {:synsem {:cat :det
-           :def :def
-           :agr {:gender :masc
-                 :number :plur}}}
 
  "idea" {:synsem {:agr {:gender :fem}
                   :cat :noun
                   :sem {:pred :idea}}}
- "il"
- {:synsem {:cat :det
-           :def :def
-           :agr {:gender :masc
-                 :number :sing}}}
 
  "imparare"  {:synsem {:cat :verb
                        :sem {:pred :learn-i}}}
@@ -1226,58 +1199,7 @@
                   :place false ;; "they go to it (loro vanna a la)" sounds strange
                   :pred :lei}
             :subcat []}
-   :italiano {:initial true}}
-
-  ;; 3. article
-  {:synsem {:cat :det
-            :def :def
-            :agr {:gender :fem
-                  :number :sing}}}]
- "la loro"
- {:synsem {:cat :det
-           :def :possessive
-           :agr {:gender :fem
-                 :number :sing}
-           :sem {:number :plur
-                 :person :3rd}}}
- "la mia"
- {:synsem {:cat :det
-           :def :possessive
-           :agr {:gender :fem
-                 :number :sing}
-           :sem {:number :sing
-                 :person :1st}}}
- "la nostra"
- {:synsem {:cat :det
-           :def :possessive
-           :agr {:gender :fem
-                 :number :sing}
-           :sem {:number :plur
-                 :person :1st}}}
-
- ;; TODO for below: add pronominal "la sua" (translated in English as "his" and "hers", depending on gender of the owner of the referent).
- ;; e.g. "I gatti sono i suoi. (The cats are hers) (if talking about a female owner) or (The cats are his) (if talking about a male owner).
- "la sua"
- {:synsem {:cat :det
-           :def :possessive
-           :agr {:gender :fem
-                 :number :sing}
-             :sem {:number :sing
-                   :person :3rd}}}
- "la tua"
- [{:synsem {:cat :det
-            :def :possessive
-            :agr {:gender :fem
-                  :number :sing}
-            :sem {:number :sing
-                  :person :2nd}}}
-
-  {:synsem {:cat :det
-            :def :possessive
-            :agr {:gender :fem
-                  :number :sing}
-            :sem {:number :plur
-                  :person :2nd}}}]
+   :italiano {:initial true}}]
 
 "lamentarsi" {:synsem {:cat :verb
                        :sem {:pred :complain
@@ -1296,11 +1218,6 @@
 
  "lavorare"  {:synsem {:cat :verb
                        :sem {:pred :work-human}}}
- "le"
- {:synsem {:cat :det
-           :def :def
-           :agr {:gender :fem
-                 :number :plur}}}
  "lei"
  (let [common {:synsem {:cat :noun
                         :pronoun true
@@ -1354,10 +1271,8 @@
                   :pred :lui}
             :subcat []}
    :italiano {:initial true}}  ;; TODO: verify that 'lo' above and this below are being unified correctly.
-  {:synsem {:cat :det
-            :def :def
-            :agr {:gender :masc
-                  :number :sing}}}]
+  ]
+
  "loro"
  [{:synsem {:cat :noun
             :pronoun true
@@ -1725,11 +1640,6 @@
  "punire" {:italiano {:boot-verb true}
            :synsem {:cat :verb
                     :sem {:pred :punish}}}
- "qualche"
- {:synsem {:cat :det
-           :def :indef
-           :agr {:mass false
-                 :number :sing}}}
 
  "raccontare" {:synsem {:cat :verb
                         :sem {:pred :recount}}}
@@ -2140,30 +2050,6 @@
            :cat :noun
            :sem {:pred :bird}}}
 
- "un" [{:synsem {:cat :det
-                 :def :indef
-                 :mass false
-                 :agr {:gender :masc
-                       :number :sing}}}
-       {:generate-with false ;; parsing only, not generation: don't generate e.g. "un donna".
-        :synsem {:cat :det
-                 :def :indef
-                 :mass false
-                 :agr {:gender :fem ;; 'un' can be feminine in the case where next word is an adjective (e.g. "alta")
-                       ;; and we tokenize "un'alta donna" as [un] [alta] [donna].
-                       :number :sing}}}]
- "una"
- {:synsem {:cat :det
-           :def :indef
-           :mass false
-           :agr {:gender :fem
-                 :number :sing}}}
- "uno"
- {:synsem {:cat :det
-           :def :indef
-           :mass false
-           :agr {:gender :masc
-                 :number :sing}}}
  "uomo"
  {:italiano {:plur "uomini"}
   :synsem {:agr {:gender :masc}
