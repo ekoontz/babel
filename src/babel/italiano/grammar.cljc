@@ -5,7 +5,7 @@
    [babel.index :refer [create-indices intersection-with-identity lookup-spec map-subset-by-path]]
    [babel.italiano.lexicon :refer [deliver-lexicon edn2lexicon]]
    [babel.italiano.morphology :refer [analyze fo]]
-   [babel.lexiconfn :refer [read-lexicon]]
+   [babel.lexiconfn :refer [read-lexicon] :as lexfn]
    [babel.parse :as parse]
    [babel.ug :refer [apply-default-if comp-modifies-head comp-specs-head
                      head-principle
@@ -53,9 +53,14 @@
    "trapassato" {:synsem {:sem {:aspect :pluperfect
                                 :tense :past}}}})
 
-(defn compile-lexicon []
-  (edn2lexicon
-   (clojure.java.io/resource "babel/italiano/lexicon.edn")))
+(defn compile-lexicon
+  "convert the Italian lexicon.edn into a Clojure map"
+  []
+  (->
+   "babel/italiano/lexicon.edn"
+   clojure.java.io/resource
+   lexfn/edn2lexicon
+   edn2lexicon))
 
 (defn fo-ps [expr]
   (parse/fo-ps expr fo))

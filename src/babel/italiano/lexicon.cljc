@@ -23,7 +23,11 @@
 (declare edn2lexicon)
 
 (defn deliver-lexicon []
-  (edn2lexicon (resource "babel/italiano/lexicon.edn")))
+  (->
+   "babel/italiano/lexicon.edn"
+   resource
+   lexfn/edn2lexicon
+   edn2lexicon))
 
 ;; The values in this map in (defonce defaults) are used for lexical
 ;; compilation but also available for external use.
