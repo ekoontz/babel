@@ -112,13 +112,14 @@
            :agr {:gender :masc
                  :number :sing}}}
  "l'" [
-       {:use-with-vowel true
+       {:generate-with false
         :synsem {:cat :det
                  :def :def
                  :agr {:gender :fem
                        :number :sing}}}
        
-       {:use-with-vowel true
+       {:generate-with false
+        :use-with-vowel true
         :synsem {:cat :det
                  :def :def
                  :agr {:gender :masc

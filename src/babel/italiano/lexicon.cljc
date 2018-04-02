@@ -21,14 +21,19 @@
    [dag_unify.core :refer [dissoc-paths fail? get-in strip-refs unify]]))
 
 (declare defaults)
+(declare edn2lexicon)
 (declare exception-generator)
 
-;; TODO: see if we can use Clojure transducers here. (http://clojure.org/reference/transducers)
+(defn merge-lexicons [lexicons]
+  (reduce (fn [a b]
+            (merge-with concat a b))
+          lexicons))
+
 (defn edn2lexicon
   "Apply Italian-specific lexical rules to enhance input lexicon map into fully-specified lexical entries."
   [input-lexicon]
   (-> input-lexicon
-
+      
       ;; if :vcat = :noun-invariable-{feminine,masculine}, then add plural exception.
       (map-function-on-map-vals
        (fn [k lexemes]
@@ -413,11 +418,16 @@
 (defn compile-lexicon
   "convert source lexicon to a Clojure map."
   []
-  (->
-   "babel/italiano/lexicon.edn"
-   resource
-   lexfn/edn2lexicon
-   edn2lexicon))
+  (let [lexicon-sources ["babel/italiano/lexicon.edn"
+                         "babel/italiano/lexicon/determiners.edn"]]
+    (merge-lexicons
+     (map (fn [lexicon-source]
+            (->
+             lexicon-source
+             resource
+             lexfn/edn2lexicon
+             edn2lexicon))
+          lexicon-sources))))
 
 ;; The values in this map in (defonce defaults) are used for lexical
 ;; compilation but also available for external use.
