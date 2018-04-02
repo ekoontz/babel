@@ -402,29 +402,6 @@
                       :sem {:pred :close}}
              :italiano {:passato "chiuso"}}
 
- "ci"
- [{:synsem {:cat :noun
-            :pronoun true
-            :agr {:person :1st
-                  :number :plur}
-            :reflexive true
-            :sem {:human true
-                  :pred :noi}}}
-  {:synsem {:cat :noun
-            :pronoun true
-            :case :nom
-            :sem {:null true
-                  :pred :existential}
-            :agr {:person :3rd
-                  :number :sing}}}
-  {:synsem {:cat :noun
-            :pronoun true
-            :case :nom
-            :sem {:null true
-                  :pred :existential}
-            :agr {:person :3rd
-                  :number :plur}}}]
-
  "cittadino" {:synsem {:cat :adjective
                        :sem {:pred :local}}}
 
@@ -831,17 +808,6 @@
                       :sem {:pred :play-games}}
              :italiano {:future-stem "giocher"}}
 
- "Giovanni e io"
- [{:synsem {:cat :noun
-            :pronoun true
-            :case :nom
-            :agr {:gender :masc
-                  :person :1st
-                  :number :plur}
-            :sem {:human true
-                  :pred :giovanni-and-i}
-            :subcat []}}]
-
  "gridare" {:synsem {:cat :verb
                      :sem {:pred :yell}}}
 
@@ -850,7 +816,6 @@
 
  "guardare"  {:synsem {:cat :verb
                          :sem {:pred :look-at}}}
-
 
  "guidare"  {:synsem {:cat :verb
                       :sem {:pred :drive}}}
@@ -880,57 +845,6 @@
  "interrompere" {:italiano {:passato "interrotto"}
                  :synsem {:cat :verb
                           :sem {:pred :interrupt}}}
- "io"
- [{:synsem {:cat :noun
-            :pronoun true
-            :case :nom
-            :agr {:gender :fem
-                  :person :1st
-                  :number :sing}
-            :sem {:pred :I
-                  :human true}
-            :subcat []}}
-
-  {:synsem {:cat :noun
-            :pronoun true
-            :case :nom
-            :agr {:gender :masc
-                  :person :1st
-                  :number :sing}
-            :sem {:pred :I
-                  :human true}
-            :subcat []}}]
-
- "la"
- ;; as with "lo", do we need both of these "lo" entries? try to get by with just one.
- ;; TODO: refactor commonalities
- ;; 1. pronoun: human
- [{:synsem {:cat :noun
-            :pronoun true
-            :case :acc
-            :reflexive false
-            :agr {:gender :fem
-                  :person :3rd
-                  :number :sing}
-            :sem {:human true
-                  :pred :lei}
-            :subcat []}
-   :italiano {:initial true   ;; TODO: verify that 'la' above and this below are being unified correctly.
-              }}
-
-  ;; 2. pronoun: non-human
-  {:synsem {:cat :noun
-            :pronoun true
-            :case :acc
-            :reflexive false
-            :agr {:gender :fem
-                  :person :3rd
-                  :number :sing}
-            :sem {:human false
-                  :place false ;; "they go to it (loro vanna a la)" sounds strange
-                  :pred :lei}
-            :subcat []}
-   :italiano {:initial true}}]
 
  "lamentarsi" {:synsem {:cat :verb
                         :sem {:pred :complain
@@ -948,19 +862,6 @@
 
  "lavorare"  {:synsem {:cat :verb
                        :sem {:pred :work-human}}}
- "lei"
- (let [common {:synsem {:cat :noun
-                        :pronoun true
-                        :case :nom
-                        :agr {:person :3rd
-                              :gender :fem
-                              :number :sing}
-                        :sem {:pred :lei} ;; note: we don't specify human=true (english "it").
-                        :subcat []}}]
-   [{:unify [common]
-     :synsem {:sem {:human false}}}
-    {:unify [common]
-     :synsem {:sem {:human true}}}])
 
  "leggere"
  {:italiano {:passato "letto"}
@@ -968,71 +869,6 @@
            :sem {:discrete false
                  :pred :read}}}
 
- ;; as with "la", do we need both of these "lo" entries? try to get by with just one.
- "lo"
- [{:synsem {:cat :noun
-            :pronoun true
-            :case :acc
-            :reflexive false
-            :agr {:gender :masc
-                  :person :3rd
-                  :number :sing}
-            :sem {:human true
-                  :pred :lui}
-            :subcat []}}
-
-  {:synsem {:cat :noun
-            :pronoun true
-            :case :acc
-            :reflexive false
-            :agr {:gender :masc
-                  :person :3rd
-                  :number :sing}
-            :sem {:human false
-                  :place false
-                  :pred :lui}
-            :subcat []}
-   :italiano {:initial true}}  ;; TODO: verify that 'lo' above and this below are being unified correctly.
-  ]
-
- "loro"
- [{:synsem {:cat :noun
-            :pronoun true
-            :case :nom
-            :agr {:person :3rd
-                  :gender :fem
-                  :number :plur}
-            :sem {:human true
-                  :pred :loro}
-            :subcat []}}
-  {:synsem {:cat :noun
-            :pronoun true
-            :case :nom
-            :agr {:person :3rd
-                  :gender :masc
-                  :number :plur}
-            :sem {:human true
-                  :pred :loro}
-            :subcat []}}
-  {:synsem {:cat :noun
-            :pronoun true
-            :case :nom
-            :agr {:person :3rd
-                  :gender :fem
-                  :number :plur}
-            :sem {:human false
-                  :pred :loro}
-            :subcat []}}
-  {:synsem {:cat :noun
-            :pronoun true
-            :case :nom
-            :agr {:person :3rd
-                  :gender :masc
-                  :number :plur}
-            :sem {:human false
-                  :pred :loro}
-            :subcat []}}
-  ]
 
  "Lucia e Cecilia"
  {:synsem {:sem {:pred :lucia-and-cecilia
@@ -1042,18 +878,6 @@
                  :person :3rd
                  :gender :fem}}}
 
- "lui" (let [common {:synsem {:cat :noun
-                              :pronoun true
-                              :case :nom
-                              :agr {:person :3rd
-                                    :gender :masc
-                                    :number :sing}
-                              :sem {:pred :lui} ;; note: we don't specify human=true (english "it").
-                              :subcat []}}]
-         [{:unify [common]
-           :synsem {:sem {:human false}}}
-          {:unify [common]
-           :synsem {:sem {:human true}}}])
  "Luigi"
  {:synsem {:agr {:gender :masc}
            :sem {:pred :luigi
@@ -1064,26 +888,6 @@
                  :human true}
            :agr {:gender :fem}
            :propernoun true}}
-
- "Luisa e io"
- [{:synsem {:cat :noun
-            :pronoun true
-            :case :nom
-            :agr {:gender :fem
-                  :person :1st
-                  :number :plur}
-            :sem {:human true
-                  :pred :luisa-and-i}
-            :subcat []}}
-  {:synsem {:cat :noun
-            :pronoun true
-            :case :nom
-            :agr {:gender :masc
-                  :person :1st
-                  :number :plur}
-            :sem {:human true
-                  :pred :luisa-and-i}
-            :subcat []}}]
 
  "macchiare" {:synsem {:cat :verb
                        :sem {:pred :stain}}}
@@ -1133,16 +937,6 @@
                            :reflexive true}}
              :italiano {:passato "messo"}}
 
- "mi"
- {:synsem {:cat :noun
-           :pronoun true
-           :case :acc
-           :agr {:person :1st
-                 :number :sing}
-           :reflexive true
-           :sem {:human true}
-           :subcat []}}
-
  "migliorare" {:synsem {:cat :verb
                         :sem {:pred :improve}}} ;; c.f. english: "ameliorate"
 
@@ -1184,25 +978,6 @@
                  :comparative false
                  :physical-object true
                  :human false}}}
- "noi"
- [{:synsem {:cat :noun
-            :pronoun true
-            :case :nom
-            :agr {:gender :fem
-                  :person :1st
-                  :number :plur}
-            :sem {:pred :noi
-                  :human true}
-            :subcat []}}
-  {:synsem {:cat :noun
-            :pronoun true
-            :case :nom
-            :agr {:gender :masc
-                  :person :1st
-                  :number :plur}
-            :sem {:pred :noi
-                  :human true}
-            :subcat []}}]
 
  "non" {:synsem {:cat :adverb
                  :sem {:mod {:polarity :-}}}}
@@ -1368,7 +1143,6 @@
               :italiano {:present {:1sing "riempio"
                                    :3sing "riempie"
                                    :3plur "riempiono"}}}
-
  "rimanere" {:synsem {:cat :verb
                       :essere true
                       :sem {:pred :remain-ri}}
@@ -1496,28 +1270,6 @@
  "sgridare" {:synsem {:cat :verb
                       :sem {:pred :scold}}}
 
- "si" [{;; feminine singular
-        :synsem {:agr {:person :3rd
-                       :gender :fem
-                       :number :sing}
-                 :cat :noun
-                 :pronoun true
-                 :reflexive true}}
-
-       {;; masculine singular
-        :synsem {:agr {:person :3rd
-                       :gender :masc
-                       :number :sing}
-                 :cat :noun
-                 :pronoun true
-                 :reflexive true}}
-
-       ;; plural: unspecified gender
-       {:synsem {:agr {:person :3rd
-                       :number :plur}
-                 :cat :noun
-                 :pronoun true
-                 :reflexive true}}]
 
  "sistemare" {:synsem {:cat :verb
                        :sem {:pred :organize-systematically}}}
@@ -1645,16 +1397,6 @@
                :synsem {:sem {:pred :hold}}}
               {:unify [common]
                :synsem {:sem {:pred :keep}}}])
- "ti"
- {:synsem {:cat :noun
-           :pronoun true
-           :case :acc
-           :agr {:person :2nd
-                 :number :sing}
-           :reflexive true
-           :sem {:human true}
-           :subcat []}
-  :italiano {:initial true}}
 
  "tirare"
  {:synsem {:cat :verb
@@ -1675,25 +1417,6 @@
  "trovare"
  {:synsem {:cat :verb
            :sem {:pred :find}}}
- "tu"
- [{:synsem {:cat :noun
-            :pronoun true
-            :case :nom
-            :agr {:person :2nd
-                  :gender :fem
-                  :number :sing}
-            :sem {:pred :tu
-                  :human true}
-            :subcat []}}
-  {:synsem {:cat :noun
-            :pronoun true
-            :case :nom
-            :agr {:person :2nd
-                  :gender :masc
-                  :number :sing}
-            :sem {:pred :tu
-                  :human true}
-            :subcat []}}]
 
  "usare"  {:synsem {:cat :verb
                     :sem {:pred :use}}}
@@ -1730,16 +1453,6 @@
  "vestirsi" {:synsem {:cat :verb
                       :sem {:pred :get-dressed
                             :reflexive true}}}
- "vi"
- {:synsem {:cat :noun
-           :pronoun true
-           :case :acc
-           :agr {:person :2nd
-                 :number :plur}
-           :sem {:human true
-                 :pred :voi}
-           :subcat []}
-  :italiano {:initial true}}
 
  "vincere"  {:synsem {:cat :verb
                       :sem {:pred :win}}
@@ -1752,27 +1465,6 @@
             :essere true}
    :italiano {:passato "vissuto"
               :future-stem "vivr"}}]
-
- "voi"
- [{:synsem {:cat :noun
-            :pronoun true
-            :case :nom
-            :agr {:person :2nd
-                  :gender :fem
-                  :number :plur}
-            :sem {:pred :voi
-                  :human true}
-            :subcat []}}
-
-  {:synsem {:cat :noun
-            :pronoun true
-            :case :nom
-            :agr {:person :2nd
-                  :gender :masc
-                  :number :plur}
-            :sem {:pred :voi
-                  :human true}
-            :subcat []}}]
 
  "volere" {:synsem {:cat :verb
                     :sem {:pred :want}}
