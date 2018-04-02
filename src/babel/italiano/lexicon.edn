@@ -24,23 +24,12 @@
 
  "accompagnare" {:synsem {:cat :verb
                           :sem {:pred :accompany}}}
- "acqua"
- {:synsem {:agr {:gender :fem}
-           :cat :noun
-           :sem {:artifact false
-                 :animate false
-                 :pred :water}}}
  "addormentarsi"
  {:synsem {:cat :verb
            :sem {:pred :fall-asleep
                  :reflexive true
                  :subj {:animate true}}}}
 
- "aereo" {:synsem {:agr {:gender :masc}
-                   :cat :noun
-                   :sem {:physical-object true
-                         :pred :airplane
-                         :place true}}}
  "affollato"
  [;; comparative
   (let [is-place {:synsem {:sem {:place true}}} ;; only places can be crowded.
@@ -89,18 +78,6 @@
  "amare"
  {:synsem {:cat :verb
            :sem {:pred :amare}}}
- "amica"
- {:synsem {:agr {:gender :fem}
-           :cat :noun
-           :sem {:pred :amico
-                 :human true
-                 :child false}}}
- "amico"
- {:synsem {:agr {:gender :masc}
-           :cat :noun
-           :sem {:pred :amico
-                 :human true
-                 :child false}}}
 
  "ammirare" {:synsem {:cat :verb
                       :sem {:pred :admire}}}
@@ -120,11 +97,6 @@
            :subcat {:2 []}
            :sem {:subj {:animate true}
                  :pred :go}}}
-
- "anno" {:synsem {:agr {:gender :masc}
-                  :cat :noun
-                  :sem {:pred :year
-                        :time true}}}
 
  "annoiarsi" {:synsem {:cat :verb
                      :sem {:pred :get-bored
@@ -207,14 +179,6 @@
                           :sem {:pred :assure}}}
                {:synsem {:cat :verb
                          :sem {:pred :insure}}}]
-
- "attore" {:synsem {:agr {:gender :masc}
-                    :cat :noun
-                    :sem {:pred :actor}}}
-
- "aula" {:synsem {:agr {:gender :fem}
-                  :cat :noun
-                  :sem {:pred :classroom}}}
 
  "aumentare"   {:synsem {:cat :verb
                          :sem {:pred :increase}}}
@@ -352,37 +316,6 @@
   :italiano {:masc {:plur "bianchi"}
              :fem {:plur "bianche"}}}
 
- "birra"
- {:synsem {:agr {:gender :fem}
-           :cat :noun
-           :sem {:pred :birra
-                 :artifact true
-                 :drinkable true}}}
-
-
- "bisogno"
-(let [the-object (atom :top)]
-  {:synsem {:cat :noun
-            :agr {:gender :masc}
-            :sem {:pred :bisogno-di
-                  :obj the-object}
-            :subcat {:1 {:cat :prep
-                         :sem {:pred :di
-                               :obj the-object}}}}})
-
- "braccio"
- {:synsem {:agr {:gender :masc}
-           :cat :noun
-           :sem {:pred :braccio
-                 :part-of-human-body true}}
-
-  ;; adding "bracci" as irregular because
-  ;; current morphology.clj would otherwise return
-  ;; "braccii".
-  ;; TODO: might not be an exception so much
-  ;; as a ortho-pholological rule "io" -plur-> "ia"
-  :italiano {:plur "bracci"}}
-
  "brutto"
  ;; non-comparative
  ;; TODO: add comparative
@@ -391,39 +324,10 @@
                  :comparative false ;; for now, no restrictions on what can be ugly.
                  }}}
 
- "bucato"
- {:synsem {:cat :noun
-           :agr {:gender :masc
-                 :number :sing}
-           :sem {:animate false
-                 :drinkable false
-                 :edible false
-                 :legible false
-                 :mass false
-                 :pred :laundry
-                 :speakable false}
-           :subcat {:1 {:def :def}}}}
-
  "cadere" {:synsem {:essere true
                     :cat :verb
                     :sem {:pred :fall}}
            :italiano {:future-stem "cadr"}}
-
- "caffè" [{:synsem {:agr {:gender :masc
-                          :number :sing}
-                    :cat :noun
-                    :sem {:pred :coffee}}}
-          {:synsem {:agr {:gender :masc
-                          :number :plur}
-                    :cat :noun
-                    :sem {:pred :coffee}}}]
- "calzoni"
- ;; setting {:agr {:number :plur}} because it's always plural: cannot be singular.
- {:synsem {:cat :noun
-           :agr {:gender :masc
-                 :number :plur}
-           :sem {:pred :calzoni
-                 :clothing true}}}
 
  "cambiare" {:synsem {:cat :verb
                       :sem {:pred :change}}}
@@ -438,21 +342,9 @@
  "cantare" {:synsem {:cat :verb
                      :sem {:pred :sing}}}
 
- "camicia"
- {:synsem {:agr {:gender :fem}
-           :cat :noun
-           :sem {:pred :camicia
-                 ;; (although an exception would be tshirts with writing on them):
-                 :legible false
-                 :clothing true}}}
  "camminare"
  {:synsem {:sem {:pred :walk}
            :cat :verb}}
- "cane"
- {:synsem {:agr {:gender :masc}
-           :cat :noun
-           :sem {:pet true
-                 :pred :dog}}}
 
  "capire" {:italiano {:boot-verb true}
            :synsem {:cat :verb
@@ -461,21 +353,6 @@
  "caricare" {:italiano {:future-stem "caricher"}
              :synsem {:cat :verb
                       :sem {:pred :charge}}}
- "casa"
- [{:synsem {:agr {:gender :fem}
-            :cat :noun
-            :sem {:pred :house}}}
-
-  ;; in the sense of "a casa": no article needed.
-  {:synsem {:case :acc
-            :cat :noun
-            :propernoun false
-            :agr {:gender :fem}
-            :sem {:pred :house
-                  :spec {:def :none}} ;; "a casa", not "a mia casa", etc
-            :subcat []}}
-  ]
-
  "cattivo"
  {:synsem {:cat :adjective
            :sem {:pred :cattivo
@@ -483,17 +360,6 @@
                  :human true;; TODO:should not need this because child => human.
                  :child true}}
   :italiano {:cat :adjective}}
-
- ;; working on: "mi sono comprato un nuovo cellulare"
- "cellulare"
- {:synsem {:agr {:gender :masc}
-           :cat :noun
-           :sem {:pred :cellulare
-                 :artifact true
-                 :consumable false
-                 :writable false
-                 :place false
-                 :speakable false}}}
 
  "cenare" {:synsem {:cat :verb
                     :sem {:pred :have-dinner}}}
@@ -505,7 +371,6 @@
                 :synsem {:sem {:pred :look-for}}}
                {:unify [common]
                 :synsem {:sem {:pred :look-up}}}])
-
 
  "chiacchierare" {:synsem {:cat :verb
                            :sem {:pred :chat}}}
@@ -527,12 +392,6 @@
                                       :cat :noun
                                       :sem name-semantics
                                       :propernoun true}}}})
-
- "chiave" {:synsem {:agr {:gender :masc}
-                    :cat :noun
-                    :sem {:physical-object true
-                          :pred :key
-                          :place false}}}
 
  "chiedere" {:synsem {:cat :verb
                       :sem {:subj {:human true}
@@ -565,20 +424,6 @@
                   :pred :existential}
             :agr {:person :3rd
                   :number :plur}}}]
- "cipolla"
- {:synsem {:agr {:gender :fem}
-           :cat :noun
-           :sem {:pred :cipolla
-                 :edible true
-                 :animate false
-                 :artifact false}}}
- "città"
- {:vcat :noun-invariable-feminine
-  :synsem {:agr {:gender :fem}
-           :sem {:city true
-                 :pred :city}
-           :subcat {:1 {:cat :det
-                        :def :def}}}} ;; TODO: why must :def be specifically :def here?
 
  "cittadino" {:synsem {:cat :adjective
                        :sem {:pred :local}}}
@@ -595,14 +440,6 @@
             :sem {:pred :begin}}}
   {:synsem {:cat :verb
             :sem {:pred :start}}}]
- "compito"
- {:synsem {:agr {:gender :masc}
-           :cat :noun
-           :sem {:pred :compito
-                 :legible true
-                 :speakable false
-                 :buyable false
-                 :artifact true}}}
 
  "commentare"  {:synsem {:cat :verb
                          :sem {:pred :comment}}}
@@ -627,7 +464,6 @@
 
  "contare" {:synsem {:sem {:pred :count}
                      :cat :verb}}
-
  "contento"
  [{:synsem {:cat :adjective
             :sem {:pred :contento
@@ -688,11 +524,6 @@
  {:italiano {:passato "deluso"}
   :synsem {:cat :verb
            :sem {:pred :disappoint}}}
-
- "dentista"
- {:synsem {:cat :noun
-           :sem {:pred :dentist}
-           :agr {:gender :masc}}}
 
  "desiderare"  {:synsem {:cat :verb
                          :sem {:pred :desire}}}
@@ -761,16 +592,6 @@
                         :sem {:pred :have-fun
                               :reflexive true}}}
 
- "domanda" {:synsem {:agr {:gender :fem}
-                     :cat :noun
-                     :sem {:pred :question}}}
-
- "donna"
- {:synsem {:agr {:gender :fem}
-           :cat :noun
-           :sem {:human true
-                 :pred :donna
-                 :child false}}}
  "dormire"
  {:synsem {:cat :verb
            :sem {:pred :sleep}
@@ -787,10 +608,6 @@
                                 :2plur "dovete"
                                 :3plur "devono"}}}
 
- "ensalata" {:synsem {:sem {:pred :salad}
-                      :cat :noun
-                      :agr {:gender :fem}}}
-
  "entrare" {:synsem {:cat :verb
                      :essere true
                      :sem {:pred :enter}}}
@@ -799,10 +616,6 @@
                       :essere true
                       :sem {:pred :exist}}
              :italiano {:passato "esistito"}}
-
- "espresso" {:synsem {:agr {:gender :masc}
-                      :cat :noun
-                      :sem {:pred :espresso}}}
 
  "esprimere" {:italiano {:passato "espresso"}
               :synsem {:cat :verb
@@ -972,10 +785,6 @@
             :synsem {:cat :verb
                      :sem {:pred :wound}}}
 
- "finestra" {:synsem {:agr {:gender :fem}
-                      :cat :noun
-                      :sem {:pred :window}}}
-
  "finire"  {:italiano {:boot-verb true}
             :synsem {:cat :verb
                      :sem {:pred :finish}}}
@@ -1002,11 +811,6 @@
 
  "funzionare" {:synsem {:cat :verb
                         :sem {:pred :work-nonhuman}}}
-
- "gatto"  {:synsem {:agr {:gender :masc}
-                    :cat :noun
-                    :sem {:pred :cat
-                          :pet true}}}
 
  "gestire" {:italiano {:boot-verb true}
             :synsem {:sem {:pred :manage}
@@ -1051,10 +855,6 @@
  "guidare"  {:synsem {:cat :verb
                       :sem {:pred :drive}}}
 
- "idea" {:synsem {:agr {:gender :fem}
-                  :cat :noun
-                  :sem {:pred :idea}}}
-
  "imparare"  {:synsem {:cat :verb
                        :sem {:pred :learn-i}}}
 
@@ -1073,7 +873,6 @@
  "innamorarsi" {:synsem {:cat :verb
                         :sem {:pred :fall-in-love
                               :reflexive true}}}
-
 
  "insegnare"  {:synsem {:cat :verb
                         :sem {:pred :teach}}}
@@ -1102,9 +901,6 @@
                   :human true}
             :subcat []}}]
 
- "isola" {:synsem {:agr {:gender :fem}
-                   :cat :noun
-                   :sem {:pred :island}}}
  "la"
  ;; as with "lo", do we need both of these "lo" entries? try to get by with just one.
  ;; TODO: refactor commonalities
@@ -1136,16 +932,15 @@
             :subcat []}
    :italiano {:initial true}}]
 
-"lamentarsi" {:synsem {:cat :verb
-                       :sem {:pred :complain
-                             :reflexive true}}}
+ "lamentarsi" {:synsem {:cat :verb
+                        :sem {:pred :complain
+                              :reflexive true}}}
 
  "lasciare" {:synsem {:cat :verb
                       :sem {:pred :leave-behind}}}
 
  "lavare"  {:synsem {:cat :verb
                      :sem {:pred :wash}}}
-
 
  "lavarsi" {:synsem {:cat :verb
                      :sem {:pred :wash-oneself
@@ -1172,14 +967,6 @@
   :synsem {:cat :verb
            :sem {:discrete false
                  :pred :read}}}
-
- "lezione" {:synsem {:agr {:gender :fem}
-                     :cat :noun
-                     :sem {:pred :lesson}}}
-
- "libro" {:synsem {:agr {:gender :masc}
-                   :cat :noun
-                   :sem {:pred :book}}}
 
  ;; as with "la", do we need both of these "lo" entries? try to get by with just one.
  "lo"
@@ -1300,12 +1087,6 @@
 
  "macchiare" {:synsem {:cat :verb
                        :sem {:pred :stain}}}
- "madre"
- {:synsem {:agr {:gender :fem}
-           :cat :noun
-           :sem {:human true
-                 :pred :madre
-                 :child false}}}
 
  "male" {:synsem {:cat :adverb
                   :sem {:pred :bad}}}
@@ -1316,7 +1097,6 @@
 
  "mandare"  {:synsem {:cat :verb
                       :sem {:pred :send}}}
-
  "mangiare"
  {:synsem {:cat :verb
            :sem {:pred :eat
@@ -1353,11 +1133,6 @@
                            :reflexive true}}
              :italiano {:passato "messo"}}
 
- "mezzogiorno"
- {:synsem {:agr {:gender :masc}
-           :cat :noun
-           :sem {:pred :noon
-                 :time true}}}
  "mi"
  {:synsem {:cat :noun
            :pronoun true
@@ -1400,13 +1175,6 @@
                      :essere true
                      :sem {:pred :be-born}}
             :italiano {:passato "nato"}}
-
- "neonato"
- {:synsem {:agr {:gender :masc}
-           :cat :noun
-           :sem {:pred :newborn
-                 :human true
-                 :adult false}}}
 
  ;; non-comparative
  ;; TODO: add comparative
@@ -1461,15 +1229,6 @@
 
  "pagare" {:synsem {:cat :verb
                      :sem {:pred :pay}}}
- "pane"
- ;; inherently singular.
- {:synsem {:agr {:gender :masc}
-           :cat :noun
-           :sem {:pred :bread}
-           :subcat {:1 {:cat :det
-                        :number :sing
-                        :def :def}}}}
-
  "parlare"
  [{:synsem {:cat :verb
             :sem {:pred :speak}}}
@@ -1487,21 +1246,21 @@
  {:synsem {:cat :verb
            :sem {:pred :think}}}
 
-"perdere" {:italiano {:passato "perso"}
+ "perdere" {:italiano {:passato "perso"}
             :synsem {:cat :verb
                      :sem {:pred :lose}}}
+ 
+ "pettinarsi" {:synsem {:cat :verb
+                        :sem {:pred :comb-oneself
+                              :reflexive true}}}
 
-"pettinarsi" {:synsem {:cat :verb
-                       :sem {:pred :comb-oneself
-                             :reflexive true}}}
-
-"piacere" {:synsem {:cat :verb
-                   :essere true
-                   :sem {:pred :be-pleasant}}
-          :italiano {:passato "piaciuto"
-                     :present {:1sing "piaccio"
-                               :1plur "piacciamo"
-                               :3plur "piacciono"}}}
+ "piacere" {:synsem {:cat :verb
+                     :essere true
+                     :sem {:pred :be-pleasant}}
+            :italiano {:passato "piaciuto"
+                       :present {:1sing "piaccio"
+                                 :1plur "piacciamo"
+                                 :3plur "piacciono"}}}
 
  "piangere" {:italiano {:passato "pianto"}
              :synsem {:cat :verb
@@ -1509,14 +1268,6 @@
 
  "piegare" {:synsem {:cat :verb
                      :sem {:pred :fold}}}
-
- "pizza" {:synsem {:agr {:gender :fem}
-                   :cat :noun
-                   :sem {:pred :pizza}}}
-
- "poltrona" {:synsem {:cat :noun
-                      :sem {:pred :easy-chair}
-                      :agr {:gender :fem}}}
 
  "portare"  [{:synsem {:cat :verb
                          :sem {:pred :carry}}}
@@ -1585,18 +1336,8 @@
 
  "recuperare" {:synsem {:cat :verb
                         :sem {:pred :recover}}}
- "ragazza"
- {:synsem {:cat :noun
-           :agr {:gender :fem}
-           :sem {:pred :girl
-                 :human true}}}
- "ragazzo"
- {:synsem {:cat :noun
-           :agr {:gender :masc}
-           :sem {:pred :boy
-                 :human true}}}
 
-"rendere" (let [common {:synsem {:cat :verb}
+ "rendere" (let [common {:synsem {:cat :verb}
                        :italiano {:italiano "rendere"
                                   :passato "reso"}}]
            [{:unify [common]
@@ -1636,9 +1377,8 @@
                                   :3plur "rimangono"}
                         :future-stem "rimarr"}}
 
-"riparare" {:synsem {:cat :verb
-                         :sem {:pred :repair}}}
-
+ "riparare" {:synsem {:cat :verb
+                      :sem {:pred :repair}}}
 
  "ripetere"  {:synsem {:cat :verb
                        :sem {:pred :repeat}}}
@@ -1646,24 +1386,18 @@
  "riposare" {:synsem {:cat :verb
                       :sem {:pred :rest}}}
 
-  "riposarsi"
-  {:synsem {:cat :verb
-            :sem {:pred :rest-oneself
-                  :reflexive true
-                  :subj {:animate true}}}}
-
+ "riposarsi"
+ {:synsem {:cat :verb
+           :sem {:pred :rest-oneself
+                 :reflexive true
+                 :subj {:animate true}}}}
+ 
  "riscaldare" {:synsem {:cat :verb
                         :sem {:pred :warm-up}}}
 
  "rispondere" {:synsem {:cat :verb
                         :sem {:pred :answer}}
                :italiano {:passato "risposto"}}
- "ristorante"
- {:synsem {:agr {:gender :fem}
-           :cat :noun
-           :sem {:pred :restaurant
-                 :city false
-                 :place true}}}
 
  "ritornare" {:synsem {:cat :verb
                        :sem {:pred :return-r}
@@ -1715,10 +1449,6 @@
                        :essere true
                        :sem {:pred :escape}}}
 
- "scarpa" {:synsem {:agr {:gender :fem}
-                    :cat :noun
-                    :sem {:pred :shoe}}}
-
  "scattare" {:synsem {:cat :verb
                       :sem {:pred :snap-pictures}}}
 
@@ -1749,23 +1479,19 @@
                                  :2plur "sedete"
                                  :3plur "siedono"}}}
 
- "sedia" {:synsem {:cat :noun
-                   :agr {:gender :fem}
-                   :sem {:pred :chair}}}
-
-"seguire" {:synsem {:cat :verb
-                    :sem {:pred :follow}}}
+ "seguire" {:synsem {:cat :verb
+                     :sem {:pred :follow}}}
 
  "sembrare" {:synsem {:cat :verb
-                     :essere true
-                     :sem {:pred :seem}}}
-
+                      :essere true
+                      :sem {:pred :seem}}}
+ 
  "sentire" {:synsem {:cat :verb
                      :sem {:pred :hear}}}
-
-"servire" {:synsem {:essere true
-                    :cat :verb
-                    :sem {:pred :be-necessary-s...}}}
+ 
+ "servire" {:synsem {:essere true
+                     :cat :verb
+                     :sem {:pred :be-necessary-s...}}}
 
  "sgridare" {:synsem {:cat :verb
                       :sem {:pred :scold}}}
@@ -1879,10 +1605,6 @@
  "studiare"  {:synsem {:cat :verb
                        :sem {:pred :study}}}
 
- "studente"  {:synsem {:agr {:gender :masc}
-                       :cat :noun
-                       :sem {:pred :student}}}
-
  "suonare"  {:synsem {:cat :verb
                       :sem {:subj {:human true}
                             :pred :play-music}}}
@@ -1908,13 +1630,6 @@
  "tagliare"  {:synsem {:cat :verb
                        :sem {:pred :cut}}}
 
- "tavolino" {:synsem {:cat :noun
-                      :agr {:gender :masc}
-                      :sem {:pred :small-table}}}
-
- "tavolo" {:synsem {:agr {:gender :masc}
-                    :cat :noun
-                    :sem {:pred :table}}}
 
  "telefonare"  {:synsem {:cat :verb
                          :sem {:pred :telephone}}}
@@ -1980,19 +1695,6 @@
                   :human true}
             :subcat []}}]
 
- "uccello"
- {:synsem {:agr {:gender :masc}
-           :cat :noun
-           :sem {:pred :bird}}}
-
- "uomo"
- {:italiano {:plur "uomini"}
-  :synsem {:agr {:gender :masc}
-           :cat :noun
-           :sem {:human true
-                 :pred :man
-                 :child false}}}
-
  "usare"  {:synsem {:cat :verb
                     :sem {:pred :use}}}
 
@@ -2025,10 +1727,6 @@
                                 :3plur "vengono"}
                       :future-stem "verr"}}
 
- "ventotto" {:synsem {:cat :det
-                      :def :twentyeight
-                      :agr {:number :plur}}}
-
  "vestirsi" {:synsem {:cat :verb
                       :sem {:pred :get-dressed
                             :reflexive true}}}
@@ -2047,10 +1745,6 @@
                       :sem {:pred :win}}
              :italiano {:passato "vinto"}}
 
- "vino" {:synsem {:agr {:gender :masc}
-                  :cat :noun
-                  :pred :vino
-                  :sem {:pred :vino}}}
  "vivere"
  [{:synsem {:cat :verb
             :sem {:subj {:living true}
@@ -2090,13 +1784,4 @@
                                 :1plur "vogliamo"
                                 :2plur "volete"
                                 :3plur "vogliono"}}}
-
- "zaino" {:synsem {:agr {:gender :masc}
-                   :cat :noun
-                   :sem {:pred :backpack}}}
-
-;; ":top" {:synsem :top
-;;         :top true}
-;; ":top-noun" {:synsem {:cat :noun}
-;;              :top true}
  }

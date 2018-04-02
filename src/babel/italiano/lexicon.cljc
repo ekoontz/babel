@@ -422,6 +422,7 @@
                          "babel/italiano/lexicon/determiners.edn"
                          "babel/italiano/lexicon/exclamations.edn"
                          "babel/italiano/lexicon/modifiers.edn"
+                         "babel/italiano/lexicon/nouns.edn"
                          "babel/italiano/lexicon/prepositions.edn"]]
     (merge-lexicons
      (map (fn [lexicon-source]

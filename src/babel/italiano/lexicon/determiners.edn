@@ -138,5 +138,10 @@
            :mass false
            :agr {:gender :masc
                  :number :sing}}}
+
+ "ventotto" {:synsem {:cat :det
+                      :def :twentyeight
+                      :agr {:number :plur}}}
+
  }
  
