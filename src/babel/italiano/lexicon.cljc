@@ -20,50 +20,8 @@
    [clojure.repl :refer [doc]]
    [dag_unify.core :refer [dissoc-paths fail? get-in strip-refs unify]]))
 
-(declare edn2lexicon)
-
-(defn deliver-lexicon []
-  (->
-   "babel/italiano/lexicon.edn"
-   resource
-   lexfn/edn2lexicon
-   edn2lexicon))
-
-;; The values in this map in (defonce defaults) are used for lexical
-;; compilation but also available for external use.
-(defonce defaults
-  {:adjective
-   {:non-comparative
-    (let [subject (atom :top)]
-      {:synsem {:cat :adjective
-                   :sem {:arg1 subject
-                         :comparative false}
-                :subcat {:1 {:sem subject}
-                         :2 '()}}})}
-
-   :agreement
-   (let [agr (atom :top)
-         cat (atom :verb)
-         essere (atom :top)
-         infl (atom :top)]
-     {:italiano {:agr agr
-                 :cat cat
-                 :essere essere
-                 :infl infl}
-      :synsem {:agr agr
-               :cat cat
-               :essere essere
-               :infl infl}})})
-
-(defn exception-generator [lexicon]
-  (let [exception-maps (morph/exception-generator lexicon)]
-    (if (not (empty? exception-maps))
-      (merge-with concat
-                  lexicon
-                  (reduce (fn [m1 m2]
-                            (merge-with concat m1 m2))
-                          (morph/exception-generator lexicon)))
-      lexicon)))
+(declare defaults)
+(declare exception-generator)
 
 ;; TODO: see if we can use Clojure transducers here. (http://clojure.org/reference/transducers)
 (defn edn2lexicon
@@ -451,3 +409,48 @@
 
      ;; end of language-specific grammar rules
 ))
+
+(defn compile-lexicon
+  "convert source lexicon to a Clojure map."
+  []
+  (->
+   "babel/italiano/lexicon.edn"
+   resource
+   lexfn/edn2lexicon
+   edn2lexicon))
+
+;; The values in this map in (defonce defaults) are used for lexical
+;; compilation but also available for external use.
+(defonce defaults
+  {:adjective
+   {:non-comparative
+    (let [subject (atom :top)]
+      {:synsem {:cat :adjective
+                   :sem {:arg1 subject
+                         :comparative false}
+                :subcat {:1 {:sem subject}
+                         :2 '()}}})}
+
+   :agreement
+   (let [agr (atom :top)
+         cat (atom :verb)
+         essere (atom :top)
+         infl (atom :top)]
+     {:italiano {:agr agr
+                 :cat cat
+                 :essere essere
+                 :infl infl}
+      :synsem {:agr agr
+               :cat cat
+               :essere essere
+               :infl infl}})})
+
+(defn exception-generator [lexicon]
+  (let [exception-maps (morph/exception-generator lexicon)]
+    (if (not (empty? exception-maps))
+      (merge-with concat
+                  lexicon
+                  (reduce (fn [m1 m2]
+                            (merge-with concat m1 m2))
+                          (morph/exception-generator lexicon)))
+      lexicon)))

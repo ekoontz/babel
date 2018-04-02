@@ -3,7 +3,7 @@
   (:require
    [babel.generate :as generate :refer [lightning-bolts]]
    [babel.index :refer [create-indices intersection-with-identity lookup-spec map-subset-by-path]]
-   [babel.italiano.lexicon :refer [deliver-lexicon edn2lexicon]]
+   [babel.italiano.lexicon :refer [compile-lexicon edn2lexicon]]
    [babel.italiano.morphology :refer [analyze fo]]
    [babel.lexiconfn :refer [read-lexicon] :as lexfn]
    [babel.parse :as parse]
@@ -52,16 +52,6 @@
 
    "trapassato" {:synsem {:sem {:aspect :pluperfect
                                 :tense :past}}}})
-
-(defn compile-lexicon
-  "convert the Italian lexicon.edn into a Clojure map"
-  []
-  (->
-   "babel/italiano/lexicon.edn"
-   clojure.java.io/resource
-   lexfn/edn2lexicon
-   edn2lexicon))
-
 (defn fo-ps [expr]
   (parse/fo-ps expr fo))
 
@@ -801,7 +791,7 @@
     (model-plus-lexicon lexicon)))
 
 (defn np-grammar []
-  (let [lexicon (deliver-lexicon)
+  (let [lexicon (compile-lexicon)
         grammar
         (filter #(or (= (:rule %) "noun-phrase1")
                      (= (:rule %) "noun-phrase2")

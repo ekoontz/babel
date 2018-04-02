@@ -821,7 +821,9 @@
         (log/error (str "Exception when truncating lexicon: " e))))))
 
 ;; (babel.writer/write-lexicon "en" lexicon)
-(defn write-lexicon [language lexicon]
+(defn write-lexicon
+  "write a lexion (as a map) to a database: inverse of (read-lexicon)."
+  [language lexicon]
   (transaction
    (truncate-lexicon language)
    
