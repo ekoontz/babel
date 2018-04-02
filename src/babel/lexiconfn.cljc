@@ -764,7 +764,9 @@
 (declare evaluate)
 
 ;; TODO: see if we can use Clojure transducers here. (http://clojure.org/reference/transducers)
-(defn edn2lexicon [resource]
+(defn edn2lexicon
+  "convert a (clojure.java.io/resource <edn file>) to a Clojure map."
+  [resource]
   (-> resource
       slurp
       read-string ;; read .edn file into a Clojure map.
