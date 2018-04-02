@@ -418,16 +418,16 @@
 (defn compile-lexicon
   "convert source lexicon to a Clojure map."
   []
-  (let [lexicon-sources ["babel/italiano/lexicon.edn"
-                         "babel/italiano/lexicon/adjectives.edn"
-                         "babel/italiano/lexicon/adverb.edn"
+  (let [lexicon-sources ["babel/italiano/lexicon/adjectives.edn"
+                         "babel/italiano/lexicon/adverbs.edn"
                          "babel/italiano/lexicon/determiners.edn"
                          "babel/italiano/lexicon/exclamations.edn"
                          "babel/italiano/lexicon/modifiers.edn"
                          "babel/italiano/lexicon/nouns.edn"
                          "babel/italiano/lexicon/prepositions.edn"
                          "babel/italiano/lexicon/pronouns.edn"
-                         "babel/italiano/lexicon/propernames.edn"]]
+                         "babel/italiano/lexicon/propernames.edn"
+                         "babel/italiano/lexicon/verbs.edn"]]
     (merge-lexicons
      (map (fn [lexicon-source]
             (->
