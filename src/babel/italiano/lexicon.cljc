@@ -419,7 +419,8 @@
   "convert source lexicon to a Clojure map."
   []
   (let [lexicon-sources ["babel/italiano/lexicon.edn"
-                         "babel/italiano/lexicon/determiners.edn"]]
+                         "babel/italiano/lexicon/determiners.edn"
+                         "babel/italiano/lexicon/prepositions.edn"]]
     (merge-lexicons
      (map (fn [lexicon-source]
             (->

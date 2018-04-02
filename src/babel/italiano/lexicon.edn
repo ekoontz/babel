@@ -1,31 +1,4 @@
-{"a"
- [;; "a" as in "a casa"
-  {:synsem {:cat :prep
-            :sem {:pred :a
-                  :obj {:place true}}
-            :subcat {:1 {:cat :noun
-                         :case :acc
-                         :reflexive false
-                         :subcat []}
-                     :2 []}}}
-  ;; "a" as in "a Roma"
-  {:synsem {:cat :prep
-            :sem {:pred :in
-                  :obj {:city true}}
-            :subcat {:1 {:cat :noun
-                         :reflexive false}
-                     :2 []}}}
-
-  ;; "a" as in "a mezzogiorno"
-  {:synsem {:cat :prep
-            :sem {:pred :a
-                  :obj {:time true}}
-            :subcat {:1 {:cat :noun
-                         :reflexive false
-                         :subcat []}
-                       :2 []}}}
-  ]
-
+{
  "abbandonare" {:synsem {:cat :verb
                          :sem {:pred :abandon}}}
 
@@ -710,9 +683,6 @@
                                :3plur "danno"}
                      :future-stem "dar"}}
 
- "davanti" {:synsem {:cat :prep
-                     :sem {:pred :in-front-of}}}
-
  "decidere"  {:synsem {:cat :verb
                        :sem {:pred :decide}}
               :italiano {:passato "deciso"}}
@@ -732,18 +702,6 @@
 
  "dettare" {:synsem {:cat :verb
                      :sem {:pred :dictate}}}
- "di"
- {:synsem {:cat :prep
-            :sem {:pred :di
-                  :comparative true}
-            :subcat {:1 {:cat :noun
-                         :subcat []
-                         :def {:not :partitivo} ;; avoid alliteration like "di delle ragazze (of some women)"
-                         :case :disj ;; pronouns must be disjunctive (me/te/lui/lei...etc)
-                         ;; non-pronouns will unify with this constraint.
-                         }
-                     :2 []}}
-  :italiano {:initial true}}
 
  "difficile"
  ;; non-comparative
@@ -822,10 +780,6 @@
            :sem {:human true
                  :pred :donna
                  :child false}}}
- "dopo"
- {:synsem {:cat :prep
-           :sem {:pred :after
-                 :obj {:time true}}}}
  "dopodomani"
  {:synsem {:cat :sent-modifier
            :sem {:pred :dopodomani}
@@ -1121,10 +1075,6 @@
 
  "impegnare" {:synsem {:cat :verb
                        :sem {:pred :engage}}}
-
- "in" {:synsem {:cat :prep
-                :sem {:pred :in
-                      :obj {:place true}}}}
 
  "incontrare"  {:synsem {:cat :verb
                          :sem {:pred :meet}}}
