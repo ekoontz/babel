@@ -1,5 +1,27 @@
 ;; TODO: not used yet: use.
 {
+
+ "del"
+ {:synsem {:cat :det
+           :def :partitivo
+           :agr {:number :sing
+                 :gender :masc}}}
+ "dei"
+ {:synsem {:cat :det
+           :def :partitivo
+           :agr {:number :plur
+                 :gender :masc}}}
+ "della"
+ {:synsem {:cat :det
+           :def :partitivo
+           :agr {:number :sing
+                 :gender :fem}}}
+ "delle"
+ {:synsem {:cat :det
+           :def :partitivo
+           :agr {:number :plur
+                 :gender :fem}}}
+
  "i"
  {:synsem {:cat :det
            :def :def
@@ -15,22 +37,23 @@
   {:synsem {:cat :det
             :def :def
             :agr {:gender :fem
-                  :number :sing}}
-   "l'" [
-         {:use-with-vowel true
-          :synsem {:cat :det
-                   :def :def
-                   :agr {:gender :fem
-                         :number :sing}}}
-
-         {:use-with-vowel true
-          :synsem {:cat :det
-                   :def :def
-                   :agr {:gender :masc
-                         :number :sing}}}]
+                  :number :sing}}}
+ "l'" [
+       {:use-with-vowel true
+        :synsem {:cat :det
+                 :def :def
+                 :agr {:gender :fem
+                       :number :sing}}}
+       
+       {:use-with-vowel true
+        :synsem {:cat :det
+                 :def :def
+                 :agr {:gender :masc
+                       :number :sing}}}]
  "lo"
  {:synsem {:cat :det
-            :def :def
-            :agr {:gender :masc
-                  :number :sing}}}
+           :def :def
+           :agr {:gender :masc
+                 :number :sing}}}
  }
+ 
