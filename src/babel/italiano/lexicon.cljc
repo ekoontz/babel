@@ -62,8 +62,10 @@
       lexicon)))
 
 ;; TODO: see if we can use Clojure transducers here. (http://clojure.org/reference/transducers)
-(defn edn2lexicon [resource]
-  (-> (lexfn/edn2lexicon resource)
+(defn edn2lexicon
+  "Apply Italian-specific lexical rules to enhance input lexicon map into fully-specified lexical entries."
+  [input-lexicon]
+  (-> input-lexicon
 
       ;; if :vcat = :noun-invariable-{feminine,masculine}, then add plural exception.
       (map-function-on-map-vals
