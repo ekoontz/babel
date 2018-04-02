@@ -69,9 +69,6 @@
  {:synsem {:cat :verb
            :sem {:pred :help}}}
 
- "alla prossima"
- {:synsem {:cat :exclamation
-           :sem {:pred :bye}}}
  "alto"
  [;; non-comparative:
   {:synsem {:cat :adjective
@@ -767,12 +764,6 @@
  "domanda" {:synsem {:agr {:gender :fem}
                      :cat :noun
                      :sem {:pred :question}}}
- "domani"
- {:synsem {:cat :sent-modifier
-           :sem {:pred :domani}
-           :subcat {:1 {:infl :future
-                        :sem {:tense :future}
-                        :subcat []}}}}
 
  "donna"
  {:synsem {:agr {:gender :fem}
@@ -780,12 +771,6 @@
            :sem {:human true
                  :pred :donna
                  :child false}}}
- "dopodomani"
- {:synsem {:cat :sent-modifier
-           :sem {:pred :dopodomani}
-           :subcat {:1 {:infl :future
-                        :sem {:tense :future}
-                        :subcat []}}}}
  "dormire"
  {:synsem {:cat :verb
            :sem {:pred :sleep}
