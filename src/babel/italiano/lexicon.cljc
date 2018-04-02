@@ -419,6 +419,7 @@
   "convert source lexicon to a Clojure map."
   []
   (let [lexicon-sources ["babel/italiano/lexicon.edn"
+                         "babel/italiano/lexicon/adverb.edn"
                          "babel/italiano/lexicon/determiners.edn"
                          "babel/italiano/lexicon/exclamations.edn"
                          "babel/italiano/lexicon/modifiers.edn"

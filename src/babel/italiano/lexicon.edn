@@ -252,11 +252,6 @@
   {:synsem {:cat :adjective
             :sem {:comparative true
                   :pred :bello}}}]
-
- "bene"
- {:synsem {:cat :adverb
-           :sem {:pred :bene}}}
-
  "bere"
  {:italiano {:passato "bevuto"
              :future-stem "berr"
@@ -837,9 +832,6 @@
  "macchiare" {:synsem {:cat :verb
                        :sem {:pred :stain}}}
 
- "male" {:synsem {:cat :adverb
-                  :sem {:pred :bad}}}
-
  "mancare"  {:italiano {:future-stem "mancher"}
              :synsem {:cat :verb
                       :sem {:pred :mancare}}}
@@ -905,9 +897,6 @@
                  :comparative false
                  :physical-object true
                  :human false}}}
-
- "non" {:synsem {:cat :adverb
-                 :sem {:mod {:polarity :-}}}}
 
  "nuotare"  {:synsem {:cat :verb
                        :sem {:pred :swim}}}
