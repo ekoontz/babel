@@ -30,47 +30,12 @@
                  :reflexive true
                  :subj {:animate true}}}}
 
- "affollato"
- [;; comparative
-  (let [is-place {:synsem {:sem {:place true}}} ;; only places can be crowded.
-        than-this {:pred :di
-                   :mod is-place}]
-    {:unify [is-place]
-     :synsem {:cat :adjective
-              :sem {:pred :affollato
-                    :arg1 is-place
-                    :arg2 is-place
-                    :comparative true}
-              :subcat {:1 {:cat :noun
-                           :sem is-place}
-                       :2 {:cat :prep
-                           :sem than-this}}}}
-    ;; non-comparative
-    {:unify [is-place]
-     :synsem {:cat :adjective
-              :sem {:pred :affolato
-                    :comparative false}}})]
-
  "aggiungere" {:italiano {:passato "aggiunto"}
                :synsem {:cat :verb
                         :sem {:pred :add}}}
  "aiutare"
  {:synsem {:cat :verb
            :sem {:pred :help}}}
-
- "alto"
- [;; non-comparative:
-  {:synsem {:cat :adjective
-            :sem {:pred :alto
-                  :comparative false
-                  :human true}}} ;; only humans can be tall.
-
-  ;; comparative:
-  {:synsem {:cat :adjective
-            :sem {:comparative true
-                  :pred :alto
-                  :arg1 {:human true}
-                  :arg2 {:human true}}}}]
 
  "alzarsi" {:synsem {:cat :verb
                      :sem {:pred :get-up
@@ -245,13 +210,6 @@
 
  "ballare" {:synsem {:cat :verb
                      :sem {:pred :dance}}}
- "bello"
- [{:synsem {:cat :adjective
-            :sem {:pred :bello}}}
-
-  {:synsem {:cat :adjective
-            :sem {:comparative true
-                  :pred :bello}}}]
  "bere"
  {:italiano {:passato "bevuto"
              :future-stem "berr"
@@ -272,23 +230,6 @@
            :sem {:pred :drink
                  :subj {:animate true}
                  :obj {:drinkable true}}}}
- "bianco"
- {:synsem {:cat :adjective
-           :sem {:pred :bianco
-                 :comparative false
-                 :physical-object true
-                 :human false}}
-  :italiano {:masc {:plur "bianchi"}
-             :fem {:plur "bianche"}}}
-
- "brutto"
- ;; non-comparative
- ;; TODO: add comparative
- {:synsem {:cat :adjective
-           :sem {:pred :brutto
-                 :comparative false ;; for now, no restrictions on what can be ugly.
-                 }}}
-
  "cadere" {:synsem {:essere true
                     :cat :verb
                     :sem {:pred :fall}}
@@ -318,17 +259,9 @@
  "caricare" {:italiano {:future-stem "caricher"}
              :synsem {:cat :verb
                       :sem {:pred :charge}}}
- "cattivo"
- {:synsem {:cat :adjective
-           :sem {:pred :cattivo
-                 :comparative false
-                 :human true;; TODO:should not need this because child => human.
-                 :child true}}
-  :italiano {:cat :adjective}}
 
  "cenare" {:synsem {:cat :verb
                     :sem {:pred :have-dinner}}}
-
 
  "cercare"  (let [common {:italiano {:future-stem "cercher"}
                           :synsem {:cat :verb}}]
@@ -367,9 +300,6 @@
                       :sem {:pred :close}}
              :italiano {:passato "chiuso"}}
 
- "cittadino" {:synsem {:cat :adjective
-                       :sem {:pred :local}}}
-
  "colpire" (let [common {:italiano {:boot-verb true}}]
              [{:unify [common]
                :synsem {:cat :verb
@@ -406,16 +336,6 @@
 
  "contare" {:synsem {:sem {:pred :count}
                      :cat :verb}}
- "contento"
- [{:synsem {:cat :adjective
-            :sem {:pred :contento
-                  :subj {:human true}}}}
-
-  {:synsem {:cat :adjective
-            :sem {:comparative true
-                  :pred :contento
-                  :subj {:human true}
-                  :obj {:human true}}}}]
 
 "continuare" {:synsem {:cat :verb
                          :sem {:pred :continue}}}
@@ -430,17 +350,6 @@
  "corrispondere"  {:italiano {:passato "corrisposto"}
                    :synsem {:cat :verb
                             :sem {:pred :correspond}}}
-
- "corto"
- [{:synsem {:cat :adjective
-            :sem {:pred :contento
-                  :subj {:human true}}}}
-
-  {:synsem {:cat :adjective
-            :sem {:comparative true
-                  :pred :contento
-                  :subj {:human true}
-                  :obj {:human true}}}}]
 
  "creare"  {:synsem {:cat :verb
                      :sem {:pred :create}}}
@@ -473,28 +382,8 @@
  "dettare" {:synsem {:cat :verb
                      :sem {:pred :dictate}}}
 
- "difficile"
- ;; non-comparative
- ;; TODO: add comparative
- {:synsem {:cat :adjective
-           :sem {:pred :difficile
-                 :comparative false
-                 ;; "difficile" has a very specific list of things it can modify:
-                 :drinkable false
-                 :human false
-                 :animate false
-                 :buyable false
-                 :legible true
-                                        ;                             :activity true ;; TODO: cannot declare this as an activity because of some semantic implicature..
-                 :artifact true
-                 :physical-object true
-                 :edible false}}
-  :italiano {:fem {:sing "difficile"}}}
-
-
  "dimenticare"  {:synsem {:cat :verb
                          :sem {:pred :forget}}}
-
 
  "dipingere" {:synsem {:cat :verb
                        :sem {:pred :paint}}
@@ -757,12 +646,6 @@
  "gestire" {:italiano {:boot-verb true}
             :synsem {:sem {:pred :manage}
                      :cat :verb}}
- "giallo"
- {:synsem {:cat :adjective
-           :sem {:pred :yellow
-                 :comparative false
-                 :physical-object true
-                 :human false}}}
 
  "giocare"  {:synsem {:cat :verb
                       :sem {:pred :play-games}}
@@ -888,15 +771,6 @@
                      :essere true
                      :sem {:pred :be-born}}
             :italiano {:passato "nato"}}
-
- ;; non-comparative
- ;; TODO: add comparative
- "nero"
- {:synsem {:cat :adjective
-           :sem {:pred :nero
-                 :comparative false
-                 :physical-object true
-                 :human false}}}
 
  "nuotare"  {:synsem {:cat :verb
                        :sem {:pred :swim}}}
@@ -1100,15 +974,6 @@
 
  "rubare" {:synsem {:cat :verb
                     :sem {:pred :steal}}}
-
- ;; non-comparative
- ;; TODO: add comparative
- "rosso"
- {:synsem {:cat :adjective
-           :sem {:pred :rosso
-                 :comparative false
-                 :physical-object true
-                 :human false}}}
 
  "salire" (let [common {:synsem {:cat :verb
                                  :essere true}
