@@ -424,7 +424,8 @@
                          "babel/italiano/lexicon/modifiers.edn"
                          "babel/italiano/lexicon/nouns.edn"
                          "babel/italiano/lexicon/prepositions.edn"
-                         "babel/italiano/lexicon/pronouns.edn"]]
+                         "babel/italiano/lexicon/pronouns.edn"
+                         "babel/italiano/lexicon/propernames.edn"]]
     (merge-lexicons
      (map (fn [lexicon-source]
             (->

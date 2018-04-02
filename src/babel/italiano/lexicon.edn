@@ -105,36 +105,6 @@
  "annunciare"  {:synsem {:cat :verb
                          :sem {:pred :announce}}}
 
- "Antonella"
- {:synsem {:sem {:pred :antonella
-                 :human true}
-           :propernoun true
-           :agr {:number :sing
-                 :person :3rd
-                 :gender :fem}}}
- "Antonia"
- {:synsem {:sem {:pred :antonia
-                 :human true}
-           :propernoun true
-           :agr {:number :sing
-                 :person :3rd
-                 :gender :fem}}}
- "Antonio"
- {:synsem {:propernoun true
-           :agr {:number :sing
-                 :person :3rd
-                 :gender :masc}
-           :sem {:pred :antonio
-                 :human true}}}
-
- "Antonia e Luisa"
- {:synsem {:sem {:pred :antonia-and-luisa
-                 :human true}
-           :propernoun true
-           :agr {:number :plur
-                 :person :3rd
-                 :gender :fem}}}
-
  "appoggiare"  {:synsem {:cat :verb
                          :sem {:pred :support}}}
 
@@ -157,11 +127,11 @@
                                :reflexive true
                                :subj {:animate true}}}}
 
-  "arrampicarsi" {:synsem {:cat :verb
-                         :sem {:pred :climb
-                               :reflexive true
-                               :subj {:animate true}}}}
-
+ "arrampicarsi" {:synsem {:cat :verb
+                          :sem {:pred :climb
+                                :reflexive true
+                                :subj {:animate true}}}}
+ 
  "arrivare" {:synsem {:essere true
                       :cat :verb
                       :sem {:pred :arrive}
@@ -798,11 +768,6 @@
                  :comparative false
                  :physical-object true
                  :human false}}}
- "Gianluca"
- {:synsem {:agr {:gender :masc}
-           :sem {:pred :gianluca
-                 :human true}
-           :propernoun true}}
 
  "giocare"  {:synsem {:cat :verb
                       :sem {:pred :play-games}}
@@ -869,26 +834,6 @@
            :sem {:discrete false
                  :pred :read}}}
 
-
- "Lucia e Cecilia"
- {:synsem {:sem {:pred :lucia-and-cecilia
-                 :human true}
-           :propernoun true
-           :agr {:number :plur
-                 :person :3rd
-                 :gender :fem}}}
-
- "Luigi"
- {:synsem {:agr {:gender :masc}
-           :sem {:pred :luigi
-                 :human true}
-           :propernoun true}}
- "Luisa"
- {:synsem {:sem {:pred :luisa
-                 :human true}
-           :agr {:gender :fem}
-           :propernoun true}}
-
  "macchiare" {:synsem {:cat :verb
                        :sem {:pred :stain}}}
 
@@ -906,24 +851,6 @@
            :sem {:pred :eat
                  :subj {:animate true}
                  :obj {:edible true}}}}
- "Marina"
- {:synsem {:agr {:number :sing
-                 :gender :fem}
-           :sem {:pred :marina
-                 :human true}
-           :propernoun true}}
- "Mario"
- {:synsem {:agr {:number :sing
-                 :gender :masc}
-           :sem {:pred :mario
-                 :human true}
-           :propernoun true}}
- "Matteo"
- {:synsem {:agr {:gender :masc
-                 :number :sing}
-           :sem {:pred :matteo
-                 :human true}
-           :propernoun true}}
  "mentire"
  {:synsem {:cat :verb
            :sem {:pred :lie}}}
@@ -987,11 +914,6 @@
 
  "osservare" {:synsem {:cat :verb
                        :sem {:pred :observe}}}
-
- "Ostana" {:synsem {:cat :noun
-                    :propernoun true
-                    :sem {:pred :ostana
-                          :city true}}}
 
  "ottenere" {:synsem {:cat :verb
                       :sem {:pred :obtain}}
@@ -1159,7 +1081,6 @@
 
  "riposare" {:synsem {:cat :verb
                       :sem {:pred :rest}}}
-
  "riposarsi"
  {:synsem {:cat :verb
            :sem {:pred :rest-oneself
