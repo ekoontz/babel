@@ -89,11 +89,46 @@ SRC 'or -6 letters' 'or (6 letters)'
 SRC '(male) observer' 'observer (male)'
 SRC '(fem.) observer' 'observer (fem.)'
 SRC 'please (-ia)' 'please (2 words -ia)'
-DELETE FROM vocab_item WHERE source='very bad' AND cat='superlative'
-SRC 'very bad - p' 'very bad (p..)'
+DELETE FROM vocab_item WHERE source='very bad' AND category='superlative'
+SRC 'very bad - p' 'very bad (p...)'
 
-SRC '' ''
-SRC '' ''
-SRC '' ''
+SRC 'painter, m.' 'painter (masc.)'
+SRC 'painter, f.' 'painter (femm.)'
+
+UPDATE vocab_item SET category='adjinv--adjinv' WHERE category='adjinv';
+
+SRC 'also, too, p...' 'also, too (p...)'
+SRC 'here, ...-a','here (...-a)'
+
+SRC 'this, fem.' 'this (fem.)'
+SRC 'these, fem.' 'these (fem.)'
+SRC 'this, masc.' 'this (masc.)'
+SRC 'these, masc.' 'these (masc.)'
+
+SRC 'here, ...-i' 'here (...-i)'
+SRC 'to shave (r-)' 'to shave (r-...)'
+SRC 'writer, masc.' 'writer (masc.)'
+SRC 'writer, fem.' 'writer (fem.)'
+
+SRC 'sculptor, m.' 'sculptor (m.)'
+SRC 'sculptor, f.' 'sculptor (f.)'
+
+SRC 'safe/sure' 'safe, sure'
+SRC 'only -4 letters' 'only (4 letters)'
+SRC 'under/below/underneath' 'under, below, underneath'
+SRC 'to spread (food, not rumors)' 'to spread (food, not rumors)'
+
+DELETE FROM vocab_item WHERE category='father-in-law';
+INSERT INTO vocab_item (source,target,category,target_language,source_language)
+  VALUES ('suocera','mother in law','nounsingf');
+
+INSERT INTO vocab_item (source,target,category,target_language,source_language)
+  VALUES ('suocere','mothers in law','nounplurf');
+
+INSERT INTO vocab_item (source,target,category,target_language,source_language)
+  VALUES ('suocero','father in law','nounsingm');
+
+INSERT INTO vocab_item (source,target,category,target_language,source_language)
+  VALUES ('suoceri','fathers in law','nounplurm');
 
 
