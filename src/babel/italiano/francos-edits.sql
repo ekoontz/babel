@@ -1,20 +1,20 @@
-UPDATE vocab_item SET source='provided that (condition)' WHERE source = 'provided that -condition-' AND active=true;
-UPDATE vocab_item SET source='now (a...)' WHERE source = 'now - a...' AND active=true;
-UPDATE vocab_item SET source='so that' WHERE target='affinché' AND active=true;
-DELETE FROM vocab_item WHERE target='basso' AND source='short -vs tall' AND active=true;
-UPDATE vocab_item SET source='forest, words (sing.)' WHERE source='forest,woods' AND active=true;
-UPDATE vocab_item SET source='to sparkle, shine' WHERE source='to sparkle,shine' AND active=true;
-UPDATE vocab_item SET source='caraffe, pitcher' WHERE source='caraffe,pitcher' AND active=true;
-UPDATE vocab_item SET source='cascade, waterfall' WHERE source='cascade,waterfall' AND active=true;
-UPDATE vocab_item SET source='single (for a man)' WHERE source='male-single' AND active=true;
-UPDATE vocab_item SET source='what time is it? (sing.)' WHERE source='what time is it?-sing.' AND active=true;
-UPDATE vocab_item SET source='what time is it? (plur.)' WHERE source='what time is it?-plur.' AND active=true;
-UPDATE vocab_item SET source='cerubic' WHERE source='chubby (term of endearment)' AND active=true;
-UPDATE vocab_item SET source='tuft (of hair)' WHERE source='hair - tuft' AND active=true;
+UPDATE vocab_item SET source='provided that (condition)' WHERE source = 'provided that -condition-';
+UPDATE vocab_item SET source='now (a...)' WHERE source = 'now - a...';
+UPDATE vocab_item SET source='so that' WHERE target='affinché';
+DELETE FROM vocab_item WHERE target='basso' AND source='short -vs tall';
+UPDATE vocab_item SET source='forest, words (sing.)' WHERE source='forest,woods';
+UPDATE vocab_item SET source='to sparkle, shine' WHERE source='to sparkle,shine';
+UPDATE vocab_item SET source='caraffe, pitcher' WHERE source='caraffe,pitcher';
+UPDATE vocab_item SET source='cascade, waterfall' WHERE source='cascade,waterfall';
+UPDATE vocab_item SET source='single (for a man)' WHERE source='male-single';
+UPDATE vocab_item SET source='what time is it? (sing.)' WHERE source='what time is it?-sing.';
+UPDATE vocab_item SET source='what time is it? (plur.)' WHERE source='what time is it?-plur.';
+UPDATE vocab_item SET source='cerubic' WHERE source='chubby (term of endearment)';
+UPDATE vocab_item SET source='tuft (of hair)' WHERE source='hair - tuft';
 
 SRC 'that which -c...'    'that which (c...)'
 
-UPDATE vocab_item SET active=false
+DELETE FROM vocab_item
   WHERE target='cognato'
     AND source='brother in law'
     AND category='noun1';
@@ -51,7 +51,7 @@ SRC 'hair - bang' 'bang (hair on the forehead)'
 SRC 'To search/frisk' 'To search, to frisk'
 SRC 'fruit - in general' 'fruit (in general)'
 
-UPDATE vocab_item SET active=false
+DELETE FROM vocab_item 
   WHERE target='genero'
     AND source='son in law'
     AND category='noun1';
@@ -75,7 +75,7 @@ SRC 'not even -...e' 'not even (...e)'
 SRC 'nothing -...e' 'nothing (...e)'
 SRC 'single -f.' 'single (for a woman)'
 
-UPDATE vocab_item SET active=false
+DELETE FROM vocab_item
   WHERE target='nuoro'
     AND source='daughter in law'
     AND category='noun1';
