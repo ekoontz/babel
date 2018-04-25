@@ -11,7 +11,8 @@ UPDATE vocab_item SET source='what time is it? (sing.)' WHERE source='what time 
 UPDATE vocab_item SET source='what time is it? (plur.)' WHERE source='what time is it?-plur.' AND active=true;
 UPDATE vocab_item SET source='cerubic' WHERE source='chubby (term of endearment)' AND active=true;
 UPDATE vocab_item SET source='tuft (of hair)' WHERE source='hair - tuft' AND active=true;
-    'that which -c...'    'that which (c...)'
+
+SRC 'that which -c...'    'that which (c...)'
 
 UPDATE vocab_item SET active=false
   WHERE target='cognato'
@@ -30,9 +31,9 @@ INSERT INTO vocab_item (source,target,category,target_language,source_language)
 INSERT INTO vocab_item (source,target,category,target_language,source_language)
   VALUES ('cognati','brothers in law','nounplurm');
 
-  'short - vs long' 'short (vs long)'
-'what does it mean - 3 words'
-'what does it mean (3 words)'
+SRC 'short - vs long' 'short (vs long)'
+SRC 'what does it mean - 3 words'
+SRC 'what does it mean (3 words)'
 
 DELETE FROM vocab_item WHERE category='cuisine';
 SRC 'kitchen' 'cuisine, kitchen'
