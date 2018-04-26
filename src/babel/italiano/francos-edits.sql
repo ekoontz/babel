@@ -79,7 +79,7 @@ UPDATE vocab_item SET source='nothing (...e)' WHERE source='nothing -...e';
 UPDATE vocab_item SET source='single (for a woman)' WHERE source='single -f.';
 
 UPDATE vocab_item SET active=false
-  WHERE target='nuoro'
+  WHERE target='nuora'
     AND source='daughter in law'
     AND structure->>'vocabcoach-category'='noun1';
 
