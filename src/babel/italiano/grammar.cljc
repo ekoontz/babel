@@ -4,7 +4,7 @@
    [babel.generate :as generate :refer [lightning-bolts]]
    [babel.index :refer [create-indices intersection-with-identity lookup-spec map-subset-by-path]]
    [babel.italiano.lexicon :refer [compile-lexicon edn2lexicon vocab-entry-to-lexeme]]
-   [babel.italiano.morphology :refer [analyze fo]]
+   [babel.italiano.morphology :refer [analyze get-string]]
    [babel.lexiconfn :refer [filtered-lexicon read-lexicon] :as lexfn]
    [babel.parse :as parse]
    [babel.ug :refer [apply-default-if comp-modifies-head comp-specs-head
@@ -54,7 +54,7 @@
    "trapassato" {:synsem {:sem {:aspect :pluperfect
                                 :tense :past}}}})
 (defn fo-ps [expr]
-  (parse/fo-ps expr fo))
+  (parse/fo-ps expr get-string))
 
 (defn exception [error-string]
   #?(:clj
@@ -600,9 +600,9 @@
 
 ;; TODO: move to italiano/morphology or higher (language-universal)
 (defn morph-walk-tree [tree]
-  (log/debug (str "morph-walk-tree: " (fo tree)))
+  (log/debug (str "morph-walk-tree: " (get-string tree)))
   (merge
-   {:surface (fo tree)}
+   {:surface (get-string tree)}
    (if (get-in tree [:comp])
      {:comp (morph-walk-tree (get-in tree [:comp]))}
      {})
@@ -660,7 +660,7 @@
                         {:lexicon micro-lexicon})))
 
 (defn default-fn [tree]
-  (log/debug (str "Italiano: do-defaults (pre) on tree: " (parse/fo-ps tree fo)))
+  (log/debug (str "Italiano: do-defaults (pre) on tree: " (parse/fo-ps tree get-string)))
   (log/debug (str "aspect (pre): " (strip-refs (get-in tree
                                                        [:synsem :sem :aspect]
                                                        ::unset))))
@@ -747,7 +747,7 @@
       :lexical-cache (atom (cache/fifo-cache-factory {} :threshold 1024))
       :lexicon lexicon
       :lookup (fn [arg] (analyze arg lexicon))
-      :morph (fn [expression & {:keys [from-language show-notes]}] (fo expression))
+      :morph (fn [expression & {:keys [from-language show-notes]}] (get-string expression))
       :morph-ps fo-ps         
       :rules rules
       :rule-map (zipmap rules grammar)
@@ -853,7 +853,7 @@
      :language "it"
      :language-keyword :italiano
      :morph-ps fo-ps
-     :morph fo
+     :morph get-string
      :lookup (fn [arg]
                (analyze arg lexicon))
      :generate {:lexicon lexicon-for-generation}
@@ -915,7 +915,6 @@
               (= (get-in % [:synsem :sem :aspect])
                  :simple))
     :then h-h}
-
 
    {:if #(and (= (get-in % [:synsem :sem :reflexive])
                  true)
