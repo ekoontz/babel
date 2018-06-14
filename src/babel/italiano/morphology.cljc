@@ -17,7 +17,7 @@
    [babel.morphology :as language-independent]
    [babel.stringutils :refer (replace-from-list)]
    [clojure.string :as string]
-   [clojure.string :refer (trim)]
+   [clojure.string :refer [join trim]]
    #?(:clj [clojure.tools.logging :as log])
    #?(:cljs [babel.logjs :as log]) 
    [dag_unify.core :refer (copy dissoc-paths fail? get-in ref? strip-refs unify)]))
@@ -114,8 +114,10 @@
   (cond
     (and (map? (get-in word [:a]))
          (map? (get-in word [:b])))
-    (string/join " " [(get-string-1 (get-in word [:a]))
-                      (get-string-1 (get-in word [:b]))])
+    (string/trim
+     (->> (map #(get-in word [%]) [:a :b])
+          (map get-string-1)
+          (string/join " ")))
 
     (= :verb (get-in word [:cat]))
     (let [conjugated (verbs/conjugate word)]
@@ -356,15 +358,7 @@
 ;; TODO: replace 'a' and 'b' with 'left' and 'right' for clarity.
 ;; TODO: make b required so that function is easier to understand and refactor.
 (defn get-string [a & [ b ]]
-  (if (nil? a)
-    (throw (Exception. (str "get-string: given nil."))))
-  (if (= a "")
-    (throw (Exception. (str "get-string: given empty string."))))
-
-  (let [a (or a "")
-        b (or b "")
-
-        a (get-string-1 a)
+  (let [a (get-string-1 a)
         b (get-string-1 b)
 
         ;; TODO: eventually move all of (get-string) into rules of this kind:
@@ -423,58 +417,10 @@
            (re-find #"^la " b))
       (str "alla " (string/replace b #"^la " ""))
       
-      (and (string? a) (string? b))
-      (trim (str a " " b))
-      
-      (and (string? a) (string? (get-in b [:italiano])))
-      (trim (str a " " (get-in b [:italiano])))
-      
-      (and (string? (get-in a [:italiano]))
-           (string? b))
-      (trim (str (get-in a [:italiano]) " " b))
-      
-      (and (string? a)
-           (map? b))
-      (throw (Exception. (str "couldn't determine how to stringify this map:(b): " b)))
-      
-      (and (string? b)
-           (map? a))
-      (throw (Exception. (str "couldn't determine how to stringify this map:(a): " a)))
-      
+      (nil? b) a
+
       true
-      {:a (if (nil? a) :top a)
-       :b (if (nil? b) :top b)})))
-
-(defn fo [input]
-  (cond 
-
-   (= input :fail)
-   (str input)
-
-   (string? input)
-   input
-
-   (:italiano input)
-   ;; get-string should always return a string, but sometimes it (incorrectly) does not (FIXME)
-   (string/trim (str (get-string (get-in input [:italiano]))))
-   
-   (and (map? input)
-        (get-in input [:a])
-        (get-in input [:b]))
-   (str (string/join " " 
-                     (list (fo (get-in input [:a]))
-                           (get-in input [:punctuation :middle])
-                           (fo (get-in input [:b])))))
-                     
-   (or (seq? input)
-       (vector? input))
-   (str "(" (string/join " , " 
-                         (remove #(= % "")
-                                 (map #(let [f (fo %)] (if (= f "") "" (str "" f ""))) input)))
-        ")")
-
-   true
-   ""))
+      (trim (join " " [a b])))))
 
 (defonce ppa-tokens-to-surface
   (map (fn [pair]
