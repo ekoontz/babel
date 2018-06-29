@@ -47,7 +47,7 @@
   "Return a lazy sequence of every possible expression given the spec and model,
   each of whose depth is no greater than the given depth. Trees are returned in 
   ascending depth."
-  [spec model depth & [from-bolts]]
+  [spec model depth]
   ;; 
   ;; Given a spec and a model, return the (potentially infinite) set
   ;; of all trees, in ascending head-depth, that satisfy the given spec.
@@ -83,16 +83,13 @@
   ;; And so on.
   ;;
   ;;
-  (let [bolts (or from-bolts
-                  (get-bolts-for model spec 
-                                 depth))
-        comp-paths (reverse (comp-paths depth))]
-    (lazy-cat
-     (mapcat #(add-comps-to-bolt % model comp-paths)
-             bolts)
-     (if (and (not (= false (get-in spec [:phrasal] true)))
-              (< depth max-depth))
-       (gen spec model (+ 1 depth))))))
+  (lazy-cat
+   (mapcat #(add-comps-to-bolt % model (reverse (comp-paths depth)))
+           (get-bolts-for model spec 
+                          depth))
+   (if (and (not (= false (get-in spec [:phrasal] true)))
+            (< depth max-depth))
+     (gen spec model (+ 1 depth)))))
 
 ;; Wrapper around (defn lightning-bolts) to provide a way to
 ;; test indexing and memoization strategies.
@@ -165,8 +162,9 @@
                                              (get-in grammar-rule [:head])
                                              (+ 1 depth)
                                              max-depth)
-                            ;; add each such bolt to
-                            ;; the grammar rule as the head.
+                            ;; add each such sub-bolt to
+                            ;; the grammar rule as the head,
+                            ;; yielding one bolt rooted at _grammar-rule_.
                             (map (fn [head]
                                    (assoc-in grammar-rule [:head] head)))))))
         ;; can't descend further, so 
