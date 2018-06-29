@@ -88,16 +88,7 @@
                                  depth))
         comp-paths (reverse (comp-paths depth))]
     (lazy-cat
-     (mapcat (fn [bolt]
-               (or
-                (and (= false (get-in bolt [:phrasal] true))
-                     ;; This is not a bolt but rather simply a lexical head,
-                     ;; so just return a list with this lexical head:
-                     [bolt])
-                ;; ..otherwise it's a phrase, so return the lazy
-                ;; sequence of adding all possible complements at every possible
-                ;; position at the bolt.
-                (add-comps-to-bolt bolt model comp-paths)))
+     (mapcat #(add-comps-to-bolt % model comp-paths)
              bolts)
      (if (and (not (= false (get-in spec [:phrasal] true)))
               (< depth max-depth))
