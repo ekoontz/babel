@@ -83,28 +83,26 @@
   ;; And so on.
   ;;
   ;;
-  (when (< depth max-depth)
-    (let [bolts (or from-bolts
-                    (get-bolts-for model spec 
-                                   depth))]
-      (if (not (empty? bolts))
-        (do
-          (log/trace (str "gen@" depth "; found bolts with spec=" (dag_unify.core/strip-refs spec)))
-          (lazy-cat
-           (let [bolt (first bolts)]
-             (or
-              (and (= false (get-in bolt [:phrasal] true))
-                   ;; This is not a bolt but rather simply a lexical head,
-                   ;; so just return a list with this lexical head:
-                   [bolt])
-              ;; ..otherwise it's a phrase, so return the lazy
-              ;; sequence of adding all possible complements at every possible
-              ;; position at the bolt.
-              (add-comps-to-bolt bolt model
-                                 (reverse (comp-paths depth)))))
-           (gen spec model depth (rest bolts))))
-        (if (not (= false (get-in spec [:phrasal] true)))
-          (gen spec model (+ 1 depth)))))))
+  (let [bolts (or from-bolts
+                  (get-bolts-for model spec 
+                                 depth))
+        comp-paths (reverse (comp-paths depth))]
+    (if (not (empty? bolts))
+      (lazy-cat
+       (let [bolt (first bolts)]
+         (or
+          (and (= false (get-in bolt [:phrasal] true))
+               ;; This is not a bolt but rather simply a lexical head,
+               ;; so just return a list with this lexical head:
+               [bolt])
+          ;; ..otherwise it's a phrase, so return the lazy
+          ;; sequence of adding all possible complements at every possible
+          ;; position at the bolt.
+          (add-comps-to-bolt bolt model comp-paths)))
+       (gen spec model depth (rest bolts)))
+      (if (and (not (= false (get-in spec [:phrasal] true)))
+               (< depth max-depth))
+        (gen spec model (+ 1 depth))))))
 
 ;; Wrapper around (defn lightning-bolts) to provide a way to
 ;; test indexing and memoization strategies.
@@ -135,7 +133,7 @@
                       (filter #(not (= :fail %))))))
       true
       (do
-        (log/debug (str "no compiled bolts."))
+        (log/debug (str "get-bolts-for: no compiled bolts."))
         (lightning-bolts model spec 0 depth)))))
 
 ;; a 'lightning bolt' is a dag that
