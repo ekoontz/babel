@@ -87,22 +87,21 @@
                   (get-bolts-for model spec 
                                  depth))
         comp-paths (reverse (comp-paths depth))]
-    (if (not (empty? bolts))
-      (lazy-cat
-       (let [bolt (first bolts)]
-         (or
-          (and (= false (get-in bolt [:phrasal] true))
-               ;; This is not a bolt but rather simply a lexical head,
-               ;; so just return a list with this lexical head:
-               [bolt])
-          ;; ..otherwise it's a phrase, so return the lazy
-          ;; sequence of adding all possible complements at every possible
-          ;; position at the bolt.
-          (add-comps-to-bolt bolt model comp-paths)))
-       (gen spec model depth (rest bolts)))
-      (if (and (not (= false (get-in spec [:phrasal] true)))
-               (< depth max-depth))
-        (gen spec model (+ 1 depth))))))
+    (lazy-cat
+     (mapcat (fn [bolt]
+               (or
+                (and (= false (get-in bolt [:phrasal] true))
+                     ;; This is not a bolt but rather simply a lexical head,
+                     ;; so just return a list with this lexical head:
+                     [bolt])
+                ;; ..otherwise it's a phrase, so return the lazy
+                ;; sequence of adding all possible complements at every possible
+                ;; position at the bolt.
+                (add-comps-to-bolt bolt model comp-paths)))
+             bolts)
+     (if (and (not (= false (get-in spec [:phrasal] true)))
+              (< depth max-depth))
+       (gen spec model (+ 1 depth))))))
 
 ;; Wrapper around (defn lightning-bolts) to provide a way to
 ;; test indexing and memoization strategies.
