@@ -207,12 +207,10 @@
 (defn add-comp-to-bolts
   "bolts + path => partial trees"
   [bolts path model]
-  (if (not (empty? bolts))
-    (let [bolt (first bolts)]
-      (log/debug (str "add-comp-to-bolts: " ((:morph-ps model) bolt) "@[" (string/join " " path) "]"))
-      (lazy-cat
-       (add-to-bolt-at-path bolt path model)
-       (add-comp-to-bolts (rest bolts) path model)))))
+  (mapcat (fn [bolt]
+            (log/debug (str "add-comp-to-bolts: " ((:morph-ps model) bolt) "@[" (string/join " " path) "]"))
+            (add-to-bolt-at-path bolt path model))
+          bolts))
 
 (defn add-to-bolt-at-path
   "generate all complements for bolt at given path, and create a partial tree: bolt + complement => partial tree"
