@@ -14,11 +14,11 @@
 
 (declare add-comps-to-bolt)
 (declare add-to-bolt-at-path)
+(declare comp-paths)
+(declare gen)
 (declare get-bolts-for)
 (declare get-lexemes)
 (declare lightning-bolts)
-(declare comp-paths)
-(declare gen)
 
 (defn generate
   "Return one expression matching spec _spec_ given the model _model_."
@@ -191,10 +191,9 @@
   "bolt + paths => trees"
   [bolt model comp-paths]
   (if (not (empty? comp-paths))
-    (let [comp-path (first comp-paths)]
-      (mapcat (fn [bolt]
-                (add-to-bolt-at-path bolt comp-path model))
-              (add-comps-to-bolt bolt model (rest comp-paths))))
+    (mapcat (fn [bolt]
+              (add-to-bolt-at-path bolt (first comp-paths) model))
+            (add-comps-to-bolt bolt model (rest comp-paths)))
     [bolt]))
 
 (defn add-to-bolt-at-path
