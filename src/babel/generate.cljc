@@ -163,19 +163,27 @@
   [model spec depth max-depth]
   (cond (and (< depth max-depth)
              (not (= false (get-in spec [:phrasal] true))))
-        (mapcat (fn [grammar-rule]
-                  (->> (lightning-bolts model
-                                        (get-in grammar-rule [:head])
-                                        (+ 1 depth)
-                                        max-depth)
-                       (map (fn [head]
-                              (assoc-in grammar-rule [:head] head)))))
 
-                ;; get all rules that match input _spec_:
-                (->> (:grammar model)
-                     (map #(unify % spec))
-                     (filter #(not (= :fail %)))))
+        ;; get all rules that match input _spec_:
+        (->> (->> (:grammar model)
+                  (map #(unify % spec))
+                  (filter #(not (= :fail %))))
 
+             (mapcat (fn [grammar-rule]
+                       ;; for each such rule,
+                       ;; descend to the head child and
+                       ;; find all the lightning-bolts
+                       ;; that match the rule's head child.
+                       (->> (lightning-bolts model
+                                             (get-in grammar-rule [:head])
+                                             (+ 1 depth)
+                                             max-depth)
+                            ;; add each such bolt to
+                            ;; the grammar rule as the head.
+                            (map (fn [head]
+                                   (assoc-in grammar-rule [:head] head)))))))
+        ;; can't descend further, so 
+        ;; get the leaves that match _spec_.
         true (get-lexemes model spec)))
 
 (defn get-lexemes [model spec]
