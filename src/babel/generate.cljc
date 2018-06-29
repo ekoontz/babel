@@ -183,13 +183,12 @@
    is a function that we call with _spec_ to get a set of indices. 
    Otherwise use the model's entire lexeme."
   (->>
-   (if (= false (get-in spec [:phrasal] false))
-     (if-let [index-fn (:index-fn model)]
-       (index-fn spec)
-       (do
-         (log/warn (str "get-lexemes: no index found: using entire lexicon."))
-         (flatten (vals
-                   (or (:lexicon (:generate model)) (:lexicon model)))))))
+   (if-let [index-fn (:index-fn model)]
+     (index-fn spec)
+     (do
+       (log/warn (str "get-lexemes: no index found: using entire lexicon."))
+       (flatten (vals
+                 (or (:lexicon (:generate model)) (:lexicon model))))))
    (filter #(or (= false (get-in % [:exception] false))
                 (not (= :verb (get-in % [:synsem :cat])))))
    (map #(unify % spec))
