@@ -197,20 +197,10 @@
   [bolt model comp-paths]
   (if (not (empty? comp-paths))
     (let [comp-path (first comp-paths)]
-      (log/debug (str "add-comps-to-bolt: " ((:morph-ps model) bolt) "@[" (string/join " " comp-path) "]"))
-      (add-comp-to-bolts 
-       (add-comps-to-bolt bolt model (rest comp-paths))
-       comp-path
-       model))
+      (mapcat (fn [bolt]
+                (add-to-bolt-at-path bolt comp-path model))
+              (add-comps-to-bolt bolt model (rest comp-paths))))
     [bolt]))
-
-(defn add-comp-to-bolts
-  "bolts + path => partial trees"
-  [bolts path model]
-  (mapcat (fn [bolt]
-            (log/debug (str "add-comp-to-bolts: " ((:morph-ps model) bolt) "@[" (string/join " " path) "]"))
-            (add-to-bolt-at-path bolt path model))
-          bolts))
 
 (defn add-to-bolt-at-path
   "generate all complements for bolt at given path, and create a partial tree: bolt + complement => partial tree"
