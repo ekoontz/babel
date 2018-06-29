@@ -179,3 +179,5 @@
                     :aux false :sem {:subj {:pred :top},
                                      :obj {:pred :top}}}})
 (def foo (first (babel.generate/lightning-bolts model spec 0 2)))
+
+(defn lots [] (map #(println (morph %)) (babel.generate/gen spec model 2)))
