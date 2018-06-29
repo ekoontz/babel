@@ -100,7 +100,7 @@
   "Return every possible bolt for the given model and spec."
   [model spec depth]
   (let [search-for-key
-        (dag_unify.core/strip-refs
+        (strip-refs
          {:synsem {:sem {:aspect (get-in spec [:synsem :sem :aspect] :top)
                          :reflexive (get-in spec [:synsem :sem :reflexive] :top)
                          :tense (get-in spec [:synsem :sem :tense] :top)}
