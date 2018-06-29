@@ -161,18 +161,21 @@
   "Return every possible bolt for the given model and spec. Start at the given depth and
    keep generating until the given max-depth is reached."
   [model spec depth max-depth]
-  (cond (and (< depth max-depth) (not (= false (get-in spec [:phrasal] true))))
-        (mapcat (fn [candidate-parent]
+  (cond (and (< depth max-depth)
+             (not (= false (get-in spec [:phrasal] true))))
+        (mapcat (fn [grammar-rule]
                   (->> (lightning-bolts model
-                                        (get-in candidate-parent [:head])
+                                        (get-in grammar-rule [:head])
                                         (+ 1 depth)
                                         max-depth)
                        (map (fn [head]
-                              (assoc-in candidate-parent [:head] head)))))
-                (->>
-                 (:grammar model)
-                 (map #(unify % spec))
-                 (filter #(not (= :fail %)))))
+                              (assoc-in grammar-rule [:head] head)))))
+
+                ;; get all rules that match input _spec_:
+                (->> (:grammar model)
+                     (map #(unify % spec))
+                     (filter #(not (= :fail %)))))
+
         true (get-lexemes model spec)))
 
 (defn get-lexemes [model spec]
