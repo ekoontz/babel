@@ -12,7 +12,6 @@
 ;; TODO: should also be possible to override per-language.
 (def ^:const max-depth 10)
 
-(declare add-comp-to-bolts)
 (declare add-comps-to-bolt)
 (declare add-to-bolt-at-path)
 (declare get-bolts-for)
@@ -218,7 +217,7 @@
   (->>
    (gen (get-in bolt path) model 0) ;; generate all complements for _bolt_ at _path_.
    (map #(let [partial-tree
-               (dag_unify.core/assoc-in! (dag_unify.core/copy bolt) path %)] ;; add the complement to the bolt at _path_.
+               (assoc-in! (copy bolt) path %)] ;; add the complement to the bolt at _path_.
            ;; apply model's :default-fn, if any.
            ;; TODO: default-fn should return a sequence of partial trees,
            ;; not just one.
