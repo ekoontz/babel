@@ -195,7 +195,7 @@
 (defn add-comps-to-bolt
   "bolt + paths => trees"
   [bolt model comp-paths]
-  (if (and true (not (empty? comp-paths)))
+  (if (not (empty? comp-paths))
     (let [comp-path (first comp-paths)]
       (log/debug (str "add-comps-to-bolt: " ((:morph-ps model) bolt) "@[" (string/join " " comp-path) "]"))
       (add-comp-to-bolts 
