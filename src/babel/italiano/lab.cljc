@@ -177,25 +177,28 @@
    :synsem {:cat :verb
             :subcat []
             :aux false}})
+
+(def root
+  {:root {:italiano {:italiano "vedere"}}})
+
 ;;   H
 ;;  / \
 ;; C   H
 ;;    / \
 ;;   C   H
 (def lexical-subject
-  (unify basic {:head {:comp {:phrasal false}
-                       :head {:phrasal false}}
-                :comp {:phrasal false}}))
+  (unify basic root {:head {:comp {:phrasal false}
+                            :head {:phrasal false}}
+                     :comp {:phrasal false}}))
 ;;      H
 ;;    /   \
 ;;   C     H
 ;;  / \   / \
 ;; C   H C   H
 (def phrasal-subject
-  (unify basic {:head {:comp {:phrasal false}
-                       :head {:phrasal false}}
-                :comp {:phrasal true}}))
-
+  (unify basic root {:head {:comp {:phrasal false}
+                            :head {:phrasal false}}
+                     :comp {:phrasal true}}))
 
 (defn gen [tree paths model]
   (if (not (empty? paths))
