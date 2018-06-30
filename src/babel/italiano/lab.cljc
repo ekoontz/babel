@@ -172,12 +172,31 @@
         (get-in [:synsem :sem])
         clojure.pprint/pprint)))
 
-(def spec {:comp {:phrasal false},
-           :head {:comp {:phrasal false, :synsem {:pronoun true}},
-                  :head {:phrasal false}},
-           :synsem {:cat :verb, :subcat (),
-                    :aux false :sem {:subj {:pred :top},
-                                     :obj {:pred :top}}}})
-(def foo (first (babel.generate/lightning-bolts model spec 0 2)))
 
-(defn lots [] (map #(println (morph %)) (babel.generate/gen spec model 2)))
+;;   H
+;;  / \
+;; C   H
+;;    /  \
+;;   C    H
+
+(def skel {:head {:comp {:phrasal false}}
+           :comp {:phrasal false}})
+
+(def spec
+  (unify skel
+         {:head {:comp {:synsem {:pronoun true}}}
+          :synsem {:cat :verb
+                   :subcat ()
+                   :aux false}}))
+
+(defn one-sentence []
+  (let [s (first (babel.generate/lightning-bolts model spec 0 2))
+        subject-spec (get-in s [:comp])
+        object-spec (get-in s [:head :comp])]
+    (let [subj (first (babel.generate/lightning-bolts model subject-spec 0 0))
+          obj (first (babel.generate/lightning-bolts model object-spec 0 0))]
+      (let [s-with-subj (dag_unify.core/assoc-in s [:comp] subj)]
+        (let [s-with-subj-and-obj (dag_unify.core/assoc-in s-with-subj [:head :comp] obj)]
+          s-with-subj-and-obj)))))
+
+
