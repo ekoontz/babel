@@ -185,12 +185,11 @@
 (def lexical-subject
   (unify basic {:head {:comp {:phrasal false}}
                 :comp {:phrasal false}}))
-
 ;;      H
 ;;    /   \
 ;;   C     H
 ;;  / \   / \
-;; C   H  C  H
+;; C   H C   H
 (def phrasal-subject
   (unify basic {:head {:comp {:phrasal false}}
                 :comp {:phrasal true}}))
