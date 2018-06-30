@@ -179,17 +179,24 @@
 ;;    /  \
 ;;   C    H
 
+(def basic
+  {:head {:comp {:synsem {:pronoun true}}}
+   :synsem {:cat :verb
+            :subcat []
+            :aux false}})
+
 (def skel {:head {:comp {:phrasal false}}
            :comp {:phrasal false}})
 
+(def skel2 {:head {:comp {:phrasal false}}
+           :comp {:phrasal true}})
 (def spec
-  (unify skel
-         {:head {:comp {:synsem {:pronoun true}}}
-          :synsem {:cat :verb
-                   :subcat []
-                   :aux false}}))
+  (unify basic skel))
 
-(defn one-sentence []
+(def spec2
+  (unify basic skel2))
+
+(defn one-sentence-with-pronoun-subj []
   (let [s (first (lightning-bolts model spec 0 2))
         subject-spec (u/get-in s [:comp])
         object-spec (u/get-in s [:head :comp])]
@@ -201,4 +208,14 @@
         (let [s-with-subj-and-obj (u/assoc-in s-with-subj [:head :comp] obj)]
           s-with-subj-and-obj)))))
 
-
+(defn one-sentence-with-np-subj []
+  (let [s (first (lightning-bolts model spec2 0 2))
+        subject-spec (u/get-in s [:comp])
+        object-spec (u/get-in s [:head :comp])]
+    ;; Using '0' as the second argument in both of these below
+    ;; forces the complements to be lexical (not phrasal).
+    (let [subj (first (lightning-bolts model subject-spec 0 2))
+          obj (first (lightning-bolts model object-spec 0 0))]
+      (let [s-with-subj (u/assoc-in s [:comp] subj)]
+        (let [s-with-subj-and-obj (u/assoc-in s-with-subj [:head :comp] obj)]
+          s-with-subj-and-obj)))))
