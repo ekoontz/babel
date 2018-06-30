@@ -197,25 +197,28 @@
   (unify basic skel2))
 
 (defn one-sentence-with-pronoun-subj []
-  (let [s (first (lightning-bolts model spec 0 2))
-        subject-spec (u/get-in s [:comp])
-        object-spec (u/get-in s [:head :comp])]
+  (let [bolt (first (lightning-bolts model spec 0 2))]
     ;; Using '0' as the second argument in both of these below
     ;; forces the complements to be lexical (not phrasal).
-    (let [subj (first (lightning-bolts model subject-spec 0 0))
-          obj (first (lightning-bolts model object-spec 0 0))]
-      (let [s-with-subj (u/assoc-in s [:comp] subj)]
-        (let [s-with-subj-and-obj (u/assoc-in s-with-subj [:head :comp] obj)]
-          s-with-subj-and-obj)))))
+    (-> bolt
+        ((fn [tree]
+           (u/assoc-in tree [:comp]
+                       (first (lightning-bolts model (u/get-in tree [:comp]) 0 0)))))
+        ((fn [tree]
+           (u/assoc-in tree [:head :comp]
+                       (first (lightning-bolts model (u/get-in tree [:head :comp]) 0 0))))))))
 
 (defn one-sentence-with-np-subj []
-  (let [s (first (lightning-bolts model spec2 0 2))
-        subject-spec (u/get-in s [:comp])
-        object-spec (u/get-in s [:head :comp])]
+  (let [bolt (first (lightning-bolts model spec2 0 2))]
     ;; Using '0' as the second argument in both of these below
     ;; forces the complements to be lexical (not phrasal).
-    (let [subj (first (lightning-bolts model subject-spec 0 2))
-          obj (first (lightning-bolts model object-spec 0 0))]
-      (let [s-with-subj (u/assoc-in s [:comp] subj)]
-        (let [s-with-subj-and-obj (u/assoc-in s-with-subj [:head :comp] obj)]
-          s-with-subj-and-obj)))))
+    (-> bolt
+        ((fn [tree]
+           (u/assoc-in tree [:comp]
+                       (first (lightning-bolts model (u/get-in tree [:comp]) 0 2)))))
+        ((fn [tree]
+           (u/assoc-in tree [:head :comp]
+                       (first (lightning-bolts model (u/get-in tree [:head :comp]) 0 0))))))))
+
+
+
