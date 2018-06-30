@@ -1,7 +1,7 @@
 (ns babel.italiano.lab
   (:require
    [babel.directory] ;; this is needed even though there are no references to directory in here.
-   [babel.generate :refer [lightning-bolts]]
+   [babel.generate :refer [bolt lightning-bolts]]
    [babel.italiano :as italiano :refer [analyze generate model morph morph-ps parse]]
    [babel.italiano.grammar :refer [model-plus-lexicon]]
    [babel.test.test :as btest]
@@ -195,32 +195,34 @@
                 :comp {:phrasal true}}))
 
 (defn new-generate [spec]
-  (-> (first (lightning-bolts model spec 0 2))
+  (-> (bolt model spec 0 2)
       ((fn [tree]
          (u/assoc-in! tree [:comp]
-                      (first (lightning-bolts model (u/get-in tree [:comp]) 0 0)))))
+                      (bolt model (u/get-in tree [:comp]) 0 0))))
       ((fn [tree]
          (u/assoc-in! tree [:head :comp]
-                      (first (lightning-bolts model (u/get-in tree [:head :comp]) 0 0)))))))
+                      (bolt model (u/get-in tree [:head :comp]) 0 0))))))
 
 (defn one-sentence-with-lexical-subj []
-  (-> (first (lightning-bolts model lexical-subject 0 2))
+  (-> (bolt model lexical-subject 0 2)
       ((fn [tree]
          (u/assoc-in! tree [:comp]
-                     (first (lightning-bolts model (u/get-in tree [:comp]) 0 0)))))
+                     (bolt model (u/get-in tree [:comp]) 0 0))))
       ((fn [tree]
            (u/assoc-in! tree [:head :comp]
-                       (first (lightning-bolts model (u/get-in tree [:head :comp]) 0 0)))))))
+                       (bolt model (u/get-in tree [:head :comp]) 0 0))))))
 
 (defn one-sentence-with-np-subj []
-  (-> (first (lightning-bolts model phrasal-subject 0 2))
+  (-> (bolt model phrasal-subject 0 2)
       ((fn [tree]
          (u/assoc-in! tree [:comp]
-                     (first (lightning-bolts model (u/get-in tree [:comp]) 0 2)))))
+                      (bolt model (u/get-in tree [:comp]) 0 2))))
       ((fn [tree]
          (u/assoc-in! tree [:comp :comp]
-                     (first (lightning-bolts model (u/get-in tree [:comp :comp]) 0 0)))))
+                      (bolt model (u/get-in tree [:comp :comp]) 0 0))))
       ((fn [tree]
          (u/assoc-in! tree [:head :comp]
-                     (first (lightning-bolts model (u/get-in tree [:head :comp]) 0 0)))))))
+                      (bolt model (u/get-in tree [:head :comp]) 0 0))))))
+
+
 
