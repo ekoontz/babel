@@ -178,27 +178,24 @@
             :subcat []
             :aux false}})
 
-(def root
-  {:root {:italiano {:italiano "vedere"}}})
-
 ;;   H
 ;;  / \
 ;; C   H
 ;;    / \
 ;;   C   H
 (def lexical-subject
-  (unify basic root {:head {:comp {:phrasal false}
-                            :head {:phrasal false}}
-                     :comp {:phrasal false}}))
+  (unify basic {:head {:comp {:phrasal false}
+                       :head {:phrasal false}}
+                :comp {:phrasal false}}))
 ;;      H
 ;;    /   \
 ;;   C     H
 ;;  / \   / \
 ;; C   H C   H
 (def phrasal-subject
-  (unify basic root {:head {:comp {:phrasal false}
-                            :head {:phrasal false}}
-                     :comp {:phrasal true}}))
+  (unify basic {:head {:comp {:phrasal false}
+                       :head {:phrasal false}}
+                :comp {:phrasal true}}))
 
 (defn gen [tree paths model]
   (if (not (empty? paths))
@@ -215,7 +212,12 @@
        model))
 
 (defn one-sentence-with-phrasal-subj []
-  (gen (bolt model phrasal-subject)
-       [[:head :comp] [:comp] [:comp :comp]]
-       model))
+  (let [roots ["vedere" "leggere" "fare" "parlare"]
+        spec (unify phrasal-subject
+                    {:root {:italiano {:italiano (first (take 1 (shuffle roots)))}}})]
+    (gen (bolt model spec)
+         [[:head :comp] [:comp] [:comp :comp]]
+         model)))
+
+
 
