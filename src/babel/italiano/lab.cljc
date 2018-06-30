@@ -1,7 +1,7 @@
 (ns babel.italiano.lab
-  (:refer-clojure :exclude [get-in])
   (:require
-   [babel.directory :refer []]
+   [babel.directory] ;; this is needed even though there are no references to directory in here.
+   [babel.generate :refer [lightning-bolts]]
    [babel.italiano :as italiano :refer [analyze generate model morph morph-ps parse]]
    [babel.italiano.grammar :refer [model-plus-lexicon]]
    [babel.test.test :as btest]
@@ -10,7 +10,7 @@
    #?(:clj [clojure.tools.logging :as log])
    #?(:clj [clojure.repl :refer [doc]])
    [clojure.set :as set]
-   [dag_unify.core :refer [get-in strip-refs unify]]))
+   [dag_unify.core :as u :refer [strip-refs unify]]))
 
 (defn generate-speed-test [spec & [times]]
   (btest/generate-speed-test spec model times))
@@ -31,12 +31,12 @@
                        (log/info (str "semantics: "
                                       (or
                                        (strip-refs
-                                        (get-in (first parsed)
-                                                [:synsem :sem]))
+                                        (u/get-in (first parsed)
+                                                  [:synsem :sem]))
                                        (str "NO PARSE FOUND FOR: " generated))))
                        {:generated generated
-                        :pred (get-in (first parsed) [:synsem :sem :pred])
-                        :subj (get-in (first parsed) [:synsem :sem :subj :pred])}))))
+                        :pred (u/get-in (first parsed) [:synsem :sem :pred])
+                        :subj (u/get-in (first parsed) [:synsem :sem :subj :pred])}))))
 
 (def transitive-spec 
   {:synsem {:cat :verb
@@ -66,11 +66,11 @@
 (defn sentences-with-pronoun-objects-small []
   (let [lexicon (:lexicon model)
         transitive? (fn [lexeme]
-                      (and (= (get-in lexeme [:synsem :cat])
+                      (and (= (u/get-in lexeme [:synsem :cat])
                               :verb)
-                           (= (get-in lexeme [:synsem :aux] false)
+                           (= (u/get-in lexeme [:synsem :aux] false)
                               false)
-                           (= (get-in lexeme [:synsem :infl] :top)
+                           (= (u/get-in lexeme [:synsem :infl] :top)
                               :top)
                            (not (empty? (get-in lexeme [:synsem :subcat] [])))
                            (map? (get-in lexeme [:synsem :subcat :2]))
@@ -84,14 +84,14 @@
                 (keys lexicon))
 
         pronoun? (fn [lexeme]
-                   (and (= (get-in lexeme [:synsem :cat])
+                   (and (= (u/get-in lexeme [:synsem :cat])
                            :noun)
-                        (= (get-in lexeme [:synsem :pronoun])
+                        (= (u/get-in lexeme [:synsem :pronoun])
                            true)))
         propernoun? (fn [lexeme]
-                   (and (= (get-in lexeme [:synsem :cat])
+                   (and (= (u/get-in lexeme [:synsem :cat])
                            :noun)
-                        (= (get-in lexeme [:synsem :propernoun])
+                        (= (u/get-in lexeme [:synsem :propernoun])
                            true)))
 
         spec (unify transitive-spec phrasal-spec non-aux-spec
@@ -122,7 +122,7 @@
               (and (not (= false v))
                    (not (map? v)))))
    (map (fn [path]
-          [path (get-in m path)]))
+          [path (u/get-in m path)]))
    (map (fn [[path v]]
           (assoc-in {} path v)))
    (reduce (fn [a b] (merge-with merge a b)))))
@@ -169,7 +169,7 @@
         ((fn [tokenizations]
            (mapcat :parses tokenizations)))
         first
-        (get-in [:synsem :sem])
+        (u/get-in [:synsem :sem])
         clojure.pprint/pprint)))
 
 
@@ -186,17 +186,19 @@
   (unify skel
          {:head {:comp {:synsem {:pronoun true}}}
           :synsem {:cat :verb
-                   :subcat ()
+                   :subcat []
                    :aux false}}))
 
 (defn one-sentence []
-  (let [s (first (babel.generate/lightning-bolts model spec 0 2))
-        subject-spec (get-in s [:comp])
-        object-spec (get-in s [:head :comp])]
-    (let [subj (first (babel.generate/lightning-bolts model subject-spec 0 0))
-          obj (first (babel.generate/lightning-bolts model object-spec 0 0))]
-      (let [s-with-subj (dag_unify.core/assoc-in s [:comp] subj)]
-        (let [s-with-subj-and-obj (dag_unify.core/assoc-in s-with-subj [:head :comp] obj)]
+  (let [s (first (lightning-bolts model spec 0 2))
+        subject-spec (u/get-in s [:comp])
+        object-spec (u/get-in s [:head :comp])]
+    ;; Using '0' as the second argument in both of these below
+    ;; forces the complements to be lexical (not phrasal).
+    (let [subj (first (lightning-bolts model subject-spec 0 0))
+          obj (first (lightning-bolts model object-spec 0 0))]
+      (let [s-with-subj (u/assoc-in s [:comp] subj)]
+        (let [s-with-subj-and-obj (u/assoc-in s-with-subj [:head :comp] obj)]
           s-with-subj-and-obj)))))
 
 
