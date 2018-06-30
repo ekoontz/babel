@@ -194,26 +194,26 @@
   (unify basic {:head {:comp {:phrasal false}}
                 :comp {:phrasal true}}))
 
-(defn new-generate [spec]
-  (-> (bolt model spec 0 2)
-      ((fn [tree]
-         (u/assoc-in! tree [:comp]
-                      (bolt model (u/get-in tree [:comp]) 0 0))))
-      ((fn [tree]
-         (u/assoc-in! tree [:head :comp]
-                      (bolt model (u/get-in tree [:head :comp]) 0 0))))))
+
+(defn gen [tree plan model]
+  (if (not (empty? plan))
+    (let [[path depth] (first plan)]
+      (gen
+       (u/assoc-in! tree path
+                    (bolt model (u/get-in tree path) 0 depth))
+       (rest plan) model))
+    tree))
 
 (defn one-sentence-with-lexical-subj []
-  (new-generate lexical-subject))
+  (gen (bolt model lexical-subject 0 2)
+       [[[:head :comp] 0]
+        [[:comp] 0]]
+       model))
 
-(defn one-sentence-with-np-subj []
-  (-> (bolt model phrasal-subject 0 2)
-      ((fn [tree]
-         (u/assoc-in! tree [:comp]
-                      (bolt model (u/get-in tree [:comp]) 0 2))))
-      ((fn [tree]
-         (u/assoc-in! tree [:comp :comp]
-                      (bolt model (u/get-in tree [:comp :comp]) 0 0))))
-      ((fn [tree]
-         (u/assoc-in! tree [:head :comp]
-                      (bolt model (u/get-in tree [:head :comp]) 0 0))))))
+(defn one-sentence-with-phrasal-subj []
+  (gen (bolt model phrasal-subject 0 2)
+       [[[:head :comp] 0]
+        [[:comp] 2]
+        [[:comp :comp] 0]]
+       model))
+
