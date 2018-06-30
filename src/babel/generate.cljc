@@ -181,18 +181,17 @@
   "Get lexemes matching the spec. Use a model's index if available, where the index 
    is a function that we call with _spec_ to get a set of indices. 
    Otherwise use the model's entire lexeme."
-  (log/debug (str "get-lexemes: " (strip-refs spec)))
   (->>
    (if-let [index-fn (:index-fn model)]
      (index-fn spec)
      (do
        (log/warn (str "get-lexemes: no index found: using entire lexicon."))
-       (-> (or (:lexicon (:generate model)) (:lexicon model)) vals flatten)))
+       (flatten (vals
+                 (or (:lexicon (:generate model)) (:lexicon model))))))
    (filter #(or (= false (get-in % [:exception] false))
                 (not (= :verb (get-in % [:synsem :cat])))))
    (map #(unify % spec))
-   (filter #(not (= :fail %)))
-   (take 1)))
+   (filter #(not (= :fail %)))))
   
 (defn add-comps-to-bolt
   "bolt + paths => trees"
