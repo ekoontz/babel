@@ -200,13 +200,13 @@
 (defn spec-to-path [spec]
   (cond
     (and (= false (u/get-in spec [:head :comp :phrasal]))
-         (= false (u/get-in spec [:head :head :phrasal]))
-         (= false (u/get-in spec [:comp :phrasal])))
-    [[:head :comp] [:comp]]
-    (and (= false (u/get-in spec [:head :comp :phrasal]))
-         (= false (u/get-in spec [:head :head :phrasal]))
-         (= true (u/get-in spec [:comp :phrasal])))
-    [[:head :comp] [:comp] [:comp :comp]]))
+         (= false (u/get-in spec [:head :head :phrasal])))
+    (concat
+     [[:head :comp] [:comp]]
+     (cond (= false (u/get-in spec [:comp :phrasal]))
+           []
+           (= true (u/get-in spec [:comp :phrasal]))
+           [[:comp :comp]]))))
 
 (defn gen [tree paths model]
   (if (not (empty? paths))
@@ -217,18 +217,19 @@
        (rest paths) model))
     tree))
 
-(defn one-sentence-with-lexical-subj []
-  (gen (bolt model lexical-subject)
-       (spec-to-path lexical-subject)
+(defn gen2 [spec model]
+  (gen (bolt model spec)
+       (spec-to-path spec)
        model))
+
+(defn one-sentence-with-lexical-subj []
+  (gen2 lexical-subject model))
 
 (defn one-sentence-with-phrasal-subj []
   (let [roots ["vedere" "leggere" "fare" "parlare"]
         spec (unify phrasal-subject
                     {:root {:italiano {:italiano (first (take 1 (shuffle roots)))}}})]
-    (gen (bolt model spec)
-         (spec-to-path spec)
-         model)))
+    (gen2 spec model)))
 
 
 
