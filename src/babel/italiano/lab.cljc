@@ -172,54 +172,53 @@
         (u/get-in [:synsem :sem])
         clojure.pprint/pprint)))
 
-
-;;   H
-;;  / \
-;; C   H
-;;    /  \
-;;   C    H
-
 (def basic
   {:head {:comp {:synsem {:pronoun true}}}
    :synsem {:cat :verb
             :subcat []
             :aux false}})
+;;   H
+;;  / \
+;; C   H
+;;    / \
+;;   C   H
+(def lexical-subject
+  (unify basic {:head {:comp {:phrasal false}}
+                :comp {:phrasal false}}))
 
-(def skel {:head {:comp {:phrasal false}}
-           :comp {:phrasal false}})
+;;      H
+;;    /   \
+;;   C     H
+;;  / \   / \
+;; C   H  C  H
+(def phrasal-subject
+  (unify basic {:head {:comp {:phrasal false}}
+                :comp {:phrasal true}}))
 
-(def skel2 {:head {:comp {:phrasal false}}
-           :comp {:phrasal true}})
-(def spec
-  (unify basic skel))
-
-(def spec2
-  (unify basic skel2))
-
-(defn one-sentence-with-pronoun-subj []
+(defn one-sentence-with-lexical-subj []
   ;; Using '0' as the second argument in both of these below
   ;; forces the complements to be lexical (not phrasal):
-  (-> (first (lightning-bolts model spec 0 2))
+  (-> (first (lightning-bolts model lexical-subject 0 2))
       ((fn [tree]
-         (u/assoc-in tree [:comp]
+         (u/assoc-in! tree [:comp]
                      (first (lightning-bolts model (u/get-in tree [:comp]) 0 0)))))
       ((fn [tree]
-           (u/assoc-in tree [:head :comp]
+           (u/assoc-in! tree [:head :comp]
                        (first (lightning-bolts model (u/get-in tree [:head :comp]) 0 0)))))))
 
 (defn one-sentence-with-np-subj []
-  (-> (first (lightning-bolts model spec2 0 2))
+  (-> (first (lightning-bolts model phrasal-subject 0 2))
       ;; We want [:comp] to be phrasal, so we call lighting-bolts with 2.
       ((fn [tree]
-         (u/assoc-in tree [:comp]
+         (u/assoc-in! tree [:comp]
                      (first (lightning-bolts model (u/get-in tree [:comp]) 0 2)))))
       
       ;; Using '0' as the second argument in both of these below
       ;; forces the complements to be lexical (not phrasal).
       ((fn [tree]
-         (u/assoc-in tree [:comp :comp]
+         (u/assoc-in! tree [:comp :comp]
                      (first (lightning-bolts model (u/get-in tree [:comp :comp]) 0 0)))))
       ((fn [tree]
-         (u/assoc-in tree [:head :comp]
+         (u/assoc-in! tree [:head :comp]
                      (first (lightning-bolts model (u/get-in tree [:head :comp]) 0 0)))))))
 
