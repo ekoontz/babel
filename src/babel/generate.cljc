@@ -171,6 +171,12 @@
         ;; get the leaves that match _spec_.
         true (get-lexemes model spec)))
 
+(defn bolt
+  "Return every possible bolt for the given model and spec. Start at the given depth and
+   keep generating until the given max-depth is reached."
+  [model spec depth max-depth]
+  (first (lightning-bolts model spec depth max-depth)))
+
 (defn get-lexemes [model spec]
   "Get lexemes matching the spec. Use a model's index if available, where the index 
    is a function that we call with _spec_ to get a set of indices. 
