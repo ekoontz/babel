@@ -217,8 +217,8 @@
            (u/assoc-in tree [:comp]
                        (first (lightning-bolts model (u/get-in tree [:comp]) 0 2)))))
         ((fn [tree]
+           (u/assoc-in tree [:comp :comp]
+                       (first (lightning-bolts model (u/get-in tree [:comp :comp]) 0 0)))))
+        ((fn [tree]
            (u/assoc-in tree [:head :comp]
                        (first (lightning-bolts model (u/get-in tree [:head :comp]) 0 0))))))))
-
-
-
