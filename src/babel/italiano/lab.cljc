@@ -197,25 +197,22 @@
                 :comp {:phrasal true}}))
 
 
-(defn gen [tree plan model]
-  (if (not (empty? plan))
-    (let [[path depth] (first plan)]
+(defn gen [tree paths model]
+  (if (not (empty? paths))
+    (let [path (first paths)]
       (gen
        (u/assoc-in! tree path
-                    (bolt model (u/get-in tree path) 0 depth))
-       (rest plan) model))
+                    (bolt model (u/get-in tree path)))
+       (rest paths) model))
     tree))
 
 (defn one-sentence-with-lexical-subj []
-  (gen (bolt model lexical-subject 0 2)
-       [[[:head :comp] 0]
-        [[:comp] 0]]
+  (gen (bolt model lexical-subject)
+       [[:head :comp] [:comp]]
        model))
 
 (defn one-sentence-with-phrasal-subj []
-  (gen (bolt model phrasal-subject 0 2)
-       [[[:head :comp] 0]
-        [[:comp] 2]
-        [[:comp :comp] 0]]
+  (gen (bolt model phrasal-subject)
+       [[:head :comp] [:comp] [:comp :comp]]
        model))
 
