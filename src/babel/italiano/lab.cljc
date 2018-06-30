@@ -204,13 +204,7 @@
                       (bolt model (u/get-in tree [:head :comp]) 0 0))))))
 
 (defn one-sentence-with-lexical-subj []
-  (-> (bolt model lexical-subject 0 2)
-      ((fn [tree]
-         (u/assoc-in! tree [:comp]
-                     (bolt model (u/get-in tree [:comp]) 0 0))))
-      ((fn [tree]
-           (u/assoc-in! tree [:head :comp]
-                       (bolt model (u/get-in tree [:head :comp]) 0 0))))))
+  (new-generate lexical-subject))
 
 (defn one-sentence-with-np-subj []
   (-> (bolt model phrasal-subject 0 2)
@@ -223,6 +217,3 @@
       ((fn [tree]
          (u/assoc-in! tree [:head :comp]
                       (bolt model (u/get-in tree [:head :comp]) 0 0))))))
-
-
-
