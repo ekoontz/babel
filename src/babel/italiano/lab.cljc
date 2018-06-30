@@ -197,28 +197,29 @@
   (unify basic skel2))
 
 (defn one-sentence-with-pronoun-subj []
-  (let [bolt (first (lightning-bolts model spec 0 2))]
-    ;; Using '0' as the second argument in both of these below
-    ;; forces the complements to be lexical (not phrasal).
-    (-> bolt
-        ((fn [tree]
-           (u/assoc-in tree [:comp]
-                       (first (lightning-bolts model (u/get-in tree [:comp]) 0 0)))))
-        ((fn [tree]
+  ;; Using '0' as the second argument in both of these below
+  ;; forces the complements to be lexical (not phrasal):
+  (-> (first (lightning-bolts model spec 0 2))
+      ((fn [tree]
+         (u/assoc-in tree [:comp]
+                     (first (lightning-bolts model (u/get-in tree [:comp]) 0 0)))))
+      ((fn [tree]
            (u/assoc-in tree [:head :comp]
-                       (first (lightning-bolts model (u/get-in tree [:head :comp]) 0 0))))))))
+                       (first (lightning-bolts model (u/get-in tree [:head :comp]) 0 0)))))))
 
 (defn one-sentence-with-np-subj []
-  (let [bolt (first (lightning-bolts model spec2 0 2))]
-    ;; Using '0' as the second argument in both of these below
-    ;; forces the complements to be lexical (not phrasal).
-    (-> bolt
-        ((fn [tree]
-           (u/assoc-in tree [:comp]
-                       (first (lightning-bolts model (u/get-in tree [:comp]) 0 2)))))
-        ((fn [tree]
-           (u/assoc-in tree [:comp :comp]
-                       (first (lightning-bolts model (u/get-in tree [:comp :comp]) 0 0)))))
-        ((fn [tree]
-           (u/assoc-in tree [:head :comp]
-                       (first (lightning-bolts model (u/get-in tree [:head :comp]) 0 0))))))))
+  (-> (first (lightning-bolts model spec2 0 2))
+      ;; We want [:comp] to be phrasal, so we call lighting-bolts with 2.
+      ((fn [tree]
+         (u/assoc-in tree [:comp]
+                     (first (lightning-bolts model (u/get-in tree [:comp]) 0 2)))))
+      
+      ;; Using '0' as the second argument in both of these below
+      ;; forces the complements to be lexical (not phrasal).
+      ((fn [tree]
+         (u/assoc-in tree [:comp :comp]
+                     (first (lightning-bolts model (u/get-in tree [:comp :comp]) 0 0)))))
+      ((fn [tree]
+         (u/assoc-in tree [:head :comp]
+                     (first (lightning-bolts model (u/get-in tree [:head :comp]) 0 0)))))))
+
