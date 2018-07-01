@@ -19,6 +19,7 @@
   {:head {:phrasal false}
    :comp {:phrasal false}})
 
+
 ;; [[H C] C]
 ;;
 ;;     H
@@ -30,6 +31,9 @@
 (def tree-2
   {:head tree-1
    :comp {:phrasal false}})
+
+
+
 
 ;; [H [H C]]
 ;;
@@ -43,6 +47,9 @@
   {:head {:phrasal false}
    :comp tree-1})
 
+
+
+
 ;; [[H C] [H C]]
 ;;
 ;;      H
@@ -55,6 +62,17 @@
   {:head tree-1
    :comp tree-1})
 
+;; [[H C] C]
+;;
+;;     H
+;;    / \
+;;   H   C
+;;  / \
+;; H   C
+(def tree-5
+  {:head tree-1
+   :comp {:phrasal false}})
+
 ;; [[H C] [H [H C]]]
 ;;
 ;;      H
@@ -65,11 +83,9 @@
 ;;       / \
 ;;      H   C
 ;;
-(def tree-5
+(def tree-6
   {:head tree-1
-   :comp {:phrasal true
-          :comp {:phrasal false}
-          :head tree-1}})
+   :comp tree-5})
 
 (defn spec-to-comp-paths [spec]
   (cond
@@ -131,6 +147,8 @@
    (unify tree-4 basic object-is-pronoun)
    (unify tree-5 basic)
    (unify tree-5 basic object-is-pronoun)
+   (unify tree-6 basic)
+   (unify tree-6 basic object-is-pronoun)
    ])
 
 (defn sentence []
