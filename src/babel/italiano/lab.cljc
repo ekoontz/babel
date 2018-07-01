@@ -118,16 +118,13 @@
 
     true []))
 
-(defn gen [tree paths model]
-  (reduce (fn [tree-accumulator path]
-            (u/assoc-in! tree-accumulator path
-                         (bolt model (u/get-in tree-accumulator path))))
-          tree
-          paths))
-
 (defn gen2 [spec model]
-  (let [bolt (bolt model spec)]
-    (gen bolt (spec-to-comp-paths bolt) model)))
+  (let [tree (bolt model spec)]
+    (reduce (fn [tree-accumulator path]
+              (u/assoc-in! tree-accumulator path
+                           (bolt model (u/get-in tree-accumulator path))))
+            tree
+            (spec-to-comp-paths tree))))
 
 (def object-is-pronoun {:head {:comp {:synsem {:pronoun true}}}})
 
