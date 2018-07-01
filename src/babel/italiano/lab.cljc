@@ -16,7 +16,8 @@
 ;; H   C
 ;;
 (def tree-1
-  {:head {:phrasal false}
+  {:phrasal true
+   :head {:phrasal false}
    :comp {:phrasal false}})
 
 
@@ -29,11 +30,9 @@
 ;; H   C
 ;;
 (def tree-2
-  {:head tree-1
+  {:phrasal true
+   :head tree-1
    :comp {:phrasal false}})
-
-
-
 
 ;; [H [H C]]
 ;;
@@ -44,10 +43,9 @@
 ;;    H   C
 ;;
 (def tree-3
-  {:head {:phrasal false}
+  {:phrasal true
+   :head {:phrasal false}
    :comp tree-1})
-
-
 
 
 ;; [[H C] [H C]]
@@ -59,7 +57,8 @@
 ;; H   C H   C
 ;;
 (def tree-4
-  {:head tree-1
+  {:phrasal true
+   :head tree-1
    :comp tree-1})
 
 ;; [[H C] C]
@@ -70,7 +69,8 @@
 ;;  / \
 ;; H   C
 (def tree-5
-  {:head tree-1
+  {:phrasal true
+   :head tree-1
    :comp {:phrasal false}})
 
 ;; [[H C] [H [H C]]]
@@ -84,7 +84,8 @@
 ;;      H   C
 ;;
 (def tree-6
-  {:head tree-1
+  {:phrasal true
+   :head tree-1
    :comp tree-5})
 
 (defn spec-to-comp-paths [spec]
@@ -125,6 +126,7 @@
 
 (defn gen2 [spec model]
   (let [tree (bolt model spec)]
+    (log/info (str "generating with top-level bolt: " ((:morph-ps model) tree)))
     (reduce (fn [tree-accumulator path]
               (u/assoc-in! tree-accumulator path
                            (bolt model (u/get-in tree-accumulator path))))
@@ -151,7 +153,17 @@
    (unify tree-6 basic object-is-pronoun)
    ])
 
+(def t1 (unify tree-1 basic {:root {:italiano {:italiano "vedere"}}}))
+(def t2 (unify tree-2 basic {:synsem {:essere false}
+                             :root {:italiano {:italiano "vedere"}}}))
+(def t3 (unify tree-3 basic {:synsem {:essere false}
+                             :root {:italiano {:italiano "vedere"}}}))
+
+(defn s3 []
+  (repeatedly #(println (time (let [s (gen2 t3 model)] (if (keyword? s) s (morph s)))))))
+
 (defn sentence []
-  (let [specs (map #(unify % {:root {:italiano {:italiano "vedere"}}})
+  (let [specs (map #(unify % {:synsem {:essere false}
+                              :root {:italiano {:italiano "vedere"}}})
                    specs)]
     (gen2 (first (take 1 (shuffle specs))) model)))
