@@ -129,15 +129,15 @@
     (log/info (str "generating with top-level bolt: " ((:morph-ps model) tree)))
     (reduce (fn [tree-accumulator path]
               (u/assoc-in! tree-accumulator path
-                           (bolt model (u/get-in tree-accumulator path))))
+                           (bolt (u/get-in tree-accumulator path) model)))
             tree
-            (if true [[:comp]] (spec-to-comp-paths tree)))))
+            (spec-to-comp-paths tree))))
 
 (defn gen-all [spec model]
   (mapcat (fn [tree]
             (reduce (fn [tree-accumulator path]
                       (u/assoc-in! tree-accumulator path
-                                   (bolt model (u/get-in tree-accumulator path))))
+                                   (bolt (u/get-in tree-accumulator path) model)))
                     tree
                     (spec-to-comp-paths tree)))
           (babel.generate/bolts spec model)))
