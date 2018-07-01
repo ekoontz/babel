@@ -179,7 +179,7 @@
             :aux false}})
 
 ;; [H C]
-(def skel-1
+(def tree-1
   {:head {:phrasal false}
    :comp {:phrasal false}})
 
@@ -190,7 +190,7 @@
 ;;   H   H
 ;;  / \
 ;; H   C
-(def skel-2
+(def tree-2
   (if false
     ;; For now, we cannot do (hence the '(if false)' above) :
     {:head {:phrasal true}
@@ -212,7 +212,7 @@
 ;;  H   C
 ;;     / \
 ;;    H   C
-(def skel-3
+(def tree-3
   {:head {:phrasal false}
    :comp {:phrasal true}})
 
@@ -223,7 +223,7 @@
 ;;   H     C
 ;;  / \   / \
 ;; H   C H   C
-(def skel-4
+(def tree-4
 ;; TODO: should be able to do:
   {:head {:phrasal true
           :comp {:phrasal true}}})
@@ -232,10 +232,10 @@
 ;;            :comp {:phrasal true}}}
   
 (def phrasal-subject
-  (unify basic skel-4))
+  (unify basic tree-4))
 
 (def lexical-subject
-  (unify basic skel-2))
+  (unify basic tree-2))
 
 (def phrasal-subject
   (unify basic {:head {:comp {:phrasal false}
