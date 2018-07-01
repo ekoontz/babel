@@ -149,9 +149,10 @@
              (not (= false (get-in spec [:phrasal] true))))
 
         ;; get all rules that match input _spec_:
-        (->> (->> (:grammar model)
-                  (map #(unify % spec))
-                  (filter #(not (= :fail %))))
+        (->> (shuffle
+              (->> (:grammar model)
+                   (map #(unify % spec))
+                   (filter #(not (= :fail %)))))
 
              (mapcat (fn [grammar-rule]
                        ;; for each such rule,
