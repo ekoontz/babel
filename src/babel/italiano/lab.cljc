@@ -178,6 +178,11 @@
             :subcat []
             :aux false}})
 
+(def basic2
+  {:synsem {:cat :verb
+            :subcat []
+            :aux false}})
+
 ;; [H C]
 (def tree-1
   {:head {:phrasal false}
@@ -240,6 +245,11 @@
 
 (defn spec-to-path [spec]
   (cond
+    
+    (and (= false (u/get-in spec [:head :phrasal]))
+         (= false (u/get-in spec [:comp :phrasal])))
+    [[:comp]]
+    
     (and (= false (u/get-in spec [:head :comp :phrasal]))
          (= false (u/get-in spec [:head :head :phrasal])))
     (concat
@@ -263,15 +273,14 @@
        (spec-to-path spec)
        model))
 
-(defn one-sentence-with-lexical-subj []
+(defn sentence-with-lexical-subj []
   (gen2 lexical-subject model))
 
-(defn one-sentence-with-phrasal-subj []
+(defn sentence-with-phrasal-subj []
   (let [roots ["vedere" "leggere" "fare" "parlare"]
         spec (unify phrasal-subject
                     {:root {:italiano {:italiano (first (take 1 (shuffle roots)))}}})]
     (gen2 spec model)))
 
-
-
-
+(defn sentence-intransitive []
+  (gen2 (unify tree-1 basic2) model))
