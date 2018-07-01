@@ -9,11 +9,6 @@
    #?(:clj [clojure.repl :refer [doc]])
    [dag_unify.core :as u :refer [strip-refs unify]]))
 
-(def basic
-  {:synsem {:cat :verb
-            :subcat []
-            :aux false}})
-
 ;; [H C]
 (def tree-1
   {:head {:phrasal false}
@@ -80,11 +75,23 @@
 
 (defn spec-to-path [spec]
   (cond
+    ;; tree-5: [[H C] [H [H C]]]
+    (and (= false (u/get-in spec [:head :comp :phrasal]))
+         (= false (u/get-in spec [:head :head :phrasal]))
+         (= true (u/get-in spec [:comp :head :phrasal])))
+    [[:head :comp][:comp][:comp :comp][:comp :head :comp]]
 
-    ; tree-1: [H C]
+    ;; tree-4: [[H C] [H C]]
+    (and (= false (u/get-in spec [:head :comp :phrasal]))
+         (= false (u/get-in spec [:head :head :phrasal]))
+         (= false (u/get-in spec [:comp :head :phrasal])))
+    [[:head :comp][:comp][:comp :comp]]
+
+    ;; tree-3: [H [H C]]
     (and (= false (u/get-in spec [:head :phrasal]))
-         (= false (u/get-in spec [:comp :phrasal])))
-    [[:comp]]
+         (= false (u/get-in spec [:comp :comp :phrasal]))
+         (= false (u/get-in spec [:comp :head :phrasal])))
+    [[:comp] [:comp :comp]]
 
     ;; tree-2: [[H C] C]
     (and (= false (u/get-in spec [:head :comp :phrasal]))
@@ -92,26 +99,15 @@
          (= false (u/get-in spec [:comp :phrasal])))
     [[:head :comp] [:comp]]
 
-    ;; tree-3: [H [H C]]
+    ; tree-1: [H C]
     (and (= false (u/get-in spec [:head :phrasal]))
-         (= true  (u/get-in spec [:comp :phrasal]))
-         (= false (u/get-in spec [:comp :comp :phrasal]))
-         (= false (u/get-in spec [:comp :head :phrasal])))
-    [[:comp] [:comp :comp]]
+         (= false (u/get-in spec [:comp :phrasal])))
+    [[:comp]]
 
-    ;; tree-4: [[H C] [H C]]
-    (and (= false (u/get-in spec [:head :comp :phrasal]))
-         (= false (u/get-in spec [:head :head :phrasal]))
-         (= true (u/get-in spec [:comp :phrasal]))
-         (= false (u/get-in spec [:comp :head :phrasal])))
-    [[:head :comp][:comp][:comp :comp]]
 
-    ;; tree-5: [[H C] [H [H C]]]
-    (and (= false (u/get-in spec [:head :comp :phrasal]))
-         (= false (u/get-in spec [:head :head :phrasal]))
-         (= true (u/get-in spec [:comp :phrasal]))
-         (= true (u/get-in spec [:comp :head :phrasal])))
-    [[:head :comp][:comp][:comp :comp][:comp :head :comp]]))
+
+
+    ))
     
 (defn gen [tree paths model]
   (if (not (empty? paths))
@@ -129,6 +125,11 @@
 
 (def object-is-pronoun {:head {:comp {:synsem {:pronoun true}}}})
 
+(def basic
+  {:synsem {:cat :verb
+            :subcat []
+            :aux false}})
+
 (def specs 
   [(unify tree-1 basic)
    (unify tree-2 basic)
@@ -139,7 +140,10 @@
    (unify tree-5 basic object-is-pronoun)])
 
 (defn sentence []
-  (gen2 (first (take 1 (shuffle specs))) model))
+  (let [specs (map #(unify % {:root {:italiano {:italiano "vedere"}}})
+                   specs)]
+    (gen2 (first (take 1 (shuffle specs))) model)))
+
 
 
 
