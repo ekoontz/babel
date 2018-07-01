@@ -1,7 +1,7 @@
 (ns babel.italiano.lab
   (:require
    [babel.directory] ;; this is needed even though there are no references to directory in here.
-   [babel.generate :refer [bolt]]
+   [babel.generate :refer [bolt bolts]]
    [babel.italiano :as italiano :refer [model morph morph-ps]]
    #?(:cljs [babel.logjs :as log])
    [clojure.pprint :refer [pprint]]
@@ -130,6 +130,17 @@
                  (reduce (fn [tree-accumulator path]
                            (u/assoc-in! tree-accumulator path
                                         (bolt (u/get-in tree-accumulator path) model)))
+                         tree
+                         (spec-to-comp-paths tree)))
+               (babel.generate/bolts spec model))))
+
+(defn gen-all2 [spec model]
+  (filter #(not (= :fail %))
+          (map (fn [tree]
+                 (reduce (fn [tree-accumulator path]
+                           (mapcat (fn [bolt]
+                                     (u/assoc-in! tree-accumulator path bolt))
+                                   (bolts (u/get-in tree-accumulator path) model)))
                          tree
                          (spec-to-comp-paths tree)))
                (babel.generate/bolts spec model))))
