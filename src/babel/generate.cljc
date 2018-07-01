@@ -172,11 +172,17 @@
         ;; get the leaves that match _spec_.
         true (get-lexemes model spec)))
 
-(defn bolt
+(defn bolts
   "Return every possible bolt for the given model and spec. Start at the given depth and
    keep generating until max-depth is reached."
-  [model spec]
-  (first (get-bolts-for model spec max-depth)))
+  [spec model]
+  (get-bolts-for model spec max-depth))
+
+(defn bolt
+  "Return the first possible bolt for the given model and spec. Start at the given depth and
+   keep generating until max-depth is reached."
+  [spec model]
+  (first (bolts spec model)))
 
 (defn get-lexemes [model spec]
   "Get lexemes matching the spec. Use a model's index if available, where the index 
