@@ -28,8 +28,7 @@
 ;; H   C
 ;;
 (def tree-2
-  {:head {:comp {:phrasal false}
-          :head {:phrasal false}}
+  {:head tree-1
    :comp {:phrasal false}})
 
 ;; [H [H C]]
@@ -42,9 +41,7 @@
 ;;
 (def tree-3
   {:head {:phrasal false}
-   :comp {:phrasal true
-          :head {:phrasal false}
-          :comp {:phrasal false}}})
+   :comp tree-1})
 
 ;; [[H C] [H C]]
 ;;
@@ -55,12 +52,8 @@
 ;; H   C H   C
 ;;
 (def tree-4
-  {:head {:phrasal true
-          :comp {:phrasal false}
-          :head {:phrasal false}}
-   :comp {:phrasal true
-          :comp {:phrasal false}
-          :head {:phrasal false}}})
+  {:head tree-1
+   :comp tree-1})
 
 ;; [[H C] [H [H C]]]
 ;;
@@ -73,14 +66,10 @@
 ;;      H   C
 ;;
 (def tree-5
-  {:head {:phrasal true
-          :comp {:phrasal false}
-          :head {:phrasal false}}
+  {:head tree-1
    :comp {:phrasal true
           :comp {:phrasal false}
-          :head {:phrasal true
-                 :comp {:phrasal false}
-                 :head {:phrasal false}}}})
+          :head tree-1}})
 
 (defn spec-to-comp-paths [spec]
   (cond
