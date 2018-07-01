@@ -134,13 +134,13 @@
             (spec-to-comp-paths tree))))
 
 (defn gen-all [spec model]
-  (mapcat (fn [tree]
-            (reduce (fn [tree-accumulator path]
-                      (u/assoc-in! tree-accumulator path
-                                   (bolt (u/get-in tree-accumulator path) model)))
-                    tree
-                    (spec-to-comp-paths tree)))
-          (babel.generate/bolts spec model)))
+  (map (fn [tree]
+         (reduce (fn [tree-accumulator path]
+                   (u/assoc-in! tree-accumulator path
+                                (bolt (u/get-in tree-accumulator path) model)))
+                 tree
+                 (spec-to-comp-paths tree)))
+       (babel.generate/bolts spec model)))
 
 (def object-is-pronoun {:head {:comp {:synsem {:pronoun true}}}})
 
