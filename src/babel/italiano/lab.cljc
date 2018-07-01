@@ -119,20 +119,15 @@
     true []))
 
 (defn gen [tree paths model]
-  (if (not (empty? paths))
-    (let [path (first paths)]
-      (gen
-       (u/assoc-in! tree path
-                    (bolt model (u/get-in tree path)))
-       (rest paths) model))
-    tree))
+  (reduce (fn [tree-accumulator path]
+            (u/assoc-in! tree-accumulator path
+                         (bolt model (u/get-in tree-accumulator path))))
+          tree
+          paths))
 
 (defn gen2 [spec model]
   (let [bolt (bolt model spec)]
-    (log/debug (str "top bolt: " ((:morph-ps model) bolt)))
-    (gen bolt
-         (spec-to-comp-paths spec)
-         model)))
+    (gen bolt (spec-to-comp-paths bolt) model)))
 
 (def object-is-pronoun {:head {:comp {:synsem {:pronoun true}}}})
 
@@ -142,19 +137,17 @@
             :subcat []}})
 
 (def specs 
-  [(unify tree-1 basic)
+  [
+   (unify tree-1 basic)
    (unify tree-2 basic)
    (unify tree-3 basic)
    (unify tree-4 basic)
    (unify tree-4 basic object-is-pronoun)
    (unify tree-5 basic)
-   (unify tree-5 basic object-is-pronoun)])
+   (unify tree-5 basic object-is-pronoun)
+   ])
 
 (defn sentence []
   (let [specs (map #(unify % {:root {:italiano {:italiano "vedere"}}})
                    specs)]
     (gen2 (first (take 1 (shuffle specs))) model)))
-
-
-
-
