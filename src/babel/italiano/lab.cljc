@@ -224,13 +224,9 @@
 ;;  / \   / \
 ;; H   C H   C
 (def tree-4
-;; TODO: should be able to do:
   {:head {:phrasal true
           :comp {:phrasal true}}})
-  ;; ..but for now, have to do:
-;;    {:head {:phrasal true
-;;            :comp {:phrasal true}}}
-  
+
 (def phrasal-subject
   (unify basic tree-4))
 
