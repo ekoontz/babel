@@ -219,7 +219,9 @@
 ;;    H   C
 (def tree-3
   {:head {:phrasal false}
-   :comp {:phrasal true}})
+   :comp {:phrasal true
+          :head {:phrasal false}
+          :comp {:phrasal false}}})
 
 ;; [[H C] [H C]]
 ;;
@@ -245,10 +247,17 @@
 
 (defn spec-to-path [spec]
   (cond
-    
+
+    ; tree-1
     (and (= false (u/get-in spec [:head :phrasal]))
          (= false (u/get-in spec [:comp :phrasal])))
     [[:comp]]
+
+    ;; tree-3
+    (and (= false (u/get-in spec [:head :phrasal]))
+         (= true (u/get-in spec [:comp :phrasal])))
+    [[:comp]
+     [:comp :comp]]
     
     (and (= false (u/get-in spec [:head :comp :phrasal]))
          (= false (u/get-in spec [:head :head :phrasal])))
@@ -284,3 +293,6 @@
 
 (defn sentence-intransitive []
   (gen2 (unify tree-1 basic2) model))
+
+(defn sentence-intransitive-2 []
+  (gen2 (unify tree-3 basic2) model))
