@@ -59,6 +59,25 @@
           :comp {:phrasal false}
           :head {:phrasal false}}})
 
+;; [[H C] [H [H C]]]
+;;
+;;      H
+;;    /   \
+;;   H     C
+;;  / \   / \
+;; H   C H   C
+;;      / \
+;;     H   C
+(def tree-5
+  {:head {:phrasal true
+          :comp {:phrasal false}
+          :head {:phrasal false}}
+   :comp {:phrasal true
+          :comp {:phrasal false}
+          :head {:phrasal true
+                 :comp {:phrasal false}
+                 :head {:phrasal false}}}})
+
 (defn spec-to-path [spec]
   (cond
 
@@ -83,9 +102,17 @@
     ;; tree-4: [[H C] [H C]]
     (and (= false (u/get-in spec [:head :comp :phrasal]))
          (= false (u/get-in spec [:head :head :phrasal]))
-         (= true (u/get-in spec [:comp :phrasal])))
-    [[:head :comp][:comp][:comp :comp]]))
+         (= true (u/get-in spec [:comp :phrasal]))
+         (= false (u/get-in spec [:comp :head :phrasal])))
+    [[:head :comp][:comp][:comp :comp]]
 
+    ;; tree-5: [[H C] [H [H C]]]
+    (and (= false (u/get-in spec [:head :comp :phrasal]))
+         (= false (u/get-in spec [:head :head :phrasal]))
+         (= true (u/get-in spec [:comp :phrasal]))
+         (= true (u/get-in spec [:comp :head :phrasal])))
+    [[:head :comp][:comp][:comp :comp][:comp :head :comp]]))
+    
 (defn gen [tree paths model]
   (if (not (empty? paths))
     (let [path (first paths)]
@@ -100,12 +127,16 @@
        (spec-to-path spec)
        model))
 
+(def object-is-pronoun {:head {:comp {:synsem {:pronoun true}}}})
+
 (def specs 
   [(unify tree-1 basic)
    (unify tree-2 basic)
    (unify tree-3 basic)
    (unify tree-4 basic)
-   (unify tree-4 basic {:head {:comp {:synsem {:pronoun true}}}})])
+   (unify tree-4 basic object-is-pronoun)
+   (unify tree-5 basic)
+   (unify tree-5 basic object-is-pronoun)])
 
 (defn sentence []
   (gen2 (first (take 1 (shuffle specs))) model))
