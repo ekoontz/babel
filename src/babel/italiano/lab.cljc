@@ -125,13 +125,22 @@
     true []))
 
 (defn gen2 [spec model]
-  (let [tree (bolt model spec)]
+  (let [tree (bolt spec model)]
     (log/info (str "generating with top-level bolt: " ((:morph-ps model) tree)))
     (reduce (fn [tree-accumulator path]
               (u/assoc-in! tree-accumulator path
                            (bolt model (u/get-in tree-accumulator path))))
             tree
-            (spec-to-comp-paths tree))))
+            (if true [[:comp]] (spec-to-comp-paths tree)))))
+
+(defn gen-all [spec model]
+  (mapcat (fn [tree]
+            (reduce (fn [tree-accumulator path]
+                      (u/assoc-in! tree-accumulator path
+                                   (bolt model (u/get-in tree-accumulator path))))
+                    tree
+                    (spec-to-comp-paths tree)))
+          (babel.generate/bolts spec model)))
 
 (def object-is-pronoun {:head {:comp {:synsem {:pronoun true}}}})
 
@@ -153,6 +162,11 @@
    (unify tree-6 basic object-is-pronoun)
    ])
 
+(def vedere-specs
+  (map #(unify % {:synsem {:essere false}
+                  :root {:italiano {:italiano "vedere"}}})
+       specs))
+
 (def t1 (unify tree-1 basic {:root {:italiano {:italiano "vedere"}}}))
 (def t2 (unify tree-2 basic {:synsem {:essere false}
                              :root {:italiano {:italiano "vedere"}}}))
@@ -163,7 +177,5 @@
   (repeatedly #(println (time (let [s (gen2 t3 model)] (if (keyword? s) s (morph s)))))))
 
 (defn sentence []
-  (let [specs (map #(unify % {:synsem {:essere false}
-                              :root {:italiano {:italiano "vedere"}}})
-                   specs)]
-    (gen2 (first (take 1 (shuffle specs))) model)))
+  (gen2 (first (take 1 (shuffle vedere-specs))) model))
+
