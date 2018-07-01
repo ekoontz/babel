@@ -79,7 +79,7 @@
     (and (= false (u/get-in spec [:head :comp :phrasal]))
          (= false (u/get-in spec [:head :head :phrasal]))
          (= true (u/get-in spec [:comp :head :phrasal])))
-    [[:head :comp][:comp][:comp :comp][:comp :head :comp]]
+    [[:head :comp][:comp][:comp :head :comp][:comp :comp]]
 
     ;; tree-4: [[H C] [H C]]
     (and (= false (u/get-in spec [:head :comp :phrasal]))
@@ -104,9 +104,6 @@
          (= false (u/get-in spec [:comp :phrasal])))
     [[:comp]]
 
-
-
-
     ))
     
 (defn gen [tree paths model]
@@ -119,9 +116,11 @@
     tree))
 
 (defn gen2 [spec model]
-  (gen (bolt model spec)
-       (spec-to-path spec)
-       model))
+  (let [bolt (bolt model spec)]
+    (log/debug (str "top bolt: " ((:morph-ps model) bolt)))
+    (gen bolt
+         (spec-to-path spec)
+         model)))
 
 (def object-is-pronoun {:head {:comp {:synsem {:pronoun true}}}})
 
