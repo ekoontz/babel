@@ -126,9 +126,9 @@
 (def object-is-pronoun {:head {:comp {:synsem {:pronoun true}}}})
 
 (def basic
-  {:synsem {:cat :verb
-            :subcat []
-            :aux false}})
+  {:modified false
+   :synsem {:cat :verb
+            :subcat []}})
 
 (def specs 
   [(unify tree-1 basic)
