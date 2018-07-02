@@ -126,23 +126,23 @@
 
 (defn gen-all [spec model]
   (filter #(not (= :fail %))
-          (map (fn [bolt]
+          (map (fn [each-bolt]
                  (reduce (fn [tree-accumulator path]
                            (u/assoc-in! tree-accumulator path
                                         (bolt (u/get-in tree-accumulator path) model)))
-                         bolt
-                         (spec-to-comp-paths bolt)))
-               (babel.generate/bolts spec model))))
+                         each-bolt
+                         (spec-to-comp-paths each-bolt)))
+               (bolts spec model))))
 
 (defn gen-all2 [spec model]
   (filter #(not (= :fail %))
-          (map (fn [bolt]
+          (map (fn [each-bolt]
                  (reduce (fn [tree-accumulator path]
                            (u/assoc-in! tree-accumulator path
                                         (bolt (u/get-in tree-accumulator path) model)))
-                         bolt
-                         (spec-to-comp-paths bolt)))
-               (babel.generate/bolts spec model))))
+                         each-bolt
+                         (spec-to-comp-paths each-bolt)))
+               (bolts spec model))))
 
 (def object-is-pronoun {:head {:comp {:synsem {:pronoun true}}}})
 
