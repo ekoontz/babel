@@ -134,6 +134,14 @@
                          (spec-to-comp-paths each-bolt)))
                (bolts spec model))))
 
+(defn gen-one [spec model]
+  (let [each-bolt (bolt spec model)]
+    (reduce (fn [tree-accumulator path]
+              (u/assoc-in! tree-accumulator path
+                           (bolt (u/get-in tree-accumulator path) model)))
+            each-bolt
+            (spec-to-comp-paths each-bolt))))
+
 (defn gen-all2 [spec model]
   (filter #(not (= :fail %))
           (map (fn [each-bolt]
@@ -181,5 +189,9 @@
 
 (defn sentence []
   (first (gen-all (first (take 1 (shuffle vedere-specs))) model)))
+
+(defn sentence-one []
+  (gen-one (first (take 1 (shuffle vedere-specs))) model))
+
 
 
