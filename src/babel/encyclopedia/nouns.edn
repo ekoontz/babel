@@ -185,6 +185,8 @@
  {:pred :dentist}  {:human true}
  
  {:pred :dog}      {:pet true}
+
+ {:pred :easy-chair}    {:furniture true}
  
  {:pred :espresso} {:artifact true
                     :drinkable true}
