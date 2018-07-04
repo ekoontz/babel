@@ -120,7 +120,7 @@
                       (filter #(not (= :fail %))))))
       true
       (do
-        (log/debug (str "get-bolts-for: no compiled bolts."))
+        (log/trace (str "get-bolts-for: no compiled bolts."))
         (lightning-bolts model spec 0 depth)))))
 
 ;; a 'lightning bolt' is a dag that
