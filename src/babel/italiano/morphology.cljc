@@ -331,7 +331,7 @@
 
     true "_"
     
-    true (str "[?? " word "]")))
+    true (str "[?? " (type word) "]")))
 
 ;; TODO: replace 'a' and 'b' with 'left' and 'right' for clarity.
 ;; TODO: make b required so that function is easier to understand and refactor.
