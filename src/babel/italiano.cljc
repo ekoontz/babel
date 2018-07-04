@@ -16,7 +16,7 @@
    [clojure.string :as string]
    [dag_unify.core :refer [fail-path-between get-in strip-refs unify unifyc]]))
 
-(defonce model
+(def model
   (do
     (init-db)
     @@(get babel.directory/models :it)))
