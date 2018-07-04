@@ -302,7 +302,8 @@
                            {:rule "np-to-n-pp"
                             :synsem {:cat :noun}
                             :head {:phrasal false}
-                            :comp {:synsem {:cat :prep
+                            :comp {:synsem {:cat :prep ;; TODO: comp's synsem should be constrained
+                                            ;; in head's lexical entry, not here in the grammar.
                                             :sem {:pred :di}}}})
                    (unify c10
                            comp-specs-head
