@@ -2,12 +2,11 @@
   (:require
    [babel.directory] ;; this is needed even though there are no references to directory in here.
    [babel.generate :refer [bolt bolts]]
-   [babel.italiano :as italiano :refer [model morph morph-ps]]
+   [babel.italiano :as italiano :refer [model morph morph-ps parse]]
    #?(:cljs [babel.logjs :as log])
-   [clojure.pprint :refer [pprint]]
    #?(:clj [clojure.tools.logging :as log])
    #?(:clj [clojure.repl :refer [doc]])
-   [dag_unify.core :as u :refer [strip-refs unify]]))
+   [dag_unify.core :as u :refer [pprint strip-refs unify]]))
 
 ;; [H C]
 ;;
