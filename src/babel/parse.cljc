@@ -324,4 +324,7 @@
            (fo-ps (get-in tree [:comp]) morph)
            "]")
 
+      (nil? tree)
+      tree
+      
       true "??")))
