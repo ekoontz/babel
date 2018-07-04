@@ -175,7 +175,8 @@
                  {:applied {:subject-agreement true}
                   :synsem {:agr agr
                            :cat cat
-                           :subcat {:1 {:agr agr}}
+                           :subcat {:1 {:agr agr
+                                        :sem {:can-be-subject true}}}
                            :essere essere
                            :infl infl}}))
       
