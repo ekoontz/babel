@@ -198,6 +198,9 @@
  {:pred :scold
   :subj {:human true}}
  
+ {:pred :see
+  :subj {:animate true}}
+
  {:pred :sigh
   :subj {:human true}}
  
