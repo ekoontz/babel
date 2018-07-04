@@ -201,6 +201,14 @@
                     :machine false
                     :place true
                     :legible false}
+
+ {:pred :idea}   {:artifact false
+                  :animate false
+                  :consumable false
+                  :place false}
+ 
+ {:pred :island}   {:artifact false
+                    :place true}
  
  {:pred :key}      {:artifact true
                     :clothing false
