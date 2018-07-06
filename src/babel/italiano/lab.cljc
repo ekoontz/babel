@@ -125,7 +125,10 @@
 
 (defn gen-one [spec model]
   (let [each-bolt (bolt spec model)]
+    (log/debug (str ((:morph-ps model) each-bolt) ": adding bolts to paths:"
+                    (clojure.string/join "|" (spec-to-comp-paths each-bolt))))
     (reduce (fn [tree-accumulator path]
+              (log/debug (str ((:morph-ps model) tree-accumulator) ": adding bolt at: " path))
               (let [b (bolt (u/get-in tree-accumulator path) model)]
                 (if (nil? b)
                   (throw (Exception. (str "failed to add a bolt to: "
