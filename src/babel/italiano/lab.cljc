@@ -216,24 +216,36 @@
 (defn mini-tree [spec]
   (first (take 1 (mini-bolts spec model))))
 
+(def fts
+  [{:phrasal true
+    :head :top
+    :comp :top}
+   {:phrasal true
+    :head {:phrasal true}
+    :comp :top}
+   {:phrasal true
+    :head {:done true}
+    :comp :top}])
+
 (defn frontier
   "get the next path to which to adjoin within _tree_."
   [tree]
   (cond
-    (and (u/get-in tree [:phrasal])
-         (= false (u/get-in tree [:head :done] false)))
-    (let [head-frontier (frontier (u/get-in tree [:head]))]
-      (if (not (empty? head-frontier))
-        (concat [:head] head-frontier)
-        (concat [:comp] (frontier (u/get-in tree [:comp])))))
 
+    (and (u/get-in tree [:phrasal])
+         (= ::none (u/get-in tree [:head] ::none)))
+    [:head]
+
+    (and (u/get-in tree [:phrasal])
+         (= :top (u/get-in tree [:head])))
+    [:head]
+
+    (and (u/get-in tree [:phrasal])
+         (not (u/get-in tree [:done]))
+         (u/get-in tree [:head :phrasal])
+         (not (u/get-in tree [:head :done])))
+    (concat [:head] (frontier (u/get-in tree [:head])))
     
-    (and (u/get-in tree [:phrasal])
-         (u/get-in tree [:head :done] false)
-         (= false (u/get-in tree [:comp :phrasal] false))
-         (= false (u/get-in tree [:comp :done] false)))
-    [:comp]
-
     true
     [(str "(unhandled): " ((:morph-ps model) tree))]))
 
