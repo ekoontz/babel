@@ -333,8 +333,6 @@
     
     (string? (get-in word [:italiano]))
     (get-in word [:italiano])
-
-    true "_"
     
     true "_"))
 
