@@ -325,6 +325,10 @@
            "]")
 
       (nil? tree)
-      tree
+      (str "(nil)")
+
+      true "_"
       
-      true "??")))
+      true (strip-refs tree)
+      
+      true (str "?? " (if (nil? tree) "(nil)" (type tree))))))
