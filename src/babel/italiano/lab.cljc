@@ -217,12 +217,9 @@
   (first (take 1 (mini-bolts spec model))))
 
 (def fts
-  [{:phrasal true
-    :head :top
-    :comp :top}
+  [{:phrasal true}
    {:phrasal true
-    :head {:phrasal true}
-    :comp :top}
+    :head {:phrasal true}}
    {:phrasal true
     :head {:done true}
     :comp :top}])
@@ -232,19 +229,19 @@
   [tree]
   (cond
 
-    (and (u/get-in tree [:phrasal])
-         (= ::none (u/get-in tree [:head] ::none)))
-    [:head]
-
-    (and (u/get-in tree [:phrasal])
-         (= :top (u/get-in tree [:head])))
-    [:head]
-
-    (and (u/get-in tree [:phrasal])
+    (and (= (get-in tree [:phrasal] true))
+         (= ::none (get-in tree [:head] ::none)))
+    []
+    
+    (and (= (u/get-in tree [:phrasal]) true)
          (not (u/get-in tree [:done]))
-         (u/get-in tree [:head :phrasal])
          (not (u/get-in tree [:head :done])))
     (concat [:head] (frontier (u/get-in tree [:head])))
+
+    (and (= (u/get-in tree [:phrasal]) true))
+    (concat [:comp] (frontier (u/get-in tree [:comp])))
+    
+    true []
     
     true
     [(str "(unhandled): " ((:morph-ps model) tree))]))
@@ -261,3 +258,6 @@
     (let [spec-h (u/get-in mt [:head])
           mt-h (mini-tree spec-h)]
       (u/assoc-in! mt [:head] mt-h))))
+
+;; should all return [:head]:
+;; (map frontier (:grammar model))
