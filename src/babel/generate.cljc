@@ -190,10 +190,9 @@
                  ;; find all the lightning-bolts
                  ;; that match the rule's head child.
                  (->>
-                  (shuffle
-                   (concat
-                    (get-lexemes model (get-in spec [:head]))
-                    (:grammar model)))
+                  (concat
+                   (get-lexemes model (get-in spec [:head]))
+                   (:grammar model))
 
                   (map (fn [child]
                          (assoc-in parent-rule [:head] child))))))
