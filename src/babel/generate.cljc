@@ -191,7 +191,8 @@
                  ;; that match the rule's head child.
                  (->>
                   (concat
-                   (get-lexemes model (get-in spec [:head]))
+                   (map #(unify % {:done true})
+                        (get-lexemes model (get-in spec [:head])))
                    (:grammar model))
 
                   (map (fn [child]
