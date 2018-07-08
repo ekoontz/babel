@@ -593,12 +593,16 @@
         true phrase))
 
 ;; TODO: warn about failures.
+;; TODO: the (unify {:phrasal true}) should be
+;;       promoted to all grammars (not just Italian).
 (def grammar
   (map (fn [phrase]
          (modal-is-head-feature
           (aux-is-head-feature phrase)))
        (filter #(not (fail? %))
-               grammar)))
+               (map (fn [rule]
+                      (unify rule {:phrasal true}))
+                    grammar))))
 
 ;; TODO: move to italiano/morphology or higher (language-universal)
 (defn morph-walk-tree [tree]
