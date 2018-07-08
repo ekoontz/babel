@@ -213,46 +213,29 @@
 (defn sentence-one []
   (gen-one (first (take 1 (shuffle vedere-specs))) model))
 
-(declare get-mini-tree)
-
-(defn gen-mini [spec model depth]
-  (first
-   (->> (babel.generate/mini-bolts spec model)
-        (map (fn [bolt]
-               (do
-                 (log/info (str "assoc-in! with bolt:" ((:morph-ps model) bolt)))
-                 (u/assoc-in! bolt [:comp]
-                              (get-mini-tree (u/get-in bolt [:comp]) model (+ depth 1))))))
-        (filter #(not (= :fail %))))))
-
-(defn get-mini-tree [spec model depth]
-  (log/info (str "gmt:@" depth ":" (strip-refs spec)))
-  (log/info (str " 1:" (u/get-in spec [:phrasal] ::none)))
-
-  (cond
-    (= false (u/get-in spec [:phrasal] ::none))
-    (first (shuffle (get-lexemes model spec)))
-
-    (= true (u/get-in spec [:phrasal] ::none))
-    (gen-mini spec model depth)
-    
-    (< depth (rand-int 2))
-    (do
-      (log/info (str "branching at depth: " depth " with spec:" (strip-refs spec)))
-      (let [phrasal
-            (gen-mini spec model depth)]
-        (or phrasal
-            (first (shuffle (get-lexemes model spec))))))
-    
-    true
-    (do
-      (log/info (str "fall-through:" (strip-refs spec)))
-      (first (shuffle (get-lexemes model spec))))))
-
-;;(def v+b (u/assoc-in (unify tree-3 basic) [:head] (nth (get (:lexicon model) "vedere") 0)))
-
 (defn mini-tree [spec]
   (first (take 1 (mini-bolts spec model))))
+
+(defn frontier
+  "get the next path to which to adjoin within _tree_."
+  [tree]
+  (cond
+    (and (u/get-in tree [:phrasal])
+         (= false (u/get-in tree [:head :done] false)))
+    (let [head-frontier (frontier (u/get-in tree [:head]))]
+      (if (not (empty? head-frontier))
+        (concat [:head] head-frontier)
+        (concat [:comp] (frontier (u/get-in tree [:comp])))))
+
+    
+    (and (u/get-in tree [:phrasal])
+         (u/get-in tree [:head :done] false)
+         (= false (u/get-in tree [:comp :phrasal] false))
+         (= false (u/get-in tree [:comp :done] false)))
+    [:comp]
+
+    true
+    [(str "(unhandled): " ((:morph-ps model) tree))]))
 
 (defn mini-tree-test-1 []
   (repeatedly #(println (morph-ps (time (mini-tree {:synsem {:cat :verb, :subcat []}}))))))
