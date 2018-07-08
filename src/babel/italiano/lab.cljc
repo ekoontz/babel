@@ -1,7 +1,7 @@
 (ns babel.italiano.lab
   (:require
    [babel.directory] ;; this is needed even though there are no references to directory in here.
-   [babel.generate :refer [bolt bolts]]
+   [babel.generate :refer [bolt bolts mini-bolts]]
    [babel.italiano :as italiano :refer [model morph morph-ps parse]]
    #?(:cljs [babel.logjs :as log])
    #?(:clj [clojure.tools.logging :as log])
@@ -216,33 +216,53 @@
 (declare get-mini-tree)
 
 (defn gen-mini [spec model depth]
-  (let [bolt
-        (first (babel.generate/lightning-bolts model spec 0 1))]
-    (if true
-      (u/assoc-in! bolt [:comp]
-                   (get-mini-tree (u/get-in bolt [:comp]) model (+ depth 1)))
-      bolt)))
+  (first
+   (->> (babel.generate/mini-bolts spec model)
+        (map (fn [bolt]
+               (do
+                 (log/info (str "assoc-in! with bolt:" ((:morph-ps model) bolt)))
+                 (u/assoc-in! bolt [:comp]
+                              (get-mini-tree (u/get-in bolt [:comp]) model (+ depth 1))))))
+        (filter #(not (= :fail %))))))
 
 (defn get-mini-tree [spec model depth]
+  (log/info (str "gmt:@" depth ":" (strip-refs spec)))
+  (log/info (str " 1:" (u/get-in spec [:phrasal] ::none)))
+
   (cond
     (= false (u/get-in spec [:phrasal] ::none))
     (first (shuffle (get-lexemes model spec)))
 
-    (= true (u/get-in spec [:phrasal] true))
+    (= true (u/get-in spec [:phrasal] ::none))
     (gen-mini spec model depth)
     
-    (< depth (rand-int 4))
-    (gen-mini spec model depth)
-
-    true (first (shuffle (get-lexemes model spec)))))
-
+    (< depth (rand-int 2))
+    (do
+      (log/info (str "branching at depth: " depth " with spec:" (strip-refs spec)))
+      (let [phrasal
+            (gen-mini spec model depth)]
+        (or phrasal
+            (first (shuffle (get-lexemes model spec))))))
+    
+    true
+    (do
+      (log/info (str "fall-through:" (strip-refs spec)))
+      (first (shuffle (get-lexemes model spec))))))
 
 ;;(def v+b (u/assoc-in (unify tree-3 basic) [:head] (nth (get (:lexicon model) "vedere") 0)))
 
-(defn foo []
-  (repeatedly 
-   #(println 
-     (morph-ps
-      (time
-       (get-mini-tree {:synsem {:cat :noun}}
-                      model 0))))))
+(defn mini-tree [spec]
+  (first (take 1 (mini-bolts spec model))))
+
+(defn mini-tree-test-1 []
+  (repeatedly #(println (morph-ps (time (mini-tree {:synsem {:cat :verb, :subcat []}}))))))
+
+(defn mini-tree-test-2 []
+  (repeatedly #(println (morph-ps (time (mini-tree {:synsem {:cat :verb, :subcat {:1 :top
+                                                                                  :2 []}}}))))))
+(defn adjoin-test []
+  (let [spec {:modified false :synsem {:cat :verb, :subcat []}}
+        mt (mini-tree spec)]
+    (let [spec-h (u/get-in mt [:head])
+          mt-h (mini-tree spec-h)]
+      (u/assoc-in! mt [:head] mt-h))))
