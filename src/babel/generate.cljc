@@ -172,6 +172,33 @@
         ;; get the leaves that match _spec_.
         true (get-lexemes model spec)))
 
+(defn mini-bolts
+  "Return every possible bolt for the given model and spec. Start at the given depth and
+   keep generating until the given max-depth is reached."
+  [spec model]
+  ;; get all rules that match input _spec_:
+  (if (nil? spec) (throw (Exception. (str "nope: spec was nil."))))
+  (log/info (str "mini-bolts: spec:" (strip-refs spec)))
+  (->> (shuffle
+        (->> (:grammar model)
+             (map #(unify % spec))
+             (filter #(not (= :fail %)))))
+       
+       (mapcat (fn [parent-rule]
+                 ;; for each such rule,
+                 ;; descend to the head child and
+                 ;; find all the lightning-bolts
+                 ;; that match the rule's head child.
+                 (->>
+                  (shuffle
+                   (concat
+                    (get-lexemes model (get-in spec [:head]))
+                    (:grammar model)))
+
+                  (map (fn [child]
+                         (assoc-in parent-rule [:head] child))))))
+       (filter #(not (= % :fail)))))
+
 (defn bolts
   "Return every possible bolt for the given model and spec. Start at the given depth and
    keep generating until max-depth is reached."
