@@ -259,5 +259,11 @@
           mt-h (mini-tree spec-h)]
       (u/assoc-in! mt [:head] mt-h))))
 
-;; should all return [:head]:
-;; (map frontier (:grammar model))
+
+(defn using-frontier []
+  (let [s (adjoin-test)
+        f (frontier s)]
+    {:s (morph-ps s)
+     :front f :spec (strip-refs (u/get-in s f))
+     :child (morph-ps (mini-tree (u/get-in s f)))}))
+
