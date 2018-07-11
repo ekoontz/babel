@@ -259,11 +259,28 @@
           mt-h (mini-tree spec-h)]
       (u/assoc-in! mt [:head] mt-h))))
 
-
 (defn using-frontier []
   (let [s (adjoin-test)
-        f (frontier s)]
-    {:s (morph-ps s)
-     :front f :spec (strip-refs (u/get-in s f))
-     :child (morph-ps (mini-tree (u/get-in s f)))}))
+        f (frontier s)
+        child-spec (u/get-in s f)
+        depth 1
+        child (cond
+                (= true (u/get-in child-spec [:phrasal]))
+                (mini-tree child-spec)
+
+                (= false (u/get-in child-spec [:phrasal]))
+                (first (babel.generate/get-lexemes model child-spec))
+
+                (= 0 (rand-int (+ depth 1)))
+                (mini-tree child-spec)
+
+                true
+                (first (babel.generate/get-lexemes model child-spec)))
+        child (unify child {:done true})]
+    (u/assoc-in! s f child)))
+
+
+
+
+
 
