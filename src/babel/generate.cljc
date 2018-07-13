@@ -179,24 +179,38 @@
   ;; get all rules that match input _spec_:
   (if (nil? spec) (throw (Exception. (str "nope: spec was nil."))))
   (log/info (str "mini-bolts: spec:" (strip-refs spec)))
-  (->> (shuffle
+  (->>
+   ;; 1: get all rules and shuffle them.
+   (shuffle
         (->> (:grammar model)
              (map #(unify % spec))
              (filter #(not (= :fail %)))))
-       
-       (mapcat (fn [parent-rule]
-                 ;; for each such rule,
-                 ;; descend to the head child and
-                 ;; find all the lightning-bolts
-                 ;; that match the rule's head child.
-                 (->>
-                  (concat
-                   (map #(unify % {:done true})
-                        (get-lexemes model (get-in spec [:head])))
-                   (:grammar model))
+   
+   ;; 2. try to add 
+   (mapcat (fn [parent-rule]
+             ;; for each such rule,
+             ;; descend to the head child and
+             ;; find all the lightning-bolts
+             ;; that match the rule's head child.
+             (->>
 
-                  (map (fn [child]
-                         (assoc-in parent-rule [:head] child))))))
+              ;; get all the things to be added
+              ;; as the head chid of parent-rule:
+              ;; 1. lexemes that could be the head.
+              ;; 2. rules that could be the head.
+              (concat
+
+               ;; 2.1. lexemes that could be the head.
+               (map #(unify % {:done true})
+                    (get-lexemes model (get-in spec [:head])))
+
+               ;; 2.2. grammar rules that could be the head.
+               (:grammar model))
+
+              ;; 
+              (map (fn [child]
+                     (assoc-in parent-rule [:head] child))))))
+   
        (filter #(not (= % :fail)))))
 
 (defn bolts
