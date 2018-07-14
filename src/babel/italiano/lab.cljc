@@ -213,12 +213,6 @@
 (defn sentence-one []
   (gen-one (first (take 1 (shuffle vedere-specs))) model))
 
-(defn mini-tree [spec]
-  (first (take 1 (mini-bolts spec model))))
-
-(defn mini-trees [spec]
-  (mini-bolts spec model))
-
 (def fts
   [{:phrasal true}
    {:phrasal true
@@ -252,19 +246,6 @@
     true
     [(str "(unhandled): " ((:morph-ps model) tree))]))
 
-(defn mini-tree-test-1 []
-  (repeatedly #(println (morph-ps (time (mini-tree {:synsem {:cat :verb, :subcat []}}))))))
-
-(defn mini-tree-test-2 []
-  (repeatedly #(println (morph-ps (time (mini-tree {:synsem {:cat :verb, :subcat {:1 :top
-                                                                                  :2 []}}}))))))
-(defn adjoin-test []
-  (let [spec {:modified false :synsem {:cat :verb, :subcat []}}
-        mt (mini-tree spec)]
-    (let [spec-h (u/get-in mt [:head])
-          mt-h (mini-tree spec-h)]
-      (u/assoc-in! mt [:head] mt-h))))
-
 (defn add-children [tree]
   (let [path (frontier tree)
         depth (count path)
@@ -276,7 +257,7 @@
         pruning-factor #(+ % 50)]
     (cond
       (= true (u/get-in child-spec [:phrasal]))
-      (mini-trees child-spec)
+      (mini-bolts child-spec model)
       
       (= false (u/get-in child-spec [:phrasal]))
       (babel.generate/get-lexemes model child-spec)
@@ -284,7 +265,7 @@
       ;; TODO: concat: trees and lexemes: order depends on rand-int.
       ;; 
       (= 0 (rand-int (pruning-factor depth)))
-      (mini-trees child-spec)
+      (mini-bolts child-spec model)
       
       true
       (babel.generate/get-lexemes model child-spec))))
@@ -292,35 +273,9 @@
 (defn add-child [tree]
   (first (add-children tree)))
 
-(defn using-frontier []
-  (let [s (adjoin-test)
-        f (frontier s)
-        child-spec (u/get-in s f)
-        depth 1
-        child (cond
-                (= true (u/get-in child-spec [:phrasal]))
-                (mini-tree child-spec)
-
-                (= false (u/get-in child-spec [:phrasal]))
-                (first (babel.generate/get-lexemes model child-spec))
-
-                (= 0 (rand-int (+ depth 1)))
-                (mini-tree child-spec)
-
-                true
-                (first (babel.generate/get-lexemes model child-spec)))
-        child (unify child {:done true})
-        return-tree
-        (u/assoc-in! s f child)]
-    (cond (and (= :comp (last f))
-               (= true (u/get-in return-tree [:comp :done])))
-          (unify return-tree {:done true})
-          true
-          return-tree)))
-
 (defn goons [spec]
   (->>
-   (mini-trees spec)
+   (mini-bolts spec model)
    (filter #(not (= % :fail)))
 
    (mapcat (fn [g]
