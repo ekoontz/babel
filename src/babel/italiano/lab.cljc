@@ -344,7 +344,7 @@
         tree-with-child
         (-> tree
             (u/assoc-in! f (add-child tree)))]
-    (if (= true (u/get-in tree (concat f [:done])))
+    (if (= true (u/get-in tree-with-child (concat f [:done])))
       (u/assoc-in! tree-with-child (butlast f) {:done true})
       tree-with-child)))
 
@@ -357,8 +357,6 @@
         :rule "s-present-phrasal"})
       (onegoon)
       (onegoon)
-      (onegoon)
-      (onegoon)
       (onegoon)))
-    
+
 ;;(repeatedly #(println (morph-ps (rungoon))))
