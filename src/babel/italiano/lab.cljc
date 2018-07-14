@@ -300,11 +300,35 @@
 
                 true
                 (first (babel.generate/get-lexemes model child-spec)))
-        child (unify child {:done true})]
-    (u/assoc-in! s f child)))
+        child (unify child {:done true})
+        return-tree
+        (u/assoc-in! s f child)]
+    (cond (and (= :comp (last f))
+               (= true (u/get-in return-tree [:comp :done])))
+          (unify return-tree {:done true})
+          true
+          return-tree)))
 
+(defn goons [spec]
+  (->>
+   (mini-trees spec)
+   (filter #(not (= % :fail)))
+   (map (fn [g]
+          (let [child (add-child g)
+                f (frontier g)]
+            (-> g
+                (u/assoc-in! f child)))))
+   (filter #(not (= % :fail)))))
 
+(defn goon [spec]
+  (first (goons spec)))
 
-
-
-
+(defn rungoon []
+  (let [a1 (goon {:modified false
+                  :root {:italiano {:italiano "chiamarsi"}}
+                  :synsem {:cat :verb
+                           :subcat []}
+                  :rule "s-present-phrasal"})
+        f (frontier a1)]
+    (u/assoc-in! a1 f (add-child a1))))
+;;(repeatedly #(println (morph-ps (rungoon))))
