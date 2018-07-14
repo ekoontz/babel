@@ -339,29 +339,26 @@
 (defn goon [spec]
   (first (goons spec)))
 
-(defn rungoon []
-  (let [a1 (goon {:modified false
-                  :root {:italiano {:italiano "chiamarsi"}}
-                  :synsem {:cat :verb
-                           :subcat []}
-                  :rule "s-present-phrasal"})
-        f (frontier a1)]
-    (let [a2 (-> a1
-                 (u/assoc-in! f (add-child a1)))
-          a2 (if (= true (u/get-in a2 (concat f [:done])))
-               (u/assoc-in! a2 (butlast f) {:done true})
-               a2)]
-      (let [f (frontier a2)
-            a3 (-> a2
-                   (u/assoc-in f (add-child a2)))
-            a3 (if (= true (u/get-in a3 (concat f [:done])))
-                 (u/assoc-in! a3 (butlast f) {:done true})
-                 a3)]
-        (let [f (frontier a3)
-              a4 (-> a3
-                     (u/assoc-in f (add-child a3)))
-              a4 (if (= true (u/get-in a4 (concat f [:done])))
-                   (u/assoc-in! a4 (butlast f) {:done true}))]
-          a4)))))
+(defn onegoon [tree]
+  (let [f (frontier tree)
+        tree-with-child
+        (-> tree
+            (u/assoc-in! f (add-child tree)))]
+    (if (= true (u/get-in tree (concat f [:done])))
+      (u/assoc-in! tree-with-child (butlast f) {:done true})
+      tree-with-child)))
 
+(defn rungoon []
+  (-> (goon
+       {:modified false
+        :root {:italiano {:italiano "chiamarsi"}}
+        :synsem {:cat :verb
+                 :subcat []}
+        :rule "s-present-phrasal"})
+      (onegoon)
+      (onegoon)
+      (onegoon)
+      (onegoon)
+      (onegoon)))
+    
 ;;(repeatedly #(println (morph-ps (rungoon))))
