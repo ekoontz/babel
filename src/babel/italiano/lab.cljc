@@ -343,13 +343,16 @@
   (first (goons spec)))
 
 (defn onegoon [tree]
-  (let [f (frontier tree)
-        tree-with-child
-        (-> tree
-            (u/assoc-in! f (add-child tree)))]
-    (if (= true (u/get-in tree-with-child (concat f [:done])))
-      (u/assoc-in! tree-with-child (butlast f) {:done true})
-      tree-with-child)))
+  (let [f (frontier tree)]
+    (if (not (empty? f))
+      (let [tree-with-child
+            (-> tree
+                (u/assoc-in! f (add-child tree)))]
+        (if (= true (u/get-in tree-with-child (concat f [:done])))
+          (u/assoc-in! tree-with-child (or (butlast f) []) {:done true})
+          tree-with-child))
+         
+      tree)))
 
 (defn rungoon []
   (-> (goon
