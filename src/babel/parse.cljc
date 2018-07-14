@@ -302,6 +302,7 @@
           (log/trace (str "fo-ps: " (strip-refs tree))))
       (log/trace (str "fo-ps: leaf: " (strip-refs tree))))
     (cond
+      (= :fail tree) :fail
       (and (= :none (get-in tree [:head] :none))
            (= :none (get-in tree [:comp] :none))
            (not (= :none (get-in tree [:rule] :none))))
