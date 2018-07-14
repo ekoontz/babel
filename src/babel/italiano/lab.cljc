@@ -305,6 +305,22 @@
             (onegoon)))
       tree)))
 
+(defn allgoons [tree]
+  (let [f (frontier tree)]
+    (if (not (empty? f))
+      (let [trees-with-children
+            (map (fn [child]
+                   (u/assoc-in tree f child))
+                 (add-children tree))]
+        (->> trees-with-children
+             (map (fn [tree-with-child]
+                    (-> (if (= true (u/get-in tree-with-child (concat f [:done])))
+                          (u/assoc-in! tree-with-child (or (butlast f) []) {:done true})
+                          tree-with-child))))
+             (mapcat (fn [tree-with-child]
+                       (allgoons tree-with-child)))))
+      [tree])))
+
 (defn gen [spec]
   (first (take 1 (map (fn [sprout]
                         (onegoon sprout))
