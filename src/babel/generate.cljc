@@ -251,7 +251,8 @@
    (filter #(or (= false (get-in % [:exception] false))
                 (not (= :verb (get-in % [:synsem :cat])))))
    (map #(unify % spec))
-   (filter #(not (= :fail %)))))
+   (filter #(not (= :fail %)))
+   (map #(assoc-in % [] {:done true}))))
   
 (defn add-comps-to-bolt
   "bolt + paths => trees"
