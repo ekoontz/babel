@@ -319,11 +319,21 @@
   (->>
    (mini-trees spec)
    (filter #(not (= % :fail)))
+
+   ;; TODO: instead of (map add-child), do
+   ;; (mapcat add-children).
    (map (fn [g]
           (let [child (add-child g)
                 f (frontier g)]
             (-> g
                 (u/assoc-in! f child)))))
+
+   (map (fn [g]
+          (if (= true (u/get-in g [:comp :done]))
+            (-> g
+                (u/assoc-in! {:done true}))
+            g)))
+   
    (filter #(not (= % :fail)))))
 
 (defn goon [spec]
@@ -336,5 +346,22 @@
                            :subcat []}
                   :rule "s-present-phrasal"})
         f (frontier a1)]
-    (u/assoc-in! a1 f (add-child a1))))
+    (let [a2 (-> a1
+                 (u/assoc-in! f (add-child a1)))
+          a2 (if (= true (u/get-in a2 (concat f [:done])))
+               (u/assoc-in! a2 (butlast f) {:done true})
+               a2)]
+      (let [f (frontier a2)
+            a3 (-> a2
+                   (u/assoc-in f (add-child a2)))
+            a3 (if (= true (u/get-in a3 (concat f [:done])))
+                 (u/assoc-in! a3 (butlast f) {:done true})
+                 a3)]
+        (let [f (frontier a3)
+              a4 (-> a3
+                     (u/assoc-in f (add-child a3)))
+              a4 (if (= true (u/get-in a4 (concat f [:done])))
+                   (u/assoc-in! a4 (butlast f) {:done true}))]
+          a4)))))
+
 ;;(repeatedly #(println (morph-ps (rungoon))))
