@@ -348,21 +348,21 @@
       (let [tree-with-child
             (-> tree
                 (u/assoc-in! f (add-child tree)))]
-        (if (= true (u/get-in tree-with-child (concat f [:done])))
-          (u/assoc-in! tree-with-child (or (butlast f) []) {:done true})
-          tree-with-child))
-         
+        (-> (if (= true (u/get-in tree-with-child (concat f [:done])))
+              (u/assoc-in! tree-with-child (or (butlast f) []) {:done true})
+              tree-with-child)
+            (onegoon)))
       tree)))
 
-(defn rungoon []
-  (-> (goon
-       {:modified false
-        :root {:italiano {:italiano "chiamarsi"}}
-        :synsem {:cat :verb
-                 :subcat []}
-        :rule "s-present-phrasal"})
-      (onegoon)
-      (onegoon)
-      (onegoon)))
+(defn gen [spec]
+  (-> spec
+      goon
+      onegoon))
 
-;;(repeatedly #(println (morph-ps (rungoon))))
+(def spec
+  {:modified false,
+   :root {:italiano {:italiano "chiamarsi"}},
+   :synsem {:cat :verb, :subcat []},
+   :rule "s-present-phrasal"})
+
+;;(repeatedly #(println (morph-ps (gen spec))))
