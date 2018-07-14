@@ -180,36 +180,48 @@
   (if (nil? spec) (throw (Exception. (str "nope: spec was nil."))))
   (log/info (str "mini-bolts: spec:" (strip-refs spec)))
   (->>
-   ;; 1: get all rules and shuffle them.
+   ;; 1: get all rules that satisfy _spec_  and then shuffle them.
    (shuffle
-        (->> (:grammar model)
-             (map #(unify % spec))
-             (filter #(not (= :fail %)))))
+    (->> (:grammar model)
+         (map #(unify % spec))
+         (filter #(not (= :fail %)))))
    
-   ;; 2. try to add 
+   ;; 2. try to add heads to each matching rule.
    (mapcat (fn [parent-rule]
-             ;; for each such rule,
-             ;; descend to the head child and
-             ;; find all the lightning-bolts
-             ;; that match the rule's head child.
-             (->>
+             (let [child-spec
+                   (unify
+                    (get-in spec [:head] :top)
+                    (get-in parent-rule [:head] :top))]
 
-              ;; get all the things to be added
-              ;; as the head chid of parent-rule:
-              ;; 1. lexemes that could be the head.
-              ;; 2. rules that could be the head.
-              (concat
-
-               ;; 2.1. lexemes that could be the head.
-               (map #(unify % {:done true})
-                    (get-lexemes model (get-in spec [:head])))
-
-               ;; 2.2. grammar rules that could be the head.
-               (:grammar model))
-
-              ;; 
-              (map (fn [child]
-                     (assoc-in parent-rule [:head] child))))))
+               ;; for each such rule,
+               ;; descend to the head child and
+               ;; find all the lightning-bolts
+               ;; that match the rule's head child.
+               (->>
+                
+                ;; get all the things to be added
+                ;; as the head chid of parent-rule:
+                ;; 1. lexemes that could be the head.
+                ;; 2. rules that could be the head.
+                (concat
+                 
+                 ;; 2.1. lexemes that could be the head.
+                 ;; note the {:done true} which terminates
+                 ;; the tree at [:head].
+                 (map #(if true (assoc-in! % [:done] true)
+                           %)
+                      (get-lexemes model
+                                   (unify
+                                    (get-in spec [:head] :top)
+                                    (get-in parent-rule [:head] :top))))
+                 
+                 ;; 2.2. grammar rules that could be the head.
+                 (:grammar model))
+                
+                ;; for each such child in {2.1. + 2.2},
+                ;; adjoin it as the :head.
+                (map (fn [child]
+                       (assoc-in parent-rule [:head] child)))))))
    
        (filter #(not (= % :fail)))))
 
