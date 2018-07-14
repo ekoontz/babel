@@ -273,7 +273,7 @@
 (defn add-child [tree]
   (first (add-children tree)))
 
-(defn goons [spec]
+(defn sprouts [spec]
   (->>
    (mini-bolts spec model)
    (filter #(not (= % :fail)))
@@ -308,8 +308,7 @@
 (defn gen [spec]
   (first (take 1 (map (fn [sprout]
                         (onegoon sprout))
-                      (goons spec)))))
-
+                      (sprouts spec)))))
 (def spec
   {:modified false,
    :root {:italiano {:italiano "chiamarsi"}},
