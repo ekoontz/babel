@@ -216,6 +216,9 @@
 (defn mini-tree [spec]
   (first (take 1 (mini-bolts spec model))))
 
+(defn mini-trees [spec]
+  (mini-bolts spec model))
+
 (def fts
   [{:phrasal true}
    {:phrasal true
@@ -258,6 +261,27 @@
     (let [spec-h (u/get-in mt [:head])
           mt-h (mini-tree spec-h)]
       (u/assoc-in! mt [:head] mt-h))))
+
+(defn add-children [tree]
+  (let [path (frontier tree)
+        depth (count path)
+        child-spec (u/get-in tree path)]
+    (cond
+      (= true (u/get-in child-spec [:phrasal]))
+      (mini-trees child-spec)
+      
+      (= false (u/get-in child-spec [:phrasal]))
+      (babel.generate/get-lexemes model child-spec)
+      
+      ;; TODO: concat: trees and lexemes: order depends on rand-int.
+      (= 0 (rand-int (+ depth 50)))
+      (mini-trees child-spec)
+      
+      true
+      (babel.generate/get-lexemes model child-spec))))
+
+(defn add-child [tree]
+  (first (add-children tree)))
 
 (defn using-frontier []
   (let [s (adjoin-test)
