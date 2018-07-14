@@ -293,9 +293,6 @@
    
    (filter #(not (= % :fail)))))
 
-(defn goon [spec]
-  (first (goons spec)))
-
 (defn onegoon [tree]
   (let [f (frontier tree)]
     (if (not (empty? f))
@@ -309,9 +306,9 @@
       tree)))
 
 (defn gen [spec]
-  (-> spec
-      goon
-      onegoon))
+  (first (take 1 (map (fn [sprout]
+                        (onegoon sprout))
+                      (goons spec)))))
 
 (def spec
   {:modified false,
