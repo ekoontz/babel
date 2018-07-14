@@ -323,13 +323,12 @@
    (mini-trees spec)
    (filter #(not (= % :fail)))
 
-   ;; TODO: instead of (map add-child), do
-   ;; (mapcat add-children).
-   (map (fn [g]
-          (let [child (add-child g)
-                f (frontier g)]
-            (-> g
-                (u/assoc-in! f child)))))
+   (mapcat (fn [g]
+             (let [f (frontier g)]
+               (map (fn [child]
+                      (-> g
+                          (u/assoc-in! f child)))
+                    (add-children g)))))
 
    (map (fn [g]
           (if (= true (u/get-in g [:comp :done]))
