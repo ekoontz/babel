@@ -265,7 +265,12 @@
 (defn add-children [tree]
   (let [path (frontier tree)
         depth (count path)
-        child-spec (u/get-in tree path)]
+        child-spec (u/get-in tree path)
+
+        ;; the higher the constant,
+        ;; the more likely we'll generate leaves
+        ;; (terminal nodes) rather than trees.
+        pruning-factor #(+ % 50)]
     (cond
       (= true (u/get-in child-spec [:phrasal]))
       (mini-trees child-spec)
@@ -274,7 +279,8 @@
       (babel.generate/get-lexemes model child-spec)
       
       ;; TODO: concat: trees and lexemes: order depends on rand-int.
-      (= 0 (rand-int (+ depth 50)))
+      ;; 
+      (= 0 (rand-int (pruning-factor depth)))
       (mini-trees child-spec)
       
       true
