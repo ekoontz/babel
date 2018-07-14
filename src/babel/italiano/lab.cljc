@@ -232,6 +232,9 @@
   [tree]
   (cond
 
+    (= (get-in tree [:done]) true)
+    []
+    
     (and (= (get-in tree [:phrasal] true))
          (= ::none (get-in tree [:head] ::none)))
     []
