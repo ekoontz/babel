@@ -270,16 +270,13 @@
       true
       (babel.generate/get-lexemes model child-spec))))
 
-(defn add-at [tree child at]
-  (u/assoc-in tree at child))
-
 (defn grow-all [tree f]
   (map (fn [child]
-         (let [tree-with-child (add-at tree child f)]
-           (-> (if (and (= true (u/get-in tree-with-child (concat f [:done])))
-                        (= :comp (last f)))
-                 (u/assoc-in tree-with-child (butlast f) {:done true})
-                 tree-with-child))))
+         (let [tree-with-child (u/assoc-in tree f child)]
+           (if (and (= :comp (last f))
+                    (= true (u/get-in child [:done])))
+             (u/assoc-in tree-with-child (butlast f) {:done true})
+             tree-with-child)))
        (add-children tree)))
   
 (defn grow [tree]
