@@ -286,6 +286,7 @@
           ;; the higher the constant below,
           ;; the more likely we'll first generate leaves
           ;; (terminal nodes) rather than trees.
+          ;; TODO: move this to a file-level ^const.
           branching-factor #(+ % 3)]
 
       (lazy-cat
