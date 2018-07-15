@@ -270,22 +270,19 @@
       true
       (babel.generate/get-lexemes model child-spec))))
 
+(defn add-at [tree child at]
+  (let [result (u/assoc-in! tree at child)]
+    (if (= true (u/get-in bolt [:comp :done]))
+      (u/assoc-in! result {:done true})
+      result)))
+
 (defn sprouts [spec]
-  (->>
-   (mini-bolts spec model)
-
-   (mapcat (fn [g]
-             (let [f (frontier g)]
-               (map (fn [child]
-                      (-> g
-                          (u/assoc-in! f child)))
-                    (add-children g)))))
-
-   (map (fn [g]
-          (if (= true (u/get-in g [:comp :done]))
-            (-> g
-                (u/assoc-in! {:done true}))
-            g)))))
+  (mapcat (fn [bolt]
+            (let [f (frontier bolt)]
+              (map (fn [child]
+                     (add-at bolt child f))
+                   (add-children bolt))))
+          (mini-bolts spec model)))
 
 (defn onegoon [tree]
   (let [f (frontier tree)]
