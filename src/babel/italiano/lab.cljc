@@ -270,6 +270,12 @@
       true
       (babel.generate/get-lexemes model child-spec))))
 
+(defn add-at [tree child at]
+  (let [result (u/assoc-in! tree at child)]
+    (if (= true (u/get-in bolt [:comp :done]))
+      (u/assoc-in! result {:done true})
+      result)))
+
 (defn grow [tree]
   (let [f (frontier tree)]
     (if (not (empty? f))
