@@ -279,16 +279,19 @@
              tree-with-child)))
        (add-children tree)))
   
-(defn grow [tree]
-  (let [f (frontier tree)]
-    (if (not (empty? f))
-      (grow (first (grow-all tree f)))
-      tree)))
+(defn grow [trees]
+  (if (not (empty? trees))
+    (let [tree (first trees)]
+      (lazy-cat
+       (let [f (frontier tree)]
+         (if (not (empty? f))
+           (grow (grow-all tree f))
+           [tree]))
+       (grow (rest trees))))))
 
 (defn gen [spec]
-  (first (take 1 (map (fn [sprout]
-                        (grow sprout))
-                      (sprouts spec model)))))
+  (first (take 1 (grow (sprouts spec model)))))
+
 (def spec
   {:modified false,
    :head {:comp {:synsem {:pronoun true}}}
