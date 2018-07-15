@@ -172,13 +172,13 @@
         ;; get the leaves that match _spec_.
         true (get-lexemes model spec)))
 
-(defn mini-bolts
+(defn sprouts
   "Return every possible bolt for the given model and spec. Start at the given depth and
    keep generating until the given max-depth is reached."
   [spec model]
   ;; get all rules that match input _spec_:
   (if (nil? spec) (throw (Exception. (str "nope: spec was nil."))))
-  (log/info (str "mini-bolts: spec:" (strip-refs spec)))
+  (log/info (str "sprouts: spec:" (strip-refs spec)))
   (->>
    ;; 1: get all rules that satisfy _spec_  and then shuffle them.
    (shuffle
@@ -206,14 +206,10 @@
                 (concat
                  
                  ;; 2.1. lexemes that could be the head.
-                 ;; note the {:done true} which terminates
-                 ;; the tree at [:head].
-                 (map #(if true (assoc-in! % [:done] true)
-                           %)
-                      (get-lexemes model
-                                   (unify
-                                    (get-in spec [:head] :top)
-                                    (get-in parent-rule [:head] :top))))
+                 (get-lexemes model
+                              (unify
+                               (get-in spec [:head] :top)
+                               (get-in parent-rule [:head] :top)))
                  
                  ;; 2.2. grammar rules that could be the head.
                  (:grammar model))

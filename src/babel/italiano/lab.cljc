@@ -1,7 +1,7 @@
 (ns babel.italiano.lab
   (:require
    [babel.directory] ;; this is needed even though there are no references to directory in here.
-   [babel.generate :as g :refer [bolt bolts mini-bolts]]
+   [babel.generate :as g :refer [bolt bolts sprouts]]
    [babel.italiano :as italiano :refer [model morph morph-ps parse]]
    #?(:cljs [babel.logjs :as log])
    #?(:clj [clojure.tools.logging :as log])
@@ -270,19 +270,20 @@
       true
       (babel.generate/get-lexemes model child-spec))))
 
-(defn onegoon [tree]
+(defn grow [tree]
   (let [f (frontier tree)]
     (if (not (empty? f))
       (let [tree-with-child (add-at tree (first (add-children tree)) f)]
-        (-> (if (= true (u/get-in tree-with-child (concat f [:done])))
+        (-> (if (and (= true (u/get-in tree-with-child (concat f [:done])))
+                     (= :comp (last f)))
               (u/assoc-in! tree-with-child (butlast f) {:done true})
               tree-with-child)
-            (onegoon)))
+            (grow)))
       tree)))
 
 (defn gen [spec]
   (first (take 1 (map (fn [sprout]
-                        (onegoon sprout))
+                        (grow sprout))
                       (mini-bolts spec model)))))
 
 (def spec
