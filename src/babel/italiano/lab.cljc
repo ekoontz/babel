@@ -270,14 +270,9 @@
       true
       (babel.generate/get-lexemes model child-spec))))
 
-(defn add-child [tree]
-  (first (add-children tree)))
-
 (defn sprouts [spec]
   (->>
    (mini-bolts spec model)
-
-;;   (filter #(not (= % :fail)))
 
    (mapcat (fn [g]
              (let [f (frontier g)]
@@ -290,9 +285,7 @@
           (if (= true (u/get-in g [:comp :done]))
             (-> g
                 (u/assoc-in! {:done true}))
-            g)))
-   
-   (filter #(not (= % :fail)))))
+            g)))))
 
 (defn onegoon [tree]
   (let [f (frontier tree)]
