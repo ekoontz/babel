@@ -136,7 +136,8 @@
    (shuffle
     (->> (:grammar model)
          (map #(unify % spec))
-         (filter #(not (= :fail %)))))
+         (filter #(not (= :fail %)))
+         (map #(unify % {::started? true}))))
    
    ;; 2. try to add heads to each matching rule.
    (mapcat (fn [parent-rule]
@@ -164,7 +165,9 @@
                               model)
                  
                  ;; 2.2. grammar rules that could be the head.
-                 (:grammar model))
+                 (->>
+                  (:grammar model)
+                  (map #(unify % {::started? true}))))
                 
                 ;; for each such child in {2.1. + 2.2},
                 ;; adjoin it as the :head.
