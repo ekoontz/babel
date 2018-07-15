@@ -5,8 +5,9 @@
    #?(:cljs [babel.logjs :as log]) 
    [clojure.math.combinatorics :as combo]
    [clojure.string :as string]
-   [dag_unify.core :refer [assoc-in assoc-in! copy create-path-in
-                           dissoc-paths fail-path get-in fail? strip-refs unify unify!]]))
+   [dag_unify.core :as u
+    :refer [assoc-in assoc-in! copy create-path-in
+            dissoc-paths fail-path get-in fail? strip-refs unify unify!]]))
                                         
 ;; during generation, will not decend deeper than this when creating a tree:
 ;; TODO: should also be possible to override per-language.
@@ -173,8 +174,7 @@
         true (get-lexemes spec model)))
 
 (defn sprouts
-  "Return every possible bolt for the given model and spec. Start at the given depth and
-   keep generating until the given max-depth is reached."
+  "Return every possible tree of depth 1 from the given spec and model."
   [spec model]
   ;; get all rules that match input _spec_:
   (if (nil? spec) (throw (Exception. (str "nope: spec was nil."))))
@@ -299,3 +299,70 @@
                    (repeatedly (fn [] :head)))
              [:comp])
      (comp-paths (- depth 1)))))
+
+(defn frontier
+  "get the next path to which to adjoin within _tree_."
+  [tree]
+  (cond
+
+    (= (get-in tree [:done]) true)
+    []
+    
+    (and (= (get-in tree [:phrasal] true))
+         (= ::none (get-in tree [:head] ::none)))
+    []
+    
+    (and (= (u/get-in tree [:phrasal]) true)
+         (not (u/get-in tree [:done]))
+         (not (u/get-in tree [:head :done])))
+    (cons :head (frontier (u/get-in tree [:head])))
+
+    (and (= (u/get-in tree [:phrasal]) true))
+    (cons :comp (frontier (u/get-in tree [:comp])))
+    
+    true []))
+
+(defn grow [trees model]
+  (if (not (empty? trees))
+    (let [tree (first trees)
+          f (frontier tree)
+          depth (count f)
+          child-spec (u/get-in tree f)
+          child-lexemes #(get-lexemes child-spec model)
+          child-trees #(sprouts child-spec model)
+          
+          ;; the higher the constant below,
+          ;; the more likely we'll first generate leaves
+          ;; (terminal nodes) rather than trees.
+          branching-factor #(+ % 3)]
+
+      (lazy-cat
+       (if (not (empty? f))
+         (grow
+          (->> (cond
+                 (= true (u/get-in child-spec [:phrasal]))
+                 (child-trees)
+
+                 (= false (u/get-in child-spec [:phrasal]))
+                 (child-lexemes)
+                 
+                 (= 0 (rand-int (branching-factor depth)))
+                 ;; generate children that are trees before children that are leaves.
+                 (lazy-cat (child-trees) (child-lexemes))
+                 
+                 true ;; generate children that are leaves before children that are trees.
+                 (lazy-cat (child-lexemes) (child-trees)))
+
+               (map (fn [child]
+                      (let [tree-with-child (u/assoc-in tree f child)]
+                        (if (and (= :comp (last f))
+                                 (= true (u/get-in child [:done])))
+                          (u/assoc-in! tree-with-child (butlast f) {:done true})
+                          tree-with-child)))))
+          model)
+         [tree])
+       (grow (rest trees) model)))))
+
+(defn gen [spec model]
+  (first (take 1 (grow (sprouts spec model) model))))
+
