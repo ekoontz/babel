@@ -271,27 +271,27 @@
       (babel.generate/get-lexemes model child-spec))))
 
 (defn add-at [tree child at]
-  (let [result (u/assoc-in! tree at child)]
-    (if (= true (u/get-in bolt [:comp :done]))
-      (u/assoc-in! result {:done true})
-      result)))
+  (u/assoc-in tree at child))
 
+(defn grow-all [tree f]
+  (map (fn [child]
+         (let [tree-with-child (add-at tree child f)]
+           (-> (if (and (= true (u/get-in tree-with-child (concat f [:done])))
+                        (= :comp (last f)))
+                 (u/assoc-in tree-with-child (butlast f) {:done true})
+                 tree-with-child))))
+       (add-children tree)))
+  
 (defn grow [tree]
   (let [f (frontier tree)]
     (if (not (empty? f))
-      (let [tree-with-child (add-at tree (first (add-children tree)) f)]
-        (-> (if (and (= true (u/get-in tree-with-child (concat f [:done])))
-                     (= :comp (last f)))
-              (u/assoc-in! tree-with-child (butlast f) {:done true})
-              tree-with-child)
-            (grow)))
+      (grow (first (grow-all tree f)))
       tree)))
 
 (defn gen [spec]
   (first (take 1 (map (fn [sprout]
                         (grow sprout))
-                      (mini-bolts spec model)))))
-
+                      (sprouts spec model)))))
 (def spec
   {:modified false,
    :head {:comp {:synsem {:pronoun true}}}
