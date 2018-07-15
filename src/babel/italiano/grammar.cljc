@@ -298,13 +298,18 @@
                                     :synsem {:propernoun is-propernoun?}}
                              :comp {:phrasal false}})) ;; rathole prevention ;; TODO: see if this can be removed.
 
-                   (unify h10
-                           {:rule "np-to-n-pp"
-                            :synsem {:cat :noun}
-                            :head {:phrasal false}
-                            :comp {:synsem {:cat :prep ;; TODO: comp's synsem should be constrained
-                                            ;; in head's lexical entry, not here in the grammar.
-                                            :sem {:pred :di}}}})
+                   (let [propernoun? (atom :top)]
+                     (unify h10
+                            {:rule "np-to-n-pp"
+                             :synsem {:cat :noun
+                                      :propernoun propernoun?}
+                             :head {:phrasal false
+                                    :synsem {:propernoun propernoun?}}
+
+                             ;; TODO: comp's synsem should be constrained
+                             ;; in head's lexical entry, not here in the grammar.
+                             :comp {:synsem {:cat :prep
+                                             :sem {:pred :di}}}}))
                    (unify c10
                            comp-specs-head
                            (let [number-agreement (atom :top)
