@@ -151,10 +151,10 @@
     (and (= (u/get-in tree [:phrasal]) true)
          (not (u/get-in tree [:done]))
          (not (u/get-in tree [:head :done])))
-    (concat [:head] (frontier (u/get-in tree [:head])))
+    (cons :head (frontier (u/get-in tree [:head])))
 
     (and (= (u/get-in tree [:phrasal]) true))
-    (concat [:comp] (frontier (u/get-in tree [:comp])))
+    (cons :comp (frontier (u/get-in tree [:comp])))
     
     true []
     

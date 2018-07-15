@@ -203,7 +203,7 @@
                 ;; as the head chid of parent-rule:
                 ;; 1. lexemes that could be the head.
                 ;; 2. rules that could be the head.
-                (concat
+                (lazy-cat
                  
                  ;; 2.1. lexemes that could be the head.
                  (get-lexemes (unify
