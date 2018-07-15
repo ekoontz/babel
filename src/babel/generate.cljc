@@ -269,10 +269,12 @@
     
     (and (= (u/get-in tree [:phrasal]) true)
          (not (u/get-in tree [::done?]))
+         (= true (u/get-in tree [::started?]))
          (not (u/get-in tree [:head ::done?])))
     (cons :head (frontier (u/get-in tree [:head])))
 
-    (and (= (u/get-in tree [:phrasal]) true))
+    (and (= (u/get-in tree [:phrasal]) true)
+         (= true (u/get-in tree [::started?])))
     (cons :comp (frontier (u/get-in tree [:comp])))
     
     true []))
