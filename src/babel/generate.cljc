@@ -170,7 +170,7 @@
                                    (assoc-in grammar-rule [:head] head)))))))
         ;; can't descend further, so 
         ;; get the leaves that match _spec_.
-        true (get-lexemes model spec)))
+        true (get-lexemes spec model)))
 
 (defn sprouts
   "Return every possible bolt for the given model and spec. Start at the given depth and
@@ -195,7 +195,7 @@
 
                ;; for each such rule,
                ;; descend to the head child and
-               ;; find all the lightning-bolts
+               ;; find all the children
                ;; that match the rule's head child.
                (->>
                 
@@ -206,10 +206,10 @@
                 (concat
                  
                  ;; 2.1. lexemes that could be the head.
-                 (get-lexemes model
-                              (unify
+                 (get-lexemes (unify
                                (get-in spec [:head] :top)
-                               (get-in parent-rule [:head] :top)))
+                               (get-in parent-rule [:head] :top))
+                              model)
                  
                  ;; 2.2. grammar rules that could be the head.
                  (:grammar model))
@@ -233,7 +233,7 @@
   [spec model]
   (first (bolts spec model)))
 
-(defn get-lexemes [model spec]
+(defn get-lexemes [spec model]
   "Get lexemes matching the spec. Use a model's index if available, where the index 
    is a function that we call with _spec_ to get a set of indices. 
    Otherwise use the model's entire lexeme."

@@ -167,7 +167,7 @@
           f (frontier tree)
           depth (count f)
           child-spec (u/get-in tree f)
-          child-lexemes #(get-lexemes model child-spec)
+          child-lexemes #(get-lexemes child-spec model)
           child-trees #(sprouts child-spec model)
           
           ;; the higher the constant below,
