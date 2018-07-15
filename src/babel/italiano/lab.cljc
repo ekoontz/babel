@@ -129,6 +129,13 @@
     :head {:done true}
     :comp :top}])
 
+(defn downtown []
+  (let [spec
+        {:synsem {:cat :verb
+                  :subcat []}
+         :modified false}]
+    (repeatedly #(println (morph (gen spec model))))))
+
 (defn basecamp []
   (let [semantic-spec
         {:modified false,
@@ -145,5 +152,7 @@
         spec root-spec]
     (repeatedly #(println (morph-ps (gen spec model))))))
 
+(defn next-camp []
+  (repeatedly #(println (morph-ps (gen (unify tree-3 basic) model)))))
 
 ;;(map #(println (morph %)) (grow (sprouts spec model) model))
