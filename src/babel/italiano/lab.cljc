@@ -107,19 +107,18 @@
 ;   (unify tree-2 basic)
 ;   (unify tree-3 basic)
 ;   (unify tree-4 basic)
-;   (unify tree-4 basic object-is-pronoun)
-;   (unify tree-5 basic)
+   (unify tree-4 basic object-is-pronoun)
+;;   (unify tree-5 basic)
 ;   (unify tree-5 basic object-is-pronoun)
-   (unify tree-6 basic {:synsem {:sem {:tense :present
-                                       :aspect :perfect}}})
+;   (unify tree-6 basic {:synsem {:sem {:tense :present
+;                                       :aspect :perfect}}})
 ;   (unify tree-6 basic object-is-pronoun)
 ;   (unify tree-7 basic)
    ])
 
 (def vedere-specs
   (map #(unify % {:synsem {:essere false}
-                  ;;                  :root {:italiano {:italiano "vedere"}}})
-                  :root {:italiano {:italiano :top}}})
+                  :root {:italiano {:italiano "vedere"}}})
        specs))
 
 (def fts
