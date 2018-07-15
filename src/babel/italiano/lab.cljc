@@ -292,7 +292,6 @@
 
 (def spec
   {:modified false,
-   :head {:comp {:synsem {:pronoun true}}}
    :root {:italiano {:italiano "chiamarsi"}},
    :synsem {:cat :verb, :subcat []},
    :rule "s-present-phrasal"})
