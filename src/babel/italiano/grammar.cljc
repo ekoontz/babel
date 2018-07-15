@@ -308,15 +308,15 @@
                    (unify c10
                            comp-specs-head
                            (let [number-agreement (atom :top)
-                                 is-propernoun? (atom :top)]
+                                 propernoun? (atom :top)]
                              {:rule "noun-phrase2"
                               :aliases (list "np2")
                               :synsem {:agr {:number number-agreement}
                                        :cat :noun
                                        :sem {:number number-agreement}
-                                       :propernoun is-propernoun?}
+                                       :propernoun propernoun?}
                               :head {:phrasal true
-                                     :synsem {:propernoun is-propernoun?}}
+                                     :synsem {:propernoun propernoun?}}
                               :comp {:phrasal false}})) ;; rathole prevention ;; TODO: see if this can be removed.
 
                    (let [reflexive (atom :top)
