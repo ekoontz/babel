@@ -171,7 +171,7 @@
                 (map (fn [child]
                        (assoc-in parent-rule [:head] child)))))))
    
-       (filter #(not (= % :fail)))))
+   (filter #(not (= % :fail)))))
 
 (defn bolts
   "Return every possible bolt for the given model and spec. Start at the given depth and
@@ -200,7 +200,7 @@
                 (not (= :verb (get-in % [:synsem :cat])))))
    (map #(unify % spec))
    (filter #(not (= :fail %)))
-   (map #(assoc-in % [] {:done true}))))
+   (map #(assoc-in! % [] {:done true}))))
   
 (defn add-comps-to-bolt
   "bolt + paths => trees"
