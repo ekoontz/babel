@@ -244,40 +244,34 @@
 (defn grow [trees]
   (if (not (empty? trees))
     (let [tree (first trees)
-          f (frontier tree)]
+          f (frontier tree)
+          depth (count f)
+          child-spec (u/get-in tree f)
+          child-lexemes (get-lexemes model child-spec)
+          child-trees (sprouts child-spec model)
+          
+          ;; the higher the constant below,
+          ;; the more likely we'll first generate leaves
+          ;; (terminal nodes) rather than trees.
+          branching-factor #(+ % 3)]
+
       (lazy-cat
        (if (not (empty? f))
          (grow
-          (map (fn [child]
-                 (let [tree-with-child (u/assoc-in tree f child)]
-                   (if (and (= :comp (last f))
-                            (= true (u/get-in child [:done])))
-                     (u/assoc-in! tree-with-child (butlast f) {:done true})
-                     tree-with-child)))
+          (->> (cond
+                 (= 0 (rand-int (branching-factor depth)))
+                 ;; generate children that are trees before children that are leaves.
+                 (lazy-cat child-trees child-lexemes)
+                 
+                 true ;; generate children that are leaves before children that are trees.
+                 (lazy-cat child-lexemes child-trees))
 
-               (let [path (frontier tree)
-                     depth (count path)
-                     child-spec (u/get-in tree path)
-                     
-                     ;; the higher the constant,
-                     ;; the more likely we'll generate leaves
-                     ;; (terminal nodes) rather than trees.
-                     branching-factor #(+ % 3)]
-                 (cond
-                   (= true (u/get-in child-spec [:phrasal]))
-                   (sprouts child-spec model)
-                   
-                   (= false (u/get-in child-spec [:phrasal]))
-                   (get-lexemes model child-spec)
-                   
-                   (= 0 (rand-int (branching-factor depth)))
-                   ;; generate children that are trees before children that are leaves.
-                   (lazy-cat (sprouts child-spec model)
-                             (get-lexemes model child-spec))
-                   
-                   true ;; generate children that are leaves before children that are trees.
-                   (lazy-cat (get-lexemes model child-spec)
-                             (sprouts child-spec model))))))
+               (map (fn [child]
+                      (let [tree-with-child (u/assoc-in tree f child)]
+                        (if (and (= :comp (last f))
+                                 (= true (u/get-in child [:done])))
+                          (u/assoc-in! tree-with-child (butlast f) {:done true})
+                          tree-with-child))))))
          [tree])
        (grow (rest trees))))))
 
