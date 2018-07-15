@@ -167,8 +167,8 @@
           f (frontier tree)
           depth (count f)
           child-spec (u/get-in tree f)
-          child-lexemes (get-lexemes model child-spec)
-          child-trees (sprouts child-spec model)
+          child-lexemes #(get-lexemes model child-spec)
+          child-trees #(sprouts child-spec model)
           
           ;; the higher the constant below,
           ;; the more likely we'll first generate leaves
@@ -179,12 +179,18 @@
        (if (not (empty? f))
          (grow
           (->> (cond
+                 (= true (u/get-in child-spec [:phrasal]))
+                 (child-trees)
+
+                 (= false (u/get-in child-spec [:phrasal]))
+                 (child-lexemes)
+                 
                  (= 0 (rand-int (branching-factor depth)))
                  ;; generate children that are trees before children that are leaves.
-                 (lazy-cat child-trees child-lexemes)
+                 (lazy-cat (child-trees) (child-lexemes))
                  
                  true ;; generate children that are leaves before children that are trees.
-                 (lazy-cat child-lexemes child-trees))
+                 (lazy-cat (child-lexemes) (child-trees)))
 
                (map (fn [child]
                       (let [tree-with-child (u/assoc-in tree f child)]
