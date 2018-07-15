@@ -1,7 +1,7 @@
 (ns babel.italiano.lab
   (:require
    [babel.directory] ;; this is needed even though there are no references to directory in here.
-   [babel.generate :as g :refer [bolt bolts sprouts]]
+   [babel.generate :as g :refer [bolt bolts get-lexemes sprouts]]
    [babel.italiano :as italiano :refer [model morph morph-ps parse]]
    #?(:cljs [babel.logjs :as log])
    #?(:clj [clojure.tools.logging :as log])
@@ -143,11 +143,6 @@
             (not (= :fail (unify rule spec))))
           (:grammar model)))
 
-(defn get-lexemes
-  "get all the lexemes that match spec."
-  [model spec]
-  (babel.generate/get-lexemes model spec))
-
 (defn gen-one [spec model]
   (let [each-bolt (bolt spec model)]
     (log/debug (str ((:morph-ps model) each-bolt) ": adding bolts to paths:"
@@ -246,48 +241,46 @@
     true
     [(str "(unhandled): " ((:morph-ps model) tree))]))
 
-(defn get-children [tree]
-  (let [path (frontier tree)
-        depth (count path)
-        child-spec (u/get-in tree path)
-
-        ;; the higher the constant,
-        ;; the more likely we'll generate leaves
-        ;; (terminal nodes) rather than trees.
-        pruning-factor #(+ % 3)]
-    (cond
-      (= true (u/get-in child-spec [:phrasal]))
-      (mini-bolts child-spec model)
-      
-      (= false (u/get-in child-spec [:phrasal]))
-      (babel.generate/get-lexemes model child-spec)
-      
-      ;; TODO: concat: trees and lexemes: order depends on rand-int.
-      ;; 
-      (= 0 (rand-int (pruning-factor depth)))
-      (mini-bolts child-spec model)
-      
-      true
-      (babel.generate/get-lexemes model child-spec))))
-  
 (defn grow [trees]
   (if (not (empty? trees))
-    (let [tree (first trees)]
+    (let [tree (first trees)
+          f (frontier tree)]
       (lazy-cat
-       (let [f (frontier tree)]
-         (if (not (empty? f))
-           (grow
-            (map (fn [child]
-                   (let [tree-with-child (u/assoc-in tree f child)]
-                     (if (and (= :comp (last f))
-                              (= true (u/get-in child [:done])))
-                       (u/assoc-in! tree-with-child (butlast f) {:done true})
-                       tree-with-child)))
-                 (get-children tree)))
-           [tree]))
+       (if (not (empty? f))
+         (grow
+          (map (fn [child]
+                 (let [tree-with-child (u/assoc-in tree f child)]
+                   (if (and (= :comp (last f))
+                            (= true (u/get-in child [:done])))
+                     (u/assoc-in! tree-with-child (butlast f) {:done true})
+                     tree-with-child)))
+
+               (let [path (frontier tree)
+                     depth (count path)
+                     child-spec (u/get-in tree path)
+                     
+                     ;; the higher the constant,
+                     ;; the more likely we'll generate leaves
+                     ;; (terminal nodes) rather than trees.
+                     pruning-factor #(+ % 3)]
+                 (cond
+                   (= true (u/get-in child-spec [:phrasal]))
+                   (sprouts child-spec model)
+                   
+                   (= false (u/get-in child-spec [:phrasal]))
+                   (get-lexemes model child-spec)
+                   
+                   ;; TODO: concat: trees and lexemes: order depends on rand-int.
+                   ;; 
+                   (= 0 (rand-int (pruning-factor depth)))
+                   (mini-bolts child-spec model)
+                   
+                   true
+                   (babel.generate/get-lexemes model child-spec)))))
+         [tree])
        (grow (rest trees))))))
 
-(defn gen [spec]
+(defn gen [spec model]
   (first (take 1 (grow (sprouts spec model)))))
 
 (def spec
@@ -296,4 +289,4 @@
    :synsem {:cat :verb, :subcat []},
    :rule "s-present-phrasal"})
 
-;;(repeatedly #(println (morph-ps (gen spec))))
+;;(repeatedly #(println (morph-ps (gen spec model))))
