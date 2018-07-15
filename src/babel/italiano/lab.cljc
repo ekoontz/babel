@@ -262,7 +262,7 @@
                      ;; the higher the constant,
                      ;; the more likely we'll generate leaves
                      ;; (terminal nodes) rather than trees.
-                     pruning-factor #(+ % 3)]
+                     branching-factor #(+ % 3)]
                  (cond
                    (= true (u/get-in child-spec [:phrasal]))
                    (sprouts child-spec model)
@@ -270,11 +270,12 @@
                    (= false (u/get-in child-spec [:phrasal]))
                    (get-lexemes model child-spec)
                    
-                   (= 0 (rand-int (pruning-factor depth)))
+                   (= 0 (rand-int (branching-factor depth)))
+                   ;; generate children that are trees before children that are leaves.
                    (lazy-cat (sprouts child-spec model)
                              (get-lexemes model child-spec))
                    
-                   true
+                   true ;; generate children that are leaves before children that are trees.
                    (lazy-cat (get-lexemes model child-spec)
                              (sprouts child-spec model))))))
          [tree])
