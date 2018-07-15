@@ -270,13 +270,13 @@
                    (= false (u/get-in child-spec [:phrasal]))
                    (get-lexemes model child-spec)
                    
-                   ;; TODO: concat: trees and lexemes: order depends on rand-int.
-                   ;; 
                    (= 0 (rand-int (pruning-factor depth)))
-                   (mini-bolts child-spec model)
+                   (lazy-cat (sprouts child-spec model)
+                             (get-lexemes model child-spec))
                    
                    true
-                   (babel.generate/get-lexemes model child-spec)))))
+                   (lazy-cat (get-lexemes model child-spec)
+                             (sprouts child-spec model))))))
          [tree])
        (grow (rest trees))))))
 
