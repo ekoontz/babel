@@ -281,7 +281,7 @@
                    (let [tree-with-child (u/assoc-in tree f child)]
                      (if (and (= :comp (last f))
                               (= true (u/get-in child [:done])))
-                       (u/assoc-in tree-with-child (butlast f) {:done true})
+                       (u/assoc-in! tree-with-child (butlast f) {:done true})
                        tree-with-child)))
                  (get-children tree)))
            [tree]))
