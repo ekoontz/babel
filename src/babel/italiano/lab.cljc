@@ -246,7 +246,7 @@
     true
     [(str "(unhandled): " ((:morph-ps model) tree))]))
 
-(defn add-children [tree]
+(defn get-children [tree]
   (let [path (frontier tree)
         depth (count path)
         child-spec (u/get-in tree path)
@@ -269,15 +269,6 @@
       
       true
       (babel.generate/get-lexemes model child-spec))))
-
-(defn grow-all [tree f]
-  (map (fn [child]
-         (let [tree-with-child (u/assoc-in tree f child)]
-           (if (and (= :comp (last f))
-                    (= true (u/get-in child [:done])))
-             (u/assoc-in tree-with-child (butlast f) {:done true})
-             tree-with-child)))
-       (add-children tree)))
   
 (defn grow [trees]
   (if (not (empty? trees))
@@ -285,7 +276,14 @@
       (lazy-cat
        (let [f (frontier tree)]
          (if (not (empty? f))
-           (grow (grow-all tree f))
+           (grow
+            (map (fn [child]
+                   (let [tree-with-child (u/assoc-in tree f child)]
+                     (if (and (= :comp (last f))
+                              (= true (u/get-in child [:done])))
+                       (u/assoc-in tree-with-child (butlast f) {:done true})
+                       tree-with-child)))
+                 (get-children tree)))
            [tree]))
        (grow (rest trees))))))
 
