@@ -106,8 +106,8 @@
 ;   (unify tree-1 basic)
 ;   (unify tree-2 basic)
 ;   (unify tree-3 basic)
-;   (unify tree-4 basic)
-   (unify tree-4 basic object-is-pronoun)
+   (unify tree-4 basic)
+;   (unify tree-4 basic object-is-pronoun)
 ;;   (unify tree-5 basic)
 ;   (unify tree-5 basic object-is-pronoun)
 ;   (unify tree-6 basic {:synsem {:sem {:tense :present
@@ -129,20 +129,21 @@
     :head {:done true}
     :comp :top}])
 
-(def semantic-spec
-  {:modified false,
-   :synsem {:cat :verb, :subcat []
-            :sem {:aspect :simple
-                  :pred :be-called
-                  :tense :present}}})
-(def root-spec
-  {:modified false,
-   :root {:italiano {:italiano "chiamarsi"}}
-   :synsem {:cat :verb, :subcat []
-            :sem {:aspect :simple
-                  :tense :present}}})
+(defn basecamp []
+  (let [semantic-spec
+        {:modified false,
+         :synsem {:cat :verb, :subcat []
+                  :sem {:aspect :simple
+                        :pred :be-called
+                        :tense :present}}}
+        root-spec
+        {:modified false,
+         :root {:italiano {:italiano "chiamarsi"}}
+         :synsem {:cat :verb, :subcat []
+                  :sem {:aspect :simple
+                        :tense :present}}}
+        spec root-spec]
+    (repeatedly #(println (morph-ps (gen spec model))))))
 
-(def spec root-spec)
 
-;;(repeatedly #(println (morph-ps (gen spec model))))
 ;;(map #(println (morph %)) (grow (sprouts spec model) model))
