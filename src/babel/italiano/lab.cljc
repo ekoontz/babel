@@ -270,24 +270,10 @@
       true
       (babel.generate/get-lexemes model child-spec))))
 
-(defn add-at [tree child at]
-  (let [result (u/assoc-in! tree at child)]
-    (if (= true (u/get-in bolt [:comp :done]))
-      (u/assoc-in! result {:done true})
-      result)))
-
-(defn sprouts [spec]
-  (mapcat (fn [bolt]
-            (let [f (frontier bolt)]
-              (map (fn [child]
-                     (add-at bolt child f))
-                   (add-children bolt))))
-          (mini-bolts spec model)))
-
 (defn onegoon [tree]
   (let [f (frontier tree)]
     (if (not (empty? f))
-      (let [tree-with-child (u/assoc-in! tree f (first (add-children tree)))]
+      (let [tree-with-child (add-at tree (first (add-children tree)) f)]
         (-> (if (= true (u/get-in tree-with-child (concat f [:done])))
               (u/assoc-in! tree-with-child (butlast f) {:done true})
               tree-with-child)
@@ -297,10 +283,11 @@
 (defn gen [spec]
   (first (take 1 (map (fn [sprout]
                         (onegoon sprout))
-                      (sprouts spec)))))
+                      (mini-bolts spec model)))))
 
 (def spec
   {:modified false,
+   :head {:comp {:synsem {:pronoun true}}}
    :root {:italiano {:italiano "chiamarsi"}},
    :synsem {:cat :verb, :subcat []},
    :rule "s-present-phrasal"})
