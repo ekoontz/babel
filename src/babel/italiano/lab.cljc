@@ -254,7 +254,7 @@
         ;; the higher the constant,
         ;; the more likely we'll generate leaves
         ;; (terminal nodes) rather than trees.
-        pruning-factor #(+ % 50)]
+        pruning-factor #(+ % 3)]
     (cond
       (= true (u/get-in child-spec [:phrasal]))
       (mini-bolts child-spec model)
