@@ -200,7 +200,7 @@
                 (not (= :verb (get-in % [:synsem :cat])))))
    (map #(unify % spec))
    (filter #(not (= :fail %)))
-   (map #(assoc-in! % [] {:done true}))))
+   (map #(assoc-in! % [] {::done true}))))
   
 (defn add-comps-to-bolt
   "bolt + paths => trees"
@@ -257,7 +257,7 @@
   [tree]
   (cond
 
-    (= (get-in tree [:done]) true)
+    (= (get-in tree [::done]) true)
     []
     
     (and (= (get-in tree [:phrasal] true))
@@ -265,8 +265,8 @@
     []
     
     (and (= (u/get-in tree [:phrasal]) true)
-         (not (u/get-in tree [:done]))
-         (not (u/get-in tree [:head :done])))
+         (not (u/get-in tree [::done]))
+         (not (u/get-in tree [:head ::done])))
     (cons :head (frontier (u/get-in tree [:head])))
 
     (and (= (u/get-in tree [:phrasal]) true))
@@ -308,8 +308,8 @@
                (map (fn [child]
                       (let [tree-with-child (u/assoc-in tree f child)]
                         (if (and (= :comp (last f))
-                                 (= true (u/get-in child [:done])))
-                          (u/assoc-in! tree-with-child (butlast f) {:done true})
+                                 (= true (u/get-in child [::done])))
+                          (u/assoc-in! tree-with-child (butlast f) {::done true})
                           tree-with-child)))))
           model)
          [tree])
