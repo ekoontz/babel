@@ -165,6 +165,11 @@
       ;; TODO: simplify to just (noun-pred-defaults)
       (noun-pred-defaults)
 
+      ;; nouns are not propernouns by default.
+      (default
+       {:synsem {:cat :noun
+                 :propernoun false}})
+      
       ;; </noun default rules>            
 
       ;; <verb default rules>
