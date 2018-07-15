@@ -283,10 +283,20 @@
 (defn gen [spec model]
   (first (take 1 (grow (sprouts spec model)))))
 
-(def spec
+(def semantic-spec
   {:modified false,
-   :root {:italiano {:italiano "chiamarsi"}},
-   :synsem {:cat :verb, :subcat []},
-   :rule "s-present-phrasal"})
+   :synsem {:cat :verb, :subcat []
+            :sem {:aspect :simple
+                  :pred :be-called
+                  :tense :present}}})
+
+(def root-spec
+  {:modified false,
+   :root {:italiano {:italiano "chiamarsi"}}
+   :synsem {:cat :verb, :subcat []
+            :sem {:aspect :simple
+                  :tense :present}}})
+
+(def spec root-spec)
 
 ;;(repeatedly #(println (morph-ps (gen spec model))))
