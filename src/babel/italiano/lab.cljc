@@ -276,7 +276,8 @@
 (defn sprouts [spec]
   (->>
    (mini-bolts spec model)
-   (filter #(not (= % :fail)))
+
+;;   (filter #(not (= % :fail)))
 
    (mapcat (fn [g]
              (let [f (frontier g)]
@@ -296,35 +297,18 @@
 (defn onegoon [tree]
   (let [f (frontier tree)]
     (if (not (empty? f))
-      (let [tree-with-child
-            (-> tree
-                (u/assoc-in! f (add-child tree)))]
+      (let [tree-with-child (u/assoc-in! tree f (first (add-children tree)))]
         (-> (if (= true (u/get-in tree-with-child (concat f [:done])))
-              (u/assoc-in! tree-with-child (or (butlast f) []) {:done true})
+              (u/assoc-in! tree-with-child (butlast f) {:done true})
               tree-with-child)
             (onegoon)))
       tree)))
-
-(defn allgoons [tree]
-  (let [f (frontier tree)]
-    (if (not (empty? f))
-      (let [trees-with-children
-            (map (fn [child]
-                   (u/assoc-in tree f child))
-                 (add-children tree))]
-        (->> trees-with-children
-             (map (fn [tree-with-child]
-                    (-> (if (= true (u/get-in tree-with-child (concat f [:done])))
-                          (u/assoc-in! tree-with-child (or (butlast f) []) {:done true})
-                          tree-with-child))))
-             (mapcat (fn [tree-with-child]
-                       (allgoons tree-with-child)))))
-      [tree])))
 
 (defn gen [spec]
   (first (take 1 (map (fn [sprout]
                         (onegoon sprout))
                       (sprouts spec)))))
+
 (def spec
   {:modified false,
    :root {:italiano {:italiano "chiamarsi"}},
