@@ -125,12 +125,12 @@
         ;; get the leaves that match _spec_.
         true (get-lexemes spec model)))
 
-(defn sprouts
+(defn minitrees
   "Return every possible tree of depth 1 from the given spec and model."
   [spec model]
   ;; get all rules that match input _spec_:
   (if (nil? spec) (throw (Exception. (str "nope: spec was nil."))))
-  (log/info (str "sprouts: spec:" (strip-refs spec)))
+  (log/info (str "minitrees: spec:" (strip-refs spec)))
   (->>
    ;; 1: get all rules that satisfy _spec_  and then shuffle them.
    (shuffle
@@ -286,14 +286,16 @@
           depth (count f)
           child-spec (u/get-in tree f)
           child-lexemes #(get-lexemes child-spec model)
-          child-trees #(sprouts child-spec model)
+          child-trees #(minitrees child-spec model)
           
           ;; the higher the constant below,
           ;; the more likely we'll first generate leaves
           ;; (terminal nodes) rather than trees.
           ;; TODO: move this to a file-level ^const.
           branching-factor #(+ % 3)]
-
+      (if false (println (str "tree: " ((:morph-ps model) tree) ": f:" f ";"
+                              "child phrasal?:"
+                              (u/get-in child-spec [:phrasal]))))
       (lazy-cat
        (if (not (empty? f))
          (grow
@@ -313,6 +315,7 @@
 
                (map (fn [child]
                       (let [tree-with-child (u/assoc-in tree f child)]
+                        (if false (println (str "twc:" ((:morph-ps model) tree-with-child))))
                         (if (and (= :comp (last f))
                                  (= true (u/get-in child [::done?])))
                           (u/assoc-in! tree-with-child (butlast f) {::done? true})
@@ -322,5 +325,5 @@
        (grow (rest trees) model)))))
 
 (defn gen [spec model]
-  (first (take 1 (grow (sprouts spec model) model))))
+  (first (take 1 (grow (minitrees spec model) model))))
 
