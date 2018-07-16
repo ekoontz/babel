@@ -120,10 +120,6 @@
     (= (get-in tree [::done?]) true)
     []
     
-    (and (= (get-in tree [:phrasal] true))
-         (= ::none (get-in tree [:head] ::none)))
-    []
-    
     (and (= (u/get-in tree [:phrasal]) true)
          (not (u/get-in tree [::done?]))
          (= true (u/get-in tree [::started?]))
