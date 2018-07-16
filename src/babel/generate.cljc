@@ -41,9 +41,8 @@
   (log/debug (str "(generate) with model named: " (:name language-model)))
   (first (gen spec language-model)))
 
-
 (defn gen [spec model]
-  (first (take 1 (grow (minitrees spec model) model))))
+  (grow (minitrees spec model) model))
 
 (defn minitrees
   "Return every possible tree of depth 1 from the given spec and model."

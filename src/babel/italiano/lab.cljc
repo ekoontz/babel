@@ -1,7 +1,7 @@
 (ns babel.italiano.lab
   (:require
    [babel.directory] ;; this is needed even though there are no references to directory in here.
-   [babel.generate :as g :refer [frontier gen get-lexemes minitrees]]
+   [babel.generate :as g :refer [frontier generate get-lexemes minitrees]]
    [babel.italiano :as italiano :refer [model morph morph-ps parse]]
    #?(:cljs [babel.logjs :as log])
    #?(:clj [clojure.tools.logging :as log])
@@ -164,7 +164,7 @@
         {:synsem {:cat :verb
                   :subcat []}
          :modified false}]
-    (repeatedly #(println (morph (gen spec model))))))
+    (repeatedly #(println (morph (generate spec model))))))
 
 (defn basecamp []
   (let [semantic-spec
@@ -183,7 +183,7 @@
         all-of-the-specs (concat specs [root-spec semantic-spec]
                                  vedere-specs)]
         
-    (repeatedly #(println (morph (gen
+    (repeatedly #(println (morph (generate
                                   (nth all-of-the-specs
                                        (rand-int (count all-of-the-specs)))
                                   model))))))
