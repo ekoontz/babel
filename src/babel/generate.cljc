@@ -62,6 +62,7 @@
          (map #(unify % {::started? true}))))
    
    ;; 2. try to add heads to each matching rule.
+   ;; TODO: make this a recursive call with (lazy-cat) as we do with (defn grow) (below).
    (mapcat (fn [parent-rule]
              (let [child-spec
                    (unify
