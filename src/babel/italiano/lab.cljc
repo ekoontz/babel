@@ -156,4 +156,8 @@
   (let [spec-3 (unify tree-3 basic)]
     (repeatedly #(println (morph (gen spec-3 model))))))
 
+(defn refresh []
+  (babel.test.test/init-db)
+  (babel.directory/refresh-models))
+
 ;;(map #(println (morph %)) (grow (sprouts spec model) model))
