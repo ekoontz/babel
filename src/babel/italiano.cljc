@@ -70,7 +70,8 @@
                  max-total-depth generate/max-depth
                  truncate true}}]
    (log/debug (str "generating with spec: " (strip-refs spec) " with max-total-depth: " max-total-depth))
-   (let [spec (let [result (grammar/generation-implications spec model)]
+   (let [spec (unify spec {:modified false})
+         spec (let [result (grammar/generation-implications spec model)]
                 (cond (= :fail result)
                       (do (log/warn (str "spec failed when generation-implications applied:" spec ";"
                                          "using original-spec."))
