@@ -103,17 +103,17 @@
 
 (def specs 
   [
-;   (unify tree-1 basic)
-;   (unify tree-2 basic)
-;   (unify tree-3 basic)
+   (unify tree-1 basic)
+   (unify tree-2 basic)
+   (unify tree-3 basic)
    (unify tree-4 basic)
-;   (unify tree-4 basic object-is-pronoun)
+   (unify tree-4 basic object-is-pronoun)
 ;;   (unify tree-5 basic)
-;   (unify tree-5 basic object-is-pronoun)
-;   (unify tree-6 basic {:synsem {:sem {:tense :present
-;                                       :aspect :perfect}}})
-;   (unify tree-6 basic object-is-pronoun)
-;   (unify tree-7 basic)
+   (unify tree-5 basic object-is-pronoun)
+   (unify tree-6 basic {:synsem {:sem {:tense :present
+                                       :aspect :perfect}}})
+   (unify tree-6 basic object-is-pronoun)
+   (unify tree-7 basic)
    ])
 
 (def vedere-specs
@@ -149,12 +149,13 @@
          :synsem {:cat :verb, :subcat []
                   :sem {:aspect :simple
                         :tense :present}}}
-        spec root-spec]
-    (repeatedly #(println (morph (time (gen spec model)))))))
-
+        spec-3 (unify tree-3 basic)]
+    (repeatedly #(println (morph (gen
+                                  (if (= 0 (rand-int 2))
+                                    spec-3
+                                    root-spec) model))))))
 (defn nextcamp []
-  (let [spec-3 (unify tree-3 basic)]
-    (repeatedly #(println (morph (gen spec-3 model))))))
+  (basecamp))
 
 (defn refresh []
   (babel.test.test/init-db)
