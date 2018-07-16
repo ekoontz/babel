@@ -4,7 +4,7 @@
    [babel.italiano.grammar :as grammar]
    [babel.italiano.lexicon :as lex]
    [babel.italiano.morphology :as morph :refer [get-string patterns]]
-   [babel.generate :as generate :refer [lightning-bolts]]
+   [babel.generate :as generate]
    [babel.over :as over]
    [babel.parse :as parse]
    [babel.test.test :refer [init-db]]
@@ -192,17 +192,7 @@
                      (map (fn [word]
                             (get (:lexicon base-model) word))
                           (sort words)))))]
-        (let [spec {:synsem {:cat :verb
-                             :sem {:tense :top
-                                   :aspect :simple
-                                   :reflexive :top}
-                             :subcat '()}}]
-          (merge model
-                 {:bolts {(merge {:depth 2}
-                                 spec)
-                          (lightning-bolts model
-                                           spec
-                                           0 2)}})))))))
+        model)))))
 
 (defn test-cm []
   (let [m (create-model "io" "lei" "lo"

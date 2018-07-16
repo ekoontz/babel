@@ -13,13 +13,10 @@
 ;; TODO: should also be possible to override per-language.
 (def ^:const max-depth 10)
 
-(declare add-comps-to-bolt)
-(declare add-to-bolt-at-path)
-(declare comp-paths)
 (declare gen)
-(declare get-bolts-for)
 (declare get-lexemes)
-(declare lightning-bolts)
+(declare grow)
+(declare minitrees)
 
 (defn generate
   "Return one expression matching spec _spec_ given the model _model_."
@@ -44,86 +41,9 @@
   (log/debug (str "(generate) with model named: " (:name language-model)))
   (first (gen spec language-model)))
 
-;; Wrapper around (defn lightning-bolts) to provide a way to
-;; test indexing and memoization strategies.
-(defn get-bolts-for
-  "Return every possible bolt for the given model and spec."
-  [model spec depth]
-  (let [search-for-key
-        (strip-refs
-         {:synsem {:sem {:aspect (get-in spec [:synsem :sem :aspect] :top)
-                         :reflexive (get-in spec [:synsem :sem :reflexive] :top)
-                         :tense (get-in spec [:synsem :sem :tense] :top)}
-                   :subcat (get-in spec [:synsem :subcat] :top)
-                   :cat (get-in spec [:synsem :cat] :top)}
-          :depth depth})
 
-        debug (log/trace (str "looking for key: "
-                             search-for-key))
-        
-        bolts ;; check for bolts compiled into model
-        (get (-> model :bolts)
-             search-for-key)]
-    (cond
-      (not (nil? bolts))
-      (do
-        (log/debug (str "found compiled bolts."))
-        (shuffle (->> bolts
-                      (map #(unify spec %))
-                      (filter #(not (= :fail %))))))
-      true
-      (do
-        (log/trace (str "get-bolts-for: no compiled bolts."))
-        (lightning-bolts model spec 0 depth)))))
-
-;; a 'lightning bolt' is a dag that
-;; has among its paths, paths like [:head :head :head] and
-;; pictorially look like:
-;; 
-;; 
-;;   H        H    H
-;;    \      /      \
-;;     H    H        H        ...
-;;    /      \        \
-;;   H        ..       ..
-;;    \
-;;     ..
-;; 
-;; Each bolt has has a head child.
-;; Each head child may be a leaf or
-;; otherwise has a child with the same two
-;; possibilities: either it's a leaf or itself
-;; a bolt, up to the maximum depth.
-(defn lightning-bolts
-  "Return every possible bolt for the given model and spec. Start at the given depth and
-   keep generating until the given max-depth is reached."
-  [model spec depth max-depth]
-  (cond (and (< depth max-depth)
-             (not (= false (get-in spec [:phrasal] true))))
-
-        ;; get all rules that match input _spec_:
-        (->> (shuffle
-              (->> (:grammar model)
-                   (map #(unify % spec))
-                   (filter #(not (= :fail %)))))
-
-             (mapcat (fn [grammar-rule]
-                       ;; for each such rule,
-                       ;; descend to the head child and
-                       ;; find all the lightning-bolts
-                       ;; that match the rule's head child.
-                       (->> (lightning-bolts model
-                                             (get-in grammar-rule [:head])
-                                             (+ 1 depth)
-                                             max-depth)
-                            ;; add each such sub-bolt to
-                            ;; the grammar rule as the head,
-                            ;; yielding one bolt rooted at _grammar-rule_.
-                            (map (fn [head]
-                                   (assoc-in grammar-rule [:head] head)))))))
-        ;; can't descend further, so 
-        ;; get the leaves that match _spec_.
-        true (get-lexemes spec model)))
+(defn gen [spec model]
+  (first (take 1 (grow (minitrees spec model) model))))
 
 (defn minitrees
   "Return every possible tree of depth 1 from the given spec and model."
@@ -176,18 +96,6 @@
    
    (filter #(not (= % :fail)))))
 
-(defn bolts
-  "Return every possible bolt for the given model and spec. Start at the given depth and
-   keep generating until max-depth is reached."
-  [spec model]
-  (get-bolts-for model spec max-depth))
-
-(defn bolt
-  "Return the first possible bolt for the given model and spec. Start at the given depth and
-   keep generating until max-depth is reached."
-  [spec model]
-  (first (bolts spec model)))
-
 (defn get-lexemes [spec model]
   "Get lexemes matching the spec. Use a model's index if available, where the index 
    is a function that we call with _spec_ to get a set of indices. 
@@ -205,56 +113,6 @@
    (filter #(not (= :fail %)))
    (map #(assoc-in! % [] {::done? true}))))
   
-(defn add-comps-to-bolt
-  "bolt + paths => trees"
-  [bolt model comp-paths]
-  (if (not (empty? comp-paths))
-    (mapcat (fn [bolt]
-              (add-to-bolt-at-path bolt (first comp-paths) model))
-            (add-comps-to-bolt bolt model (rest comp-paths)))
-    [bolt]))
-
-(defn add-to-bolt-at-path
-  "generate all complements for bolt at given path, and create a partial tree: bolt + complement => partial tree"
-  [bolt path model]
-  (->>
-   (gen (get-in bolt path) model 0) ;; generate all complements for _bolt_ at _path_.
-   (map #(let [partial-tree
-               (assoc-in! (copy bolt) path %)] ;; add the complement to the bolt at _path_.
-           ;; apply model's :default-fn, if any.
-           ;; TODO: default-fn should return a sequence of partial trees,
-           ;; not just one.
-           (if (:default-fn model)
-             (first ((:default-fn model) partial-tree))
-             partial-tree)))))
-
-(defn comp-paths
-  "Find all paths to all complements (both terminal and non-terminal) given a depth. Returned in 
-   ascending length (shortest first)."
-  ;; e.g., a tree of depth 2
-  ;; will have the following paths:
-  ;;   [:comp] [:head :comp]
-  ;;   because it looks like:
-  ;; 
-  ;;   H
-  ;;  / \
-  ;; C   H
-  ;;    / \
-  ;;   H   C
-  ;;
-  [depth]
-  (cond
-    (= depth 0)
-    []
-    (= depth 1)
-    (list [:comp])
-    true
-    (cons
-     (concat (take (- depth 1)
-                   (repeatedly (fn [] :head)))
-             [:comp])
-     (comp-paths (- depth 1)))))
-
 (defn frontier
   "get the next path to which to adjoin within _tree_."
   [tree]
@@ -323,7 +181,3 @@
           model)
          [tree])
        (grow (rest trees) model)))))
-
-(defn gen [spec model]
-  (first (take 1 (grow (minitrees spec model) model))))
-

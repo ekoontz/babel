@@ -1,7 +1,7 @@
 (ns babel.italiano.grammar
   (:refer-clojure :exclude [get-in resolve])
   (:require
-   [babel.generate :as generate :refer [lightning-bolts]]
+   [babel.generate :as generate]
    [babel.html :refer [local-timestamp]]
    [babel.index :refer [create-indices lookup-spec]]
    [babel.italiano.lexicon :refer [compile-lexicon edn2lexicon vocab-entry-to-lexeme]]
@@ -770,34 +770,7 @@
         (merge model
                {:vocab2model
                 (fn [vocab-items filter-lexicon-fn]
-                  (model-with-vocab-items vocab-items filter-lexicon-fn model))
-
-                :bolts
-                (merge
-                 (let [depth 2
-                       spec
-                       {:synsem {:subcat []
-                                 :cat :verb
-                                 :sem {:tense :present
-                                       :reflexive :top
-                                       :aspect :perfect}}}]
-                   {(merge {:depth depth}
-                           spec)
-                    (lightning-bolts model
-                                     spec
-                                     0 depth)})
-                 (let [depth 3
-                       spec
-                       {:synsem {:subcat []
-                                 :cat :verb
-                                 :sem {:tense :present
-                                       :reflexive :top
-                                       :aspect :perfect}}}]
-                   {(merge {:depth depth}
-                           spec)
-                    (lightning-bolts model
-                                     spec
-                                     0 depth)}))}))))))
+                  (model-with-vocab-items vocab-items filter-lexicon-fn model))}))))))
 
 (defn model-with-vocab-items [vocab-items filter-lexicon-fn model]
   (let [input-lexicon (reduce merge (map vocab-entry-to-lexeme vocab-items))
