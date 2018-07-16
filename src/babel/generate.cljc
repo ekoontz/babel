@@ -87,16 +87,15 @@
                               model)
                  
                  ;; 2.2. grammar rules that could be the head.
-                 (->>
-                  (:grammar model)
-                  (map #(unify % {::started? true}))))
+                 (:grammar model))
                 
                 ;; for each such child in {2.1. + 2.2},
                 ;; adjoin it as the :head.
                 (map (fn [child]
                        (assoc-in parent-rule [:head] child)))))))
    
-   (filter #(not (= % :fail)))))
+   (filter #(not (= % :fail)))
+   (map #(assoc-in % [::started?] true))))
 
 (defn get-lexemes [spec model]
   "Get lexemes matching the spec. Use a model's index if available, where the index 
