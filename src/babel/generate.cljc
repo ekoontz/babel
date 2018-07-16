@@ -50,7 +50,7 @@
   [spec model]
   ;; get all rules that match input _spec_:
   (if (nil? spec) (throw (Exception. (str "nope: spec was nil."))))
-  (log/info (str "minitrees: spec:" (strip-refs spec)))
+  (log/debug (str "minitrees: spec:" (strip-refs spec)))
   (->>
    ;; 1: get all rules that satisfy _spec_  and then shuffle them.
    (shuffle
