@@ -146,12 +146,9 @@
    (unify tree-2 basic)
    (unify tree-3 basic)
    (unify tree-4 basic)
-   (unify tree-4 basic object-is-pronoun)
    (unify tree-5 basic)
-   (unify tree-5 basic object-is-pronoun)
    (unify tree-6 basic {:synsem {:sem {:tense :present
                                        :aspect :perfect}}})
-   (unify tree-6 basic object-is-pronoun)
    (unify tree-7 basic)
    (unify tree-8 basic)
    (unify tree-9 basic)
