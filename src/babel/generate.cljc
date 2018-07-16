@@ -8,10 +8,11 @@
    [dag_unify.core :as u
     :refer [assoc-in assoc-in! copy create-path-in
             dissoc-paths fail-path get-in fail? strip-refs unify unify!]]))
-                                        
-;; during generation, will not decend deeper than this when creating a tree:
-;; TODO: should also be possible to override per-language.
-(def ^:const max-depth 10)
+          
+;; the higher the constant below,
+;; the more likely we'll first generate leaves
+;; (terminal nodes) rather than trees.
+(def ^:const branching-factor #(+ % 5))
 
 (declare gen)
 (declare get-lexemes)
@@ -139,13 +140,7 @@
           depth (count f)
           child-spec (u/get-in tree f)
           child-lexemes #(get-lexemes child-spec model)
-          child-trees #(minitrees child-spec model)
-          
-          ;; the higher the constant below,
-          ;; the more likely we'll first generate leaves
-          ;; (terminal nodes) rather than trees.
-          ;; TODO: move this to a file-level ^const.
-          branching-factor #(+ % 3)]
+          child-trees #(minitrees child-spec model)]
       (if false (println (str "tree: " ((:morph-ps model) tree) ": f:" f ";"
                               "child phrasal?:"
                               (u/get-in child-spec [:phrasal]))))
