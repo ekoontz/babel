@@ -5,7 +5,7 @@
             [babel.english.grammar :as grammar :refer [head-first head-last]]
             [babel.english.morphology :refer [get-string]]
 
-            [babel.generate :as generate :refer [get-lexemes lightning-bolts]]
+            [babel.generate :as generate :refer [get-lexemes]]
             [babel.lexiconfn :refer [write-lexicon]]
             [babel.over :refer [over overc overh]]
             [babel.parse :as parse]
@@ -429,27 +429,6 @@
                      :sem {:pred :read
                            :subj {:pred :cat}}
                      :subcat '()}})
-
-;; TODO: consider removing this test: generation is
-;; less susceptible to the problems for which it was
-;; added.
-(deftest rathole-check-2
-  (let [med model
-        spec {:synsem {:cat :verb
-                       :sem {:pred :read
-                             :subj {:pred :woman}}
-                       :subcat '()}}
-        lbs (lightning-bolts med spec 0 2)
-        good-lb (first (filter #(and (= (get-in % [:head :rule])
-                                        "transitive-vp-nonphrasal-head")
-                                     (= (get-in % [:head :head :english :english])
-                                        "read"))
-                               lbs))
-        comp-comp-spec (get-in good-lb [:head :comp])
-        comp-spec (get-in good-lb [:comp])]
-
-    (is (not (empty? (lightning-bolts med (get-in good-lb [:head :comp]) 0 0))))
-    (is (not (empty? (lightning-bolts med (get-in good-lb [:comp]) 0 1))))))
 
 (deftest take-advantage-present
   (let [result (generate {:synsem {:sem {:pred :take-advantage-of
