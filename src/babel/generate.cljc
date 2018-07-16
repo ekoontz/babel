@@ -113,7 +113,7 @@
                 (not (= :verb (get-in % [:synsem :cat])))))
    (map #(unify % spec))
    (filter #(not (= :fail %)))
-   (map #(assoc-in! % [] {::done? true}))))
+   (map #(assoc-in! % [::done?] true))))
   
 (defn frontier
   "get the next path to which to adjoin within _tree_."
