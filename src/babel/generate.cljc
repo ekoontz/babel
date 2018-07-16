@@ -76,8 +76,8 @@
                 
                 ;; get all the things to be added
                 ;; as the head chid of parent-rule:
-                ;; 1. lexemes that could be the head.
-                ;; 2. rules that could be the head.
+                ;; 2.1. lexemes that could be the head.
+                ;; 2.2. rules that could be the head.
                 (lazy-cat
                  
                  ;; 2.1. lexemes that could be the head.
