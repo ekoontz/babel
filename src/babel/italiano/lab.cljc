@@ -150,9 +150,10 @@
                   :sem {:aspect :simple
                         :tense :present}}}
         spec root-spec]
-    (repeatedly #(println (morph-ps (time (gen spec model)))))))
+    (repeatedly #(println (morph (time (gen spec model)))))))
 
-(defn next-camp []
-  (repeatedly #(println (morph-ps (gen (unify tree-3 basic) model)))))
+(defn nextcamp []
+  (let [spec-3 (unify tree-3 basic)]
+    (repeatedly #(println (morph (gen spec-3 model))))))
 
 ;;(map #(println (morph %)) (grow (sprouts spec model) model))
