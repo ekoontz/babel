@@ -85,14 +85,53 @@
    :head tree-1
    :comp tree-5})
 
+
+;;      ___H__
+;;     /      \
+;;    C        H
+;;   / \  
+;;  C   H 
+;;        
+;;        
+;;
 (def tree-7
+  {:phrasal true
+   :comp tree-1
+   :head {:phrasal false}})
+
+
+(def tree-8
+;;      ___.__
+;;     /      \
+;;    C        H
+;;   / \      / \
+;;  C   H    H   C
+;;          / \
+;;         H   C
+;;
+  {:phrasal true
+   :comp tree-1
+   :head {:phrasal true
+          :head {:phrasal true
+                 :comp {:phrasal false}
+                 :head {:phrasal false}}}})
+
+(def tree-9
+;;      ___.__
+;;     /      \
+;;    C        H
+;;   / \      / \
+;;  C   H    H   C
+;;              / \  
+;;             H   C
+;;
   {:phrasal true
    :comp tree-1
    :head {:phrasal true
           :head {:phrasal false}
           :comp {:phrasal true
-                 :head tree-1
-                 :comp tree-1}}})
+                 :head {:phrasal false}
+                 :comp {:phrasal false}}}})
 
 (def object-is-pronoun {:head {:comp {:synsem {:pronoun true}}}})
 
@@ -113,21 +152,15 @@
    (unify tree-6 basic {:synsem {:sem {:tense :present
                                        :aspect :perfect}}})
    (unify tree-6 basic object-is-pronoun)
-;;   (unify tree-7 basic)
+   (unify tree-7 basic)
+   (unify tree-8 basic)
+   (unify tree-9 basic)
    ])
 
 (def vedere-specs
   (map #(unify % {:synsem {:essere false}
                   :root {:italiano {:italiano "vedere"}}})
        specs))
-
-(def fts
-  [{:phrasal true}
-   {:phrasal true
-    :head {:phrasal true}}
-   {:phrasal true
-    :head {:done true}
-    :comp :top}])
 
 (defn downtown []
   (let [spec
@@ -150,14 +183,15 @@
                   :sem {:aspect :simple
                         :tense :present}}}
 
-        all-of-the-specs (concat specs [root-spec semantic-spec])]
+        all-of-the-specs (concat specs [root-spec semantic-spec]
+                                 vedere-specs)]
         
     (repeatedly #(println (morph (gen
-                                  (nth all-of-the-specs (rand-int (count all-of-the-specs)))
+                                  (nth all-of-the-specs
+                                       (rand-int (count all-of-the-specs)))
                                   model))))))
 (defn nextcamp []
-  (let [spec (unify tree-7 basic)]
-    (gen spec model)))
+  (basecamp))
 
 (defn refresh []
   (babel.test.test/init-db)
