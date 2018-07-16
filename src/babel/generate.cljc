@@ -14,6 +14,8 @@
 ;; (terminal nodes) rather than trees.
 (def ^:const branching-factor #(+ % 5))
 
+(def ^:const truncate? false)
+
 (declare gen)
 (declare get-lexemes)
 (declare grow)
