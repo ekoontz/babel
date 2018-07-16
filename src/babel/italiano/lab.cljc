@@ -183,10 +183,11 @@
         all-of-the-specs (concat specs [root-spec semantic-spec]
                                  vedere-specs)]
         
-    (repeatedly #(println (morph-ps (generate
-                                     (nth all-of-the-specs
-                                       (rand-int (count all-of-the-specs)))
-                                     model))))))
+    (repeatedly #(println
+                  (morph-ps (generate
+                             (nth all-of-the-specs
+                                  (rand-int (count all-of-the-specs)))
+                             model))))))
 (defn nextcamp []
   (basecamp))
 
