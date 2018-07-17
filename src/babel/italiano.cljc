@@ -65,11 +65,10 @@
 (defn generate
   ([spec]
    (generate spec model))
-  ([spec model & {:keys [do-enrich max-total-depth truncate]
+  ([spec model & {:keys [do-enrich truncate]
             :or {do-enrich true
-                 max-total-depth generate/max-depth
                  truncate true}}]
-   (log/debug (str "generating with spec: " (strip-refs spec) " with max-total-depth: " max-total-depth))
+   (log/debug (str "generating with spec: " (strip-refs spec)))
    (let [spec (unify spec {:modified false})
          spec (let [result (grammar/generation-implications spec model)]
                 (cond (= :fail result)

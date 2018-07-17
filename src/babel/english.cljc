@@ -16,14 +16,10 @@
 (declare morph)
 
 (defn generate
-  ([spec model & {:keys [max-total-depth]
-                  :or {max-total-depth generate/max-depth}}]
-   (log/debug (str "generating with spec: " (strip-refs spec) " with max-total-depth: " max-total-depth))
+  ([spec model]
    (let [result (generate/generate spec model)]
-     (if (keyword? result)
-       (throw (Exception. (str "please don't send me a keyword :( : this is what you sent me: " result)))
-       (conj {:surface (morph result model)}
-             result)))))
+     (conj {:surface (morph result model)}
+           result))))
 
 ;; can't decide between 'morph' or 'fo' or something other better name.
 (defn morph [expr model & {:keys [from-language show-notes]
