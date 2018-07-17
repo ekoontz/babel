@@ -47,6 +47,43 @@
 (defn gen [spec model]
   (grow (minitrees spec model) model))
 
+(defn minitrees-1 [spec model parent-rules]
+  (if (not (empty? parent-rules))
+    (let [parent-rule (first parent-rules)
+          child-spec
+          (unify
+           (get-in spec [:head] :top)
+           (get-in parent-rule [:head] :top))]
+      (lazy-cat
+
+       ;; for each such rule,
+       ;; descend to the head child and
+       ;; find all the children
+       ;; that match the rule's head child.
+       (->>
+        
+        ;; get all the things to be added
+        ;; as the head child of parent-rule:
+        ;; 1. lexemes that could be the head child.
+        ;; 2. rules that could be the head child.
+        (lazy-cat
+         
+         ;; 1. lexemes that could be the head.
+         (get-lexemes (unify
+                       (get-in spec [:head] :top)
+                       (get-in parent-rule [:head] :top))
+                      model)
+         
+         ;; 2. grammar rules that could be the head.
+         (:grammar model))
+        
+        ;; for each such child in {1. + 2.},
+        ;; adjoin it as the :head.
+        (map (fn [child]
+               (assoc-in parent-rule [:head] child))))
+
+       (minitrees-1 spec model (rest parent-rules))))))
+
 (defn minitrees
   "Return every possible tree of depth 1 from the given spec and model."
   [spec model]
@@ -62,38 +99,7 @@
          (map #(unify % {::started? true}))))
    
    ;; 2. try to add heads to each matching rule.
-   ;; TODO: make this a recursive call with (lazy-cat) as we do with (defn grow) (below).
-   (mapcat (fn [parent-rule]
-             (let [child-spec
-                   (unify
-                    (get-in spec [:head] :top)
-                    (get-in parent-rule [:head] :top))]
-
-               ;; for each such rule,
-               ;; descend to the head child and
-               ;; find all the children
-               ;; that match the rule's head child.
-               (->>
-                
-                ;; get all the things to be added
-                ;; as the head child of parent-rule:
-                ;; 2.1. lexemes that could be the head child.
-                ;; 2.2. rules that could be the head child.
-                (lazy-cat
-                 
-                 ;; 2.1. lexemes that could be the head.
-                 (get-lexemes (unify
-                               (get-in spec [:head] :top)
-                               (get-in parent-rule [:head] :top))
-                              model)
-                 
-                 ;; 2.2. grammar rules that could be the head.
-                 (:grammar model))
-                
-                ;; for each such child in {2.1. + 2.2},
-                ;; adjoin it as the :head.
-                (map (fn [child]
-                       (assoc-in parent-rule [:head] child)))))))
+   (minitrees-1 spec model)
    
    (filter #(not (= % :fail)))
    (map #(assoc-in % [::started?] true))))
