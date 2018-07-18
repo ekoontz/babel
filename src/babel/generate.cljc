@@ -51,12 +51,15 @@
 (defn parent-with-head-1 [spec model depth parent-rules]
   (if (not (empty? parent-rules))
     (let [parent-rule (first parent-rules)
-          head-lexemes #(map (fn [child]
-                               (assoc-in parent-rule [:head] child))
-                             (:grammar model))
           head-phrases #(map (fn [child]
                                (assoc-in parent-rule [:head] child))
-                             (:grammar model))]
+                             (:grammar model))
+          head-lexemes #(map (fn [child]
+                               (assoc-in parent-rule [:head] child))
+                             (get-lexemes (unify
+                                           (get-in spec [:head] :top)
+                                           (get-in parent-rule [:head] :top))
+                                          model))]
       (cond
         (= 0 (rand-int (branching-factor depth)))
         (lazy-cat
