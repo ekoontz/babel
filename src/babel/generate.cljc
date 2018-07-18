@@ -14,6 +14,7 @@
 ;; (terminal nodes) rather than trees.
 (def ^:const branching-factor #(+ % 5))
 
+;; TODO: not used yet.
 (def ^:const truncate? false)
 
 (declare gen)
