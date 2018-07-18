@@ -1,7 +1,7 @@
 (ns babel.italiano.lab
   (:require
    [babel.directory] ;; this is needed even though there are no references to directory in here.
-   [babel.generate :as g :refer [frontier generate get-lexemes minitrees]]
+   [babel.generate :as g :refer [frontier generate get-lexemes]]
    [babel.italiano :as italiano :refer [model morph morph-ps parse]]
    #?(:cljs [babel.logjs :as log])
    #?(:clj [clojure.tools.logging :as log])
