@@ -12,7 +12,7 @@
 ;; the higher the constant below,
 ;; the more likely we'll first generate leaves
 ;; (terminal nodes) rather than trees.
-(def ^:const branching-factor #(+ % 0))
+(def ^:const branching-factor #(+ % 5))
 
 ;; TODO: not used yet.
 (def ^:const truncate? false)
