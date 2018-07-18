@@ -84,8 +84,7 @@
    (shuffle
     (->> (:grammar model)
          (map #(unify % spec))
-         (filter #(not (= :fail %)))
-         (map #(unify % {::started? true}))))
+         (filter #(not (= :fail %)))))
    
    ;; 2. try to add heads to each matching rule.
    (minitrees-1 spec model)
