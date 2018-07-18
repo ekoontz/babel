@@ -90,7 +90,7 @@
    (minitrees-1 spec model)
    
    (filter #(not (= % :fail)))
-   (map #(assoc-in % [::started?] true))))
+   (map #(assoc-in! % [::started?] true))))
 
 (defn get-lexemes [spec model]
   "Get lexemes matching the spec. Use a model's index if available, where the index 
