@@ -1,5 +1,5 @@
 (ns babel.generate
-  (:refer-clojure :exclude [assoc-in get-in deref resolve find parents])
+  (:refer-clojure :exclude [assoc-in get-in])
   (:require
    #?(:clj [clojure.tools.logging :as log])
    #?(:cljs [babel.logjs :as log]) 
