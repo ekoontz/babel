@@ -19,7 +19,7 @@
 (declare gen)
 (declare get-lexemes)
 (declare grow)
-(declare minitrees)
+(declare parent-with-head)
 
 (defn generate
   "Return one expression matching spec _spec_ given the model _model_."
@@ -45,9 +45,9 @@
   (first (gen spec language-model)))
 
 (defn gen [spec model]
-  (grow (minitrees spec model) model))
+  (grow (parent-with-head spec model) model))
 
-(defn minitrees-1 [spec model parent-rules]
+(defn parent-with-head-1 [spec model parent-rules]
   (if (not (empty? parent-rules))
     (let [parent-rule (first parent-rules)
           child-spec
@@ -71,14 +71,14 @@
               (assoc-in parent-rule [:head] child))
             (:grammar model))
        
-       (minitrees-1 spec model (rest parent-rules))))))
+       (parent-with-head-1 spec model (rest parent-rules))))))
 
-(defn minitrees
+(defn parent-with-head
   "Return every possible tree of depth 1 from the given spec and model."
   [spec model]
   ;; get all rules that match input _spec_:
   (if (nil? spec) (throw (Exception. (str "nope: spec was nil."))))
-  (log/debug (str "minitrees: spec:" (strip-refs spec)))
+  (log/debug (str "parent-with-head: spec:" (strip-refs spec)))
   (->>
    ;; 1: get all rules that satisfy _spec_  and then shuffle them.
    (shuffle
@@ -87,7 +87,7 @@
          (filter #(not (= :fail %)))))
    
    ;; 2. try to add heads to each matching rule.
-   (minitrees-1 spec model)
+   (parent-with-head-1 spec model)
    
    (filter #(not (= % :fail)))
    (map #(assoc-in! % [::started?] true))))
@@ -136,7 +136,7 @@
           depth (count f)
           child-spec (u/get-in tree f)
           child-lexemes #(get-lexemes child-spec model)
-          child-trees #(minitrees child-spec model)]
+          child-trees #(parent-with-head child-spec model)]
       (if false (println (str "tree: " ((:morph-ps model) tree) ": f:" f ";"
                               "child phrasal?:"
                               (u/get-in child-spec [:phrasal]))))
