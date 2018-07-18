@@ -51,47 +51,30 @@
 (defn parent-with-head-1 [spec model depth parent-rules]
   (if (not (empty? parent-rules))
     (let [parent-rule (first parent-rules)
-          child-spec
-          (unify
-           (get-in spec [:head] :top)
-           (get-in parent-rule [:head] :top))]
+          head-lexemes #(map (fn [child]
+                               (assoc-in parent-rule [:head] child))
+                             (:grammar model))
+          head-phrases #(map (fn [child]
+                               (assoc-in parent-rule [:head] child))
+                             (:grammar model))]
       (cond
         (= 0 (rand-int (branching-factor depth)))
         (lazy-cat
          ;; get all the things to be added
          ;; as the head child of parent-rule:
-         ;; 1. rules that could be the head child:
-         (map (fn [child]
-                (assoc-in parent-rule [:head] child))
-              (:grammar model))
-
+         ;; 1. phrases that could be the head child:
+         (head-phrases)
          ;; 2. lexemes that could be the head child:
-         (map (fn [child]
-                (assoc-in parent-rule [:head] child))
-              (get-lexemes (unify
-                            (get-in spec [:head] :top)
-                            (get-in parent-rule [:head] :top))
-                           model))
+         (head-lexemes)
          (parent-with-head-1 spec model depth (rest parent-rules)))
 
         true
         (lazy-cat
          ;; 1. lexemes that could be the head child:
-         (map (fn [child]
-                (assoc-in parent-rule [:head] child))
-              (get-lexemes (unify
-                            (get-in spec [:head] :top)
-                            (get-in parent-rule [:head] :top))
-                           model))
-         ;; get all the things to be added
-         ;; as the head child of parent-rule:
-         ;; 2. rules that could be the head child:
-         (map (fn [child]
-                (assoc-in parent-rule [:head] child))
-              (:grammar model))
-
+         (head-lexemes)
+         ;; 2. phrases that could be the head child:
+         (head-phrases)
          (parent-with-head-1 spec model depth (rest parent-rules)))))))
-        
 
 (defn parent-with-head
   "Return every possible tree of depth 1 from the given spec and model."
