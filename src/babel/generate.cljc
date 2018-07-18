@@ -12,7 +12,7 @@
 ;; the higher the constant below,
 ;; the more likely we'll first generate leaves
 ;; (terminal nodes) rather than trees.
-(def ^:const branching-factor #(+ % 5))
+(def ^:const branching-factor #(+ % 0))
 
 ;; TODO: not used yet.
 (def ^:const truncate? false)
@@ -143,9 +143,6 @@
           child-spec (u/get-in tree f)
           child-lexemes #(get-lexemes child-spec model)
           child-trees #(parent-with-head child-spec model depth)]
-      (if false (println (str "tree: " ((:morph-ps model) tree) ": f:" f ";"
-                              "child phrasal?:"
-                              (u/get-in child-spec [:phrasal]))))
       (lazy-cat
        (if (not (empty? f))
          (grow
