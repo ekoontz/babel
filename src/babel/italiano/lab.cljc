@@ -184,10 +184,10 @@
                                  vedere-specs)]
         
     (repeatedly #(println
-                  (morph-ps (generate
-                             (nth all-of-the-specs
-                                  (rand-int (count all-of-the-specs)))
-                             model))))))
+                  (morph-ps (time (generate
+                                   (nth all-of-the-specs
+                                        (rand-int (count all-of-the-specs)))
+                                   model)))))))
 (defn nextcamp []
   (basecamp))
 
