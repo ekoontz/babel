@@ -55,33 +55,22 @@
            (get-in spec [:head] :top)
            (get-in parent-rule [:head] :top))]
       (lazy-cat
-
-       ;; for each such rule,
-       ;; descend to the head child and
-       ;; find all the children
-       ;; that match the rule's head child.
-       (->>
-        
-        ;; get all the things to be added
-        ;; as the head child of parent-rule:
-        ;; 1. lexemes that could be the head child.
-        ;; 2. rules that could be the head child.
-        (lazy-cat
-         
-         ;; 1. lexemes that could be the head.
-         (get-lexemes (unify
-                       (get-in spec [:head] :top)
-                       (get-in parent-rule [:head] :top))
-                      model)
-         
-         ;; 2. grammar rules that could be the head.
-         (:grammar model))
-        
-        ;; for each such child in {1. + 2.},
-        ;; adjoin it as the :head.
-        (map (fn [child]
-               (assoc-in parent-rule [:head] child))))
-
+       
+       ;; get all the things to be added
+       ;; as the head child of parent-rule:
+       ;; 1. lexemes that could be the head child:
+       (map (fn [child]
+              (assoc-in parent-rule [:head] child))
+            (get-lexemes (unify
+                          (get-in spec [:head] :top)
+                          (get-in parent-rule [:head] :top))
+                         model))
+       
+       ;; 2. rules that could be the head child:
+       (map (fn [child]
+              (assoc-in parent-rule [:head] child))
+            (:grammar model))
+       
        (minitrees-1 spec model (rest parent-rules))))))
 
 (defn minitrees
