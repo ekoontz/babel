@@ -45,37 +45,56 @@
   (first (gen spec language-model)))
 
 (defn gen [spec model]
-  (grow (parent-with-head spec model) model))
+  (grow (parent-with-head spec model 0) model))
 
-(defn parent-with-head-1 [spec model parent-rules]
+(defn parent-with-head-1 [spec model depth parent-rules]
   (if (not (empty? parent-rules))
     (let [parent-rule (first parent-rules)
           child-spec
           (unify
            (get-in spec [:head] :top)
            (get-in parent-rule [:head] :top))]
-      (lazy-cat
-       
-       ;; get all the things to be added
-       ;; as the head child of parent-rule:
-       ;; 1. lexemes that could be the head child:
-       (map (fn [child]
-              (assoc-in parent-rule [:head] child))
-            (get-lexemes (unify
-                          (get-in spec [:head] :top)
-                          (get-in parent-rule [:head] :top))
-                         model))
-       
-       ;; 2. rules that could be the head child:
-       (map (fn [child]
-              (assoc-in parent-rule [:head] child))
-            (:grammar model))
-       
-       (parent-with-head-1 spec model (rest parent-rules))))))
+      (cond
+        (= 0 (rand-int (branching-factor depth)))
+        (lazy-cat
+         ;; get all the things to be added
+         ;; as the head child of parent-rule:
+         ;; 1. rules that could be the head child:
+         (map (fn [child]
+                (assoc-in parent-rule [:head] child))
+              (:grammar model))
+
+         ;; 2. lexemes that could be the head child:
+         (map (fn [child]
+                (assoc-in parent-rule [:head] child))
+              (get-lexemes (unify
+                            (get-in spec [:head] :top)
+                            (get-in parent-rule [:head] :top))
+                           model))
+         (parent-with-head-1 spec model depth (rest parent-rules)))
+
+        true
+        (lazy-cat
+         ;; 1. lexemes that could be the head child:
+         (map (fn [child]
+                (assoc-in parent-rule [:head] child))
+              (get-lexemes (unify
+                            (get-in spec [:head] :top)
+                            (get-in parent-rule [:head] :top))
+                           model))
+         ;; get all the things to be added
+         ;; as the head child of parent-rule:
+         ;; 2. rules that could be the head child:
+         (map (fn [child]
+                (assoc-in parent-rule [:head] child))
+              (:grammar model))
+
+         (parent-with-head-1 spec model depth (rest parent-rules)))))))
+        
 
 (defn parent-with-head
   "Return every possible tree of depth 1 from the given spec and model."
-  [spec model]
+  [spec model depth]
   ;; get all rules that match input _spec_:
   (if (nil? spec) (throw (Exception. (str "nope: spec was nil."))))
   (log/debug (str "parent-with-head: spec:" (strip-refs spec)))
@@ -87,7 +106,7 @@
          (filter #(not (= :fail %)))))
    
    ;; 2. try to add heads to each matching rule.
-   (parent-with-head-1 spec model)
+   (parent-with-head-1 spec model depth)
    
    (filter #(not (= % :fail)))
    (map #(assoc-in! % [::started?] true))))
@@ -136,7 +155,7 @@
           depth (count f)
           child-spec (u/get-in tree f)
           child-lexemes #(get-lexemes child-spec model)
-          child-trees #(parent-with-head child-spec model)]
+          child-trees #(parent-with-head child-spec model depth)]
       (if false (println (str "tree: " ((:morph-ps model) tree) ": f:" f ";"
                               "child phrasal?:"
                               (u/get-in child-spec [:phrasal]))))
