@@ -87,17 +87,16 @@
   (if (nil? spec) (throw (Exception. (str "nope: spec was nil."))))
   (log/debug (str "parent-with-head: spec:" (strip-refs spec)))
   (->>
-   ;; 1: get all rules that satisfy _spec_  and then shuffle them.
-   (shuffle
-    (->> (:grammar model)
-         (map #(unify % spec))
-         (filter #(not (= :fail %)))))
-   
-   ;; 2. try to add heads to each matching rule.
-   (parent-with-head-1 spec model depth)
-   
-   (filter #(not (= % :fail)))
-   (map #(assoc-in! % [::started?] true))))
+   ;; 1: get all rules that satisfy _spec_.
+   (->> (shuffle (:grammar model))
+        (map #(unify % spec))
+        (filter #(not (= :fail %))))
+    
+    ;; 2. try to add heads to each matching rule.
+    (parent-with-head-1 spec model depth)
+    
+    (filter #(not (= % :fail)))
+    (map #(assoc-in! % [::started?] true))))
 
 (defn get-lexemes [spec model]
   "Get lexemes matching the spec. Use a model's index if available, where the index 
