@@ -135,6 +135,21 @@
     
     true []))
 
+
+(defn assoc-children [tree children f model]
+  (if (not (empty? children))
+    (let [child (first children)]
+      (cons
+       (let [tree-with-child (u/assoc-in tree f child)]
+         (if true (println (str "twc:" ((:morph-ps model) tree-with-child))))
+         (if (and (= :comp (last f))
+                  (= true (u/get-in child [::done?])))
+           (u/assoc-in! tree-with-child
+                        (concat (butlast f) [::done?])
+                        true)
+           tree-with-child))
+       (assoc-children tree (rest children) f model)))))
+
 (defn grow [trees model]
   (if (not (empty? trees))
     (let [tree (first trees)
