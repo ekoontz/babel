@@ -12,7 +12,8 @@
 ;; the higher the constant below,
 ;; the more likely we'll first generate leaves
 ;; (terminal nodes) rather than trees.
-(def ^:const branching-factor #(+ % 5))
+(def ^:const branching-factor 5)
+(def ^:const branch? #(= 0 (rand-int (+ % branching-factor))))
 
 ;; TODO: not used yet.
 (def ^:const truncate? false)
@@ -61,7 +62,7 @@
                                            (get-in parent-rule [:head] :top))
                                           model))]
       (cond
-        (= 0 (rand-int (branching-factor depth)))
+        (branch? depth)
         (lazy-cat
          ;; get all the things to be added
          ;; as the head child of parent-rule:
@@ -153,7 +154,7 @@
                  (= false (u/get-in child-spec [:phrasal]))
                  (child-lexemes)
                  
-                 (= 0 (rand-int (branching-factor depth)))
+                 (branch? depth)
                  ;; generate children that are trees before children that are leaves.
                  (lazy-cat (child-trees) (child-lexemes))
                  
