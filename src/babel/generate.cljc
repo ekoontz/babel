@@ -162,10 +162,12 @@
 
                (map (fn [child]
                       (let [tree-with-child (u/assoc-in tree f child)]
-                        (if false (println (str "twc:" ((:morph-ps model) tree-with-child))))
+                        (if true (println (str "twc:" ((:morph-ps model) tree-with-child))))
                         (if (and (= :comp (last f))
                                  (= true (u/get-in child [::done?])))
-                          (u/assoc-in! tree-with-child (butlast f) {::done? true})
+                          (u/assoc-in! tree-with-child
+                                       (concat (butlast f) [::done?])
+                                       true)
                           tree-with-child)))))
           model)
          [tree])
