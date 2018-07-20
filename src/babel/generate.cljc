@@ -22,6 +22,7 @@
 (declare get-lexemes)
 (declare grow)
 (declare parent-with-head)
+(declare parent-with-head-1)
 
 (defn generate
   "Return one expression matching spec _spec_ given the model _model_."
@@ -48,6 +49,24 @@
 
 (defn gen [spec model]
   (grow (parent-with-head spec model 0) model))
+
+(defn parent-with-head
+  "Return every possible tree of depth 1 from the given spec and model."
+  [spec model depth]
+  ;; get all rules that match input _spec_:
+  (if (nil? spec) (throw (Exception. (str "nope: spec was nil."))))
+  (log/debug (str "parent-with-head: spec:" (strip-refs spec)))
+  (->>
+   ;; 1: get all rules that satisfy _spec_.
+   (->> (shuffle (:grammar model))
+        (map #(unify % spec))
+        (filter #(not (= :fail %))))
+    
+    ;; 2. try to add heads to each matching rule.
+    (parent-with-head-1 spec model depth)
+    
+    (filter #(not (= % :fail)))
+    (map #(assoc-in! % [::started?] true))))
 
 (defn parent-with-head-1 [spec model depth parent-rules]
   (if (not (empty? parent-rules))
@@ -79,24 +98,6 @@
          ;; 2. phrases that could be the head child:
          (head-phrases)
          (parent-with-head-1 spec model depth (rest parent-rules)))))))
-
-(defn parent-with-head
-  "Return every possible tree of depth 1 from the given spec and model."
-  [spec model depth]
-  ;; get all rules that match input _spec_:
-  (if (nil? spec) (throw (Exception. (str "nope: spec was nil."))))
-  (log/debug (str "parent-with-head: spec:" (strip-refs spec)))
-  (->>
-   ;; 1: get all rules that satisfy _spec_.
-   (->> (shuffle (:grammar model))
-        (map #(unify % spec))
-        (filter #(not (= :fail %))))
-    
-    ;; 2. try to add heads to each matching rule.
-    (parent-with-head-1 spec model depth)
-    
-    (filter #(not (= % :fail)))
-    (map #(assoc-in! % [::started?] true))))
 
 (defn get-lexemes [spec model]
   "Get lexemes matching the spec. Use a model's index if available, where the index 
