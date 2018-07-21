@@ -453,6 +453,7 @@
         (generate {:synsem {:subcat []
                             :cat :verb
                             :sem {:subj {:pred :loro}
+                                  :obj :unspec
                                   :pred :manage
                                   :aspect :simple
                                   :tense :present}}})]
