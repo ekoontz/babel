@@ -134,10 +134,10 @@
      (or (= :top (get-in word [:infl] :top))
          (= :top (get-in word [:agr :number] :top))))
     (get-in word [:italiano])
-    
+
     (= :verb (get-in word [:cat]))
     (or (verbs/conjugate word) (get-in word [:italiano]))
-    
+
     (and (not (= ::none (get-in word [:a] ::none)))
          (not (= ::none (get-in word [:b] ::none))))
     (get-string (get-in word [:a])
