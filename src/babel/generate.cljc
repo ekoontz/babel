@@ -71,32 +71,32 @@
 (defn parent-with-head-1 [spec model depth parent-rules]
   (if (not (empty? parent-rules))
     (let [parent-rule (first parent-rules)
-          head-phrases #(map (fn [child]
-                               (u/assoc-in parent-rule [:head] child))
-                             (:grammar model))
-          head-lexemes #(map (fn [child]
-                               (u/assoc-in parent-rule [:head] child))
-                             (get-lexemes (unify
-                                           (get-in spec [:head] :top)
-                                           (get-in parent-rule [:head] :top))
-                                          model))]
+          phrases-with-phrasal-head #(map (fn [child]
+                                           (u/assoc-in parent-rule [:head] child))
+                                         (:grammar model))
+          phrases-with-lexical-heads #(map (fn [child]
+                                           (u/assoc-in parent-rule [:head] child))
+                                         (get-lexemes (unify
+                                                       (get-in spec [:head] :top)
+                                                       (get-in parent-rule [:head] :top))
+                                                      model))]
       (cond
         (branch? depth)
         (lazy-cat
          ;; get all the things to be added
          ;; as the head child of parent-rule:
          ;; 1. phrases that could be the head child:
-         (head-phrases)
+         (phrases-with-phrasal-head)
          ;; 2. lexemes that could be the head child:
-         (head-lexemes)
+         (phrases-with-lexical-heads)
          (parent-with-head-1 spec model depth (rest parent-rules)))
 
         true
         (lazy-cat
          ;; 1. lexemes that could be the head child:
-         (head-lexemes)
+         (phrases-with-lexical-heads)
          ;; 2. phrases that could be the head child:
-         (head-phrases)
+         (phrases-with-phrasal-head)
          (parent-with-head-1 spec model depth (rest parent-rules)))))))
 
 (defn get-lexemes [spec model]
