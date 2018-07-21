@@ -14,8 +14,6 @@
 ;; (terminal nodes) rather than trees.
 (def ^:const branching-factor 5)
 (def ^:const branch? #(= 0 (rand-int (+ % branching-factor))))
-
-;; TODO: not used yet.
 (def ^:const truncate? false)
 
 (declare gen)
@@ -152,7 +150,7 @@
                 (u/assoc-in! 
                  (concat (butlast f) [::done?])
                  true)
-                (u/dissoc-paths [f]))
+                (u/dissoc-paths (if truncate? [f] [])))
             tree-with-child))
         (assoc-children tree (rest children) f model))))))
 
