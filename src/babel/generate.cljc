@@ -142,12 +142,17 @@
       (lazy-seq
        (cons
         (let [tree-with-child (u/assoc-in tree f child)]
-          (if false (println (str "twc:" ((:morph-ps model) tree-with-child))))
-          (if (and (= :comp (last f))
-                   (= true (u/get-in child [::done?])))
-            (u/assoc-in! tree-with-child
-                         (concat (butlast f) [::done?])
-                         true)
+          (if false
+            (println (str "twc:"
+                          ((:morph-ps model) tree-with-child) " with f: " f
+                          "; child: " ((:morph-ps model) child)
+                          "; child-f:" (frontier child))))
+          (if (= true (u/get-in child [::done?]))
+            (-> tree-with-child
+                (u/assoc-in! 
+                 (concat (butlast f) [::done?])
+                 true)
+                (u/dissoc-paths [f]))
             tree-with-child))
         (assoc-children tree (rest children) f model))))))
 
