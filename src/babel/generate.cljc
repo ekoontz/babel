@@ -72,10 +72,10 @@
   (if (not (empty? parent-rules))
     (let [parent-rule (first parent-rules)
           head-phrases #(map (fn [child]
-                               (assoc-in parent-rule [:head] child))
+                               (u/assoc-in parent-rule [:head] child))
                              (:grammar model))
           head-lexemes #(map (fn [child]
-                               (assoc-in parent-rule [:head] child))
+                               (u/assoc-in parent-rule [:head] child))
                              (get-lexemes (unify
                                            (get-in spec [:head] :top)
                                            (get-in parent-rule [:head] :top))
@@ -115,7 +115,7 @@
    (map #(unify % spec))
    (filter #(not (= :fail %)))
    (map #(assoc-in! % [::done?] true))))
-  
+
 (defn frontier
   "get the next path to which to adjoin within _tree_."
   [tree]
