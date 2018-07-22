@@ -155,7 +155,9 @@
    ])
 
 (def vedere-specs
-  (map #(unify % {:synsem {:essere false}
+  (map #(unify % {:synsem {:essere false
+                           :subcat []
+                           :cat :verb}
                   :root {:italiano {:italiano "vedere"}}})
        specs))
 
