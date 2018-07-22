@@ -53,7 +53,6 @@
   [spec model depth]
   ;; get all rules that match input _spec_:
   (if (nil? spec) (throw (Exception. (str "nope: spec was nil."))))
-  (log/debug (str "parent-with-head: spec:" (strip-refs spec)))
   (->>
    ;; 1: get all rules that satisfy _spec_.
    (->> (shuffle (:grammar model))
@@ -140,11 +139,10 @@
       (lazy-seq
        (cons
         (let [tree-with-child (u/assoc-in tree f child)]
-          (if false
-            (println (str "twc:"
-                          ((:morph-ps model) tree-with-child) " with f: " f
-                          "; child: " ((:morph-ps model) child)
-                          "; child-f:" (frontier child))))
+          (log/debug (str "assoc-children:"
+                        ((:morph-ps model) tree-with-child) " with f: " f
+                        "; child: " ((:morph-ps model) child)
+                        "; child-f:" (frontier child)))
           (if (= true (u/get-in child [::done?]))
             (-> tree-with-child
                 (u/assoc-in! 
