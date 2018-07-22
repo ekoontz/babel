@@ -52,6 +52,7 @@
                                    :cat :verb
                                    :sem {:pred :be
                                          :subj {:pred :I}
+                                         :obj :unspec
                                          :aspect :simple
                                          :tense :present}}})]
     (is (= "io sono" (morph result)))))
