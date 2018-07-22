@@ -7,12 +7,18 @@
    [babel.english.morphology :as morph]
    [babel.over :refer [over truncate]]
    [babel.parse :as parse]
+   [babel.test.test :refer [init-db]]
    [clojure.repl :refer [doc]]
    [clojure.string :as string]
    #?(:cljs [babel.logjs :as log])
    #?(:clj [clojure.tools.logging :as log])
    [dag_unify.core :refer [deserialize dissoc-paths
                            fail? fail-path get-in serialize strip-refs]]))
+(def model
+  (do
+    (init-db)
+    @@(get babel.directory/models :en)))
+
 (declare morph)
 
 (defn generate
@@ -22,9 +28,10 @@
            result))))
 
 ;; can't decide between 'morph' or 'fo' or something other better name.
-(defn morph [expr model & {:keys [from-language show-notes]
-                           :or {from-language nil
-                                show-notes true}}]
+(defn morph [expr & {:keys [from-language model show-notes]
+                     :or {from-language nil
+                          model model
+                          show-notes true}}]
   (morph/fo expr
             :from-language from-language :show-notes show-notes
             :lexicon (:lexicon model)))
