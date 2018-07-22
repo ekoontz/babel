@@ -159,6 +159,16 @@
                   :root {:italiano {:italiano "vedere"}}})
        specs))
 
+(defn park []
+  (repeatedly
+   #(println (morph (time
+                     (generate
+                      (unify 
+                       (nth vedere-specs (rand-int (count vedere-specs)))
+                       {:head {:phrasal false}
+                        :comp {:phrasal false}})
+                      model))))))
+
 (defn downtown []
   (let [spec
         {:synsem {:cat :verb
