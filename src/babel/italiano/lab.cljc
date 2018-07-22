@@ -164,7 +164,7 @@
         {:synsem {:cat :verb
                   :subcat []}
          :modified false}]
-    (repeatedly #(println (morph (generate spec model))))))
+    (repeatedly #(println (morph (time (generate spec model)))))))
 
 (defn basecamp []
   (let [semantic-spec
