@@ -449,9 +449,9 @@
        :head {:rule "noun-phrase2"
               :phrasal true
               :synsem head-synsem}
-       :comp {:phrasal true
-              :synsem {:rule "slash-obj"
-                       :sem comp-sem
+       :comp {:rule "slash-obj"
+              :phrasal true
+              :synsem {:sem comp-sem
                        :slash true
                        :subcat {:1 head-synsem
                                 :2 []}}
@@ -566,7 +566,6 @@
             :generate-fn
             (fn [spec]
               (generate/generate spec model))})))
-
 
 ;;(def source-model @@(get babel.directory/models :en))
 ;;(def filter-lexicon-fn #(= :det (get-in % [:synsem :cat])))
