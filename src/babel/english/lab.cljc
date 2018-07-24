@@ -22,9 +22,6 @@
                                (rand-int (count all-of-the-specs)))
                           model))))))
 
-;; (def spec {:synsem {:cat :noun, :subcat []}})
-;; (let [foo (generate spec model)] (println (morph-ps foo)))
-
 (defn basecamp []
   (let [semantic-spec
         {:modified false,
@@ -43,9 +40,7 @@
                                 model)))))))))
 (defn refresh []
   (babel.test.test/init-db)
-  (babel.directory/refresh-models))
+  (babel.directory/refresh-models)
+  (load "../english"))
 
-
-
-
-
+  
