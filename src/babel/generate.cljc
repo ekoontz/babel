@@ -134,6 +134,9 @@
     true []))
 
 (defn assoc-children [tree children f model]
+  ;; TODO: should change how we apply ((:default-fn) model):
+  ;; should not apply at top-level of tree, but (I think)
+  ;; at (butlast f)-level.
   (if (not (empty? children))
     (let [child (first children)]
       (lazy-cat
