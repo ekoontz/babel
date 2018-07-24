@@ -139,9 +139,8 @@
       (lazy-cat
        (->
         (let [tree-with-child (u/assoc-in tree f child)]
-          (log/debug (str "assoc-children:"
-                          ((:morph-ps model) tree-with-child) " with f: " f
-                          "; child: " ((:morph-ps model) child)))
+          (log/debug (str "a-c:"
+                          ((:morph-ps model) tree-with-child)))
           (if (= true (u/get-in child [::done?]))
             (-> tree-with-child
                 (u/assoc-in! 
