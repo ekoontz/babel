@@ -60,17 +60,20 @@
                        :sem {:tense :present
                              :aspect :simple}
                        :infl :present}})
+
             (apply-default-if
              verb-default?
              {:synsem {:cat :verb
                        :sem {:tense :present
                              :aspect :progressive}
                        :infl :present-progressive}})
+
             (apply-default-if
              verb-default?
              {:synsem {:cat :verb
                        :sem {:tense :future}
                        :infl :future}})
+
             (apply-default-if
              verb-default?
              {:synsem {:cat :verb
@@ -430,15 +433,14 @@
     head-principle
     head-first
     (let [head-sem (atom :top)
-          cat (atom :noun)
-          comp-sem (atom :top)
+          subject-of-complement (atom :top)
+          comp-sem (atom {:subj subject-of-complement})
           head-mod (atom :top)
-          head-synsem (atom {:cat cat
-                             :subcat []
+          head-synsem (atom {:subcat []
                              :mod head-mod
                              :sem head-sem})]
       {:phrasal true
-       :synsem {:cat cat
+       :synsem {:cat :noun
                 :mod {:first comp-sem
                       :rest head-mod}
                 :sem head-sem
@@ -448,24 +450,25 @@
               :phrasal true
               :synsem head-synsem}
        :comp {:phrasal true
-              :synsem {:slash true
+              :synsem {:rule "slash-obj"
+                       :sem comp-sem
+                       :slash true
                        :subcat {:1 head-synsem
-                                :2 []}
-                       :sem comp-sem}}}))
+                                :2 []}}
+              :head {:synsem {:subcat {:1 {:synsem {:sem subject-of-complement}}}}}}}))
+
    (unify-check
     {:rule "slash-obj"}
+    head-principle
     head-last head-semantics
     (let [first-arg (atom :top)
-          cat (atom :verb)
           second-arg (atom {:reflexive false})]
       {:phrasal true
-       :synsem {:cat cat
-                :slash true
+       :synsem {:slash true
                 :subcat {:1 second-arg
                          :2 []}}
        :comp {:synsem first-arg}
-       :head {:synsem {:cat cat
-                       :subcat {:1 first-arg
+       :head {:synsem {:subcat {:1 first-arg
                                 :2 second-arg}}}})
     {:synsem {:aux false}
      :head {:synsem {:aux false}}
@@ -583,7 +586,3 @@
                      {:lexicon lexicon})]
     (merge model
            {:index-fn (fn [spec] (lookup-spec spec indices index-lexicon-on-paths))})))
-
-
-
-
