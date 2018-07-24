@@ -63,7 +63,7 @@
    (default
     {:synsem {:cat :adjective
               :subcat {:1 {:cat :det}
-                       :2 '()}
+                       :2 []}
               :sem {:comparative false}}})
    
    ;; </adjective default rules>
@@ -101,7 +101,7 @@
    (default
     {:synsem {:cat :noun
               :pronoun true
-              :subcat '()}})
+              :subcat []}})
    
    ;; propernouns have semantic number and gender.
    (default
@@ -133,7 +133,7 @@
     {:synsem {:cat :noun
               :pronoun false
               :propernoun true
-              :subcat '()}})
+              :subcat []}})
    
    (default ;; a propernoun is agr=3rd singular
     {:synsem {:cat :noun
@@ -171,7 +171,7 @@
    ;; </noun default rules>
    
    ;; <verb default rules>
-   ;; add a second argument to every verb, unless it's explicitly disallowed with {:2 '()}.
+   ;; add a second argument to every verb, unless it's explicitly disallowed with {:2 []}.
    (default
     {:synsem {:cat :verb
               :subcat {:2 {:cat :top}}}})
@@ -191,7 +191,7 @@
                          :2 {:cat :verb
                              :infl :infinitive
                              :subcat {:1 modal-subject
-                                      :2 '()}}}}}))
+                                      :2 []}}}}}))
    (default
     (let [modal-subject (atom {:cat :noun})]
       {:modal-with :root
@@ -200,7 +200,7 @@
                          :2 {:cat :verb
                              :infl :root
                              :subcat {:1 modal-subject
-                                      :2 '()}}}}}))
+                                      :2 []}}}}}))
    
    ;; prevent :shared-semantics :obj unless it's already set
    (default
@@ -233,13 +233,13 @@
                     :reflexive false}
               ;; likely to be :noun or :prep but could be others
               :subcat {:2 {:cat :top}
-                       :3 '()}}}
+                       :3 []}}}
     (fn [lexeme]
       (unify
        (dissoc-paths lexeme [[:synsem :sem :obj]
                              [:synsem :subcat :2]])
        {:applied {:intransitivize true}
-        :synsem {:subcat {:2 '()}}})))
+        :synsem {:subcat {:2 []}}})))
 
    ;; phrasal-verb-intransitivize: remove the third argument,
    ;; but not the second, to make it intransitive.
@@ -258,7 +258,7 @@
 
        ;; prevent filling-in this
        ;; in a later processing step below.
-       {:synsem {:subcat {:3 '()}
+       {:synsem {:subcat {:3 []}
                  :sem {:obj :unspec}}})))
    
    (default ;; intransitive verbs' :obj is :unspec.
@@ -266,7 +266,7 @@
      :applied {:2 true}
      :synsem {:cat :verb
               :subcat {:1 {:top :top}
-                       :2 '()}
+                       :2 []}
               :sem {:reflexive false
                     :shared-with-obj false
                     :obj :unspec}}})
@@ -334,7 +334,7 @@
                 :subcat {:2 {:cat :prep}
                          :3 {:cat :noun
                              :pronoun false
-                             :subcat '()
+                             :subcat []
                              :sem object}}}}))
    (default
     (let [object (atom :top)]
@@ -343,7 +343,7 @@
                 :sem {:obj object}
                 :subcat {:2 {:cat :noun
                              :pronoun false
-                             :subcat '()
+                             :subcat []
                              :sem object}
                          :3 {:cat :prep}}}}))
    
@@ -383,12 +383,12 @@
                 :sem {:reflexive true
                       :subj subject-semantics
                       :obj subject-semantics}
-                :subcat {:2 '()}}}))
+                :subcat {:2 []}}}))
 
    ;; by default, verbs are intransitive.
    (default
     {:synsem {:cat :verb
-              :subcat {:2 {:subcat '()}}}})
+              :subcat {:2 {:subcat []}}}})
    
    ;; note that {:english {:exception true}} is
    ;; set by (babel.english.morphology/exception-generator)
@@ -435,9 +435,9 @@
       {:synsem {:cat :prep
                 :subcat {:1 {:cat :noun
                              :case :acc
-                             :subcat '()
+                             :subcat []
                              :sem obj-sem}
-                         :2 '()}
+                         :2 []}
                 :sem {:obj obj-sem}}}))
    
    ;; </prep default rules>
