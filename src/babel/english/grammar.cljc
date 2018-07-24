@@ -402,9 +402,9 @@
    (unify-check h21
                 root-is-head-root
                 {:rule "transitive-vp-phrasal-head"
-                 :slash false
                  :head {:phrasal true}
                  :synsem {:aux false
+                          :slash false
                           :cat :verb}})
    
    ;; TODO: enforce the facts that:
