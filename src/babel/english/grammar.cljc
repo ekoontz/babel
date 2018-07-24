@@ -39,13 +39,13 @@
 
 (defn default-fn [tree]
   (log/debug (str "English: do-defaults (pre) on tree: " (parse/fo-ps tree fo)))
-  (log/debug (str "aspect (pre): " (strip-refs (get-in tree
+  (log/trace (str "aspect (pre): " (strip-refs (get-in tree
                                                        [:synsem :sem :aspect]
                                                        ::unset))))
-  (log/debug (str "infl   (pre): " (strip-refs (get-in tree
+  (log/trace (str "infl   (pre): " (strip-refs (get-in tree
                                                        [:synsem :infl]
                                                        ::unset))))  
-  (log/debug (str "tense  (pre): " (strip-refs (get-in tree
+  (log/trace (str "tense  (pre): " (strip-refs (get-in tree
                                                        [:synsem :sem :tense]
                                                        ::unset))))
   (let [result
@@ -104,13 +104,13 @@
                              :tense :past}
                        :infl :pluperfect}}))]
     (log/debug (str "English: do-defaults (post) on tree: " (parse/fo-ps result fo)))
-    (log/debug (str "aspect (post): " (strip-refs (get-in result
+    (log/trace (str "aspect (post): " (strip-refs (get-in result
                                                          [:synsem :sem :aspect]
                                                          ::unset))))
-    (log/debug (str "infl   (post): " (strip-refs (get-in result
+    (log/trace (str "infl   (post): " (strip-refs (get-in result
                                                           [:synsem :infl]
                                                           ::unset))))  
-    (log/debug (str "tense  (post): " (strip-refs (get-in result
+    (log/trace (str "tense  (post): " (strip-refs (get-in result
                                                           [:synsem :sem :tense]
                                                           ::unset))))
     [result]))
