@@ -136,13 +136,12 @@
 (defn assoc-children [tree children f model]
   (if (not (empty? children))
     (let [child (first children)]
-      (lazy-seq
-       (cons
+      (lazy-cat
+       (->
         (let [tree-with-child (u/assoc-in tree f child)]
           (log/debug (str "assoc-children:"
-                        ((:morph-ps model) tree-with-child) " with f: " f
-                        "; child: " ((:morph-ps model) child)
-                        "; child-f:" (frontier child)))
+                          ((:morph-ps model) tree-with-child) " with f: " f
+                          "; child: " ((:morph-ps model) child)))
           (if (= true (u/get-in child [::done?]))
             (-> tree-with-child
                 (u/assoc-in! 
@@ -150,7 +149,8 @@
                  true)
                 (u/dissoc-paths (if truncate? [f] [])))
             tree-with-child))
-        (assoc-children tree (rest children) f model))))))
+        ((:default-fn model)))
+       (assoc-children tree (rest children) f model)))))
 
 (defn grow [trees model]
   (if (not (empty? trees))
