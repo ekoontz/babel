@@ -137,18 +137,17 @@
   (if (not (empty? children))
     (let [child (first children)]
       (lazy-cat
-       (->
-        (let [tree-with-child (u/assoc-in tree f child)]
-          (log/debug (str "a-c:"
-                          ((:morph-ps model) tree-with-child)))
-          (if (= true (u/get-in child [::done?]))
-            (-> tree-with-child
-                (u/assoc-in! 
-                 (concat (butlast f) [::done?])
-                 true)
-                (u/dissoc-paths (if truncate? [f] [])))
-            tree-with-child))
-        ((:default-fn model)))
+       (let [tree-with-child (u/assoc-in tree f child)]
+         (log/debug (str "a-c:"
+                         ((:morph-ps model) tree-with-child)))
+         (if (= true (u/get-in child [::done?]))
+           (-> tree-with-child
+               (u/assoc-in! 
+                (concat (butlast f) [::done?])
+                true)
+               (u/dissoc-paths (if truncate? [f] []))
+               ((:default-fn model)))
+           [tree-with-child]))
        (assoc-children tree (rest children) f model)))))
 
 (defn grow [trees model]
