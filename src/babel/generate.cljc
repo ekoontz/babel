@@ -133,40 +133,36 @@
     
     true []))
 
-(defn assoc-children-with-defaults [tree children f model]
-  (if (not (empty? children))
-    (let [child (first children)
-          tree-with-child (u/assoc-in tree f child)]
-      (log/debug (str "a-c:"
-                      ((:morph-ps model) tree-with-child)))
-      (lazy-cat
-       (-> tree-with-child
-           (u/assoc-in! 
-            (concat (butlast f) [::done?])
-            true)
-           (u/dissoc-paths (if truncate? [f] [])))
-       (assoc-children-with-defaults tree (rest children) f model)))))
-  
+(defn assoc-children-with-defaults [tree-with-child children f model]
+;;  (lazy-cat
+;;   (-> tree-with-child
+;;       (u/assoc-in! 
+;;        (concat (butlast f) [::done?])
+;;        true)
+;;       (u/dissoc-paths (if truncate? [f] [])))
+;;   (assoc-children-with-defaults tree (rest children) f model)))
+  )
+
 (defn assoc-children [tree children f model]
   ;; TODO: should change how we apply ((:default-fn) model):
   ;; should not apply at top-level of tree, but (I think)
   ;; at (butlast f)-level.
   (if (not (empty? children))
-    (let [child (first children)
-          tree-with-child (u/assoc-in tree f child)]
-      (log/debug (str "a-c:"
-                      ((:morph-ps model) tree-with-child)))
+    (let [child (first children)]
+
       (lazy-cat
        (if (= true (u/get-in child [::done?]))
-
-         (-> tree-with-child
-             (u/assoc-in! 
-              (concat (butlast f) [::done?])
-              true)
-             (u/dissoc-paths (if truncate? [f] []))
-             ((:default-fn model)))
+         (let [tree-with-child (u/assoc-in tree f child)]
+           (-> tree-with-child
+               (u/assoc-in! 
+                (concat (butlast f) [::done?])
+                true)
+               (u/dissoc-paths (if truncate? [f] []))
+               ((:default-fn model))))
 
          (let [tree-with-child (u/assoc-in tree f child)]
+           (log/debug (str "a-c:"
+                           ((:morph-ps model) tree-with-child)))
            [tree-with-child]))
        
        (assoc-children tree (rest children) f model)))))
