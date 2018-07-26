@@ -40,6 +40,7 @@
                                 model)))))))))
 (defn refresh []
   (babel.test.test/init-db)
+  (babel.lexiconfn/write-lexicon "en" (babel.english.grammar/compile-lexicon))
   (babel.directory/refresh-models)
   (load "../english"))
 
