@@ -133,24 +133,18 @@
     
     true []))
 
-(defn assoc-children-with-defaults [tree-with-child children f model]
-;;  (lazy-cat
-;;   (-> tree-with-child
-;;       (u/assoc-in! 
-;;        (concat (butlast f) [::done?])
-;;        true)
-;;       (u/dissoc-paths (if truncate? [f] [])))
-;;   (assoc-children-with-defaults tree (rest children) f model)))
-  )
-
-(defn blah-done [tree child f model]
-  (let [tree-with-child (u/assoc-in tree f child)]
-    (-> tree-with-child
-        (u/assoc-in! 
-         (concat (butlast f) [::done?])
-         true)
-        (u/dissoc-paths (if truncate? [f] []))
-        ((:default-fn model)))))
+(defn assoc-each-default [tree children f model]
+  (if (not (empty? children))
+    (lazy-cat
+     (let [child (first children)
+           tree-with-child (u/assoc-in tree f child)]
+       (-> tree-with-child
+           (u/assoc-in! 
+            (concat (butlast f) [::done?])
+            true)
+           (u/dissoc-paths (if truncate? [f] []))
+           ((:default-fn model))))
+     (assoc-each-default tree (rest children) f model))))
 
 (defn assoc-children [tree children f model]
   ;; TODO: should change how we apply ((:default-fn) model):
@@ -160,7 +154,7 @@
     (let [child (first children)]
       (lazy-cat
        (if (= true (u/get-in child [::done?]))
-         (blah-done tree child f model)
+         (assoc-each-default tree ((:default-fn model) child) f model)
          (let [tree-with-child (u/assoc-in tree f child)]
            (log/debug (str "a-c:"
                            ((:morph-ps model) tree-with-child)))
