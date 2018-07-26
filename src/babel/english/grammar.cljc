@@ -5,6 +5,7 @@
                                   vocab-entry-to-lexeme]]
    [babel.english.morphology :refer (analyze fo)]
    [babel.generate :as generate]
+   [babel.html :refer [local-timestamp]]
    [babel.index :refer [create-indices lookup-spec]]
    [babel.lexiconfn :refer [edn2lexicon filtered-lexicon read-lexicon]]
    [babel.parse :as parse]
@@ -540,7 +541,8 @@
                     :lexicon lexicon))
         debug (log/info "  finalizing..")
         model
-        {:name "English language model created with ❤ by babel.english.grammar/model."
+        {:name (str "English language model created with ❤ by babel.english.grammar/model "
+                    "at: " (local-timestamp))
          :default-fn default-fn
          :index-fn (fn [spec] (lookup-spec spec indices index-lexicon-on-paths))
          ;; Will throw a clojure/core-level exception if more than 1 rule has the same :rule value:
