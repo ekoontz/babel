@@ -310,7 +310,7 @@
                                    :mod rest-mod
                                    :propernoun propernoun
                                    :sem head-sem}}}))
-   
+
    (unify-check c11-comp-subcat-1
                 (let [propernoun (atom :top)
                       head-sem (atom :top)
@@ -346,21 +346,24 @@
                    :head {:phrasal true
                           :synsem {:mod mod
                                    :propernoun propernoun}}}))
-   ;; np2 -> det noun
+   ;; noun-phrase2 -> det noun
    (unify-check c10
                 comp-specs-head
                 (let [number-agreement (atom :top)
-                      propernoun (atom :top)]
+                      propernoun (atom :top)
+                      def (atom :top)]
                   {:rule "noun-phrase2"
                    :aliases (list "np2")
                    :synsem {:agr {:number number-agreement}
+                            :def def
                             :reflexive false
                             :cat :noun
                             :mod []
                             :propernoun propernoun
                             :sem {:number number-agreement}}
                    :head {:phrasal false
-                          :synsem {:propernoun propernoun}}}))
+                          :synsem {:def def
+                                   :propernoun propernoun}}}))
    
    (let [sem (atom :top)
          agr (atom :top)
@@ -437,11 +440,14 @@
           subject-of-complement (atom :top)
           comp-sem (atom {:subj subject-of-complement})
           head-mod (atom :top)
+          head-def (atom :def)
           head-synsem (atom {:subcat []
+                             :def head-def
                              :mod head-mod
                              :sem head-sem})]
       {:phrasal true
        :synsem {:cat :noun
+                :def head-def
                 :mod {:first comp-sem
                       :rest head-mod}
                 :sem head-sem
