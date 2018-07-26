@@ -159,13 +159,17 @@
   
    ;; common nouns' articles agree with their articles:
    ;; e.g. "a dog" but *"a dogs".
+   ;; they also agree in definiteness.
    (default
-    (let [agr (atom {:person :3rd})]
+    (let [agr (atom {:person :3rd})
+          def (atom :top)]
       {:synsem {:cat :noun
+                :def def
                 :pronoun false
                 :propernoun false
                 :agr agr
                 :subcat {:1 {:cat :det
+                             :def def
                              :agr agr}}}}))
    
    ;; </noun default rules>
