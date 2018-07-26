@@ -38,10 +38,17 @@
                                 (nth all-of-the-specs
                                      (rand-int (count all-of-the-specs)))
                                 model)))))))))
+
+(defn nextcamp []
+  (let [spec {:rule "noun-phrase3" :synsem {:cat :noun :sem {:spec {:pred :definite}} :subcat []}}]
+      (println (morph (generate spec model)))))
+
 (defn refresh []
   (babel.test.test/init-db)
   (babel.lexiconfn/write-lexicon "en" (babel.english.grammar/compile-lexicon))
   (babel.directory/refresh-models)
   (load "../english"))
+
+
 
   
