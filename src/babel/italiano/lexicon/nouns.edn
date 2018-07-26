@@ -176,7 +176,7 @@
  {:synsem {:agr {:gender :fem}
            :cat :noun
            :sem {:human true
-                 :pred :donna
+                 :pred :woman
                  :child false}}}
 
 
