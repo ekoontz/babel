@@ -158,13 +158,16 @@
                       ((:morph-ps model) tree-with-child)))
       (lazy-cat
        (if (= true (u/get-in child [::done?]))
+
          (-> tree-with-child
              (u/assoc-in! 
               (concat (butlast f) [::done?])
               true)
              (u/dissoc-paths (if truncate? [f] []))
              ((:default-fn model)))
-         [tree-with-child])
+
+         (let [tree-with-child (u/assoc-in tree f child)]
+           [tree-with-child]))
        
        (assoc-children tree (rest children) f model)))))
 
