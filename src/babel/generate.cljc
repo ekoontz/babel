@@ -152,19 +152,20 @@
   ;; should not apply at top-level of tree, but (I think)
   ;; at (butlast f)-level.
   (if (not (empty? children))
-    (let [child (first children)]
+    (let [child (first children)
+          tree-with-child (u/assoc-in tree f child)]
+      (log/debug (str "a-c:"
+                      ((:morph-ps model) tree-with-child)))
       (lazy-cat
-       (let [tree-with-child (u/assoc-in tree f child)]
-         (log/debug (str "a-c:"
-                         ((:morph-ps model) tree-with-child)))
-         (if (= true (u/get-in child [::done?]))
-           (-> tree-with-child
-               (u/assoc-in! 
-                (concat (butlast f) [::done?])
-                true)
-               (u/dissoc-paths (if truncate? [f] []))
-               ((:default-fn model)))
-           [tree-with-child]))
+       (if (= true (u/get-in child [::done?]))
+         (-> tree-with-child
+             (u/assoc-in! 
+              (concat (butlast f) [::done?])
+              true)
+             (u/dissoc-paths (if truncate? [f] []))
+             ((:default-fn model)))
+         [tree-with-child])
+       
        (assoc-children tree (rest children) f model)))))
 
 (defn grow [trees model]
