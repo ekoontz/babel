@@ -27,9 +27,6 @@
 (btest/init-db)
 (def model @@(get models :en))
 
-(defn morph [expression]
-  (english/morph expression model))
-
 (defn parse [expression]
   (english/parse expression model false))
 
