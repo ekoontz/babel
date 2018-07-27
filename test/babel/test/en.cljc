@@ -1,7 +1,7 @@
 (ns babel.test.en
   (:refer-clojure :exclude [assoc-in get-in])
   (:require [babel.directory :refer [models]]
-            [babel.english :as english :refer [analyze fo-ps]]
+            [babel.english :as english]
             [babel.english.grammar :as grammar :refer [head-first head-last]]
             [babel.english.morphology :refer [get-string]]
 
