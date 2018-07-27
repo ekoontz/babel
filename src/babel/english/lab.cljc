@@ -25,7 +25,8 @@
 (defn basecamp []
   (let [semantic-spec
         {:modified false,
-         :synsem {:cat :verb, :subcat []
+         :synsem {:cat :verb
+                  :subcat []
                   :sem {:aspect :simple
                         :pred :sleep
                         :tense :present}}}
