@@ -336,18 +336,18 @@
   (let [expr (generate {:modified false
                         :synsem {:cat :verb
                                  :sem {:obj {:pred :table
-                                             :mod '()
+                                             :mod []
                                              :number :sing
                                              :spec {:def :def
                                                     :pred :definite}}
                                        :pred :in-front-of
                                        :tense :present
                                        :subj {:pred :chair
-                                              :mod '()
+                                              :mod []
                                               :number :sing
                                               :spec {:def :def
                                                      :pred :definite}}}
-                                 :subcat '()}})]
+                                 :subcat []}})]
     (log/info (str "furniture-sentence: " 
                    (display-expression expr)))
 
