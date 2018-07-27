@@ -436,7 +436,7 @@
     {:rule "noun-phrase3"}
     head-principle
     head-first
-    (let [head-sem (atom :top)
+    (let [sem (atom {:spec {:pred :definite}})
           subject-of-complement (atom :top)
           comp-sem (atom {:subj subject-of-complement})
           head-mod (atom :top)
@@ -444,13 +444,13 @@
           head-synsem (atom {:subcat []
                              :def head-def
                              :mod head-mod
-                             :sem head-sem})]
+                             :sem sem})]
       {:phrasal true
        :synsem {:cat :noun
                 :def head-def
                 :mod {:first comp-sem
                       :rest head-mod}
-                :sem head-sem
+                :sem sem
                 :slash false
                 :subcat []}
        :head {:rule "noun-phrase2"
