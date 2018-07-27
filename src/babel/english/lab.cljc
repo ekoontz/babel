@@ -13,7 +13,7 @@
         {:modified false,
          :synsem {:cat :verb, :subcat []
                   :sem {:aspect :simple
-                        :pred :sleep
+                        :pred :top
                         :tense :present}}}
         all-of-the-specs [semantic-spec]]
     (repeatedly #(println
