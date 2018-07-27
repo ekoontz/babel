@@ -1,7 +1,8 @@
 (ns babel.test.en
+  ;; TODO: use u/get-in and u/assoc-in.
   (:refer-clojure :exclude [assoc-in get-in])
   (:require [babel.directory :refer [models]]
-            [babel.english :as english]
+            [babel.english :as english :refer [morph morph-ps]]
             [babel.english.grammar :as grammar :refer [head-first head-last]]
             [babel.english.morphology :refer [get-string]]
 
@@ -13,7 +14,6 @@
             [babel.ug :refer [head-principle unify-check]]
             
             [clojure.math.combinatorics :as combo]
-            [clojure.pprint :refer [pprint]]
             [clojure.repl :refer [doc]]
             [clojure.string :as string]
             #?(:clj [clojure.test :refer [deftest is]])
@@ -21,9 +21,10 @@
             #?(:clj [clojure.tools.logging :as log])
             #?(:cljs [babel.logjs :as log]) 
 
-            [dag_unify.core :refer [assoc-in dissoc-paths fail?
-                                    fail-path-between get-in
-                                    strip-refs unify]]))
+            [dag_unify.core :as u
+             :refer [assoc-in dissoc-paths fail?
+                     fail-path-between get-in pprint
+                     strip-refs unify]]))
 (btest/init-db)
 (def model @@(get models :en))
 
