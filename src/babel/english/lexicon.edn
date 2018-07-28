@@ -1917,8 +1917,8 @@
                      :sem {:pred :recover}}}
  "red"
  {:synsem {:cat :adjective
-           :sem {:pred :rosso
-                 :subj {:physical-object true
+           :sem {:pred :red
+                 :prop {:physical-object true
                         :human false}}}}
 
  "remain" [{:synsem {:cat :verb
