@@ -109,11 +109,12 @@
                     :human false
                     :physical-object true}
  
- {:pet true}       {:animate true
-                    :buyable true
-                    :edible false
-                    :human false
-                    :spec {:of {:human true}}}
+ {:prop
+  {:pet true}}     {:prop {:animate true
+                           :buyable true
+                           :edible false
+                           :human false}
+                    :spec {:of {:prop {:human true}}}}
  
  {:physical-object
   false}           {:clothing false
@@ -184,7 +185,7 @@
  
  {:pred :dentist}  {:human true}
  
- {:pred :dog}      {:pet true}
+ {:pred :dog}      {:prop {:pet true}}
 
  {:pred :easy-chair}    {:furniture true}
  

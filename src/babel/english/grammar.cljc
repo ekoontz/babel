@@ -294,22 +294,18 @@
                  :synsem {:cat :det}})
    
    (unify-check c11-comp-subcat-1
-                (let [propernoun (atom :top)
-                      head-sem (atom :top)
-                      mod-sem (atom {:subj head-sem})
-                      rest-mod []]
+                (let [prop (atom :top)
+                      mod-sem (atom {:pred :red
+                                     :prop prop})
+                      sem (atom {:prop prop
+                                 :mod {:first mod-sem
+                                       :rest []}})]
                   {:rule "nbar1"
-                   :synsem {:reflexive false
-                            :propernoun propernoun
-                            :mod {:first mod-sem
-                                  :rest rest-mod}}
+                   :synsem {:sem sem}
                    :comp {:synsem {:cat :adjective
                                    :sem mod-sem}}
                    :head {:phrasal false
-                          :synsem {:cat :noun
-                                   :mod rest-mod
-                                   :propernoun propernoun
-                                   :sem head-sem}}}))
+                          :synsem {:cat :noun}}}))
 
    (unify-check c11-comp-subcat-1
                 (let [propernoun (atom :top)
