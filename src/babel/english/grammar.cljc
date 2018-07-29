@@ -310,25 +310,6 @@
                    :head {:phrasal false
                           :synsem {:cat :noun
                                    :mod head-mod}}}))
-
-   (unify-check c11-comp-subcat-1
-                (let [propernoun (atom :top)
-                      head-sem (atom :top)
-                      mod-sem (atom {:subj head-sem})
-                      rest-mod (atom :top)]
-                  {:rule "nbar2"
-                   :synsem {:reflexive false
-                            :propernoun propernoun
-                            :mod {:first mod-sem
-                                  :rest rest-mod}}
-                   :comp {:synsem {:cat :adjective
-                                   :sem mod-sem}}
-                   :head {:phrasal true
-                          :synsem {:cat :noun
-                                   :mod rest-mod
-                                   :propernoun propernoun
-                                   :sem head-sem}}}))
-   
    ;; np1 -> det nbar
    (unify-check c10
                 comp-specs-head
