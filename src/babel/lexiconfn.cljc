@@ -177,7 +177,7 @@
 (defn ditransitive-verb-rule [lexical-entry]
   (cond (and (= (get-in lexical-entry [:synsem :cat]) :verb)
              (not (nil? (get-in lexical-entry '(:synsem :sem :iobj))))
-             (not (= '() (get-in lexical-entry [:synsem :subcat :3]))))
+             (not (= [] (get-in lexical-entry [:synsem :subcat :3]))))
         (unify
          lexical-entry
          (let [ref (atom :top)]
@@ -202,13 +202,13 @@
         (unify lexical-entry
                 {:synsem {:propernoun false
                           :cat :noun
-                          :subcat '()}})
+                          :subcat []}})
 
         (= true (get-in lexical-entry '(:synsem :propernoun)))
         (unify lexical-entry
                 {:synsem {:cat :noun
                           :pronoun false
-                          :subcat '()}})
+                          :subcat []}})
         true
         lexical-entry))
 
@@ -252,7 +252,7 @@
   (cond (and (= :verb (get-in lexical-entry '(:synsem :cat)))
              (= :noun (get-in lexical-entry '(:synsem :subcat :2 :cat))))
         (unify lexical-entry
-                {:synsem {:subcat {:2 {:subcat '()}}}})
+                {:synsem {:subcat {:2 {:subcat []}}}})
 
         true
         lexical-entry))
@@ -264,7 +264,7 @@
              (not (= (get-in lexical-entry [:synsem :sem :obj]) :unspec))
 
              ;; do not apply rule if (:subcat :2) is explicitly empty.
-             (not (= '() (get-in lexical-entry [:synsem :subcat :2])))
+             (not (= [] (get-in lexical-entry [:synsem :subcat :2])))
 
              ;; do not apply rule if (:subcat :2) is not noun.
              (= :noun (get-in lexical-entry [:synsem :subcat :2 :cat] :noun))
@@ -302,7 +302,7 @@
                               common-noun
                               {:synsem {:pronoun false
                                         :subcat {:1 {:cat :det}
-                                                 :2 '()}}}))]
+                                                 :2 []}}}))]
           (if (fail? result)
             (throw (exception (str "fail when trying to create common-noun from lexical-entry: " lexical-entry
                                    "fail-path: "
@@ -367,8 +367,8 @@
         (= (get-in lexical-entry '(:synsem :cat)) :sent-modifier)
         (unify
          {:synsem {:subcat {:1 {:cat :verb
-                                :subcat '()}
-                            :2 '()}}}
+                                :subcat []}
+                            :2 []}}}
          lexical-entry)
 
         true
@@ -393,7 +393,7 @@
    (list
     (unify (dissoc-paths lexical-entry (list [:synsem :subcat :2]
                                               [:serialized]))
-            {:synsem {:subcat {:2 '()}}
+            {:synsem {:subcat {:2 []}}
              :canary :tweet43}) ;; if the canary tweets, then the runtime is getting updated correctly.
 
     lexical-entry) ;; the original transitive lexeme.
@@ -534,7 +534,7 @@
                           (not (= :prep (get-in val [:synsem :subcat :2 :cat])))
                           (not (= false (get-in val [:intransitivize])))
 
-                          (not (= '() (get-in val [:synsem :subcat :2]))))
+                          (not (= [] (get-in val [:synsem :subcat :2]))))
 
                      (do
                        (list (unify val 
@@ -560,7 +560,7 @@
                      
                      (and (= (get-in val [:synsem :cat])
                              :verb)
-                          (= '() (get-in val [:synsem :subcat :2] '())))
+                          (= [] (get-in val [:synsem :subcat :2] [])))
                      (list (unify val intransitive))
                      
                      ;; else just return vals:
@@ -580,7 +580,7 @@
             (cond (and (= (get-in val [:synsem :cat])
                           :verb)
                        (not (= :unspec (get-in val [:synsem :sem :obj])))
-                       (not (= '() (get-in val [:synsem :subcat :2])))
+                       (not (= [] (get-in val [:synsem :subcat :2])))
 
                        (not (= false (get-in val [:transitivize])))
                        
