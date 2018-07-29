@@ -293,18 +293,23 @@
                 {:rule "determiner-phrase"
                  :synsem {:cat :det}})
    
+
+   ;;         nbar   |sem  [1] |
+   ;;       /      \ |mod <[2]>|
+   ;;      /        \
+   ;; adj |sem [2]|  n |sem [1]|
+   ;; 
    (unify-check c11-comp-subcat-1
-                (let [prop (atom :top)
-                      mod-sem (atom {:prop prop})
-                      sem (atom {:prop prop
-                                 :mod {:first mod-sem
-                                       :rest []}})]
+                (let [adj-sem (atom :top)
+                      head-mod (atom :top)]
                   {:rule "nbar1"
-                   :synsem {:sem sem}
+                   :synsem {:mod {:first adj-sem
+                                  :rest head-mod}}
                    :comp {:synsem {:cat :adjective
-                                   :sem mod-sem}}
+                                   :sem adj-sem}}
                    :head {:phrasal false
-                          :synsem {:cat :noun}}}))
+                          :synsem {:cat :noun
+                                   :mod head-mod}}}))
 
    (unify-check c11-comp-subcat-1
                 (let [propernoun (atom :top)
@@ -341,6 +346,7 @@
                    :head {:phrasal true
                           :synsem {:mod mod
                                    :propernoun propernoun}}}))
+
    ;; noun-phrase2 -> det noun
    (unify-check c10
                 comp-specs-head
