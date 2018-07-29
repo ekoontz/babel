@@ -295,8 +295,7 @@
    
    (unify-check c11-comp-subcat-1
                 (let [prop (atom :top)
-                      mod-sem (atom {:pred :red
-                                     :prop prop})
+                      mod-sem (atom {:prop prop})
                       sem (atom {:prop prop
                                  :mod {:first mod-sem
                                        :rest []}})]
