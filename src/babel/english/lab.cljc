@@ -10,8 +10,7 @@
 
 (defn downtown []
   (let [semantic-spec
-        {:modified false
-         :synsem {:cat :verb
+        {:synsem {:cat :verb
                   :subcat []
                   :sem {:aspect :simple
                         :pred :top
