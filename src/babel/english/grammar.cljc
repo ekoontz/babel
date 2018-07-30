@@ -291,7 +291,8 @@
    
    (unify-check c10
                 {:rule "determiner-phrase"
-                 :synsem {:cat :det}})
+                 :synsem {:cat :det}
+                 :head {:synsem {:slash false}}})
 
    ;;         nbar   |sem  [1] |
    ;;       /      \ |mod <[2]>|
