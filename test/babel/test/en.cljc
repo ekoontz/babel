@@ -617,7 +617,7 @@
                           {:synsem {:sem {:subj {:gender :masc}}}}))
         generated (generate spec)
         surface-1 (morph generated)
-        surface-2 (english/morph generated model :from-language "it")]
+        surface-2 (english/morph generated :model model :from-language "it")]
     (is (not (nil? p)))
     (is (not (fail? spec)))
     (is (not (nil? generated)))
@@ -643,7 +643,7 @@
                           :show-notes true)))
     (is (= "I (♀) am getting dressed (right now)"
            (english/morph (generate spec)
-                          model
+                          :model model
                           :show-notes true
                           :from-language "it")))))
 
