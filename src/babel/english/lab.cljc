@@ -44,25 +44,13 @@
     (if false (println (morph (generate spec model)))
         (generate spec model))))
 
-;; (-> model :lexicon (get "dog") first pprint)
-
-(def nbar (-> model :grammar-map :nbar))
-(def nbar-red-dog (-> nbar
-                      (u/assoc-in [:comp] (-> model :lexicon (get "red") first))
-                      (u/assoc-in [:head] (-> model :lexicon (get "dog") first))))
-                   
-
-(def noun-phrase1 (-> model :grammar-map :noun-phrase1))
-(def the-red-dog (-> noun-phrase1
-                     (u/assoc-in [:comp] (-> model :lexicon (get "the") first))
-                     (u/assoc-in [:head] nbar-red-dog)))
-
 (defn refresh []
   (let [refresh-lexicon false]
     (babel.test.test/init-db)
     (if refresh-lexicon (babel.lexiconfn/write-lexicon "en" (babel.english.grammar/compile-lexicon)))
     (babel.directory/refresh-models)
     (load "../english")))
+
 
 
 
