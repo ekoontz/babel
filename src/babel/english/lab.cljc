@@ -9,17 +9,15 @@
    [dag_unify.core :as u :refer [pprint strip-refs unify]]))
 
 (defn downtown []
-  (let [semantic-spec
+  (let [spec
         {:synsem {:cat :verb
                   :subcat []
                   :sem {:aspect :simple
                         :pred :top
-                        :tense :present}}}
-        all-of-the-specs [semantic-spec]]
+                        :tense :present}}}]
     (repeatedly #(println
                   (morph (generate
-                          (nth all-of-the-specs
-                               (rand-int (count all-of-the-specs)))
+                          spec
                           model)
                          :show-notes false)))))
 
