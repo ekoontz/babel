@@ -10,8 +10,9 @@
 
 (defn downtown []
   (let [semantic-spec
-        {:modified false,
-         :synsem {:cat :verb, :subcat []
+        {:modified false
+         :synsem {:cat :verb
+                  :subcat []
                   :sem {:aspect :simple
                         :pred :top
                         :tense :present}}}
@@ -20,7 +21,8 @@
                   (morph (generate
                           (nth all-of-the-specs
                                (rand-int (count all-of-the-specs)))
-                          model))))))
+                          model)
+                         :show-notes false)))))
 
 (defn basecamp []
   (let [spec
