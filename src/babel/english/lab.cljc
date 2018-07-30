@@ -20,35 +20,12 @@
                           spec
                           model)
                          :show-notes false)))))
-
-(defn basecamp []
-  (let [spec
-        {:rule "noun-phrase"
-         :synsem {:cat :noun
-                  :mod {:first {:pred :red}}
-                  :sem {:pred :top
-                        :number :sing
-                        :spec {:def :def
-                               :pred :definite}}}}]
-    (generate spec model)))
-
-(defn nextcamp []
-  (let [spec
-        {:rule "noun-phrase"
-         :synsem {:cat :noun
-                  :mod {:first {:pred :top}}
-                  :sem {:pred :top
-                        :number :sing}}}]
-    (if false (println (morph (generate spec model)))
-        (generate spec model))))
-
 (defn refresh []
   (let [refresh-lexicon false]
     (babel.test.test/init-db)
     (if refresh-lexicon (babel.lexiconfn/write-lexicon "en" (babel.english.grammar/compile-lexicon)))
     (babel.directory/refresh-models)
     (load "../english")))
-
 
 
 
