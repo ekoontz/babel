@@ -1,13 +1,13 @@
 {"Antonella"
  {:synsem {:sem {:pred :antonella
-                  :human true}
+                 :prop {:human true}}
             :propernoun true
             :agr {:number :sing
                   :person :3rd
                   :gender :fem}}}
  "Antonia"
  {:synsem {:sem {:pred :antonia
-                 :human true}
+                 :prop {:human true}}
            :propernoun true
            :agr {:number :sing
                  :person :3rd
@@ -19,7 +19,7 @@
                  :person :3rd
                  :gender :fem}
            :sem {:pred :antonia-and-luisa
-                 :human true}}}
+                 :prop {:human true}}}}
 
  "Antonio"
  {:synsem {:propernoun true
@@ -27,7 +27,7 @@
                  :person :3rd
                  :gender :masc}
            :sem {:pred :antonio
-                 :human true}}}
+                 :prop {:human true}}}}
  "a"
  {:synsem {:cat :det
            :def :indef
@@ -441,7 +441,7 @@
 
  "believe" (let [common {:synsem {:cat :verb
                                   :subcat {:1 {:cat :noun
-                                               :sem {:human true}}}}}]
+                                               :sem {:prop {:human true}}}}}}]
              [{:unify [common]
                :synsem {:sem {:pred :believe}
                         :subcat {:2 []}}} ;; intransitive
@@ -462,20 +462,21 @@
  "black"
  {:synsem {:cat :adjective
            :sem {:pred :black
-                 :subj {:physical-object true
-                        :human false}}}}
+                 :subj {:prop {:physical-object true
+                               :human false}}}}}
 
  "boil" {:synsem {:cat :verb
                   :sem {:pred :boil}}}
  "book"
  {:synsem {:cat :noun
-           :sem {:artifact true
-                 :pred :book
-                 :legible true
-                 :speakable false
-                 :mass false
-                 :place false
-                 :consumable false}}}
+           :sem {:pred :book
+                 ;; TODO: move to encyclopedia/nouns.edn.
+                 :prop {:artifact true
+                        :legible true
+                        :speakable false
+                        :mass false
+                        :place false
+                        :consumable false}}}}
 
  "break" {:english {:past "broke"
                     :past-participle "broken"}
@@ -486,8 +487,9 @@
  {:synsem {:agr {:number :sing}
            :cat :noun
            :sem {:pred :bread
-                 :edible true
-                 :artifact true}
+                 ;; TODO: move to encyclopedia/nouns.edn.
+                 :prop {:edible true
+                        :artifact true}}
            :subcat {:1 {:cat :det
                         :def :def}}}}
 
@@ -572,7 +574,7 @@
            {:unify [common] ;; transitive "chatted with <human>"
             :share-sem :obj
             :synsem {:subcat {:2 {:cat :prep
-                                  :sem {:obj {:human true}
+                                  :sem {:obj {:prop {:human true}}
                                         :pred :with}
                                   :subcat []}}}}])
 
@@ -849,9 +851,9 @@
 
  "father" {:synsem {:cat :noun
                     :agr {:gender :masc}
-                    :sem {:human true
-                          :pred :father
-                          :child false}}}
+                    :sem {:prop {:human true
+                                 :child false}
+                          :pred :father}}}
 
  "fill" {:synsem {:cat :verb
                   :sem {:pred :fill}}}
@@ -988,7 +990,7 @@
                  :person :3rd
                  :gender :masc}
            :sem {:pred :gianluca
-                 :human true}
+                 :prop {:human true}}
            :propernoun true}}
 
  "Gianluca and Giovanni"
@@ -996,7 +998,7 @@
                  :person :3rd
                  :gender :masc}
            :sem {:pred :gianluca-e-giovanni
-                 :human true}
+                 :prop {:human true}}
            :propernoun true}}
 
  "Gianluca and Luisa"
@@ -1004,7 +1006,7 @@
                  :person :3rd
                  :gender :masc}
            :sem {:pred :gianluca-e-luisa
-                 :human true}
+                 :prop {:human true}}
            :propernoun true}}
 
  "Giovanni and I"
@@ -1014,7 +1016,7 @@
             :agr {:gender :masc
                   :person :1st
                   :number :plur}
-            :sem {:human true
+            :sem {:prop {:human true}
                   :pred :giovanni-and-i}
             :subcat []}}]
 
@@ -1145,7 +1147,7 @@
                       :gender :masc
                       :gendered true
                       :number :sing}
-                :sem {:human true
+                :sem {:prop {:human true}
                       :pred :lui}
                 :subcat []}}
 
@@ -1157,10 +1159,9 @@
  {:synsem {:cat :verb
            :sem {:pred :help
                  :activity true
-                 :obj {:human true}}
+                 :obj {:prop {:human true}}}
            :subcat {:1 {:cat :noun}
-                    :2 {:cat :noun
-                        :sem {:human true}}}}}
+                    :2 {:cat :noun}}}}
  "her"
  [{:synsem {:cat :det
             :agr {:number :sing}
@@ -1178,7 +1179,7 @@
                   :gender :fem
                   :number :sing}
             :sem {:pred :lei
-                  :human true}
+                  :prop {:human true}}
             :subcat []}}]
 
  "herself" {:synsem {:cat :noun
@@ -1188,7 +1189,7 @@
                      :agr {:person :3rd
                            :gender :fem
                            :number :sing}
-                     :sem {:human true}
+                     :sem {:prop {:human true}}
                      :subcat []}}
  "him" {:synsem {:cat :noun
                  :pronoun true
@@ -1197,7 +1198,7 @@
                  :agr {:person :3rd
                        :gender :masc
                        :number :sing}
-                 :sem {:human true
+                 :sem {:prop {:human true}
                        :pred :lui}
                  :subcat []}}
 
@@ -1208,7 +1209,7 @@
                      :agr {:person :3rd
                            :gender :masc
                            :number :sing}
-                     :sem {:human true}
+                     :sem {:prop {:human true}}
                      :subcat []}}
 
  "his" [{:synsem {:cat :det
@@ -1234,7 +1235,7 @@
 
  "hope" (let [common {:synsem {:cat :verb
                                :subcat {:1 {:cat :noun
-                                            :sem {:human true}}}}}]
+                                            :sem {:prop {:human true}}}}}}]
           [{:unify [common]
             :synsem {:sem {:pred :hope}
                      :subcat {:2 []}}} ;; intransitive
@@ -1272,20 +1273,20 @@
                            :obj {:animate true}}}}])
 
  "Jean" {:synsem {:sem {:pred :Jean
-                        :human true}
+                        :prop {:human true}}
                   :propernoun true
                   :agr {:number :sing
                         :person :3rd
                         :gender :masc}}}
 
  "Juan" {:synsem {:sem {:pred :Juan
-                        :human true}
+                        :prop {:human true}}
                   :propernoun true
                   :agr {:number :sing
                         :person :3rd
                         :gender :masc}}}
  "Juana" {:synsem {:sem {:pred :Juana
-                         :human true}
+                         :prop {:human true}}
                    :propernoun true
                    :agr {:number :sing
                          :person :3rd
@@ -1297,7 +1298,7 @@
             :agr {:gender :masc
                   :person :1st
                   :number :plur}
-            :sem {:human true
+            :sem {:prop {:human true}
                   :pred :Juan-and-i}
             :subcat []}}]
 
@@ -1309,7 +1310,7 @@
             :agr {:gender :masc
                   :person :1st
                   :number :plur}
-            :sem {:human true
+            :sem {:prop {:human true}
                   :pred :Juan-and-i}
             :subcat []}}]
  "I"
@@ -1318,7 +1319,7 @@
            :case :nom
            :agr {:person :1st
                  :number :sing}
-           :sem {:human true
+           :sem {:prop {:human true}
                  :pred :I}
            :subcat []}}
 
@@ -1352,9 +1353,9 @@
  "increase" {:synsem {:cat :verb
                       :sem {:pred :increase}}}
 
-"inform" {:synsem {:cat :verb
-                   :sem {:pred :inform}}}
-
+ "inform" {:synsem {:cat :verb
+                    :sem {:pred :inform}}}
+ 
  "insist" {:synsem {:cat :verb
                     :sem {:pred :insist}}}
 
@@ -1363,7 +1364,7 @@
 
  "intelligent" {:synsem {:cat :adjective
                          :sem {:pred :intelligent
-                               :subj {:human true}}}}
+                               :subj {:prop {:human true}}}}}
 
  "interrupt" {:synsem {:cat :verb
                        :sem {:pred :interrupt}}}
@@ -1386,7 +1387,7 @@
                   :number :sing}
             :reflexive false
             :sem {:pred :lui
-                  :human false}
+                  :prop {:human false}}
             :subcat []}}
   {:synsem {:cat :noun
             :pronoun true
@@ -1398,7 +1399,7 @@
                   :number :sing}
             :reflexive false
             :sem {:pred :lei
-                  :human false}
+                  :prop {:human false}}
             :subcat []}}]
  "itself"
  {:synsem {:cat :noun
@@ -1407,7 +1408,7 @@
            :reflexive true
            :agr {:person :3rd
                  :number :sing}
-           :sem {:human false}
+           :sem {:prop {:human false}}
            :subcat []}}
  "keep"
  [{:synsem {:cat :verb
@@ -1560,8 +1561,8 @@
  "man" {:english {:plur "men"}
         :synsem {:agr {:gender :masc}
                  :cat :noun
-                 :sem {:human true
-                       :child false
+                 :sem {:prop {:human true
+                              :child false}
                        :pred :man}}}
 
  "manage" {:synsem {:cat :verb
@@ -1570,19 +1571,19 @@
  {:synsem {:agr {:number :sing
                  :gender :fem}
            :sem {:pred :marina
-                 :human true}
+                 :prop {:human true}}
            :propernoun true}}
  "Mario"
  {:synsem {:agr {:number :sing
                  :gender :masc}
            :sem {:pred :mario
-                 :human true}
+                 :prop {:human true}}
            :propernoun true}}
  "Matteo"
  {:synsem {:agr {:number :sing
                  :gender :masc}
            :sem {:pred :matteo
-                 :human true}
+                 :prop {:human true}}
            :propernoun true}}
 
  "may" {:english {:past "might"
@@ -1625,9 +1626,9 @@
 
  "mother" {:synsem {:agr {:gender :fem}
                     :cat :noun
-                    :sem {:human true
-                          :pred :madre
-                          :child false}}}
+                    :sem {:prop {:human true
+                                 :child false}
+                          :pred :madre}}}
 
  "move" {:synsem {:cat :verb
                   :sem {:pred :move}}}
@@ -1821,18 +1822,18 @@
 
  "professor" {:synsem {:agr :top
                        :cat :noun
-                       :sem {:human true
+                       :sem {:prop {:human true}
                              :pred :professor}}}
 
  "pupil" {:synsem {:agr :top
                    :cat :noun
-                   :sem {:human true
+                   :sem {:prop {:human true}
                          ;; example of a synonym, where we use the convention of making the
                          ;; :pred (i.e. :student) the more common case (c.f. "student")
                          :pred :student}}}
 
-  "punish" {:synsem {:cat :verb
-                     :sem {:pred :punish}}}
+ "punish" {:synsem {:cat :verb
+                    :sem {:pred :punish}}}
 
  "put"
  (let [common {:synsem {:cat :verb}
@@ -2651,9 +2652,9 @@
  "woman" {:english {:plur "women"}
           :synsem {:agr {:gender :fem}
                    :cat :noun
-                   :sem {:human true
-                         :pred :woman
-                         :child false}}}
+                   :sem {:prop {:human true
+                                :child false}
+                         :pred :woman}}}
 
  "wonder" {:synsem {:cat :verb
                     :sem {:pred :wonder}
