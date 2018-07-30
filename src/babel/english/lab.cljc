@@ -13,8 +13,17 @@
         {:synsem {:cat :verb
                   :subcat []
                   :sem {:aspect :simple
-                        :pred :top
                         :tense :present}}}]
+    (repeatedly #(println
+                  (morph (generate
+                          spec
+                          model)
+                         :show-notes false)))))
+(defn basecamp []
+  (let [spec
+        {:synsem {:cat :verb
+                  :sem :top
+                  :subcat []}}]
     (repeatedly #(println
                   (morph (generate
                           spec
