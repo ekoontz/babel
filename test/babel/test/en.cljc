@@ -635,11 +635,11 @@
                              :subj {:pred :I}}}}]
     (is (= "I am getting dressed"
            (english/morph (generate spec)
-                          model
+                          :model model
                           :show-notes false)))
     (is (= "I am getting dressed (right now)"
            (english/morph (generate spec)
-                          model
+                          :model model
                           :show-notes true)))
     (is (= "I (♀) am getting dressed (right now)"
            (english/morph (generate spec)
