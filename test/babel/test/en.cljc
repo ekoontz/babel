@@ -210,10 +210,10 @@
   (let [result (generate {:modified false
                           :synsem {:cat :noun
                                    :sem {:pred :name
-                                         :mod '()}}})]
+                                         :mod []}}})]
     (is (= (get-in result [:synsem :sem :mod]
                    ::undefined-should-not-return-this)
-           '()))))
+           []))))
 
 (deftest her-name-is-luisa
   (is (= "her name is Luisa"
@@ -238,12 +238,12 @@
 (deftest generate-with-possessive-1
   (let [result
         (generate {:synsem {:pronoun false
-                            ;; TODO: subcat '() should be part of language model's top-level generate defaults;
+                            ;; TODO: subcat [] should be part of language model's top-level generate defaults;
                             ;; c.f. TODO on babel.test.translate/latin-to-english
-                            :subcat '()
+                            :subcat []
                             :cat :noun
                             :sem {:number :sing
-                                  :mod '()
+                                  :mod []
                                   :spec {:pred :of
                                          :of {:pred :Juana}}
                                   :pred :dog}}})]
@@ -259,7 +259,7 @@
                                   :spec {:pred :of
                                          :of {:pred :Juana}}
                                   :pred :dog}
-                            :subcat '()}})]
+                            :subcat []}})]
     (is (not (nil? result)))
     (is (= "Juana's red dog" (morph result)))))
 
@@ -280,11 +280,11 @@
 
 (deftest in-front-of
   (let [expr (generate {:synsem {:cat :prep
-                                 :subcat '()
+                                 :subcat []
                                  :reflexive false
                                  :sem {:pred :in-front-of
                                        :obj {:pred :table
-                                             :mod '()
+                                             :mod []
                                              :number :sing
                                              :spec {:def :def
                                                     :pred :definite}}}}})]
@@ -359,11 +359,11 @@
                                        :tense :present
                                        :reflexive true
                                        :subj {:pred :chair
-                                              :mod '()
+                                              :mod []
                                               :number :sing
                                               :spec {:def :def
                                                      :pred :definite}}}
-                                 :subcat '()}})]
+                                 :subcat []}})]
     (log/info (str "reflexive furniture expression:" (display-expression expr)))
     (is (= (morph expr)
            "the chair is in front of itself"))))
@@ -373,7 +373,7 @@
         expr (-> vp-infinitive
                  (overh (get (:lexicon model) "speak"))
                  (overc (generate {:synsem {:sem {:pred :word
-                                                  :mod '()
+                                                  :mod []
                                                   :spec {:def :def
                                                          :pred :definite}}
                                             :cat :noun}})))]
@@ -391,7 +391,7 @@
   (= (morph (generate {:synsem {:agr {:number :plur}
                              :cat :noun
                              :sem {:pred :cat :spec {:def :def}
-                                   :mod '()}}}))
+                                   :mod []}}}))
      "the cats"))
 
 (deftest phrasal-verbs
@@ -399,10 +399,10 @@
   (is (not (empty? (parse "I turned the radio on"))))
   (is (not (empty? (parse "I turned off the radio"))))
   (is (not (empty? (parse "I turned the radio off"))))
-  (let [generated (morph (generate {:synsem {:subcat '()
+  (let [generated (morph (generate {:synsem {:subcat []
                                              :sem {:pred :turn-on
                                                    :tense :present
-                                                   :obj {:mod '()
+                                                   :obj {:mod []
                                                          :number :sing
                                                          :pred :radio
                                                          :spec {:def :def
@@ -421,12 +421,12 @@
 (def spec1 {:synsem {:cat :verb
                      :sem {:pred :read
                            :subj {:pred :woman}}
-                     :subcat '()}})
+                     :subcat []}})
 
 (def spec2 {:synsem {:cat :verb
                      :sem {:pred :read
                            :subj {:pred :cat}}
-                     :subcat '()}})
+                     :subcat []}})
 
 (deftest take-advantage-present
   (let [result (generate {:synsem {:sem {:pred :take-advantage-of
@@ -591,7 +591,7 @@
         to-run #(time (println (morph (generate
                                        {:synsem {:cat :verb, :sem {:pred :read
                                                                    :subj {:pred :woman}}
-                                                 :subcat '()}}))))]
+                                                 :subcat []}}))))]
     (is (= 1 (count (take 1 (repeatedly to-run)))))))
 
 (deftest relative-clause []
@@ -611,7 +611,7 @@
            (filter #(= :verb (get-in % [:synsem :cat]))
                    (parse "I speak")))
         spec (strip-refs (unify
-                          {:synsem {:subcat '()
+                          {:synsem {:subcat []
                                     :cat :verb}}
                           {:synsem {:sem (get-in p [:synsem :sem])}}
                           {:synsem {:sem {:subj {:gender :masc}}}}))
@@ -662,7 +662,7 @@
   {:synsem {:agr {:number :sing}
             :pronoun false
             :cat :noun
-            :subcat '()
+            :subcat []
             :sem {:pred :woman
                   :spec {:def :def}}
             :mod {:first {:pred :see
@@ -698,7 +698,7 @@
   {:synsem {:cat :verb
             :sem {:pred :sleep
                   :subj {:pred :cat}}
-            :subcat '()}})
+            :subcat []}})
 
 (def cspec {:modified false
             :synsem {:cat :verb
@@ -721,7 +721,7 @@
     #(println 
       (morph 
        (time (generate 
-              {:synsem {:subcat '()
+              {:synsem {:subcat []
                         :cat :verb
                         :sem {:pred :be-called
                               :subj {:pred :tu}
@@ -735,7 +735,7 @@
     #(println 
       (morph 
        (time (generate 
-              {:synsem {:subcat '()
+              {:synsem {:subcat []
                         :cat :verb
                         :sem {:pred :be-called
                               :subj {:pred :top}
