@@ -66,11 +66,11 @@
                      (u/assoc-in [:head] nbar-red-dog)))
 
 (defn refresh []
-  (babel.test.test/init-db)
-  (babel.lexiconfn/write-lexicon "en" (babel.english.grammar/compile-lexicon))
-  (babel.directory/refresh-models)
-  (load "../english"))
+  (let [refresh-lexicon false]
+    (babel.test.test/init-db)
+    (if refresh-lexicon (babel.lexiconfn/write-lexicon "en" (babel.english.grammar/compile-lexicon)))
+    (babel.directory/refresh-models)
+    (load "../english")))
 
 
 
-  
