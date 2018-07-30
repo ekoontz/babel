@@ -23,32 +23,23 @@
                           model))))))
 
 (defn basecamp []
-  (let [semantic-spec
-        {:modified false,
-         :synsem {:cat :verb
-                  :subcat []
-                  :sem {:aspect :simple
-                        :pred :sleep
-                        :tense :present}}}
-        all-of-the-specs [semantic-spec]]
-    (repeatedly #(println
-                  (morph-ps (time
-                             (first
-                              ((:default-fn model)
-                               (generate
-                                (nth all-of-the-specs
-                                     (rand-int (count all-of-the-specs)))
-                                model)))))))))
+  (let [spec
+        {:rule "noun-phrase"
+         :synsem {:cat :noun
+                  :mod {:first {:pred :red}}
+                  :sem {:pred :top
+                        :number :sing
+                        :spec {:def :def
+                               :pred :definite}}}}]
+    (generate spec model)))
 
 (defn nextcamp []
   (let [spec
         {:rule "noun-phrase"
          :synsem {:cat :noun
-                  :mod {:first :top}
+                  :mod {:first {:pred :top}}
                   :sem {:pred :top
-                        :number :sing
-                        :spec {:def :def
-                               :pred :definite}}}}]
+                        :number :sing}}}]
     (if false (println (morph (generate spec model)))
         (generate spec model))))
 
