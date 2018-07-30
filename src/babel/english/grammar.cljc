@@ -299,7 +299,8 @@
    ;; adj |sem [2]|  n |sem [1]|
    ;; 
    (unify-check c11-comp-subcat-1
-                (let [adj-sem (atom :top)
+                (let [head-constraint (atom :top)
+                      adj-sem (atom {:prop head-constraint})
                       head-mod (atom :top)]
                   {:rule "nbar"
                    :synsem {:mod {:first adj-sem
@@ -308,6 +309,7 @@
                                    :sem adj-sem}}
                    :head {:phrasal false
                           :synsem {:cat :noun
+                                   :sem {:prop head-constraint}
                                    :mod head-mod}}}))
    ;; noun-phrase -> det nbar
    (unify-check c10
