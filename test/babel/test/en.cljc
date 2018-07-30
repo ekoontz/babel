@@ -209,9 +209,9 @@
 (deftest mod-is-empty-list
   (let [result (generate {:modified false
                           :synsem {:cat :noun
-                                   :sem {:pred :name
-                                         :mod []}}})]
-    (is (= (get-in result [:synsem :sem :mod]
+                                   :sem {:pred :name}
+                                   :mod []}})]
+    (is (= (get-in result [:synsem :mod]
                    ::undefined-should-not-return-this)
            []))))
 
@@ -219,12 +219,12 @@
   (is (= "her name is Luisa"
          (morph (generate {:modified false
                            :synsem {:cat :verb
-                                    :sem {:mod []
-                                          :iobj {:pred :luisa}
+                                    :sem {:iobj {:pred :luisa}
                                           :pred :be-called
                                           :subj {:pred :lei}
                                           :tense :present}
-                                    :subcat []}})))))
+                                    :subcat []}
+                           :comp {:synsem {:mod []}}})))))
 
 (deftest jean-s
   (is (not (empty? (parse "Jean's")))))
@@ -243,10 +243,10 @@
                             :subcat []
                             :cat :noun
                             :sem {:number :sing
-                                  :mod []
                                   :spec {:pred :of
                                          :of {:pred :Juana}}
-                                  :pred :dog}}})]
+                                  :pred :dog}}
+                   :head {:synsem {:mod []}}})]
     (is (not (nil? result)))
     (is (= "Juana's dog" (morph result)))))
 
@@ -254,12 +254,12 @@
   (let [result
         (generate {:synsem {:cat :noun
                             :pronoun false
-                            :mod {:first {:pred :rosso}}
                             :sem {:number :sing
                                   :spec {:pred :of
                                          :of {:pred :Juana}}
                                   :pred :dog}
-                            :subcat []}})]
+                            :subcat []}
+                   :head {:synsem {:mod {:first {:pred :red}}}}})]
     (is (not (nil? result)))
     (is (= "Juana's red dog" (morph result)))))
 
@@ -270,10 +270,9 @@
                             (generate 
                              {:comp {:synsem {:pronoun true}}
                               :modified false
-                              :synsem {:sem {:pred :wash
-                                             :mod nil
+                              :synsem {:sem {:pred :wash-oneself
                                              :reflexive true}}})]
-                        {:f (english/morph generated model :from-language "it")
+                        {:f (english/morph generated :model model :from-language "it")
                          :sem (get-in generated [:synsem :sem :mod])}))
          (take 5))]
     (= (count result) 5)))
@@ -284,10 +283,10 @@
                                  :reflexive false
                                  :sem {:pred :in-front-of
                                        :obj {:pred :table
-                                             :mod []
                                              :number :sing
                                              :spec {:def :def
-                                                    :pred :definite}}}}})]
+                                                    :pred :definite}}}}
+                        :comp {:synsem {:mod []}}})]
     (is (= (morph expr)
            "in front of the table"))))
 
@@ -334,18 +333,18 @@
   (let [expr (generate {:modified false
                         :synsem {:cat :verb
                                  :sem {:obj {:pred :table
-                                             :mod []
                                              :number :sing
                                              :spec {:def :def
                                                     :pred :definite}}
                                        :pred :in-front-of
                                        :tense :present
                                        :subj {:pred :chair
-                                              :mod []
                                               :number :sing
                                               :spec {:def :def
                                                      :pred :definite}}}
-                                 :subcat []}})]
+                                 :subcat []}
+                        :comp {:synsem {:mod []}}
+                        :head {:comp {:comp {:synsem {:mod []}}}}})]
     (log/info (str "furniture-sentence: " 
                    (display-expression expr)))
 
@@ -363,7 +362,8 @@
                                               :number :sing
                                               :spec {:def :def
                                                      :pred :definite}}}
-                                 :subcat []}})]
+                                 :subcat []}
+                        :comp {:synsem {:mod []}}})]
     (log/info (str "reflexive furniture expression:" (display-expression expr)))
     (is (= (morph expr)
            "the chair is in front of itself"))))
@@ -382,16 +382,16 @@
 (deftest past-and-gender-agreement
   (= (morph (generate {:synsem {:sem {:pred :go
                                       :aspect :perfect
-                                   :tense :present
-                                   :subj {:gender :fem
-                                          :pred :loro}}}}))
+                                      :tense :present
+                                      :subj {:gender :fem
+                                             :pred :loro}}}}))
      "they (♀) went"))
 
 (deftest noun-number-agreement
   (= (morph (generate {:synsem {:agr {:number :plur}
-                             :cat :noun
-                             :sem {:pred :cat :spec {:def :def}
-                                   :mod []}}}))
+                                :cat :noun
+                                :sem {:pred :cat :spec {:def :def}
+                                      :mod []}}}))
      "the cats"))
 
 (deftest phrasal-verbs
