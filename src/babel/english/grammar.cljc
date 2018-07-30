@@ -292,7 +292,6 @@
    (unify-check c10
                 {:rule "determiner-phrase"
                  :synsem {:cat :det}})
-   
 
    ;;         nbar   |sem  [1] |
    ;;       /      \ |mod <[2]>|
@@ -302,7 +301,7 @@
    (unify-check c11-comp-subcat-1
                 (let [adj-sem (atom :top)
                       head-mod (atom :top)]
-                  {:rule "nbar1"
+                  {:rule "nbar"
                    :synsem {:mod {:first adj-sem
                                   :rest head-mod}}
                    :comp {:synsem {:cat :adjective
@@ -310,43 +309,21 @@
                    :head {:phrasal false
                           :synsem {:cat :noun
                                    :mod head-mod}}}))
-   ;; np1 -> det nbar
+   ;; noun-phrase -> det nbar
    (unify-check c10
                 comp-specs-head
                 (let [number-agreement (atom :top)
-                      propernoun (atom :top)
                       mod (atom :top)]
-                  {:rule "noun-phrase1"
-                   :aliases (list "np1")
+                  {:rule "noun-phrase"
+                   :aliases (list "np")
                    :synsem {:agr {:number number-agreement}
                             :reflexive false
                             :cat :noun
                             :mod mod
-                            :propernoun propernoun
                             :sem {:number number-agreement}}
-                   :head {:phrasal true
-                          :synsem {:mod mod
-                                   :propernoun propernoun}}}))
+                   :head {:phrasal :top
+                          :synsem {:mod mod}}}))
 
-   ;; noun-phrase2 -> det noun
-   (unify-check c10
-                comp-specs-head
-                (let [number-agreement (atom :top)
-                      propernoun (atom :top)
-                      def (atom :top)]
-                  {:rule "noun-phrase2"
-                   :aliases (list "np2")
-                   :synsem {:agr {:number number-agreement}
-                            :def def
-                            :reflexive false
-                            :cat :noun
-                            :mod []
-                            :propernoun propernoun
-                            :sem {:number number-agreement}}
-                   :head {:phrasal false
-                          :synsem {:def def
-                                   :propernoun propernoun}}}))
-   
    (let [sem (atom :top)
          agr (atom :top)
          reflexive (atom :top)]

@@ -41,8 +41,29 @@
                                 model)))))))))
 
 (defn nextcamp []
-  (let [spec {:rule "noun-phrase3" :synsem {:cat :noun :sem {:spec {:pred :definite}} :subcat []}}]
-      (println (morph (generate spec model)))))
+  (let [spec
+        {:rule "noun-phrase"
+         :synsem {:cat :noun
+                  :mod {:first :top}
+                  :sem {:pred :top
+                        :number :sing
+                        :spec {:def :def
+                               :pred :definite}}}}]
+    (if false (println (morph (generate spec model)))
+        (generate spec model))))
+
+;; (-> model :lexicon (get "dog") first pprint)
+
+(def nbar (-> model :grammar-map :nbar))
+(def nbar-red-dog (-> nbar
+                      (u/assoc-in [:comp] (-> model :lexicon (get "red") first))
+                      (u/assoc-in [:head] (-> model :lexicon (get "dog") first))))
+                   
+
+(def noun-phrase1 (-> model :grammar-map :noun-phrase1))
+(def the-red-dog (-> noun-phrase1
+                     (u/assoc-in [:comp] (-> model :lexicon (get "the") first))
+                     (u/assoc-in [:head] nbar-red-dog)))
 
 (defn refresh []
   (babel.test.test/init-db)
