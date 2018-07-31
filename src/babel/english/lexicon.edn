@@ -462,8 +462,8 @@
  "black"
  {:synsem {:cat :adjective
            :sem {:pred :black
-                 :subj {:prop {:physical-object true
-                               :human false}}}}}
+                 :prop {:physical-object true
+                        :human false}}}}
 
  "boil" {:synsem {:cat :verb
                   :sem {:pred :boil}}}
