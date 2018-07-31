@@ -1032,7 +1032,17 @@
             :synsem {:cat :verb
                      :sem {:pred :give-back-return-ren}
                      :subcat {:3 {:cat :prep
-                                  :sem {:pred :back}}}}}])
+                                  :sem {:pred :back}}}}}
+
+
+           ;; "give X to Y"
+           {:unify [common]
+            :synsem {:cat :verb
+                     :sem {:pred :give-x-to-y}
+                     :subcat {:2 {:cat :prep}
+                              :3 {:cat :noun}}}}
+
+           ])
  "go"
  {:synsem {:cat :verb
            :sem {:activity true
