@@ -1039,9 +1039,11 @@
            {:unify [common]
             :synsem {:cat :verb
                      :sem {:pred :give-x-to-y}
-                     :subcat {:2 {:cat :prep}
-                              :3 {:cat :noun}}}}
-
+                     :subcat {:2 {:cat :prep
+                                  :sem {:pred :to}
+                                  :subcat []}
+                              :3 {:cat :noun
+                                  :subcat []}}}}
            ])
  "go"
  {:synsem {:cat :verb
