@@ -362,6 +362,7 @@
                  :synsem {:cat :verb
                           :slash false}})
    
+   ;; "sees a book" :subcats for subject only.
    (let [obj-mod (atom :top)]
      (unify-check h21
                   root-is-head
@@ -372,6 +373,19 @@
                             :slash false
                             :cat :verb}}))
 
+   ;; "gives a book" [to X] :subcats for both subject and indirect object.
+   (let [obj-mod (atom :top)]
+     (unify-check h32
+                  root-is-head
+                  {:rule "ditransitive-vp-nonphrasal-head"
+                   :comp {:synsem {:mod obj-mod
+                                   :cat :top}}
+                   :synsem {:aux false
+                            :sem {:obj {:mod obj-mod}}
+                            :slash false
+                            :cat :verb}}))
+
+   
    (let [obj-mod (atom :top)]
      (unify-check h21
                   root-is-head-root
@@ -384,21 +398,11 @@
                             :slash false
                             :cat :verb}}))
 
-
-
-   ;; TODO: add rule:
-   ;; "vp -> transitive-vp-phrasal-head pp".
-   
-   ;; "vp -> transitive-vp-nonphrasal-head pp"
-   ;; TODO: enforce the facts that:
-   ;; 1. {:head {:phrasal true}} => root-is-head-root
-   ;; 2. {:head {:phrasal false}} => root-is-head
-
    ;; "vp -> transitive-vp-nonphrasal-head pp"
    (let [iobj-mod (atom :top)]
      (unify-check h32
                   root-is-head
-                  {:rule "vp32"
+                  {:rule "vp-phrasal-verb"
                    :head {:phrasal false
                           :phrasal-verb true}
                    :comp {:synsem {:mod iobj-mod}}
@@ -407,6 +411,19 @@
                             :sem {:iobj iobj-mod}
                             :slash false}}))
 
+   ;;   "vp -> transitive-vp-phrasal-head pp"
+   (let [iobj-mod (atom :top)]
+     (unify-check h32
+                  root-is-head-root
+                  {:rule "vp-to-vp-pp"
+                   :head {:phrasal true
+                          :phrasal-verb false}
+                   :comp {:synsem {:mod iobj-mod}}
+                   :synsem {:aux false
+                            :cat :verb
+                            :sem {:iobj iobj-mod}
+                            :slash false}}))
+   
    (unify-check h10
                 {:head {:phrasal false
                         :synsem {:cat :sent-modifier}}
