@@ -362,19 +362,27 @@
                  :synsem {:cat :verb
                           :slash false}})
    
-   (unify-check h21
-                root-is-head
-                {:rule "transitive-vp-nonphrasal-head"
-                 :synsem {:aux false
-                          :slash false
-                          :cat :verb}})
-   (unify-check h21
-                root-is-head-root
-                {:rule "transitive-vp-phrasal-head"
-                 :head {:phrasal true}
-                 :synsem {:aux false
-                          :slash false
-                          :cat :verb}})
+   (let [obj-mod (atom :top)]
+     (unify-check h21
+                  root-is-head
+                  {:rule "transitive-vp-nonphrasal-head"
+                   :comp {:synsem {:mod obj-mod}}
+                   :synsem {:aux false
+                            :sem {:obj {:mod obj-mod}}
+                            :slash false
+                            :cat :verb}}))
+
+   (let [obj-mod (atom :top)]
+     (unify-check h21
+                  root-is-head-root
+                  {:rule "transitive-vp-phrasal-head"
+                   :comp {:synsem {:mod obj-mod}}
+                   :head {:phrasal true
+                          :synsem {:mod obj-mod}}
+                   :synsem {:aux false
+                            :sem {:obj {:mod obj-mod}}
+                            :slash false
+                            :cat :verb}}))
    
    ;; TODO: enforce the facts that:
    ;; 1. {:head {:phrasal true}} => root-is-head-root
