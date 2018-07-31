@@ -383,18 +383,30 @@
                             :sem {:obj {:mod obj-mod}}
                             :slash false
                             :cat :verb}}))
+
+
+
+   ;; TODO: add rule:
+   ;; "vp -> transitive-vp-phrasal-head pp".
    
+   ;; "vp -> transitive-vp-nonphrasal-head pp"
    ;; TODO: enforce the facts that:
    ;; 1. {:head {:phrasal true}} => root-is-head-root
    ;; 2. {:head {:phrasal false}} => root-is-head
-   (unify-check h32
-                root-is-head
-                {:rule "vp32"
-                 :head {:phrasal false
-                        :phrasal-verb true}
-                 :synsem {:aux false
-                          :cat :verb
-                          :slash false}})
+
+   ;; "vp -> transitive-vp-nonphrasal-head pp"
+   (let [iobj-mod (atom :top)]
+     (unify-check h32
+                  root-is-head
+                  {:rule "vp32"
+                   :head {:phrasal false
+                          :phrasal-verb true}
+                   :comp {:synsem {:mod iobj-mod}}
+                   :synsem {:aux false
+                            :cat :verb
+                            :sem {:iobj iobj-mod}
+                            :slash false}}))
+
    (unify-check h10
                 {:head {:phrasal false
                         :synsem {:cat :sent-modifier}}
