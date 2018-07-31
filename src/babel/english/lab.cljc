@@ -30,7 +30,7 @@
                           model)
                          :show-notes false)))))
 (defn refresh []
-  (let [refresh-lexicon false]
+  (let [refresh-lexicon true]
     (babel.test.test/init-db)
     (if refresh-lexicon (babel.lexiconfn/write-lexicon "en" (babel.english.grammar/compile-lexicon)))
     (babel.directory/refresh-models)
