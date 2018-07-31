@@ -1,10 +1,10 @@
 {"Antonella"
  {:synsem {:sem {:pred :antonella
                  :prop {:human true}}
-            :propernoun true
-            :agr {:number :sing
-                  :person :3rd
-                  :gender :fem}}}
+           :propernoun true
+           :agr {:number :sing
+                 :person :3rd
+                 :gender :fem}}}
  "Antonia"
  {:synsem {:sem {:pred :antonia
                  :prop {:human true}}
@@ -208,26 +208,26 @@
                ;; Needed because {:pred :top} to prevent matching of {:obj :unspec}
                ;; yielding incorrect translations.
                agr (atom {:top :top})]
-          {:unify [common]
-           :intransitivize false
-           :sense 4
-           :synsem {:cat :verb
-                    :sem {:subj obj ;; reflexive: subj=obj
-                          :obj obj
-                          :reflexive true
-                          :pred pred
-                          ;; TODO: this should be a default
-                          ;; lexical rule: should not need to
-                          ;; do it per-verb.
-                          :shared-with-obj true}
-                    :subcat {:1 {:cat :noun
-                                 :agr agr}
-                             :2 {:cat :prep
-                                 :reflexive true
-                                 :agr agr
-                                 :sem {:obj obj
-                                       :pred pred}}
-                             :3 []}}})])
+           {:unify [common]
+            :intransitivize false
+            :sense 4
+            :synsem {:cat :verb
+                     :sem {:subj obj ;; reflexive: subj=obj
+                           :obj obj
+                           :reflexive true
+                           :pred pred
+                           ;; TODO: this should be a default
+                           ;; lexical rule: should not need to
+                           ;; do it per-verb.
+                           :shared-with-obj true}
+                     :subcat {:1 {:cat :noun
+                                  :agr agr}
+                              :2 {:cat :prep
+                                  :reflexive true
+                                  :agr agr
+                                  :sem {:obj obj
+                                        :pred pred}}
+                              :3 []}}})])
 
  "be able" (let [common {:english {:imperfect {:1sing "was able"
                                                :2sing "were able"
@@ -257,11 +257,11 @@
                :modal-with :infinitive
                :synsem {:cat :verb
                         :sem {:pred :be-able-to}}}
-             {:unify [common]
-              :synsem {:cat :verb
-                       :sem {:pred :be-able-to}
-                       :subcat {:1 {:cat :top}
-                                :2 []}}}])
+              {:unify [common]
+               :synsem {:cat :verb
+                        :sem {:pred :be-able-to}
+                        :subcat {:1 {:cat :top}
+                                 :2 []}}}])
 
  "be born" {:synsem {:cat :verb
                      :sem {:pred :be-born}
@@ -288,30 +288,30 @@
                       :past-participle "been born"}}
 
 
-  "be called" {:synsem {:cat :verb
-                        :sem {:pred :be-called
-                              :iobj :unspec}
-                        :subcat {:2 []}}
-               :english {:future "be called"
-                         :participle "being called"
-                         :conditional "be called"
-                         :imperfect {:1sing "was being called"
-                                     :2sing "were being called"
+ "be called" {:synsem {:cat :verb
+                       :sem {:pred :be-called
+                             :iobj :unspec}
+                       :subcat {:2 []}}
+              :english {:future "be called"
+                        :participle "being called"
+                        :conditional "be called"
+                        :imperfect {:1sing "was being called"
+                                    :2sing "were being called"
                                     :3sing "was being called"
-                                     :1plur "were being called"
-                                     :2plur "were being called"
-                                     :3plur "were being called"}
-                         :past {:english "was called"
-                                :2sing "were called"
-                                :2plur "were called"
-                                :3plur "were called"}
-                         :present {:1sing "am called"
-                                   :2sing "are called"
-                                   :3sing "is called"
-                                   :1plur "are called"
-                                   :2plur "are called"
-                                   :3plur "are called"}
-                         :past-participle "been called"}}
+                                    :1plur "were being called"
+                                    :2plur "were being called"
+                                    :3plur "were being called"}
+                        :past {:english "was called"
+                               :2sing "were called"
+                               :2plur "were called"
+                               :3plur "were called"}
+                        :present {:1sing "am called"
+                                  :2sing "are called"
+                                  :3sing "is called"
+                                  :1plur "are called"
+                                  :2plur "are called"
+                                  :3plur "are called"}
+                        :past-participle "been called"}}
 
  "be missed" {:synsem {:cat :verb
                        :sem {:pred :mancare}
@@ -361,55 +361,55 @@
                :synsem {:cat :verb
                         :sem {:pred :be-missing}}}
 
-"be necessary"
-   (let [common {:synsem {:cat :verb
-                          :subcat {:2 []}}
-                 :english {:future "be necessary"
-                           :participle "being necessary"
-                           :conditional "be necessary"
-                           :imperfect {:1sing "was being necessary"
-                                       :2sing "were being necessary"
-                                       :3sing "was being necessary"
-                                       :1plur "were being necessary"
-                                       :2plur "were being necessary"
-                                       :3plur "were being necessary"}
-                           :past {:1sing "was necessary"
-                                  :2sing "were necessary"
-                                  :2plur "were necessary"
-                                  :3plur "were necessary"}
-                           :present {:1sing "am necessary"
-                                    :2sing "are necessary"
-                                    :3sing "is necessary"
-                                    :1plur "are necessary"
-                                    :2plur "are necessary"
-                                    :3plur "are necessary"}}}]
-        [{:unify [common]
-          :synsem {:sem {:pred :be-necessary-s...}}}
-         {:unify [common]
-          :synsem {:sem {:pred :be-necessary-b...}}}])
+ "be necessary"
+ (let [common {:synsem {:cat :verb
+                        :subcat {:2 []}}
+               :english {:future "be necessary"
+                         :participle "being necessary"
+                         :conditional "be necessary"
+                         :imperfect {:1sing "was being necessary"
+                                     :2sing "were being necessary"
+                                     :3sing "was being necessary"
+                                     :1plur "were being necessary"
+                                     :2plur "were being necessary"
+                                     :3plur "were being necessary"}
+                         :past {:1sing "was necessary"
+                                :2sing "were necessary"
+                                :2plur "were necessary"
+                                :3plur "were necessary"}
+                         :present {:1sing "am necessary"
+                                   :2sing "are necessary"
+                                   :3sing "is necessary"
+                                   :1plur "are necessary"
+                                   :2plur "are necessary"
+                                   :3plur "are necessary"}}}]
+   [{:unify [common]
+     :synsem {:sem {:pred :be-necessary-s...}}}
+    {:unify [common]
+     :synsem {:sem {:pred :be-necessary-b...}}}])
 
-"be pleasant" {:synsem {:cat :verb
-                      :sem {:pred :be-pleasant}
-                      :subcat {:2 []}}
-             :english {:future "be pleasant"
-                       :participle "being pleasant"
-                       :conditional "be pleasant"
-                       :imperfect {:1sing "was being pleasant"
-                                   :2sing "were being pleasant"
-                                   :3sing "was being pleasant"
-                                   :1plur "were being pleasant"
-                                   :2plur "were being pleasant"
-                                   :3plur "were being pleasant"}
-                       :past {:english "was pleasant"
-                              :2sing "were pleasant"
-                              :2plur "were pleasant"
-                              :3plur "were pleasant"}
-                       :present {:1sing "am pleasant"
-                                 :2sing "are pleasant"
-                                 :3sing "is pleasant"
-                                 :1plur "are pleasant"
-                                 :2plur "are pleasant"
-                                 :3plur "are pleasant"}}}
+ "be pleasant" {:synsem {:cat :verb
+                         :sem {:pred :be-pleasant}
+                         :subcat {:2 []}}
+                :english {:future "be pleasant"
+                          :participle "being pleasant"
+                          :conditional "be pleasant"
+                          :imperfect {:1sing "was being pleasant"
+                                      :2sing "were being pleasant"
+                                      :3sing "was being pleasant"
+                                      :1plur "were being pleasant"
+                                      :2plur "were being pleasant"
+                                      :3plur "were being pleasant"}
+                          :past {:english "was pleasant"
+                                 :2sing "were pleasant"
+                                 :2plur "were pleasant"
+                                 :3plur "were pleasant"}
+                          :present {:1sing "am pleasant"
+                                    :2sing "are pleasant"
+                                    :3sing "is pleasant"
+                                    :1plur "are pleasant"
+                                    :2plur "are pleasant"
+                                    :3plur "are pleasant"}}}
 
  "beach" {:synsem {:cat :noun
                    :sem {:place true
@@ -494,15 +494,15 @@
                         :def :def}}}}
 
  "bring" (let [common {:english {:past "brought"}}]
-                    [{:unify [common]
-                      :synsem {:cat :verb
-                               :sem {:pred :bring}}}
-                     {:unify [common]
-                      :synsem {:cat :verb
-                               :sem {:pred :bring-l}}}
-                     {:unify [common]
-                      :synsem {:cat :verb
-                               :sem {:pred :bring-t}}}])
+           [{:unify [common]
+             :synsem {:cat :verb
+                      :sem {:pred :bring}}}
+            {:unify [common]
+             :synsem {:cat :verb
+                      :sem {:pred :bring-l}}}
+            {:unify [common]
+             :synsem {:cat :verb
+                      :sem {:pred :bring-t}}}])
 
  "burn" {:synsem {:cat :verb
                   :sem {:pred :burn}}
@@ -533,10 +533,10 @@
   :synsem {:cat :verb
            :sem {:pred :be-able-to}}}
 
-"cancel" {:english {:past "cancelled"
-                 :participle "cancelling"}
-       :synsem {:cat :verb
-                :sem {:pred :cancel}}}
+ "cancel" {:english {:past "cancelled"
+                     :participle "cancelling"}
+           :synsem {:cat :verb
+                    :sem {:pred :cancel}}}
 
 
  "car" {:synsem {:cat :noun
@@ -602,13 +602,13 @@
  "coffee" {:synsem {:cat :noun
                     :sem {:pred :coffee}}}
 
-"comb" [;; 1. reflexive sense
-        {:synsem {:cat :verb
-                  :sem {:pred :comb-oneself
-                        :reflexive true}}}
-        ; ;2. non-reflexive sense
-        {:synsem {:cat :verb
-                  :sem {:pred :comb}}}]
+ "comb" [;; 1. reflexive sense
+         {:synsem {:cat :verb
+                   :sem {:pred :comb-oneself
+                         :reflexive true}}}
+                                        ; ;2. non-reflexive sense
+         {:synsem {:cat :verb
+                   :sem {:pred :comb}}}]
 
  "come" {:synsem {:cat :verb
                   :sem {:pred :come}
@@ -698,9 +698,9 @@
 
  "die" {:english {:past {:english "died"
                          :note "past tense"}
-                 :participle "dying"}
-         :synsem {:cat :verb
-                  :sem {:pred :die}}}
+                  :participle "dying"}
+        :synsem {:cat :verb
+                 :sem {:pred :die}}}
 
  "dine" {:synsem {:cat :verb
                   :sem {:pred :cenare}
@@ -806,12 +806,12 @@
                     :sem {:pred :exist
                           :subj {:null false}}
                     :subcat {:2 []}}}]
-          
+ 
  "exit" {:synsem {:cat :verb
                   :sem {:pred :exit}}}
 
  "expel" {:synsem {:cat :verb
-                     :sem {:pred :expel}}}
+                   :sem {:pred :expel}}}
 
  "explain" {:synsem {:cat :verb
                      :sem {:pred :explain}}}
@@ -1379,12 +1379,12 @@
  "interrupt" {:synsem {:cat :verb
                        :sem {:pred :interrupt}}}
 
-"introduce" [{:synsem {:cat :verb
-                       :sem {:pred :introduce}}}
+ "introduce" [{:synsem {:cat :verb
+                        :sem {:pred :introduce}}}
 
-             {:english {:note "p-"}
-              :synsem  {:cat :verb
-                        :sem {:pred :introduce-p}}}]
+              {:english {:note "p-"}
+               :synsem  {:cat :verb
+                         :sem {:pred :introduce-p}}}]
 
  "it"
  [{:synsem {:cat :noun
@@ -1542,11 +1542,11 @@
 
  "Luigi"
  {:synsem {:sem {:pred :luigi
-                  :human true}
+                 :human true}
            :propernoun true
            :agr {:number :sing
                  :gender :masc}}}
-"Luisa"
+ "Luisa"
  {:synsem {:sem {:pred :luisa
                  :human true}
            :agr {:number :sing
@@ -1726,8 +1726,8 @@
                  :sem {:pred :off}
                  :subcat []}}
 
-                 "open" {:synsem {:cat :verb
-                                      :sem {:pred :open}}}
+ "open" {:synsem {:cat :verb
+                  :sem {:pred :open}}}
 
  "old" {:synsem {:cat :adjective
                  :sem {:pred :old
@@ -1776,7 +1776,7 @@
                           :subcat {:2 []}}}
 
  "pass" {:synsem {:cat :verb
-                     :sem {:pred :pass}}}
+                  :sem {:pred :pass}}}
 
  "party" [{:synsem {:cat :noun
                     :sem {:pred :party
@@ -1892,10 +1892,10 @@
                       :obj subject-semantics}
                 :subcat {:1 {:agr subject-agr
                              :sem subject-semantics}
-                          :2 {:agr subject-agr
-                              :pronoun true
-                              :reflexive true
-                              :sem subject-semantics}}}})
+                         :2 {:agr subject-agr
+                             :pronoun true
+                             :reflexive true
+                             :sem subject-semantics}}}})
     {:unify [common]
      :synsem {:sem {:pred :put
                     :subcat {:2 []}}}}])
@@ -1983,10 +1983,10 @@
 
  "return" [{:synsem {:cat :verb
                      :sem {:pred :return-r}}
-                     :english {:note "r-"}}
+            :english {:note "r-"}}
            {:synsem {:cat :verb
                      :sem {:pred :return-t}}
-                     :english {:note "t-"}}
+            :english {:note "t-"}}
 
            ;; TODO: add obligitory direct object for this sense:
            {:synsem {:cat :verb
@@ -1996,8 +1996,8 @@
            {:synsem {:cat :verb
                      :sem {:pred :give-back-return-ren}}}]
 
-  "ruin" {:synsem {:cat :verb
-                      :sem {:pred :ruin}}}
+ "ruin" {:synsem {:cat :verb
+                  :sem {:pred :ruin}}}
 
 
  "run" {:english {:past "ran"
@@ -2057,13 +2057,13 @@
                                :participle "seeing"}}]
          [{:unify [common]
            :synsem {:cat :verb
-                   :sem {:pred :see
-                         :reflexive false}
-                   :subcat {:1 {:cat :noun
-                                :sem {:animate true}}
-                            :2 {:cat :noun
-                                :reflexive false
-                                :sem {:physical-object true}}}}}
+                    :sem {:pred :see
+                          :reflexive false}
+                    :subcat {:1 {:cat :noun
+                                 :sem {:animate true}}
+                             :2 {:cat :noun
+                                 :reflexive false
+                                 :sem {:physical-object true}}}}}
           (let [obj (atom {:animate true
                            :physical-object true})
                 agr (atom :top)]
@@ -2081,7 +2081,7 @@
                                    :reflexive true}}}})])
 
  "seem"  {:synsem {:cat :verb
-                      :sem {:pred :seem}}}
+                   :sem {:pred :seem}}}
 
  "sell" {:synsem {:cat :verb
                   :sem {:pred :sell}}
@@ -2112,13 +2112,13 @@
  "share" {:synsem {:cat :verb
                    :sem {:pred :share}}}
 
-"shave" [;; 1. reflexive sense
-        {:synsem {:cat :verb
-                  :sem {:pred :shave
-                        :reflexive true}}}
-        ; ;2. non-reflexive sense
-        {:synsem {:cat :verg
-                  :sem {:pred :shave}}}]
+ "shave" [;; 1. reflexive sense
+          {:synsem {:cat :verb
+                    :sem {:pred :shave
+                          :reflexive true}}}
+                                        ; ;2. non-reflexive sense
+          {:synsem {:cat :verg
+                    :sem {:pred :shave}}}]
  "she"
  {:synsem {:cat :noun
            :pronoun true
@@ -2142,15 +2142,15 @@
             :sem {:pred :short
                   :subj {:event true}}}}]
 
-  "show" [{:synsem {:cat :verb
-                  :sem {:pred :show}}
-         :english {:past-participle "shown"}}
-        {:synsem {:cat :verb
-                  :sem {:pred :show-m}}
-         :english {:past-participle "shown"
-                   :note "m"}}
-        {:synsem {:cat :verb
-                  :sem {:pred :show-e}}
+ "show" [{:synsem {:cat :verb
+                   :sem {:pred :show}}
+          :english {:past-participle "shown"}}
+         {:synsem {:cat :verb
+                   :sem {:pred :show-m}}
+          :english {:past-participle "shown"
+                    :note "m"}}
+         {:synsem {:cat :verb
+                   :sem {:pred :show-e}}
           :english {:past-participle "shown"
                     :note "e"}}]
 
@@ -2283,7 +2283,7 @@
                           :subj {:human true}}}}
 
  "succeed"  {:synsem {:cat :verb
-                    :sem {:pred :succeed}}}
+                      :sem {:pred :succeed}}}
 
  "supply" {:synsem {:cat :verb
                     :sem {:pred :supply}}}
@@ -2306,8 +2306,8 @@
           [{:unify [common]
             :synsem {:sem {:pred :grab}}
             :english {:note "grab"}}
-          {:unify [common]
-           :synsem {:sem {:pred :take}}}])
+           {:unify [common]
+            :synsem {:sem {:pred :take}}}])
 
  "take advantage of" {:english {:past "took advantage of"
                                 :participle "taking advantage of"
@@ -2526,14 +2526,14 @@
                 [{:unify [common]
                   :synsem {:cat :verb
                            :sem {:pred :understand}}}
-                {:unify [common]
-                 :synsem {:cat :verb
-                          :sem {:pred :understand-deeply}}
-                 :english {:note "deeply"}}
-                {:unify [common]
-                 :synsem {:cat :verb
-                          :sem {:pred :understand-simply}}
-                 :english {:note "simply"}}])
+                 {:unify [common]
+                  :synsem {:cat :verb
+                           :sem {:pred :understand-deeply}}
+                  :english {:note "deeply"}}
+                 {:unify [common]
+                  :synsem {:cat :verb
+                           :sem {:pred :understand-simply}}
+                  :english {:note "simply"}}])
 
  "up" {:synsem {:cat :prep
                 :sem {:pred :up}
@@ -2589,7 +2589,7 @@
                              :obj subject-semantics}
                        :subcat {:1 {:sem subject-semantics}
                                 :2 {:pronoun true
-                                  :reflexive true
+                                    :reflexive true
                                     :sem subject-semantics}}}})])
  "warn" {:synsem {:cat :verb
                   :sem {:pred :warn}}}
@@ -2617,7 +2617,7 @@
            :agr {:person :1st
                  :number :plur}
            :sem {:human true
-                  :pred :noi}
+                 :pred :noi}
            :subcat []}}
 
  "wear" (let [common {:english {:past "wore"
