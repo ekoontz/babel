@@ -22,7 +22,7 @@
 (defn basecamp []
   (let [spec
         {:synsem {:cat :verb
-                  :sem :top
+                  :sem {:pred :give-x-to-y}
                   :subcat []}}]
     (repeatedly #(println
                   (morph (generate
