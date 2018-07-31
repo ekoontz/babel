@@ -1043,6 +1043,7 @@
                                   :sem {:pred :to}
                                   :subcat []}
                               :3 {:cat :noun
+                                  :case :acc
                                   :subcat []}}}}
            ])
  "go"
