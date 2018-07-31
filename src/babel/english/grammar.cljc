@@ -286,8 +286,8 @@
                                 :2 []}}}
        :head {:phrasal false
               :synsem {:cat cat
-                       :sem semantics}}
-       }))
+                       :sem semantics}}}))
+   
    
    (unify-check c10
                 {:rule "determiner-phrase"
@@ -458,8 +458,8 @@
       {:synsem {:infl infl
                 :participle participle}
        :head {:synsem {:infl infl
-                       :participle participle}}})
-    )])
+                       :participle participle}}}))])
+    
 
 (defn aux-is-head-feature [phrase]
   (cond (= :verb (get-in phrase [:synsem :cat]))
