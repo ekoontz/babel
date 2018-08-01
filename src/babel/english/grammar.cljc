@@ -322,8 +322,8 @@
                    :synsem {:agr {:number number-agreement}
                             :reflexive false
                             :cat :noun
-                            :mod mod
-                            :sem {:number number-agreement}}
+                            :sem {:mod mod
+                                  :number number-agreement}}
                    :head {:phrasal :top
                           :synsem {:mod mod}}}))
 
@@ -363,27 +363,19 @@
                           :slash false}})
    
    ;; "sees a book" :complement is semantic object
-   (let [obj-mod (atom :top)]
-     (unify-check h21
-                  root-is-head
-                  {:rule "transitive-vp-nonphrasal-head"
-                   :comp {:synsem {:mod obj-mod}}
-                   :synsem {:aux false
-                            :sem {:obj {:mod obj-mod}}
-                            :slash false
-                            :cat :verb}}))
+   (unify-check h21
+                root-is-head
+                {:rule "transitive-vp-nonphrasal-head"
+                 :synsem {:aux false
+                          :slash false
+                          :cat :verb}})
 
    ;; "gives a book" [to X] :complement is semantic object
-   (let [obj-mod (atom :top)
-         obj (atom {:mod obj-mod})]
-     (unify-check h32
-                  root-is-head
-                  {:rule "ditransitive-vp-nonphrasal-head"
-                   :comp {:synsem {:mod obj-mod
-                                   :sem obj}}
-                   :synsem {:sem {:obj obj}
-                            :slash false
-                            :cat :verb}}))
+   (unify-check h32
+                root-is-head
+                {:rule "ditransitive-vp-nonphrasal-head"
+                 :synsem {:slash false
+                          :cat :verb}})
    
    ;; "has seen a dog" : complement is semantic object.
    (let [obj-mod (atom :top)
