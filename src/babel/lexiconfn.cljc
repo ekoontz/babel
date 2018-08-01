@@ -182,7 +182,8 @@
         (unify
          lexical-entry
          (let [ref (atom :top)]
-           {:synsem {:subcat {:2 {:sem {:obj ref}}}
+           {:applied {:ditrans true}
+            :synsem {:subcat {:2 {:sem {:obj ref}}}
                      :sem {:iobj ref}}}))
         true
         lexical-entry))
