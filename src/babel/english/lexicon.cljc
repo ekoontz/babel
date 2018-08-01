@@ -214,7 +214,8 @@
    ;; semantic object of lexical verb is the same as the object of verb's prepositional phrase.
    (default
     (let [obj (atom :top)]
-      {:share-sem :obj
+      {:applied {:prep-obj-is-verb-obj true}
+       :share-sem :obj
        :synsem {:cat :verb
                 :sem {:obj obj}
                 :subcat {:2 {:cat :prep
@@ -222,6 +223,7 @@
    
    ;; add :sem :obj if necessary, so that intransitivize is triggered.
    (default {:modal-with false
+             :applied {:add-sem-obj-if-necess true}
              :synsem {:cat :verb
                       :subcat {:2 {:cat :noun}}
                       :sem {:obj {:pred :top}}}})
@@ -334,6 +336,7 @@
    (default
     (let [object (atom :top)]
       {:phrasal-verb true
+       :applied {:prep-rule-1 true}
        :synsem {:cat :verb
                 :sem {:obj object}
                 :subcat {:2 {:cat :prep}
@@ -344,6 +347,7 @@
    (default
     (let [object (atom :top)]
       {:phrasal-verb true
+       :applied {:prep-rule-2 true}
        :synsem {:cat :verb
                 :sem {:obj object}
                 :subcat {:2 {:cat :noun
