@@ -176,12 +176,13 @@
 ;; TODO: move this and other functions here to (if-then) statements.
 (defn ditransitive-verb-rule [lexical-entry]
   (cond (and (= (get-in lexical-entry [:synsem :cat]) :verb)
-             (not (nil? (get-in lexical-entry '(:synsem :sem :iobj))))
+             (not (nil? (get-in lexical-entry [:synsem :sem :iobj])))
+             (not (= [] (get-in lexical-entry [:synsem :subcat :2])))
              (not (= [] (get-in lexical-entry [:synsem :subcat :3]))))
         (unify
          lexical-entry
          (let [ref (atom :top)]
-           {:synsem {:subcat {:3 {:sem ref}}
+           {:synsem {:subcat {:2 {:sem {:obj ref}}}
                      :sem {:iobj ref}}}))
         true
         lexical-entry))

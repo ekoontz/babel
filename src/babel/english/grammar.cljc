@@ -362,7 +362,7 @@
                  :synsem {:cat :verb
                           :slash false}})
    
-   ;; "sees a book" :subcats for subject only.
+   ;; "sees a book" :complement is semantic object
    (let [obj-mod (atom :top)]
      (unify-check h21
                   root-is-head
@@ -373,28 +373,43 @@
                             :slash false
                             :cat :verb}}))
 
-   ;; "gives a book" [to X] :subcats for both subject and indirect object.
-   (let [obj-mod (atom :top)]
+   ;; "gives a book" [to X] :complement is semantic object
+   (let [obj-mod (atom :top)
+         obj (atom {:mod obj-mod})]
      (unify-check h32
                   root-is-head
                   {:rule "ditransitive-vp-nonphrasal-head"
                    :comp {:synsem {:mod obj-mod
-                                   :cat :top}}
-                   :synsem {:aux false
-                            :sem {:obj {:mod obj-mod}}
+                                   :sem obj}}
+                   :synsem {:sem {:obj obj}
                             :slash false
                             :cat :verb}}))
-
    
-   (let [obj-mod (atom :top)]
+   ;; "has seen a dog" : complement is semantic object.
+   (let [obj-mod (atom :top)
+         obj (atom {:mod obj-mod})]
      (unify-check h21
                   root-is-head-root
                   {:rule "transitive-vp-phrasal-head"
-                   :comp {:synsem {:mod obj-mod}}
-                   :head {:phrasal true
-                          :synsem {:mod obj-mod}}
+                   :comp {:synsem {:mod obj-mod
+                                   :sem obj}}
+                   :head {:phrasal true}
                    :synsem {:aux false
-                            :sem {:obj {:mod obj-mod}}
+                            :sem {:obj obj}
+                            :slash false
+                            :cat :verb}}))
+
+   ;; "gives [a book] to X" : complement is semantic indirect object.
+   (let [iobj-mod (atom :top)
+         iobj (atom {:mod iobj-mod})]
+     (unify-check h21
+                  root-is-head-root
+                  {:rule "ditransitive-vp-phrasal-head-iobj"
+                   :comp {:synsem {:mod iobj-mod
+                                   :sem iobj}}
+                   :head {:phrasal false}
+                   :synsem {:aux false
+                            :sem {:iobj iobj}
                             :slash false
                             :cat :verb}}))
 
@@ -413,7 +428,7 @@
 
    ;;   "vp -> transitive-vp-phrasal-head pp"
    (let [iobj-mod (atom :top)]
-     (unify-check h32
+     (unify-check h21
                   root-is-head-root
                   {:rule "vp-to-vp-pp"
                    :head {:phrasal true
