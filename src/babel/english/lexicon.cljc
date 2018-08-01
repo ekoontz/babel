@@ -328,7 +328,8 @@
        :synsem {:cat :verb
                 :sem {:obj object
                       :iobj nil}
-                :subcat {:2 {:sem object}}}}))
+                :subcat {:2 {:sem object}
+                         :3 []}}}))
    
    (default
     (let [object (atom :top)]
