@@ -326,7 +326,8 @@
    
    (default
     (let [object (atom :top)]
-      {:phrasal-verb false
+      {:applied {:iob-rule-1 true}
+       :phrasal-verb false
        :synsem {:cat :verb
                 :sem {:obj object
                       :iobj nil}
