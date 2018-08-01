@@ -324,6 +324,8 @@
       {:synsem {:cat :verb
                 :sem {:subj subject}}}))
    
+   ;; TODO: show an example of a verb for which
+   ;; this default rule is justified.
    (default
     (let [object (atom :top)]
       {:applied {:iob-rule-1 true}
@@ -334,6 +336,8 @@
                 :subcat {:2 {:sem object}
                          :3 []}}}))
    
+   ;; TODO: show an example of a verb for which
+   ;; this default rule is justified.
    (default
     (let [object (atom :top)]
       {:phrasal-verb true
@@ -658,6 +662,9 @@
 
 
 (defn phonize [a-map a-string]
+  ;; TODO: does :phrasal mean the same thing
+  ;; as :phrasal-verb? if so, remove :phrasal
+  ;; and consolidate on :phrasal-verb.
   (let [common {:phrasal false}]
     ;; TODO: remove support for either list-of-maps - too confusing. Instead, just require a list of maps.
     ;; TODO: compare with counterpart function: (italiano/phonize): there is an additional cond stanza in the latter
