@@ -283,6 +283,7 @@
                                  :reflexive false
                                  :sem {:pred :in-front-of
                                        :obj {:pred :table
+                                             :mod []
                                              :number :sing
                                              :spec {:def :def
                                                     :pred :definite}}}}
@@ -333,12 +334,14 @@
   (let [expr (generate {:modified false
                         :synsem {:cat :verb
                                  :sem {:obj {:pred :table
+                                             :mod []
                                              :number :sing
                                              :spec {:def :def
                                                     :pred :definite}}
                                        :pred :in-front-of
                                        :tense :present
                                        :subj {:pred :chair
+                                              :mod []
                                               :number :sing
                                               :spec {:def :def
                                                      :pred :definite}}}
