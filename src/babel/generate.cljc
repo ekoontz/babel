@@ -162,6 +162,12 @@
    possible."
   [trees model]
   (if (not (empty? trees))
+    ;; for each tree,
+    ;; find the next point of 
+    ;; 1) branching to a new 
+    ;; subtree 
+    ;; or 2) terminating with 
+    ;; a lexeme (leaf node)
     (let [tree (first trees)
           f (frontier tree)
           depth (count f)
