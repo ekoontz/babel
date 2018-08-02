@@ -19,12 +19,25 @@
                           spec
                           model)
                          :show-notes false)))))
+
 (defn basecamp []
+  (let [spec
+        {:synsem {:cat :noun
+                  :subcat []
+                  :sem {:pred :dog
+                        :mod {:first {:pred :yellow}}}}}]
+    (repeatedly #(println
+                  (morph (generate
+                          spec
+                          model)
+                         :show-notes false)))))
+
+(defn nextcamp []
   (let [spec
         {:synsem {:cat :verb
                   :sem {:pred :give-x-to-y
                         :obj {:pred :dog
-                              :mod {:1 {:pred :red}}}}
+                              :mod {:first {:pred :black}}}}
                   :subcat []}
          :head {:head {:comp {:phrasal true}}}}]
     (repeatedly #(println
