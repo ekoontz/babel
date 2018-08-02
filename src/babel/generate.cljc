@@ -155,8 +155,19 @@
          [(u/assoc-in tree f child)])
        (assoc-children tree (rest children) f model)))))
 
-(defn grow [trees model]
+(defn grow
+  "recursively generate trees given 
+   input trees and model. continue recursively
+   until no futher expansion is 
+   possible."
+  [trees model]
   (if (not (empty? trees))
+    ;; for each tree,
+    ;; find the next point of 
+    ;; 1) branching to a new 
+    ;; subtree 
+    ;; or 2) terminating with 
+    ;; a lexeme (leaf node)
     (let [tree (first trees)
           f (frontier tree)
           depth (count f)
