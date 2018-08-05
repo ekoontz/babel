@@ -344,6 +344,48 @@
                    :head {:synsem {:sem sem
                                    :subcat {:1 {:agr agr
                                                 :reflexive reflexive}}}}}))
+   (let [object-synsem (atom {:top :top})
+         subject-synsem (atom :top)]
+     (unify-check head-last
+                  head-principle
+                  {:comp {:synsem subject-synsem}
+                   :head {:synsem {:slash false
+                                   :subcat {:1 subject-synsem
+                                            :2 object-synsem
+                                            :3 []}}}
+                   :rule "s/obj"
+                   :synsem {:cat :verb
+                            :slash true
+                            :subcat {:1 object-synsem
+                                     :2 []}}}))
+   (unify-check
+    {:rule "nbar-s-obj"
+     :example "(the) [nbar dog [s-obj you see]]"}
+    head-first
+    head-principle
+    (let [mod-subj (atom :top)
+          mod-pred (atom :top)
+          mod-prop (atom :top)
+          head-mod (atom :top)
+          head-subcat (atom {:1 {:cat :det}
+                             :2 []})]
+      {:slash false
+       :synsem {:sem {:prop mod-prop}
+                :mod {:first {:subj mod-subj
+                              :obj :modified
+                              :pred mod-pred}
+                      :rest head-mod}
+                :subcat head-subcat}
+       :comp {:slash true
+              :synsem {:subcat {:1 {:cat :noun}
+                                :2 []}
+                       :sem {:subj mod-subj
+                             :obj {:prop mod-prop}
+                             :pred mod-pred}}}
+       :head {:synsem {:cat :noun
+                       :subcat head-subcat
+                       :mod head-mod}}}))
+
    (unify-check c10
                 unmodified
                 root-is-head
@@ -429,73 +471,7 @@
                    :synsem {:aux false
                             :cat :verb
                             :sem {:iobj iobj-mod}
-                            :slash false}}))
-   
-   (unify-check h10
-                {:head {:phrasal false
-                        :synsem {:cat :sent-modifier}}
-                 :rule "s-modifier"})
-   
-   ;;      noun-phrase3      ->  noun-phrase[1,2] slash-obj
-   ;; e.g. "the man you saw" ->  "the man"        "you saw"
-   (unify-check
-    {:rule "noun-phrase3"}
-    head-principle
-    head-first
-    (let [sem (atom {:spec {:pred :definite}})
-          subject-of-complement (atom :top)
-          comp-sem (atom {:subj subject-of-complement})
-          head-mod (atom :top)
-          head-def (atom :def)
-          head-synsem (atom {:subcat []
-                             :def head-def
-                             :mod head-mod
-                             :sem sem})]
-      {:phrasal true
-       :synsem {:cat :noun
-                :def head-def
-                :mod {:first comp-sem
-                      :rest head-mod}
-                :sem sem
-                :slash false
-                :subcat []}
-       :head {:rule "noun-phrase2"
-              :phrasal true
-              :synsem head-synsem}
-       :comp {:rule "slash-obj"
-              :phrasal true
-              :synsem {:sem comp-sem
-                       :slash true
-                       :subcat {:1 head-synsem
-                                :2 []}}
-              :head {:synsem {:subcat {:1 {:synsem {:sem subject-of-complement}}}}}}}))
-
-   (unify-check
-    {:rule "slash-obj"}
-    head-principle
-    head-last head-semantics
-    (let [first-arg (atom :top)
-          second-arg (atom {:reflexive false})]
-      {:phrasal true
-       :synsem {:slash true
-                :subcat {:1 second-arg
-                         :2 []}}
-       :comp {:synsem first-arg}
-       :head {:synsem {:subcat {:1 first-arg
-                                :2 second-arg}}}})
-    {:synsem {:aux false}
-     :head {:synsem {:aux false}}
-     :comp {:synsem {:subcat []
-                     :case :nom
-                     :cat :noun}}}
-
-    (let [infl (atom :top)
-          participle (atom false)]
-      {:synsem {:infl infl
-                :participle participle}
-       :head {:synsem {:infl infl
-                       :participle participle}}}))])
-    
+                            :slash false}}))])
 
 (defn aux-is-head-feature [phrase]
   (cond (= :verb (get-in phrase [:synsem :cat]))
