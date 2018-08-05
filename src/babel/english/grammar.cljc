@@ -367,11 +367,15 @@
           mod-pred (atom :top)
           mod-prop (atom :top)
           head-mod (atom :top)
+          mod-aspect (atom :top)
+          mod-tense (atom :top)
           head-subcat (atom {:1 {:cat :det}
                              :2 []})]
       {:slash false
        :synsem {:sem {:prop mod-prop}
                 :mod {:first {:subj mod-subj
+                              :tense mod-tense
+                              :aspect mod-aspect
                               :obj :modified
                               :pred mod-pred}
                       :rest head-mod}
@@ -380,8 +384,10 @@
               :synsem {:subcat {:1 {:cat :noun}
                                 :2 []}
                        :sem {:subj mod-subj
+                             :aspect mod-aspect
                              :obj {:prop mod-prop}
-                             :pred mod-pred}}}
+                             :pred mod-pred
+                             :tense mod-tense}}}
        :head {:synsem {:cat :noun
                        :subcat head-subcat
                        :mod head-mod}}}))
