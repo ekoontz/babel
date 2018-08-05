@@ -476,17 +476,17 @@
 (defn aux-is-head-feature [phrase]
   (cond (= :verb (get-in phrase [:synsem :cat]))
         (unify-check phrase
-                (let [ref (atom :top)]
-                  {:synsem {:aux ref}
-                   :head {:synsem {:aux ref}}}))
+                     (let [ref (atom :top)]
+                       {:synsem {:aux ref}
+                        :head {:synsem {:aux ref}}}))
         true phrase))
 
 (defn modal-is-head-feature [phrase]
   (cond (= :verb (get-in phrase [:synsem :cat]))
         (unify-check phrase
-                (let [ref (atom :top)]
-                  {:synsem {:modal ref}
-                   :head {:synsem {:modal ref}}}))
+                     (let [ref (atom :top)]
+                       {:synsem {:modal ref}
+                        :head {:synsem {:modal ref}}}))
         true phrase))
 
 ;; TODO: rewrite this and and above 2 functions into
