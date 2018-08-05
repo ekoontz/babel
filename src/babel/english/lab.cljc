@@ -2,11 +2,14 @@
   (:require
    [babel.directory :refer [models]] ;; this is needed even though there are no references to directory in here.
    [babel.generate :as g :refer [frontier generate get-lexemes]]
-   [babel.english :as english :refer [model morph morph-ps parse]]
+   [babel.english :as english :refer [model morph morph-ps]]
    #?(:cljs [babel.logjs :as log])
    #?(:clj [clojure.tools.logging :as log])
    #?(:clj [clojure.repl :refer [doc]])
    [dag_unify.core :as u :refer [pprint strip-refs unify]]))
+
+(defn parse [surface-string]
+  (english/parse surface-string model false))
 
 (defn downtown []
   (let [spec
