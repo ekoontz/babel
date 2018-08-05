@@ -22,21 +22,9 @@
 
 (defn basecamp []
   (let [spec
-        {:synsem {:cat :noun
-                  :subcat []
-                  :sem {:pred :dog
-                        :mod {:first {:pred :yellow}}}}}]
-    (repeatedly #(println
-                  (morph (generate
-                          spec
-                          model)
-                         :show-notes false)))))
-
-(defn nextcamp []
-  (let [spec
         {:synsem {:cat :verb
                   :sem {:pred :give-x-to-y
-                        :obj {:pred :dog
+                        :obj {:pred :cat
                               :mod {:first {:pred :black}}}}
                   :subcat []}
          :head {:head {:comp {:phrasal true}}}}]
@@ -45,8 +33,13 @@
                           spec
                           model)
                          :show-notes false)))))
+
+(defn nextcamp []
+  (let [parse (-> "the small dogs you see" (parse model false) first)]
+    (pprint (u/get-in parse [:synsem :sem]))))
+
 (defn refresh []
-  (let [refresh-lexicon true]
+  (let [refresh-lexicon false]
     (babel.test.test/init-db)
     (if refresh-lexicon (babel.lexiconfn/write-lexicon "en" (babel.english.grammar/compile-lexicon)))
     (babel.directory/refresh-models)
