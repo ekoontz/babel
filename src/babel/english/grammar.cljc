@@ -344,20 +344,22 @@
                    :head {:synsem {:sem sem
                                    :subcat {:1 {:agr agr
                                                 :reflexive reflexive}}}}}))
-   (let [object-synsem (atom {:top :top})
-         subject-synsem (atom :top)]
-     (unify-check head-last
-                  head-principle
-                  {:comp {:synsem subject-synsem}
-                   :head {:synsem {:slash false
-                                   :subcat {:1 subject-synsem
-                                            :2 object-synsem
-                                            :3 []}}}
-                   :rule "s/obj"
-                   :synsem {:cat :verb
-                            :slash true
-                            :subcat {:1 object-synsem
-                                     :2 []}}}))
+   (unify-check
+    {:rule "s/obj"}
+    (let [object-synsem (atom {:top :top})
+          subject-synsem (atom :top)]
+      (unify-check head-last
+                   head-principle
+                   {:comp {:synsem subject-synsem}
+                    :head {:synsem {:sem {:reflexive false}
+                                    :slash false
+                                    :subcat {:1 subject-synsem
+                                             :2 object-synsem
+                                             :3 []}}}
+                    :synsem {:cat :verb
+                             :slash true
+                             :subcat {:1 object-synsem
+                                      :2 []}}})))
    (unify-check
     {:rule "nbar-s-obj"
      :example "(the) [nbar dog [s-obj you see]]"}
