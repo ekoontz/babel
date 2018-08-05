@@ -263,32 +263,16 @@
                    :head {:synsem {:comp-type comp-type
                                    :sem semantics}}}))
    (unify-check
+    {:rule "complementizer-phrase-slash"}
     head-first
-    (let [semantics (atom :top)
-          comp-type (atom :top)
-          argument (atom :top)
-          mod (atom :top)
-          cat (atom :comp)]
-      {:rule "complementizer-phrase-slash"
-       :phrasal true
-       :synsem {:slash true
-                :cat cat
-                :mod mod
-                :subcat {:1 argument
-                         :2 []}
-                :sem semantics}
-       :comp {:phrasal true
-              :synsem {:cat :verb
-                       :mod mod
-                       :sem semantics
-                       :slash true
-                       :subcat {:1 argument
-                                :2 []}}}
-       :head {:phrasal false
-              :synsem {:cat cat
-                       :sem semantics}}}))
-   
-   
+    head-principle
+    {:synsem {:slash true
+              :cat :comp}
+     :head {:phrasal false}
+     :comp {:phrasal true
+            ;; TODO: the below should be in complementizer's [:subcat :1]:
+            :synsem {:slash true}}})
+
    (unify-check c10
                 {:rule "determiner-phrase"
                  :synsem {:cat :det}
