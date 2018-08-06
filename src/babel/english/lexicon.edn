@@ -1034,20 +1034,43 @@
                      :sem {:pred :give-back-return-ren}
                      :subcat {:3 {:cat :prep
                                   :sem {:pred :back}}}}}
-           ;; "give X to Y"
+
+           ;; "give X to Y" reflexive
            (let [obj (atom :top)
                  iobj (atom :top)]
              {:unify [common]
               :synsem {:cat :verb
                        :sem {:pred :give-x-to-y
+                             :reflexive true
                              :obj obj
                              :iobj iobj}
                        :subcat {:2 {:cat :prep
                                     :sem {:pred :to
                                           :obj iobj}
                                     :subcat []}
-                                :3 {:cat :noun
-                                    :case :acc
+                                :3 {:case :acc
+                                    :cat :noun
+                                    :pronoun true
+                                    :reflexive true
+                                    :sem obj
+                                    :subcat []}}}})
+
+           ;; "give X to Y" nonreflexive
+           (let [obj (atom :top)
+                 iobj (atom :top)]
+             {:unify [common]
+              :synsem {:cat :verb
+                       :sem {:pred :give-x-to-y
+                             :reflexive false
+                             :obj obj
+                             :iobj iobj}
+                       :subcat {:2 {:cat :prep
+                                    :sem {:pred :to
+                                          :obj iobj}
+                                    :subcat []}
+                                :3 {:case :acc
+                                    :cat :noun
+                                    :reflexive false
                                     :sem obj
                                     :subcat []}}}})])
  
