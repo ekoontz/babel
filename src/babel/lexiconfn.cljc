@@ -178,7 +178,8 @@
   (cond (and (= (get-in lexical-entry [:synsem :cat]) :verb)
              (not (nil? (get-in lexical-entry [:synsem :sem :iobj])))
              (not (= [] (get-in lexical-entry [:synsem :subcat :2])))
-             (not (= [] (get-in lexical-entry [:synsem :subcat :3]))))
+             (not (= [] (get-in lexical-entry [:synsem :subcat :3])))
+             (= :prep (get-in lexical-entry [:synsem :subcat :2 :cat])))
         (unify
          lexical-entry
          (let [ref (atom :top)]
@@ -187,6 +188,8 @@
                      :sem {:iobj ref}}}))
         true
         lexical-entry))
+;; TODO: above rule is only for "give X to Y" (direct object is before indirect object)
+;; add another ditransitive-verb-rule for "give Y X" (indirect object is first).
 
 (defn intensifier-agreement [lexical-entry]
   (cond (= (get-in lexical-entry '(:synsem :cat)) :intensifier)
@@ -197,7 +200,7 @@
                               :2 {:agr agr}}}})
          lexical-entry)
 
-         true lexical-entry))
+        true lexical-entry))
 
 (defn pronoun-and-propernouns [lexical-entry]
   (cond (= true (get-in lexical-entry '(:synsem :pronoun)))
