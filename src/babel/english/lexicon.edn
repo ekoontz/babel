@@ -1563,9 +1563,10 @@
 
  "lower" {:synsem {:cat :verb
                    :sem {:pred :lower}}}
+
  "Lucia and Cecilia"
  {:synsem {:sem {:pred :lucia-and-cecilia
-                 :human true}
+                 :prop {:human true}}
            :propernoun true
            :agr {:number :plur
                  :person :3rd
