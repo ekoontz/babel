@@ -1036,14 +1036,12 @@
                                   :sem {:pred :back}}}}}
 
            ;; "give X to Y" reflexive
-           (let [gender (atom :top)
-                 obj (atom {:gender gender})
+           (let [obj (atom :top)
                  iobj (atom :top)]
              {:unify [common]
               :synsem {:cat :verb
                        :sem {:pred :give-x-to-y
                              :reflexive true
-                             :subj {:gender gender}
                              :obj obj
                              :iobj iobj}
                        :subcat {:2 {:cat :prep

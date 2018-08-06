@@ -286,6 +286,18 @@
                :synsem {:infl infl
                         :cat :verb
                         :subcat {:1 {:agr agr}}}}))
+
+   ;; TODO: this subject-object agreement should apply to
+   ;; transitive reflexive verbs as well as ditransitive reflexive verbs.
+   (default (let [agr (atom :top)
+                  human (atom :top)]
+              {:applied {:ditrans true
+                         :ditrans-reflexive true}
+               :synsem {:aux false
+                        :cat :verb
+                        :sem {:reflexive true
+                              :obj {:prop {:human human}}
+                              :subj {:prop {:human human}}}
    
    (verb-pred-defaults encyc/verbs)
    
