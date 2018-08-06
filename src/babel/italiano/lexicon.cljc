@@ -162,7 +162,6 @@
        {:synsem {:cat :noun
                  :sem {:null false}}})
 
-      ;; TODO: simplify to just (noun-pred-defaults)
       (noun-pred-defaults)
 
       ;; nouns are not propernouns by default.
