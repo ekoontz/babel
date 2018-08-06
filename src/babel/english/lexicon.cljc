@@ -250,7 +250,8 @@
    ;; phrasal-verb-intransitivize: remove the third argument,
    ;; but not the second, to make it intransitive.
    (new-entries
-    {:intransitivize false
+    {:applied {:ditrans false} ;; don't apply to ditransitive verbs.
+     :intransitivize false
      :phrasal-verb true
      :synsem {:cat :verb
               :aux false
