@@ -44,10 +44,10 @@
  {:prop {:consumable
          false}}           {:prop {:drinkable false
                                    :edible false}}
-  {:prop {:consumable
-          true}}           {:prop {:activity false
-                                   :buyable true
-                                   :clothing false
+ {:prop {:consumable
+         true}}           {:prop {:activity false
+                                  :buyable true
+                                  :clothing false
                                    :furniture false
                                    :legible false
                                    :human false
