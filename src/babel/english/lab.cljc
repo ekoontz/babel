@@ -12,17 +12,17 @@
   (english/parse surface-string model false))
 
 (defn downtown []
-  (let [spec
-        {:synsem {:cat :verb
-                  :subcat []
-                  :sem {:aspect :simple
-                        :tense :present}}}]
+  (let [specs
+        [{:synsem {:cat :verb
+                   :subcat []
+                   :sem {:aspect :simple
+                         :tense :present}}}]]
     (repeatedly #(println
-                  (morph (generate
-                          spec
-                          model)
-                         :show-notes false)))))
-
+                  (let [spec (first (shuffle specs))]
+                    (morph (generate
+                            spec
+                            model)
+                           :show-notes false))))))
 (defn basecamp []
   (let [spec
         {:synsem {:cat :verb
