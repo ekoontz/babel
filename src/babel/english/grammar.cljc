@@ -408,9 +408,10 @@
    (unify-check h32
                 root-is-head
                 {:rule "ditransitive-vp-nonphrasal-head"
+                 :head {:phrasal false}
                  :synsem {:slash false
                           :cat :verb}})
-   
+
    ;; "has seen a dog" : complement is semantic object.
    (let [obj-mod (atom :top)
          obj (atom {:mod obj-mod})]
@@ -422,20 +423,6 @@
                    :head {:phrasal true}
                    :synsem {:aux false
                             :sem {:obj obj}
-                            :slash false
-                            :cat :verb}}))
-
-   ;; "gives [a book] to X" : complement is semantic indirect object.
-   (let [iobj-mod (atom :top)
-         iobj (atom {:mod iobj-mod})]
-     (unify-check h21
-                  root-is-head-root
-                  {:rule "ditransitive-vp-phrasal-head-iobj"
-                   :comp {:synsem {:mod iobj-mod
-                                   :sem iobj}}
-                   :head {:phrasal false}
-                   :synsem {:aux false
-                            :sem {:iobj iobj}
                             :slash false
                             :cat :verb}}))
 
