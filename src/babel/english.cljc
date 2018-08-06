@@ -44,6 +44,12 @@
                        show-notes true}}]
    ;; modeled after babel.english/morph:
    ;; most arguments are simply discarded for italian.
-   (parse/fo-ps expr (:morph model))))
+   (cond
+     (seq? expr)
+     (map morph-ps expr)
+     
+     true
+     (parse/fo-ps expr (:morph model)))))
+
 
 
