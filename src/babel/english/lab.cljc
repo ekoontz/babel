@@ -24,16 +24,17 @@
                             model)
                            :show-notes false))))))
 (defn basecamp []
-  (let [spec
-        {:synsem {:cat :verb
-                  :sem {:pred :give-x-to-y
-                        :obj {:pred :cat
-                              :mod {:first {:pred :black}}}}
-                  :subcat []}
-         :head {:head {:comp {:phrasal true}}}}]
+  (let [specs
+        [{:synsem {:cat :verb
+                   :sem {:pred :give-x-to-y
+                         :reflexive false
+                         :obj {:pred :cat
+                               :mod {:first {:pred :black}}}}
+                   :subcat []}}]]
     (repeatedly #(println
-                  (morph (time (generate spec model))
-                         :show-notes false)))))
+                  (let [spec (first (shuffle specs))]
+                    (morph (time (generate spec model))
+                           :show-notes false))))))
 
 (defn nextcamp []
   (let [parse (-> "the small dogs you see" parse first)]
