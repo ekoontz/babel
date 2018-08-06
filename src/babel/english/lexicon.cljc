@@ -298,6 +298,8 @@
                         :sem {:reflexive true
                               :obj {:prop {:human human}}
                               :subj {:prop {:human human}}}
+                        :subcat {:1 {:agr agr}
+                                 :3 {:agr agr}}}}))
    
    (verb-pred-defaults encyc/verbs)
    
