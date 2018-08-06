@@ -6,6 +6,7 @@
    [babel.lexiconfn :refer [apply-unify-key compile-lex default
                             edn2lexicon listify
                             map-function-on-map-vals new-entries
+                            noun-pred-defaults
                             remove-vals verb-pred-defaults]]
    [clojure.java.io :refer [resource]]
    [clojure.tools.logging :as log]
@@ -302,7 +303,7 @@
                                  :3 {:agr agr}}}}))
    
    (verb-pred-defaults encyc/verbs)
-   
+   (noun-pred-defaults)
    ;; if a verb has a subject,
    ;; and the subject is {:cat :noun},
    ;; then the subject is {:synsem {:case :nom}}.
