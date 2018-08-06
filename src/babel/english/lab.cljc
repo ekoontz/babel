@@ -30,6 +30,10 @@
                          :reflexive false
                          :obj {:pred :cat
                                :mod {:first {:pred :black}}}}
+                   :subcat []}}
+         {:synsem {:cat :verb
+                   :sem {:pred :give-x-to-y
+                         :reflexive true}
                    :subcat []}}]]
     (repeatedly #(println
                   (let [spec (first (shuffle specs))]
