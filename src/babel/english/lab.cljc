@@ -32,13 +32,11 @@
                   :subcat []}
          :head {:head {:comp {:phrasal true}}}}]
     (repeatedly #(println
-                  (morph (generate
-                          spec
-                          model)
+                  (morph (time (generate spec model))
                          :show-notes false)))))
 
 (defn nextcamp []
-  (let [parse (-> "the small dogs you see" (parse model false) first)]
+  (let [parse (-> "the small dogs you see" parse first)]
     (pprint (u/get-in parse [:synsem :sem]))))
 
 (defn refresh []
