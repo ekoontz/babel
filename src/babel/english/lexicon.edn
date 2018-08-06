@@ -1573,13 +1573,13 @@
 
  "Luigi"
  {:synsem {:sem {:pred :luigi
-                 :human true}
+                 :prop {:human true}}
            :propernoun true
            :agr {:number :sing
                  :gender :masc}}}
  "Luisa"
  {:synsem {:sem {:pred :luisa
-                 :human true}
+                 :prop {:human true}}
            :agr {:number :sing
                  :gender :fem}
            :propernoun true}}
@@ -1591,7 +1591,7 @@
            :agr {:gender :top
                  :person :1st
                  :number :plur}
-           :sem {:human true
+           :sem {:prop {:human true}
                  :pred :luisa-and-i}
            :subcat []}}
 
@@ -2158,7 +2158,7 @@
                  :gender :fem
                  :gendered true
                  :number :sing}
-           :sem {:human true
+           :sem {:prop {:human true}
                  :pred :lei}
            :subcat []}}
 
