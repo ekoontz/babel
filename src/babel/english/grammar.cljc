@@ -139,7 +139,7 @@
                :agr agr
                :b comp-english}
      :first :head}))
-               
+
 (def head-last
   (let [agr (atom :top)
         head-english (atom {:agr agr})
@@ -444,18 +444,16 @@
                             :sem {:iobj iobj-mod}
                             :slash false}}))
 
-   ;;   "vp -> transitive-vp-phrasal-head pp"
-   (let [iobj-mod (atom :top)]
-     (unify-check h21
-                  root-is-head-root
-                  {:rule "vp-to-vp-pp"
-                   :head {:phrasal true
-                          :phrasal-verb false}
-                   :comp {:synsem {:mod iobj-mod}}
-                   :synsem {:aux false
-                            :cat :verb
-                            :sem {:iobj iobj-mod}
-                            :slash false}}))])
+   ;;   "[h give the book] [c to you]"
+   (unify-check h21
+                {:rule "vp-to-vp-pp"}
+                root-is-head-root
+                {:head {:phrasal true
+                        :phrasal-verb false}
+                 :comp {:synsem {:cat :prep}}
+                 :synsem {:aux false
+                          :cat :verb
+                          :slash false}})])
 
 (defn aux-is-head-feature [phrase]
   (cond (= :verb (get-in phrase [:synsem :cat]))
