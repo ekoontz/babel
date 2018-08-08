@@ -25,12 +25,23 @@
                            :show-notes false))))))
 (defn basecamp []
   (let [specs
-        [{:synsem {:cat :verb
+        [
+
+         {:synsem {:cat :verb
                    :sem {:pred :give-x-to-y
                          :reflexive false
                          :obj {:pred :cat
                                :mod {:first {:pred :black}}}}
                    :subcat []}}
+
+         {:head {:comp {:synsem {:cat :prep}}}
+          :synsem {:cat :verb
+                   :sem {:pred :give-x-to-y
+                         :reflexive false
+                         :obj {:pred :book
+                               :mod {:first {:pred :red}}}}
+                   :subcat []}}
+         
          {:synsem {:cat :verb
                    :sem {:pred :give-x-to-y
                          :reflexive true}
