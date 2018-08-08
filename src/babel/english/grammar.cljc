@@ -375,10 +375,10 @@
                              :obj {:prop mod-prop}
                              :pred mod-pred
                              :tense mod-tense}}}
-       :head {:synsem {:cat :noun
+       :head {:rule "nbar"
+              :synsem {:cat :noun
                        :subcat head-subcat
                        :mod head-mod}}}))
-
    (unify-check c10
                 unmodified
                 root-is-head
