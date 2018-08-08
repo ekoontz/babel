@@ -1054,6 +1054,23 @@
                                     :reflexive true
                                     :sem obj
                                     :subcat []}}}})
+           ;; "give Y X"
+           (let [obj (atom :top)
+                 iobj (atom :top)]
+             {:unify [common]
+              :synsem {:cat :verb
+                       :sem {:pred :give-x-to-y
+                             :obj obj
+                             :iobj iobj}
+                       :subcat {:2 {:case :acc
+                                    :cat :noun
+                                    :reflexive false
+                                    :sem obj
+                                    :subcat []}
+                                :3 {:case :acc
+                                    :cat :noun
+                                    :sem iobj
+                                    :subcat []}}}})
 
            ;; "give X to Y" nonreflexive
            (let [obj (atom :top)
@@ -1073,7 +1090,6 @@
                                     :reflexive false
                                     :sem obj
                                     :subcat []}}}})])
- 
  "go"
  {:synsem {:cat :verb
            :sem {:activity true
