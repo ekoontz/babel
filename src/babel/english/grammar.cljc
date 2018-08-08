@@ -404,13 +404,17 @@
                           :slash false
                           :cat :verb}})
 
-   ;; "gives a book" [to X] :complement is semantic object
+   ;; "gives a book" [to X] :complement is the semantic object
    (unify-check h32
                 root-is-head
-                {:rule "ditransitive-vp-nonphrasal-head"
-                 :head {:phrasal false}
-                 :synsem {:slash false
-                          :cat :verb}})
+                {:rule "ditransitive-vp-nonphrasal-head-1"
+                 :head {:phrasal false
+                        :synsem {:subcat {:2 {:top :top}
+                                          :3 {:top :top}}}}
+                 :synsem {:cat :verb
+                          :slash false
+                          :subcat {:2 {:top :top}
+                                   :3 []}}})
 
    ;; "has seen a dog" : complement is semantic object.
    (let [obj-mod (atom :top)
