@@ -71,14 +71,15 @@
   (if (not (empty? parent-rules))
     (let [parent-rule (first parent-rules)
           phrases-with-phrasal-head #(map (fn [child]
-                                           (u/assoc-in parent-rule [:head] child))
-                                         (:grammar model))
+                                            (u/assoc-in parent-rule [:head] child))
+                                          (:grammar model))
           phrases-with-lexical-heads #(map (fn [child]
-                                           (u/assoc-in parent-rule [:head] child))
-                                         (get-lexemes (unify
-                                                       (get-in spec [:head] :top)
-                                                       (get-in parent-rule [:head] :top))
-                                                      model))]
+                                             (u/assoc-in parent-rule [:head] child))
+                                           (get-lexemes (unify
+                                                         (get-in spec [:head] :top)
+                                                         (get-in parent-rule [:head] :top))
+                                                        model))]
+      (log/debug (str "pwh-1:" (:rule parent-rule)))
       (cond
         (branch? depth)
         (lazy-cat
