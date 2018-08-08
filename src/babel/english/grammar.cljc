@@ -106,8 +106,8 @@
                        :infl :pluperfect}}))]
     (log/debug (str "English: do-defaults (post) on tree: " (parse/fo-ps result fo)))
     (log/trace (str "aspect (post): " (strip-refs (get-in result
-                                                         [:synsem :sem :aspect]
-                                                         ::unset))))
+                                                          [:synsem :sem :aspect]
+                                                          ::unset))))
     (log/trace (str "infl   (post): " (strip-refs (get-in result
                                                           [:synsem :infl]
                                                           ::unset))))  
