@@ -201,7 +201,8 @@
                    10
                    (repeatedly #(let [expression (generate {:modified false
                                                             :synsem {:cat :verb
-                                                                     :sem {:pred :be-called}}})]
+                                                                     :sem {:pred :be-called}
+                                                                     :subcat []}})]
                                   (is (not (= "" (morph expression))))
                                   (log/info (display-expression expression))
                                   (morph expression)))))))))
