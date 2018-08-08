@@ -288,6 +288,9 @@
                         :cat :verb
                         :subcat {:1 {:agr agr}}}}))
 
+   (default {:synsem {:cat :verb
+                      :subcat {:3 []}}})
+   
    ;; TODO: this subject-object agreement should apply to
    ;; transitive reflexive verbs as well as ditransitive reflexive verbs.
    (default (let [agr (atom :top)
