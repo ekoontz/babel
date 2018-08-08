@@ -140,21 +140,24 @@
   (if (not (empty? children))
     (lazy-cat
      (let [child (first children)
-           tree-with-child (u/assoc-in tree f child)]
+           tree-with-child (u/assoc-in tree f child)
+           default-fn (or (:default-fn model) (fn [x] [x]))]
        (-> tree-with-child
            (u/assoc-in! 
             (concat (butlast f) [::done?])
             true)
            (u/dissoc-paths (if truncate? [f] []))
-           ((:default-fn model))))
+           (default-fn)))
      (assoc-each-default tree (rest children) f model))))
 
 (defn assoc-children [tree children f model]
   (if (not (empty? children))
-    (let [child (first children)]
+    (let [child (first children)
+          default-fn (or (:default-fn model)
+                         (fn [x] [x]))]
       (lazy-cat
        (if (= true (u/get-in child [::done?]))
-         (assoc-each-default tree ((:default-fn model) child) f model)
+         (assoc-each-default tree (default-fn child) f model)
          [(u/assoc-in tree f child)])
        (assoc-children tree (rest children) f model)))))
 
