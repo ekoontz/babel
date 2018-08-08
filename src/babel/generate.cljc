@@ -13,7 +13,9 @@
 ;; the more likely we'll first generate leaves
 ;; (terminal nodes) rather than trees.
 (def ^:const branching-factor 5)
-(def ^:const branch? #(= 0 (rand-int (+ % branching-factor))))
+(def ^:const branch? #(let [result (= 0 (rand-int (+ % branching-factor)))]
+                        (log/debug (str "branch at: " % "? => " result))
+                        result))
 (def ^:const truncate? false)
 
 (declare gen)
