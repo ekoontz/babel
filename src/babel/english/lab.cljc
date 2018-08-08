@@ -55,10 +55,10 @@
   (let [parse (-> "the small dogs you see" parse first)]
     (pprint (u/get-in parse [:synsem :sem]))))
 
-(defn refresh []
-  (let [refresh-lexicon false]
+(defn refresh [& refresh-lexicon?]
+  (let [refresh-lexicon? (or refresh-lexicon? false)]
     (babel.test.test/init-db)
-    (if refresh-lexicon (babel.lexiconfn/write-lexicon "en" (babel.english.grammar/compile-lexicon)))
+    (if refresh-lexicon? (babel.lexiconfn/write-lexicon "en" (babel.english.grammar/compile-lexicon)))
     (babel.directory/refresh-models)
     (load "../english")))
 
