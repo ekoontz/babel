@@ -426,7 +426,7 @@
                             :slash false
                             :cat :verb}}))
 
-   ;; "vp -> transitive-vp-nonphrasal-head pp"
+   ;; "[h turn off] [c the radio]"
    (let [iobj-mod (atom :top)]
      (unify-check h32
                   root-is-head
