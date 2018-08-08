@@ -62,5 +62,13 @@
     (babel.directory/refresh-models)
     (load "../english")))
 
+(defn get-rule [rule]
+  (-> model :grammar-map (get rule)))
 
+(defn parse-at [expression path]
+  (map #(u/get-in % path ::none)
+       (parse expression)))
 
+(defn lexeme-at [lexeme path]
+  (map #(u/get-in % path ::none)
+       (-> model :lexicon (get lexeme))))
