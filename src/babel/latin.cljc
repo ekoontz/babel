@@ -1,8 +1,6 @@
 (ns babel.latin
   (:refer-clojure :exclude [get-in])
   (:require
-   ;; TODO: use english by way of babel.directory rather than directly
-   ;; from babel.english.
    [babel.index :refer [create-indices lookup-spec]]
    [babel.latin.morphology :as morph]
    [babel.lexiconfn :refer [default listify map-function-on-map-vals
@@ -183,6 +181,27 @@
                                        :sem semantics-of-target-expression}
                               :comp {:synsem {:pronoun true
                                               :agr (get-in spec [:synsem :agr])}}}
-        debug (log/debug (str "read-one: source-specification:" source-specification))]
-    {:semantics (strip-refs semantics-of-target-expression)}))
+        debug (log/debug (str "read-one: source-specification:" source-specification))
+
+        source-morph-fn (:morph source-model)
+
+        question-to-pose-to-user
+        (source-morph-fn (babel.generate/generate source-specification
+                                                  source-model)
+                         :show-notes false)
+
+        parses (filter #(empty? (get-in % [:synsem :subcat]))
+                       (babel.parse/parse
+                        question-to-pose-to-user source-model :parse-with-truncate false)) 
+        source-expressions parses] 
+
+    ;; TODO: use {:from-language :la}
+    {:source question-to-pose-to-user
+     :semantics (strip-refs semantics-of-target-expression)
+     :targets (vec (set (map #(morph (generate {:synsem {:sem (get-in % [:synsem :sem])}
+                                                        :agr (get-in % [:comp :synsem :agr] :top)}
+                                               target-model))
+                             source-expressions)))}))
+
+                            
 
