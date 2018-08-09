@@ -612,14 +612,14 @@
            :see))))
 
 (deftest generate-for-italian
-  (let [p (first
-           (filter #(= :verb (get-in % [:synsem :cat]))
-                   (parse "I speak")))
-        spec (strip-refs (unify
-                          {:synsem {:subcat []
-                                    :cat :verb}}
-                          {:synsem {:sem (get-in p [:synsem :sem])}}
-                          {:synsem {:sem {:subj {:gender :masc}}}}))
+  (let [p (->> (parse "I speak")
+               (filter #(and (= :verb (u/get-in % [:synsem :cat]))
+                             (= [] (u/get-in % [:synsem :subcat]))))
+               first)
+        spec (strip-refs (u/assoc-in {} [:synsem :sem]
+                                     (unify
+                                      {:subj {:gender :masc}}
+                                      (u/get-in p [:synsem :sem]))))
         generated (generate spec)
         surface-1 (morph generated)
         surface-2 (english/morph generated :model model :from-language "it")]
