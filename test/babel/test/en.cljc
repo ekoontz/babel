@@ -512,7 +512,7 @@
   (let [result (generate {:root {:english {:english "study"}}
                           :modified false
                           :synsem {:cat :verb
-                                   :subcat ()
+                                   :subcat []
                                    :sem {:aspect :pluperfect
                                          :obj :unspec
                                          :subj {:pred :I}
@@ -524,8 +524,9 @@
   (let [result (generate {:root {:english {:english "talk"}}
                           :modified false
                           :synsem {:cat :verb
-                                   :subcat ()
+                                   :subcat []
                                    :sem {:aspect :pluperfect
+                                         :iobj :unspec
                                          :obj :unspec
                                          :subj {:pred :I}
                                          :tense :past}}})]
