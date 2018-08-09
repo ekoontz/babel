@@ -1,5 +1,5 @@
 (ns babel.test.en
-  ;; TODO: use u/get-in and u/assoc-in.
+  ;; TODO: use u/get-in and u/assoc-in; remove these :excludes.
   (:refer-clojure :exclude [assoc-in get-in])
   (:require [babel.directory :refer [models]]
             [babel.english :as english :refer [morph morph-ps]]
@@ -602,13 +602,13 @@
 (deftest relative-clause []
   (let [parse (first (parse "the man you see"))]
     (is (not (nil? parse)))
-    (is (= (get-in parse [:synsem :cat])
+    (is (= (u/get-in parse [:synsem :cat])
            :noun))
-    (is (= (get-in parse [:synsem :mod :first :obj :pred])
+    (is (= (u/get-in parse [:synsem :sem :pred])
            :man))
-    (is (= (get-in parse [:synsem :mod :first :subj :pred])
+    (is (= (u/get-in parse [:synsem :sem :mod :first :subj :pred])
            :tu))
-    (is (= (get-in parse [:synsem :mod :first :pred])
+    (is (= (u/get-in parse [:synsem :sem :mod :first :pred])
            :see))))
 
 (deftest generate-for-italian
