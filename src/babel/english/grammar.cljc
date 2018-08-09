@@ -366,8 +366,8 @@
                               :pred mod-pred}
                       :rest head-mod}
                 :subcat head-subcat}
-       :comp {:slash true
-              :synsem {:cat :verb
+       :comp {:synsem {:slash true
+                       :cat :verb
                        :subcat {:1 {:cat :noun}
                                 :2 []}
                        :sem {:subj mod-subj
