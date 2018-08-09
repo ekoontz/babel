@@ -72,3 +72,8 @@
 (defn lexeme-at [lexeme path]
   (map #(u/get-in % path ::none)
        (-> model :lexicon (get lexeme))))
+
+(defn generate-at [spec path]
+  (let [generated (generate spec model)]
+    (u/get-in generated path ::none)))
+
