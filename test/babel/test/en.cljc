@@ -617,10 +617,13 @@
                (filter #(and (= :verb (u/get-in % [:synsem :cat]))
                              (= [] (u/get-in % [:synsem :subcat]))))
                first)
-        spec (strip-refs (u/assoc-in {} [:synsem :sem]
-                                     (unify
-                                      {:subj {:gender :masc}}
-                                      (u/get-in p [:synsem :sem]))))
+        spec (strip-refs (-> (u/assoc-in
+                              {:synsem {:cat :verb
+                                        :subcat []}}
+                              [:synsem :sem]
+                              (unify
+                               {:subj {:gender :masc}}
+                               (u/get-in p [:synsem :sem])))))
         generated (generate spec)
         surface-1 (morph generated)
         surface-2 (english/morph generated :model model :from-language "it")]
