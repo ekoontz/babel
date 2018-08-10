@@ -409,7 +409,8 @@
    (unify-check h32
                 root-is-head
                 {:rule "ditransitive-vp-nonphrasal-head-1"
-                 :head {:phrasal false
+                 :head {:applied {:ditrans true}
+                        :phrasal false
                         :synsem {:subcat {:2 {:top :top}
                                           :3 {:top :top}}}}
                  :synsem {:cat :verb
