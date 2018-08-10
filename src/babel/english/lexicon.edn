@@ -2368,10 +2368,18 @@
                       :synsem {:cat :verb
                                :sem {:pred :take-advantage-of}}}
  "talk"
- {:synsem {:cat :verb
-           :sem {:pred :talk}
-           :subcat {:2 {:cat :prep
-                        :sem {:pred :to}}}}}
+ (let [common {:synsem {:cat :verb
+                        :sem {:pred :talk}}}]
+   (let [talk-to (atom :top)]
+     {:unify [common]
+      :synsem {:subcat {:2 {:cat :prep
+                            :sem {:pred :to
+                                  :obj talk-to}}}
+               :sem {:iobj talk-to}}})
+   
+   {:unify [common]
+    :synsem {:subcat {:2 []}}})
+
  "tall"
  {:synsem {:cat :adjective
            :sem {:pred :tall
