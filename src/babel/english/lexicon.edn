@@ -2517,15 +2517,21 @@
         {:synsem {:cat :verb
                   :sem {:pred :try}
                   :subcat {:2 []}}}]
+
  "turn" ;; TODO: factor out a 'common' and a 'turn down/up/off/on' as we do above for "throw out".
+ ;; TODO: too much specific and repeated content here; capture in lexical compilation rules.
  [;; "turn the radio down"
   {:phrasal-verb true
+   :applied {:ditrans false}
    :synsem {:cat :verb
             :sem {:pred :turn-down}
-            :subcat {:2 {:cat :prep
+            :subcat {:3 {:cat :noun
+                         :subcat []}
+                     :2 {:cat :prep
                          :sem {:pred :down}}}}}
   ;; "turn down the radio"
   {:phrasal-verb true
+   :applied {:ditrans false}
    :synsem {:cat :verb
             :sem {:pred :turn-down}
             :subcat {:3 {:cat :prep
@@ -2533,41 +2539,54 @@
 
   ;; "turn the radio off"
   {:phrasal-verb true
+   :applied {:ditrans false}
    :synsem {:cat :verb
             :sem {:pred :turn-off}
-            :subcat {:2 {:cat :prep
+            :subcat {:3 {:cat :noun
+                         :subcat []}
+                     :2 {:cat :prep
                          :sem {:pred :off}}}}}
 
   ;; "turn off the radio"
   {:phrasal-verb true
+   :applied {:ditrans false}
    :synsem {:cat :verb
             :sem {:pred :turn-off}
             :subcat {:3 {:cat :prep
                          :sem {:pred :off}}}}}
-
   ;; "turn the radio on"
   {:phrasal-verb true
+   :applied {:ditrans false}
    :synsem {:cat :verb
             :sem {:pred :turn-on}
-            :subcat {:2 {:cat :prep
+            :subcat {:3 {:cat :noun
+                         :subcat []}
+                     :2 {:cat :prep
                          :sem {:pred :on}}}}}
   ;; "turn on the radio"
   {:phrasal-verb true
+   :applied {:ditrans false}
    :synsem {:cat :verb
             :sem {:pred :turn-on}
             :subcat {:3 {:cat :prep
                          :sem {:pred :on}}}}}
   ;; "turn the radio up"
   {:phrasal-verb true
+   :applied {:ditrans false}
    :synsem {:cat :verb
             :sem {:pred :turn-up}
-            :subcat {:2 {:cat :prep
+            :subcat {:3 {:cat :noun
+                         :subcat []}
+                     :2 {:cat :prep
                          :sem {:pred :up}}}}}
   ;; "turn up the radio"
   {:phrasal-verb true
+   :applied {:ditrans false}
    :synsem {:cat :verb
             :sem {:pred :turn-up}
-            :subcat {:3 {:cat :prep
+            :subcat {:2 {:cat :noun
+                         :subcat []}
+                     :3 {:cat :prep
                          :sem {:pred :up}}}}}]
  
 
