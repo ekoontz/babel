@@ -431,7 +431,7 @@
                             :slash false
                             :cat :verb}}))
 
-   ;; "[h turn off] [c the radio]"
+   ;; "[h turn ] [c off]"
    (let [iobj-mod (atom :top)]
      (unify-check h32
                   root-is-head
