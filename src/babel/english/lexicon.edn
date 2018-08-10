@@ -1534,8 +1534,11 @@
  "lift" {:synsem {:cat :verb
                   :sem {:pred :lift}}}
 
- "light" {:synsem {:cat :verb
-                   :sem {:pred :light}}}
+ "light" [{:synsem {:cat :verb
+                    :sem {:pred :light}}}
+          {:synsem {:cat :noun
+                    :sem {:pred :light
+                          :prop {:artifact true}}}}]
 
  "listen to" {:synsem {:cat :verb
                        :sem {:pred :listen-to}}
