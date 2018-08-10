@@ -404,20 +404,23 @@
   (is (not (empty? (parse "I turned the radio on"))))
   (is (not (empty? (parse "I turned off the radio"))))
   (is (not (empty? (parse "I turned the radio off"))))
-  (let [generated (morph (generate {:synsem {:subcat []
-                                             :sem {:pred :turn-on
-                                                   :tense :present
-                                                   :obj {:mod []
-                                                         :number :sing
-                                                         :pred :radio
-                                                         :spec {:def :def
-                                                                :of {:pred nil}}}
-                                                   :subj {:pred :lei}}
-                                             :cat :verb}}))]
+  (let [spec {:synsem {:cat :verb
+                       :subcat []
+                       :sem {:pred :turn-on
+                             :tense :present
+                             :obj {:mod []
+                                   :number :sing
+                                   :pred :radio
+                                   :spec {:def :def
+                                          :of {:pred nil}}}
+                             :subj {:pred :lei
+                                    :prop {:human true}}}}}
+        generated (generate spec)]
+    (log/info (str "generated: " (morph generated)))
     (is (or (= "she turns the radio on"
-                generated)
+               (morph generated))
             (= "she turns on the radio"
-               generated)))))
+               (morph generated))))))
 
 ;; cats cannot read: generating with this spec
 ;; should quickly return with nil (rather than
