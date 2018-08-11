@@ -205,7 +205,7 @@
                                           :sem {:spec {:def :def} 
                                                 :mod {:pred :difficile}
                                                 :number :sing
-                                                :pred :donna}}}
+                                                :pred :woman}}}
                                 @np-grammar)]
     (is (or (= (morph expr) "la donna difficile")
             (= (morph expr) "la difficile donna")))
