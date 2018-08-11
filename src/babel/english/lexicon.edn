@@ -1296,8 +1296,7 @@
           [{:unify [common]
             :synsem {:sem {:pred :hope}
                      :subcat {:2 []}}} ;; intransitive
-
-           (let [obj (atom :top)]
+           (let [obj (atom {:top :top})]
              {:unify [common]
               :synsem {:sem {:pred :hope
                              :obj obj}
