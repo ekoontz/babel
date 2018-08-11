@@ -1,13 +1,10 @@
 (ns babel.generate
-  (:refer-clojure :exclude [assoc-in get-in])
   (:require
    #?(:clj [clojure.tools.logging :as log])
    #?(:cljs [babel.logjs :as log]) 
    [clojure.math.combinatorics :as combo]
    [clojure.string :as string]
-   [dag_unify.core :as u
-    :refer [assoc-in assoc-in! copy create-path-in
-            dissoc-paths fail-path get-in fail? strip-refs unify unify!]]))
+   [dag_unify.core :as u :refer [unify]]))
           
 ;; the higher the constant below,
 ;; the more likely we'll first generate leaves
@@ -65,7 +62,7 @@
     (parent-with-head-1 spec model depth)
     
     (filter #(not (= % :fail)))
-    (map #(assoc-in! % [::started?] true))))
+    (map #(u/assoc-in! % [::started?] true))))
 
 (defn parent-with-head-1 [spec model depth parent-rules]
   (if (not (empty? parent-rules))
@@ -76,8 +73,8 @@
           phrases-with-lexical-heads #(map (fn [child]
                                              (u/assoc-in parent-rule [:head] child))
                                            (get-lexemes (unify
-                                                         (get-in spec [:head] :top)
-                                                         (get-in parent-rule [:head] :top))
+                                                         (u/get-in spec [:head] :top)
+                                                         (u/get-in parent-rule [:head] :top))
                                                         model))]
       (log/debug (str "pwh-1:" (:rule parent-rule)))
       (cond
@@ -110,18 +107,18 @@
        (log/warn (str "get-lexemes: no index found: using entire lexicon."))
        (flatten (vals
                  (or (:lexicon (:generate model)) (:lexicon model))))))
-   (filter #(or (= false (get-in % [:exception] false))
-                (not (= :verb (get-in % [:synsem :cat])))))
+   (filter #(or (= false (u/get-in % [:exception] false))
+                (not (= :verb (u/get-in % [:synsem :cat])))))
    (map #(unify % spec))
    (filter #(not (= :fail %)))
-   (map #(assoc-in! % [::done?] true))))
+   (map #(u/assoc-in! % [::done?] true))))
 
 (defn frontier
   "get the next path to which to adjoin within _tree_."
   [tree]
   (cond
 
-    (= (get-in tree [::done?]) true)
+    (= (u/get-in tree [::done?]) true)
     []
     
     (and (= (u/get-in tree [:phrasal]) true)
