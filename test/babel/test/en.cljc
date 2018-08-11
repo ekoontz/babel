@@ -680,7 +680,9 @@
                   :mod {:first {:pred :see
                                 :tense :present
                                 :subj {:pred :lei
-                                       :prop {:human true}}}}}}})
+                                       :mod []
+                                       :prop {:human true}}}
+                        :rest []}}}})
 
 (deftest generate-with-relative-clause
   (let [result (generate spec-for-the-woman-she-sees)]
