@@ -552,19 +552,19 @@
   (let [spec1 {:modified false
                :root {:english {:english "participate"}}
                :synsem {:cat :verb
-                        :subcat ()
+                        :subcat []
                         :sem {:tense :present
                               :aspect :progressive
                               :subj {:pred :I}}}}
         spec2 {:modified false
                :root {:english {:english "hope"}}
                :synsem {:cat :verb
-                        :subcat ()
+                        :subcat []
                         :sem {:tense :present
                               :aspect :progressive
                               :subj {:pred :I}
                               :obj :unspec}}}]
-                                     
+    
     (is (= "I am participating (right now)" (morph (generate spec1))))
     (is (= "I am hoping (right now)" (morph (generate spec2))))))
   
