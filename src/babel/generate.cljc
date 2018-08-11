@@ -143,7 +143,7 @@
             (concat (butlast f) [::done?])
             true)
            (u/dissoc-paths (if truncate? [f] []))
-           (or (:default-fn model) (fn [x] [x]))))
+           ((or (:default-fn model) (fn [x] [x])))))
      (assoc-each-default tree (rest children) f model))))
 
 (defn assoc-children [tree children f model]
