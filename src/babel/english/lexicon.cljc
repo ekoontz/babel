@@ -248,6 +248,9 @@
        {:applied {:intransitivize true}
         :synsem {:subcat {:2 []}}})))
 
+   (default {:synsem {:cat :verb}
+             :phrasal-verb false})
+   
    ;; phrasal-verb-intransitivize: remove the third argument,
    ;; but not the second, to make it intransitive.
    (new-entries
