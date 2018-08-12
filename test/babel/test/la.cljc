@@ -9,7 +9,7 @@
    [clojure.repl :refer [doc]]
    [clojure.test :refer [deftest is]]
    [clojure.tools.logging :as log]
-   [dag_unify.core :refer [get-in strip-refs unify]]))
+   [dag_unify.core :as u :refer [get-in strip-refs unify]]))
 
 (btest/init-db)
 (def source-language :en)
@@ -55,7 +55,10 @@
   (let [spec {:synsem {:slash false
                        :cat :verb
 		       :subcat []
-                       :sem {:iobj :unspec
+                       :agr {:person :3rd
+                             :gender :masc
+                             :number :sing}
+                       :sem {:obj :unspec
                              :tense :past
                              :subj {:pred :lui
                                     :prop {:human true}}
@@ -72,6 +75,7 @@
 
         target (->
                 spec
+                (u/dissoc-paths [[:synsem :subcat]])
                 generate
                 target-format-fn)]
     (log/info (str "source: " source))
