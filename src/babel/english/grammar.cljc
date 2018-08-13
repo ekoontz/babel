@@ -508,7 +508,7 @@
                            :or {from-language nil
                                 show-notes false}}]
                 (fo expr
-                    :from-language from-language :from-notes show-notes
+                    :from-language from-language :show-notes show-notes
                     :lexicon lexicon))
         debug (log/info "  finalizing..")
         model
