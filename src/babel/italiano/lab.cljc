@@ -211,3 +211,17 @@
     (load "../italiano")))
 
 ;;(map #(println (morph %)) (grow (sprouts spec model) model))
+(defn get-rule [rule]
+  (-> model :grammar-map (get rule)))
+
+(defn parse-at [expression path]
+  (map #(u/get-in % path ::none)
+       (parse expression)))
+
+(defn lexeme-at [lexeme path]
+  (map #(u/get-in % path ::none)
+       (-> model :lexicon (get lexeme))))
+
+(defn generate-at [spec path]
+  (let [generated (generate spec model)]
+    (u/get-in generated path ::none)))
