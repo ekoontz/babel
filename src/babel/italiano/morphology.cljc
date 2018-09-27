@@ -3,17 +3,9 @@
   (:require
    [babel.pos :refer (noun)]
    [babel.italiano.morphology.adjectives :as adjectives]
-   [babel.italiano.morphology.adjectives
-    :refer (plural-to-singular-adj-masc
-            plural-to-singular-adj-fem-sing
-            plural-to-singular-adj-fem-plur)]
    [babel.italiano.morphology.determiners :as determiners]
    [babel.italiano.morphology.misc :as misc]
    [babel.italiano.morphology.nouns :as nouns]
-   [babel.italiano.morphology.nouns
-    :refer (plural-to-singular-noun-fem-1
-            plural-to-singular-noun-masc-1
-            plural-to-singular-noun-masc-2)]
    [babel.italiano.morphology.verbs :as verbs]
    [babel.morphology :as language-independent]
    [babel.stringutils :refer (replace-from-list)]
@@ -79,7 +71,7 @@
    ["su i"   "sui"]
    ["su gli" "sugli"]
    ["su le"  "sulle"]
-      ])
+   ])
 
 ;; TODO: pre-compile these rules rather than building regexp objects at runtime.
 (defn apply-one-rule [string from-to-pair]
@@ -102,7 +94,7 @@
 
 (defn tokenize-prepositions-in [string & [match-pairs]]
   string)
-  
+
 ;; analysis-patterns are declarative data that determine how analysis (inflected form ->root form)
 ;; and conjugation (root form -> inflected form) are performed.
 (defonce analysis-patterns
@@ -477,13 +469,13 @@
                      (= :top (get-in lexeme [:synsem :infl])))
                 ;; if a verb has no infl, it's :infinitive.
                 (unify lexeme
-                        {:synsem {:infl :infinitive}})
+                       {:synsem {:infl :infinitive}})
 
                 (and (= :noun (get-in lexeme [:synsem :cat]))
                      (= :top (get-in lexeme [:synsem :agr :number])))
                 ;; if a noun has no number, it's singular.
                 (unify lexeme
-                        {:synsem {:agr {:number :sing}}})
+                       {:synsem {:agr {:number :sing}}})
                 true
                 lexeme))
         (get lexicon surface-form))))
@@ -498,40 +490,40 @@
   (->>
    (sort (keys lexicon))
    (mapcat (fn [k]
-          (let [lexemes (get lexicon k)
-                lexeme-kv [k lexemes]]
-            (->> exceptions-rules
-                 (mapcat (fn [{path :path
-                               label :label
-                               surface-form :surface-form
-                               merge-fn :merge-fn}]
-                           (let [surface-form-fn (or surface-form
-                                                     (fn [lexeme]
-                                                       (get-in lexeme path :none)))]
-                             ;; a lexeme-kv is a pair of a key and value. The key is a string (the word's surface form)
-                             ;; and the value is a list of lexemes for that string.
-                             (->> lexemes
-                                  (mapcat (fn [lexeme]
-                                            (if (not (= :none (get-in lexeme path :none)))
-                                              (do (log/debug (str (first lexeme-kv) " generating lexeme exceptional surface form: " (surface-form-fn lexeme)))
-                                                  (list {(surface-form-fn lexeme)
-                                                         [(reduce
-                                                           (fn [a b]
-                                                             (cond
-                                                               (or (= a :fail)
-                                                                   (= b :fail))
-                                                               :fail
-                                                               true
-                                                               (unify a b)))
-                                                           [(dissoc-paths lexeme [[:italiano :italiano]])
-                                                            (merge-fn lexeme)
-                                                            {:italiano {:infinitive k
-                                                                        :exception true}}])]})))))))))))))))
+             (let [lexemes (get lexicon k)
+                   lexeme-kv [k lexemes]]
+               (->> exceptions-rules
+                    (mapcat (fn [{path :path
+                                  label :label
+                                  surface-form :surface-form
+                                  merge-fn :merge-fn}]
+                              (let [surface-form-fn (or surface-form
+                                                        (fn [lexeme]
+                                                          (get-in lexeme path :none)))]
+                                ;; a lexeme-kv is a pair of a key and value. The key is a string (the word's surface form)
+                                ;; and the value is a list of lexemes for that string.
+                                (->> lexemes
+                                     (mapcat (fn [lexeme]
+                                               (if (not (= :none (get-in lexeme path :none)))
+                                                 (do (log/debug (str (first lexeme-kv) " generating lexeme exceptional surface form: " (surface-form-fn lexeme)))
+                                                     (list {(surface-form-fn lexeme)
+                                                            [(reduce
+                                                              (fn [a b]
+                                                                (cond
+                                                                  (or (= a :fail)
+                                                                      (= b :fail))
+                                                                  :fail
+                                                                  true
+                                                                  (unify a b)))
+                                                              [(dissoc-paths lexeme [[:italiano :italiano]])
+                                                               (merge-fn lexeme)
+                                                               {:italiano {:infinitive k
+                                                                           :exception true}}])]})))))))))))))))
 (defn phonize2 [lexicon]
   (into {}
         (for [[k vals] lexicon]
           [k 
            (map (fn [v]
                   (unify v
-                          {:italiano {:italiano k}}))
+                         {:italiano {:italiano k}}))
                 vals)])))

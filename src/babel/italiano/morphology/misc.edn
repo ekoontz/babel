@@ -1,5 +1,25 @@
 [{:g [#"\b(c)i ([eè])"      "$1'$2"]}  ;; ci è -> c'è
  {:g [#"\bl[ao] ([aeiouh])" "l'$1"]}  ;; io la ho visto-> l'ho visto
+
+
+ {:p [#"^c$" "ci"] ;; "c'" -> "ce"
+  :u {:synsem {:cat :noun
+               :case :nom}}}
+
+ {:p [#"^l$" "la"] ;; "l'" -> "la"
+  :u {:synsem {:cat :noun
+               :pronoun true
+               :case :acc
+               :agr {:number :sing
+                     :gender :fem}}}}
+ 
+ {:p [#"^l$" "lo"] ;; "l'" -> "lo"
+  :u {:synsem {:cat :noun
+               :pronoun true
+               :case :acc
+               :agr {:number :sing
+                     :gender :masc}}}}
+
  ;; <preposition+article>
  {:g [#"\ba il\b"           "al"]}     ;; a il -> al
  {:g [#"\ba lo\b"           "allo"]}

@@ -30,7 +30,7 @@
                 {:essere (get-in pattern [:synsem :essere] :top)}))
        patterns))
 
-(defn compile-morphology []
+(defn compile-verb-morphology []
   (let [tenses-map
         {"conditional" {:synsem {:infl :conditional}}
          "future"      {:synsem {:infl :future}}
@@ -55,22 +55,22 @@
                 patterns)}))
           (keys tenses-map)))))
 
-(def morph-map (compile-morphology))
+(def verb-morph-map (compile-verb-morphology))
 
 (defonce patterns-conditional
-  (get morph-map "conditional"))
+  (get verb-morph-map "conditional"))
 (defonce patterns-future
-  (get morph-map "future"))
+  (get verb-morph-map "future"))
 (defonce patterns-gerund
-  (get morph-map "gerund"))
+  (get verb-morph-map "gerund"))
 (defonce patterns-imperfetto
-  (get morph-map "imperfetto"))
+  (get verb-morph-map "imperfetto"))
 (defonce patterns-present
-  (get morph-map "present"))
+  (get verb-morph-map "present"))
 (defonce patterns-passato
-  (get morph-map "passato"))
+  (get verb-morph-map "passato"))
 (defonce patterns-subjunctive
-  (get morph-map "subjunctive"))
+  (get verb-morph-map "subjunctive"))
 
 (defonce patterns
   (map (fn [each]
