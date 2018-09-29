@@ -335,7 +335,18 @@
                         :u {:agr (:agr rule)
                             :cat :verb
                             :infl :conditional}})))
-           
+
+           (->> (-> (str "babel/italiano/morphology/verbs/new/future.edn")
+                    clojure.java.io/resource
+                    slurp
+                    read-string)
+                (map (fn [rule]
+                       {:g (:g rule)
+                        :p (:p rule)
+                        :u {:agr (:agr rule)
+                            :cat :verb
+                            :infl :future}})))
+
            (->> (-> (str "babel/italiano/morphology/verbs/new/present.edn")
                     clojure.java.io/resource
                     slurp
@@ -366,6 +377,18 @@
        :cat :verb,
        :initial false,
        :infl :conditional,
+       :essere false,
+       :agr {:number :plur, :person :1st, :gender :masc},
+       :passato "visto",
+       :future-stem "vedr"}})
+
+
+(def test-input-4
+  {:a {:initial true, :cat :noun, :italiano "Giovanni e io", :case :nom},
+   :b {:italiano "vedere",
+       :cat :verb,
+       :initial false,
+       :infl :future
        :essere false,
        :agr {:number :plur, :person :1st, :gender :masc},
        :passato "visto",
