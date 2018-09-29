@@ -3,7 +3,7 @@
    [babel.directory] ;; this is needed even though there are no references to directory in here.
    [babel.generate :as g :refer [frontier generate]]
    [babel.index :refer [create-indices lookup-spec]]
-   [babel.italiano :as italiano :refer [model morph morph-ps]]
+   [babel.italiano :as italiano :refer [model morph-ps]]
    [babel.italiano.grammar :as grammar]
    [babel.italiano.morphology :as m]
    #?(:cljs [babel.logjs :as log])
@@ -167,20 +167,28 @@
 
 (defn park []
   (let [vedere-specs
-        [{:synsem {:subcat (), :cat :verb, :essere false},
-          :modified false,
-          :phrasal true,
-          :head {:phrasal false},
-          :comp {:phrasal false},
-          :root {:italiano {:italiano "vedere"}}}]]
+        [{:synsem {:subcat []
+                   :cat :verb
+                   :essere false}
+          :modified false
+          :phrasal true
+          :root {:italiano {:italiano "vedere"}}}]
+        tense-specs
+        [{:synsem {:sem {:tense :present
+                         :aspect :simple}}}
+         {:synsem {:sem {:tense :past
+                         :aspect :progressive}}}
+         {:synsem {:sem {:tense :future}}}
+         {:synsem {:sem {:tense :conditional}}}]]
     (repeatedly
-     #(println (morph (time
-                       (generate
-                        (unify 
-                         (nth vedere-specs (rand-int (count vedere-specs)))
-                         {:head {:phrasal false}
-                          :comp {:phrasal false}})
-                        model)))))))
+     #(println (m/morph-new (time
+                             (generate
+                              (unify 
+                               (nth vedere-specs (rand-int (count vedere-specs)))
+                               (nth tense-specs (rand-int (count tense-specs)))
+                               {:head {:phrasal false}
+                                :comp {:phrasal false}})
+                              model)))))))
 
 (defn downtown []
   (let [spec
@@ -358,3 +366,4 @@
        :future-stem "vedr"}})
 
 (def result (m/get-string-new test-input-2))
+
