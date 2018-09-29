@@ -323,13 +323,6 @@
                :modified false})]
     expr))
 
-(def infinitive-rules
-  [:u {:cat :verb
-       :infl :conditional}
-   :infinitive :future-stem
-   :u {:cat :verb
-       :infl :future}])
-
 (def rules
   [{:u {:cat :verb
         :agr {:person :1st
@@ -349,19 +342,19 @@
         :agr {:person :1st
               :number :plur}
         :infl :conditional}
-    :g [#"(.*)ciare$"     "$1ceremmo"  ;; cominciare -> cominceremmo
-        #"(.*)giare$"     "$1geremmo"  ;; mangiare   -> mangeremmo
-        #"(.*)care$"      "$1cheremmo" ;; caricare   -> caricheremmo
-        #"(.*)gare$"      "$1gheremmo" ;; pagare     -> pagheremmo
-        #"(.*)are$"       "$1eremmo"   ;; parlare    -> parleremmo
-        #"(.*)ere$"       "$1eremmo"   ;; ricevere   -> riceveremmo
-        #"(.*)ire$"       "$1iremmo"   ;; dormire    -> dormiremmo
-        #"(.*)arsi$"      "$1eremmo"   ;; alzarsi    -> alzeremmo
-        #"(.*)ersi$"      "$1eremmo"   ;; mettersi   -> metteremmo
-        #"(.*)irsi$"      "$1iremmo"   ;; divertirsi -> divertiremmo
+    :g [#"(.*)ciare$"    "$1ceremmo"  ;; cominciare -> cominceremmo
+        #"(.*)giare$"    "$1geremmo"  ;; mangiare   -> mangeremmo
+        #"(.*)care$"     "$1cheremmo" ;; caricare   -> caricheremmo
+        #"(.*)gare$"     "$1gheremmo" ;; pagare     -> pagheremmo
+        #"(.*)are$"      "$1eremmo"   ;; parlare    -> parleremmo
+        #"(.*)ere$"      "$1eremmo"   ;; ricevere   -> riceveremmo
+        #"(.*)ire$"      "$1iremmo"   ;; dormire    -> dormiremmo
+        #"(.*)arsi$"     "$1eremmo"   ;; alzarsi    -> alzeremmo
+        #"(.*)ersi$"     "$1eremmo"   ;; mettersi   -> metteremmo
+        #"(.*)irsi$"     "$1iremmo"   ;; divertirsi -> divertiremmo
         
         ;; :future-stem: vivere -> vivremmo
-        #"(.*)r$"         "$1remmo"]}])
+        #"(.*)r$"        "$1remmo"]}])
 
 (def test-input-1
   {:italiano "dormire"
@@ -398,31 +391,38 @@
 (defn get-string-new [& [structure]]
   (let [structure (or structure
                       {:italiano "dormire"})]
-
     (cond (and (not (nil? (u/get-in structure [:a])))
                (not (nil? (u/get-in structure [:b]))))
           (string/trim (string/join " "
                                     (map get-string-new
                                          [(u/get-in structure [:a])
                                           (u/get-in structure [:b])])))
-
           true
           (let [path-to-infinitive
-                (cond (not (nil? (u/get-in structure [:future-stem])))
-                      [:future-stem]
-                      true
-                      [:italiano])
+                (cond
+                  (and
+                   (not (nil? (u/get-in structure [:future-stem])))
+                   (or (not (= :fail
+                               (unify structure
+                                      {:cat :verb
+                                       :infl :future})))
+                       (not (= :fail
+                               (unify structure
+                                      {:cat :verb
+                                       :infl :conditional})))))
+                  [:future-stem]
+                  true
+                  [:italiano])
                 regexps
                 (concat
                  (mapcat :g
-                         (or
-                          (filter #(not (= % :fail))
-                                  (map
-                                   #(unify %
-                                           {:u structure})
-                                   rules))))
+                         (filter #(not (= % :fail))
+                                 (map
+                                  #(unify %
+                                          {:u structure})
+                                  rules)))
                  [#"(.*)" "$1"])]
             (or (and false regexps)
-                (first (find-matching-pair (u/get-in structure path-to-infinitive) regexps)))))))
-
+                (first (find-matching-pair (u/get-in structure path-to-infinitive)
+                                           regexps)))))))
 
