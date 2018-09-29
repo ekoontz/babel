@@ -324,37 +324,34 @@
     expr))
 
 (def rules
-  [{:u {:cat :verb
-        :agr {:person :1st
-              :number :sing}
-        :infl :present}
-    :g [#"(.*)[aei]re$"  "$1o"
-        #"(.*)[aei]rsi$" "$1o"]}
+  (concat
+   [{:u {:cat :verb
+         :agr {:person :1st
+               :number :sing}
+         :infl :present}
+     :g [#"(.*)[aei]re$"  "$1o"
+         #"(.*)[aei]rsi$" "$1o"]}
+    
+    {:u {:cat :verb
+         :agr {:person :2nd
+               :number :sing}
+         :infl :present}
+     :g [#"(.*)[aei]re$"  "$1i"
+         #"(.*)[aei]rsi$" "$1i"]}
+    
+    ]
 
-   {:u {:cat :verb
-        :agr {:person :2nd
-              :number :sing}
-        :infl :present}
-    :g [#"(.*)[aei]re$"  "$1i"
-        #"(.*)[aei]rsi$" "$1i"]}
 
-   {:u {:cat :verb
-        :agr {:person :1st
-              :number :plur}
-        :infl :conditional}
-    :g [#"(.*)ciare$"    "$1ceremmo"  ;; cominciare -> cominceremmo
-        #"(.*)giare$"    "$1geremmo"  ;; mangiare   -> mangeremmo
-        #"(.*)care$"     "$1cheremmo" ;; caricare   -> caricheremmo
-        #"(.*)gare$"     "$1gheremmo" ;; pagare     -> pagheremmo
-        #"(.*)are$"      "$1eremmo"   ;; parlare    -> parleremmo
-        #"(.*)ere$"      "$1eremmo"   ;; ricevere   -> riceveremmo
-        #"(.*)ire$"      "$1iremmo"   ;; dormire    -> dormiremmo
-        #"(.*)arsi$"     "$1eremmo"   ;; alzarsi    -> alzeremmo
-        #"(.*)ersi$"     "$1eremmo"   ;; mettersi   -> metteremmo
-        #"(.*)irsi$"     "$1iremmo"   ;; divertirsi -> divertiremmo
-        
-        ;; :future-stem: vivere -> vivremmo
-        #"(.*)r$"        "$1remmo"]}])
+   (map (fn [rule]
+          {:g (:g rule)
+           :p (:p rule)
+           :u {:agr (:agr rule)
+               :cat :verb
+               :infl :conditional}})
+        (-> (str "babel/italiano/morphology/verbs/new/" "conditional" ".edn")
+            clojure.java.io/resource
+            slurp
+            read-string))))
 
 (def test-input-1
   {:italiano "dormire"
