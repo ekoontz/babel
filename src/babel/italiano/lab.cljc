@@ -5,7 +5,9 @@
    [babel.index :refer [create-indices lookup-spec]]
    [babel.italiano :as italiano :refer [model morph morph-ps]]
    [babel.italiano.grammar :as grammar]
+   [babel.italiano.morphology :as m]
    #?(:cljs [babel.logjs :as log])
+   [clojure.string :as string]
    #?(:clj [clojure.tools.logging :as log])
    #?(:clj [clojure.repl :refer [doc]])
    [dag_unify.core :as u :refer [pprint strip-refs unify]]))
@@ -203,7 +205,6 @@
 
         all-of-the-specs (concat specs [root-spec semantic-spec]
                                  vedere-specs)]
-    
     (repeatedly #(println
                   (morph-ps (time (generate
                                    (nth all-of-the-specs
@@ -293,6 +294,16 @@
                chosen-spec (unify root-spec tense-spec)]
            (target-generation chosen-spec verbcoach-lexical-lookup model)))))))
 
+(defn simple-sentence []
+  (generate {:rule "sentence-nonphrasal-head"
+             :synsem {:subcat []
+                      :cat :verb
+                      :sem {:tense :present
+                            :aspect :simple
+                            :subj {:pred :I}}}
+             :root {:italiano {:italiano "dormire"}}}
+            model))
+
 (defn furniture-sentence []
   (let [expr (generate
               {:synsem {:cat :verb
@@ -311,4 +322,107 @@
                :comp {:synsem {:agr {:person :3rd}}}
                :modified false})]
     expr))
+
+(def infinitive-rules
+  [:u {:cat :verb
+       :infl :conditional}
+   :infinitive :future-stem
+   :u {:cat :verb
+       :infl :future}])
+
+(def rules
+  [{:u {:cat :verb
+        :agr {:person :1st
+              :number :sing}
+        :infl :present}
+    :g [#"(.*)[aei]re$"  "$1o"
+        #"(.*)[aei]rsi$" "$1o"]}
+
+   {:u {:cat :verb
+        :agr {:person :2nd
+              :number :sing}
+        :infl :present}
+    :g [#"(.*)[aei]re$"  "$1i"
+        #"(.*)[aei]rsi$" "$1i"]}
+
+   {:u {:cat :verb
+        :agr {:person :1st
+              :number :plur}
+        :infl :conditional}
+    :g [#"(.*)ciare$"     "$1ceremmo"  ;; cominciare -> cominceremmo
+        #"(.*)giare$"     "$1geremmo"  ;; mangiare   -> mangeremmo
+        #"(.*)care$"      "$1cheremmo" ;; caricare   -> caricheremmo
+        #"(.*)gare$"      "$1gheremmo" ;; pagare     -> pagheremmo
+        #"(.*)are$"       "$1eremmo"   ;; parlare    -> parleremmo
+        #"(.*)ere$"       "$1eremmo"   ;; ricevere   -> riceveremmo
+        #"(.*)ire$"       "$1iremmo"   ;; dormire    -> dormiremmo
+        #"(.*)arsi$"      "$1eremmo"   ;; alzarsi    -> alzeremmo
+        #"(.*)ersi$"      "$1eremmo"   ;; mettersi   -> metteremmo
+        #"(.*)irsi$"      "$1iremmo"   ;; divertirsi -> divertiremmo
+        
+        ;; :future-stem: vivere -> vivremmo
+        #"(.*)r$"         "$1remmo"]}])
+
+(def test-input-1
+  {:italiano "dormire"
+   :infl :present
+   :agr {:person :1st}
+   :cat :verb})
+
+(def test-input-2
+  {:italiano "dormire"
+   :infl :present
+   :agr {:person :2nd}
+   :cat :verb})
+
+(def test-input-3
+  {:a {:initial true, :cat :noun, :italiano "Giovanni e io", :case :nom},
+   :b {:italiano "vedere",
+       :cat :verb,
+       :initial false,
+       :infl :conditional,
+       :essere false,
+       :agr {:number :plur, :person :1st, :gender :masc},
+       :passato "visto",
+       :future-stem "vedr"}})
+
+(defn find-matching-pair [input from-to-pairs]
+  (if (not (empty? from-to-pairs))
+    (let [[pattern-from pattern-to] from-to-pairs]
+      (if (re-matches pattern-from input)
+        (cons
+         (string/replace input pattern-from pattern-to)
+         (find-matching-pair input (rest (rest from-to-pairs))))
+        (find-matching-pair input (rest (rest from-to-pairs)))))))
+
+(defn get-string-new [& [structure]]
+  (let [structure (or structure
+                      {:italiano "dormire"})]
+
+    (cond (and (not (nil? (u/get-in structure [:a])))
+               (not (nil? (u/get-in structure [:b]))))
+          (string/trim (string/join " "
+                                    (map get-string-new
+                                         [(u/get-in structure [:a])
+                                          (u/get-in structure [:b])])))
+
+          true
+          (let [path-to-infinitive
+                (cond (not (nil? (u/get-in structure [:future-stem])))
+                      [:future-stem]
+                      true
+                      [:italiano])
+                regexps
+                (concat
+                 (mapcat :g
+                         (or
+                          (filter #(not (= % :fail))
+                                  (map
+                                   #(unify %
+                                           {:u structure})
+                                   rules))))
+                 [#"(.*)" "$1"])]
+            (or (and false regexps)
+                (first (find-matching-pair (u/get-in structure path-to-infinitive) regexps)))))))
+
 
