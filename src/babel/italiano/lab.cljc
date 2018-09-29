@@ -323,42 +323,6 @@
                :modified false})]
     expr))
 
-(def rules
-  (reduce concat
-          [(->> (-> (str "babel/italiano/morphology/verbs/new/conditional.edn")
-                    clojure.java.io/resource
-                    slurp
-                    read-string)
-                (map (fn [rule]
-                       {:g (:g rule)
-                        :p (:p rule)
-                        :u {:agr (:agr rule)
-                            :cat :verb
-                            :infl :conditional}})))
-
-           (->> (-> (str "babel/italiano/morphology/verbs/new/future.edn")
-                    clojure.java.io/resource
-                    slurp
-                    read-string)
-                (map (fn [rule]
-                       {:g (:g rule)
-                        :p (:p rule)
-                        :u {:agr (:agr rule)
-                            :cat :verb
-                            :infl :future}})))
-
-           (->> (-> (str "babel/italiano/morphology/verbs/new/present.edn")
-                    clojure.java.io/resource
-                    slurp
-                    read-string)
-                (map (fn [rule]
-                       {:g (:g rule)
-                        :p (:p rule)
-                        :boot-verb (:boot-verb rule false)
-                        :u {:agr (:agr rule)
-                            :cat :verb
-                            :infl :present}})))]))
-
 (def test-input-1
   {:italiano "dormire"
    :infl :present
@@ -382,7 +346,6 @@
        :passato "visto",
        :future-stem "vedr"}})
 
-
 (def test-input-4
   {:a {:initial true, :cat :noun, :italiano "Giovanni e io", :case :nom},
    :b {:italiano "vedere",
@@ -394,51 +357,4 @@
        :passato "visto",
        :future-stem "vedr"}})
 
-(defn find-matching-pair [input from-to-pairs]
-  (if (not (empty? from-to-pairs))
-    (let [[pattern-from pattern-to] from-to-pairs]
-      (if (re-matches pattern-from input)
-        (cons
-         (string/replace input pattern-from pattern-to)
-         (find-matching-pair input (rest (rest from-to-pairs))))
-        (find-matching-pair input (rest (rest from-to-pairs)))))))
-
-(defn get-string-new [& [structure]]
-  (let [structure (or structure
-                      {:italiano "dormire"})]
-    (cond (and (not (nil? (u/get-in structure [:a])))
-               (not (nil? (u/get-in structure [:b]))))
-          (string/trim (string/join " "
-                                    (map get-string-new
-                                         [(u/get-in structure [:a])
-                                          (u/get-in structure [:b])])))
-          true
-          (let [path-to-infinitive
-                (cond
-                  (and
-                   (not (nil? (u/get-in structure [:future-stem])))
-                   (or (not (= :fail
-                               (unify structure
-                                      {:cat :verb
-                                       :infl :future})))
-                       (not (= :fail
-                               (unify structure
-                                      {:cat :verb
-                                       :infl :conditional})))))
-                  [:future-stem]
-                  true
-                  [:italiano])
-                regexps
-                (concat
-                 (mapcat :g
-                         (filter #(not (= % :fail))
-                                 (map
-                                  #(unify %
-                                          {:boot-verb (u/get-in structure [:boot-verb] false)
-                                           :u structure})
-                                  rules)))
-                 [#"(.*)" "$1"])]
-            (or (and false regexps)
-                (first (find-matching-pair (u/get-in structure path-to-infinitive)
-                                           regexps)))))))
-
+(def result (m/get-string-new test-input-2))
