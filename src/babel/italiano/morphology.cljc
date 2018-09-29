@@ -552,6 +552,17 @@
                             :cat :verb
                             :infl :future}})))
 
+           (->> (-> (str "babel/italiano/morphology/verbs/new/gerund.edn")
+                    clojure.java.io/resource
+                    slurp
+                    read-string)
+                (map (fn [rule]
+                       {:g (:g rule)
+                        :p (:p rule)
+                        :u {:agr (:agr rule)
+                            :cat :verb
+                            :infl :gerund}})))
+           
            (->> (-> (str "babel/italiano/morphology/verbs/new/imperfetto.edn")
                     clojure.java.io/resource
                     slurp
