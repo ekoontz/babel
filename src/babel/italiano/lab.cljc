@@ -324,34 +324,29 @@
     expr))
 
 (def rules
-  (concat
-   [{:u {:cat :verb
-         :agr {:person :1st
-               :number :sing}
-         :infl :present}
-     :g [#"(.*)[aei]re$"  "$1o"
-         #"(.*)[aei]rsi$" "$1o"]}
-    
-    {:u {:cat :verb
-         :agr {:person :2nd
-               :number :sing}
-         :infl :present}
-     :g [#"(.*)[aei]re$"  "$1i"
-         #"(.*)[aei]rsi$" "$1i"]}
-    
-    ]
-
-
-   (map (fn [rule]
-          {:g (:g rule)
-           :p (:p rule)
-           :u {:agr (:agr rule)
-               :cat :verb
-               :infl :conditional}})
-        (-> (str "babel/italiano/morphology/verbs/new/" "conditional" ".edn")
-            clojure.java.io/resource
-            slurp
-            read-string))))
+  (reduce concat
+          [(->> (-> (str "babel/italiano/morphology/verbs/new/conditional.edn")
+                    clojure.java.io/resource
+                    slurp
+                    read-string)
+                (map (fn [rule]
+                       {:g (:g rule)
+                        :p (:p rule)
+                        :u {:agr (:agr rule)
+                            :cat :verb
+                            :infl :conditional}})))
+           
+           (->> (-> (str "babel/italiano/morphology/verbs/new/present.edn")
+                    clojure.java.io/resource
+                    slurp
+                    read-string)
+                (map (fn [rule]
+                       {:g (:g rule)
+                        :p (:p rule)
+                        :boot-verb (:boot-verb rule false)
+                        :u {:agr (:agr rule)
+                            :cat :verb
+                            :infl :present}})))]))
 
 (def test-input-1
   {:italiano "dormire"
@@ -416,7 +411,8 @@
                          (filter #(not (= % :fail))
                                  (map
                                   #(unify %
-                                          {:u structure})
+                                          {:boot-verb (u/get-in structure [:boot-verb] false)
+                                           :u structure})
                                   rules)))
                  [#"(.*)" "$1"])]
             (or (and false regexps)
