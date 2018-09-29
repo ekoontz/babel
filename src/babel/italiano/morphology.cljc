@@ -552,6 +552,17 @@
                             :cat :verb
                             :infl :future}})))
 
+           (->> (-> (str "babel/italiano/morphology/verbs/new/imperfetto.edn")
+                    clojure.java.io/resource
+                    slurp
+                    read-string)
+                (map (fn [rule]
+                       {:g (:g rule)
+                        :p (:p rule)
+                        :u {:agr (:agr rule)
+                            :cat :verb
+                            :infl :imperfetto}})))
+
            (->> (-> (str "babel/italiano/morphology/verbs/new/present.edn")
                     clojure.java.io/resource
                     slurp
@@ -573,42 +584,47 @@
          (find-matching-pair input (rest (rest from-to-pairs))))
         (find-matching-pair input (rest (rest from-to-pairs)))))))
 
-(defn get-string-new [& [structure]]
-  (let [structure (or structure
-                      {:italiano "dormire"})]
-    (cond (and (not (nil? (u/get-in structure [:a])))
-               (not (nil? (u/get-in structure [:b]))))
-          (string/trim (string/join " "
-                                    (map get-string-new
-                                         [(u/get-in structure [:a])
-                                          (u/get-in structure [:b])])))
-          true
-          (let [path-to-infinitive
-                (cond
-                  (and
-                   (not (nil? (u/get-in structure [:future-stem])))
-                   (or (not (= :fail
-                               (unify structure
-                                      {:cat :verb
-                                       :infl :future})))
-                       (not (= :fail
-                               (unify structure
-                                      {:cat :verb
-                                       :infl :conditional})))))
-                  [:future-stem]
-                  true
-                  [:italiano])
-                regexps
-                (concat
-                 (mapcat :g
-                         (filter #(not (= % :fail))
-                                 (map
-                                  #(unify %
-                                          {:boot-verb (u/get-in structure [:boot-verb] false)
-                                           :u structure})
-                                  rules)))
-                 [#"(.*)" "$1"])]
-            (or (and false regexps)
-                (first (find-matching-pair (u/get-in structure path-to-infinitive)
-                                           regexps)))))))
+(defn get-string-new [structure]
+  (cond (= :fail structure) :fail
+        (nil? structure) :fail
+        (and (not (nil? (u/get-in structure [:a])))
+             (not (nil? (u/get-in structure [:b]))))
+        (string/trim (string/join " "
+                                  (map get-string-new
+                                       [(u/get-in structure [:a])
+                                        (u/get-in structure [:b])])))
+        true
+        (let [path-to-infinitive
+              (cond
+                (and
+                 (not (nil? (u/get-in structure [:future-stem])))
+                 (or (not (= :fail
+                             (unify structure
+                                    {:cat :verb
+                                     :infl :future})))
+                     (not (= :fail
+                             (unify structure
+                                    {:cat :verb
+                                     :infl :conditional})))))
+                [:future-stem]
+                true
+                [:italiano])
+              regexps
+              (concat
+               (mapcat :g
+                       (filter #(not (= % :fail))
+                               (map
+                                #(unify %
+                                        {:boot-verb (u/get-in structure [:boot-verb] false)
+                                         :u structure})
+                                rules)))
+               [#"(.*)" "$1"])]
+          (or (and false regexps)
+              (first (find-matching-pair (u/get-in structure path-to-infinitive)
+                                         regexps))))))
+
+(defn morph-new [structure]
+  (get-string-new (u/get-in structure [:italiano] :fail)))
+
+
 
