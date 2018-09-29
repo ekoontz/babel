@@ -84,19 +84,18 @@
  
  {:agr {:number :plur
         :person :1st}
-  :g [#"(.*)care$"       "chiamo"    ;; caricare -> carichiamo
-      #"(.*)carsi$"      "chiamo"
-      #"(.*)gare$"       "ghiamo"    ;; pagare -> paghiamo
-      #"(.*)garsi$"      "ghiamo"
-      #"(.*)iare$"       "iamo"
-      #"(.*)are$"        "iamo"
-      #"(.*)ere$"        "iamo"
-      #"(.*)ire$"        "iamo"
-      #"(.*)iarsi$"      "iamo"
-      #"(.*)arsi$"       "iamo"
-      #"(.*)ersi$"       "iamo"
-      #"(.*)irsi$"       "iamo"
-
+  :g [#"(.*)care$"       "$1chiamo"    ;; caricare -> carichiamo
+      #"(.*)carsi$"      "$1chiamo"
+      #"(.*)gare$"       "$1ghiamo"    ;; pagare -> paghiamo
+      #"(.*)garsi$"      "$1ghiamo"
+      #"(.*)iare$"       "$1iamo"
+      #"(.*)are$"        "$1iamo"
+      #"(.*)ere$"        "$1iamo"
+      #"(.*)ire$"        "$1iamo"
+      #"(.*)iarsi$"      "$1iamo"
+      #"(.*)arsi$"       "$1iamo"
+      #"(.*)ersi$"       "$1iamo"
+      #"(.*)irsi$"       "$1iamo"
       ]
 
   :p [#"(.*)iamo$"       "$1are"  ;; parliamo -> parlare
