@@ -574,6 +574,29 @@
                             :cat :verb
                             :infl :imperfetto}})))
 
+           (->> (-> (str "babel/italiano/morphology/verbs/new/passato.edn")
+                    clojure.java.io/resource
+                    slurp
+                    read-string)
+                (map (fn [rule]
+                       {:g (:g rule)
+                        :p (:p rule)
+                        :u {:agr (:agr rule)
+                            :cat :verb
+                            :infl :passato}})))
+
+           (->> (-> (str "babel/italiano/morphology/verbs/new/subjunctive.edn")
+                    clojure.java.io/resource
+                    slurp
+                    read-string)
+                (map (fn [rule]
+                       {:g (:g rule)
+                        :p (:p rule)
+                        :boot-verb (:boot-verb rule false)
+                        :u {:agr (:agr rule)
+                            :cat :verb
+                            :infl :subjunctive}})))
+           
            (->> (-> (str "babel/italiano/morphology/verbs/new/present.edn")
                     clojure.java.io/resource
                     slurp
