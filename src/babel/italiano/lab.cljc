@@ -181,21 +181,21 @@
          {:synsem {:sem {:tense :future}}}
          {:synsem {:sem {:tense :conditional}}}]]
     (repeatedly
-     #(println (m/morph-new (time
-                             (generate
-                              (unify 
-                               (nth vedere-specs (rand-int (count vedere-specs)))
-                               (nth tense-specs (rand-int (count tense-specs)))
-                               {:head {:phrasal false}
-                                :comp {:phrasal false}})
-                              model)))))))
+     #(println (m/morph (time
+                         (generate
+                          (unify 
+                           (nth vedere-specs (rand-int (count vedere-specs)))
+                           (nth tense-specs (rand-int (count tense-specs)))
+                           {:head {:phrasal false}
+                            :comp {:phrasal false}})
+                          model)))))))
 
 (defn downtown []
   (let [spec
         {:synsem {:cat :verb
                   :subcat []}
          :modified false}]
-    (repeatedly #(println (morph (time (generate spec model)))))))
+    (repeatedly #(println (m/morph (time (generate spec model)))))))
 
 (defn basecamp []
   (let [semantic-spec
@@ -249,13 +249,16 @@
 
 (defn target-generation [spec index-fn model]
   (let [grammar ((:rule-matcher-reducer model) spec)]
-    (m/morph-new (binding [babel.generate/println? false
-                           babel.generate/truncate? false
-                           babel.generate/index-fn index-fn
-                           babel.generate/lexical-filter
-                           (fn [lexeme] (= false (u/get-in lexeme [:italiano :exception] false)))
-                           babel.generate/grammar grammar]
-                   (time (generate spec model))))))
+    (binding [babel.generate/println? false
+              babel.generate/truncate? false
+              babel.generate/index-fn index-fn
+              babel.generate/lexical-filter
+              (fn [lexeme] (= false (u/get-in lexeme [:italiano :exception] false)))
+              babel.generate/grammar grammar]
+      (let [structure (time (generate spec model))]
+        (if (= :fail structure)
+          (throw (Exception. (str "target-generation failed with spec: " spec))))
+        structure))))
 
 (def lexicon-indices
   (let [filtered-lexicon
@@ -281,29 +284,33 @@
 (defn generate-for-verbcoach 
   "generate sentences efficiently given specific constraints."
   [& [spec]]
-  (let [example-verbs #{"arrabbiarsi" "chiamarsi" "dormire" "fermarsi" "parlare" "sedersi"}]
+  (let [example-verbs #{"arrabbiarsi" "chiamarsi" "dormire" "fermarsi" "parlare" "sedersi"}
+        example-verbs #{"arrabbiarsi"}]
+;;        example-verbs #{"parlare"}
+        
     (repeatedly
      #(do
-        (println
-         (let [spec (or spec :top)
-               tense-spec (first (shuffle grammar/tense-specs))
-               tense-spec (or tense-spec {:synsem {:sem {:aspect :simple
-                                                         :tense :present}}})
-               tense-spec
-               (let [result (unify spec tense-spec)]
-                 (if (not (= :fail result))
-                   result
-                   spec))
-               root-spec
-               (let [unif
-                     (unify spec
-                            {:root {:italiano {:italiano
-                                               (first (shuffle example-verbs))}}})]
-                 (if (not (= :fail unif))
-                   unif
-                   spec))
-               chosen-spec (unify root-spec tense-spec)]
-           (target-generation chosen-spec verbcoach-lexical-lookup model)))))))
+        (let [spec (or spec :top)
+              tense-spec (first (shuffle grammar/tense-specs))
+              tense-spec
+              (let [result (unify spec tense-spec)]
+                (if (not (= :fail result))
+                  result
+                  spec))
+              root-spec
+              (let [unif
+                    (unify spec
+                           {:root {:italiano {:italiano
+                                              (first (shuffle example-verbs))}}})]
+                (if (not (= :fail unif))
+                  unif
+                  spec))
+              chosen-spec (unify root-spec tense-spec)]
+          (let [result
+                (target-generation chosen-spec verbcoach-lexical-lookup model)]
+            (if (= result :fail)
+              (throw (Exception. (str "failed to generate with spec: " (u/strip-refs chosen-spec)))))
+            (println (m/morph result))))))))
 
 (defn simple-sentence []
   (generate {:rule "sentence-nonphrasal-head"
