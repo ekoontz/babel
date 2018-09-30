@@ -751,6 +751,9 @@
    ;; be used for generation.
    {:root {:italiano {:italiano "chiamarsi"}}} chiamarsi-grammar
    
+   {:synsem {:sem {:tense :past
+                   :aspect :pluperfect}}} present-perfect-grammar
+
    {:synsem {:sem {:tense :present
                    :aspect :perfect}}} present-perfect-grammar
    
