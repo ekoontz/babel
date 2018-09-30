@@ -685,24 +685,35 @@
 (declare model-with-vocab-items)
 
 (def tense-specs
-  [{:synsem {:cat :verb
+  [;; passato
+   {:synsem {:cat :verb
              :sem {:tense :present
                    :aspect :perfect}
              :subcat []}}
+   ;; futuro
    {:synsem {:cat :verb
              :sem {:tense :future}
              :subcat []}}
+   ;; condizionale
    {:synsem {:cat :verb
              :sem {:tense :conditional}
              :subcat []}}
+   ;; trapassato
+   {:synsem {:cat :verb
+             :sem {:tense :past
+                   :aspect :pluperfect}
+             :subcat []}}
+   ;; imperfetto
    {:synsem {:cat :verb
              :sem {:tense :past
                    :aspect :progressive}
              :subcat []}}
+   ;; present progressive
    {:synsem {:cat :verb
              :sem {:tense :present
                    :aspect :progressive}
              :subcat []}}
+   ;; simple present
    {:synsem {:cat :verb
              :sem {:tense :present
                    :aspect :simple}}}])
