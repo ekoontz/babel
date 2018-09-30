@@ -61,6 +61,14 @@
 
             (apply-default-if
              verb-default?
+             {:synsem {:aux true
+                       :cat :verb
+                       :sem {:tense :present
+                             :aspect :progressive}
+                       :infl :present}})
+
+            (apply-default-if
+             verb-default?
              {:synsem {:aux false
                        :cat :verb
                        :sem {:tense :past
@@ -685,6 +693,10 @@
              :subcat []}}
    {:synsem {:cat :verb
              :sem {:tense :present
+                   :aspect :progressive}
+             :subcat []}}
+   {:synsem {:cat :verb
+             :sem {:tense :present
                    :aspect :simple}}}])
 
 (def basic-grammar
@@ -715,6 +727,14 @@
     "vp-pronoun-phrasal"
     "vp-pronoun-nonphrasal"})
 
+(def present-progressive-grammar
+  #{"sentence-phrasal-head"
+    "vp-aux-22-nonphrasal-comp"
+    "vp-aux-22-phrasal-comp"
+    "vp-aux-nonphrasal-complement"
+    "vp-aux-phrasal-complement"
+    "vp-pronoun-phrasal"})
+
 (def rule-matcher
   ;; this is a lot like a lexical compilation default map.
   {:top basic-grammar
@@ -733,6 +753,9 @@
    {:synsem {:sem {:tense :past
                    :aspect :progressive}}} future-grammar
    
+   {:synsem {:sem {:tense :present
+                   :aspect :progressive}}} present-progressive-grammar
+
    {:synsem {:sem {:tense :present
                    :aspect :simple}}} present-grammar})
 
