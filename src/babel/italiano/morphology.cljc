@@ -585,18 +585,6 @@
                             :cat :verb
                             :infl :passato}})))
 
-           (->> (-> (str "babel/italiano/morphology/verbs/new/subjunctive.edn")
-                    clojure.java.io/resource
-                    slurp
-                    read-string)
-                (map (fn [rule]
-                       {:g (:g rule)
-                        :p (:p rule)
-                        :boot-verb (:boot-verb rule false)
-                        :u {:agr (:agr rule)
-                            :cat :verb
-                            :infl :subjunctive}})))
-           
            (->> (-> (str "babel/italiano/morphology/verbs/new/present.edn")
                     clojure.java.io/resource
                     slurp
@@ -607,7 +595,19 @@
                         :boot-verb (:boot-verb rule false)
                         :u {:agr (:agr rule)
                             :cat :verb
-                            :infl :present}})))]))
+                            :infl :present}})))
+
+           (->> (-> (str "babel/italiano/morphology/verbs/new/subjunctive.edn")
+                    clojure.java.io/resource
+                    slurp
+                    read-string)
+                (map (fn [rule]
+                       {:g (:g rule)
+                        :p (:p rule)
+                        :boot-verb (:boot-verb rule false)
+                        :u {:agr (:agr rule)
+                            :cat :verb
+                            :infl :subjunctive}})))]))
 
 (defn find-matching-pair [input from-to-pairs]
   (if (not (empty? from-to-pairs))
