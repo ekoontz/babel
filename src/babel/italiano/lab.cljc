@@ -284,8 +284,8 @@
 (defn generate-for-verbcoach 
   "generate sentences efficiently given specific constraints."
   [& [spec]]
-  (let [example-verbs #{"arrabbiarsi" "chiamarsi" "dormire" "fermarsi" "parlare" "sedersi"}
-        example-verbs #{"arrabbiarsi"}]
+  (let [example-verbs #{"arrabbiarsi" "chiamarsi" "dormire" "fermarsi" "parlare" "sedersi"}]
+;;        example-verbs #{"arrabbiarsi"}]
 ;;        example-verbs #{"parlare"}
         
     (repeatedly
