@@ -618,6 +618,18 @@
          (find-matching-pair input (rest (rest from-to-pairs))))
         (find-matching-pair input (rest (rest from-to-pairs)))))))
 
+(declare irregular-conditional?)
+(declare irregular-conditional)
+(declare irregular-future?)
+(declare irregular-future)
+(declare irregular-gerund?)
+(declare irregular-gerund)
+(declare irregular-passato?)
+(declare irregular-passato)
+(declare irregular-present?)
+(declare irregular-imperfetto?)
+(declare irregular)
+
 (defn get-string-new [structure]
   (cond (= :fail structure) :fail
         (nil? structure) :fail
@@ -627,6 +639,29 @@
                                   (map get-string-new
                                        [(u/get-in structure [:a])
                                         (u/get-in structure [:b])])))
+
+        (and (irregular-conditional? structure)
+             (not (= :use-regular (irregular structure :conditional))))
+        (irregular structure :conditional)
+
+        (and (irregular-future? structure)
+             (not (= :use-regular (irregular structure :future))))
+        (irregular structure :future)
+
+        (irregular-gerund? structure)
+        (irregular-gerund structure)
+
+        (irregular-passato? structure)
+        (irregular-passato structure)
+
+        (and (irregular-present? structure)
+             (not (= :use-regular (irregular structure :present))))
+        (irregular structure :present)
+
+        (and (irregular-imperfetto? structure)
+             (not (= :use-regular (irregular structure :imperfetto))))
+        (irregular structure :imperfetto)
+
         true
         (let [path-to-infinitive
               (cond
@@ -659,6 +694,90 @@
 
 (defn morph-new [structure]
   (get-string-new (u/get-in structure [:italiano] :fail)))
+
+(defn irregular-conditional? [structure]
+  (and
+   (= :verb (u/get-in structure [:cat]))
+   (= :conditional (u/get-in structure [:infl]))
+   (map? (u/get-in structure [:conditional]))))
+
+(defn irregular-future? [structure]
+  (and
+   (= :verb (u/get-in structure [:cat]))
+   (= :future (u/get-in structure [:infl]))
+   (map? (u/get-in structure [:future]))))
+
+(defn irregular-present? [structure]
+  (and
+   (= :verb (u/get-in structure [:cat]))
+   (= :present (u/get-in structure [:infl]))
+   (map? (u/get-in structure [:present]))))
+
+(defn irregular-imperfetto? [structure]
+  (and
+   (= :verb (u/get-in structure [:cat]))
+   (= :imperfetto (u/get-in structure [:infl]))
+   (map? (u/get-in structure [:imperfetto]))))
+
+(defn irregular-gerund? [structure]
+  (and
+   (= :verb (u/get-in structure [:cat]))
+   (= :gerund (u/get-in structure [:infl]))
+   (string? (u/get-in structure [:gerund]))))
+
+(defn irregular-gerund [structure]
+  (u/get-in structure [:imperfetto]))
+
+(defn irregular-passato? [structure]
+  (and
+   (= :verb (u/get-in structure [:cat]))
+   (= :passato (u/get-in structure [:infl]))
+   (string? (u/get-in structure [:passato]))))
+
+(defn irregular-gerund [structure]
+  (u/get-in structure [:gerund]))
+
+(defn irregular [structure infl]
+  (let [arg (u/get-in structure [:agr])
+        irreg (u/get-in structure [infl])]
+    (cond
+      (and (not (= :fail (unify arg
+                                {:person :1st
+                                 :number :sing})))
+           (u/get-in irreg [:1sing]))
+      (u/get-in irreg [:1sing])
+
+      (and (not (= :fail (unify arg
+                                {:person :2nd
+                                 :number :sing})))
+           (u/get-in irreg [:2sing]))
+      (u/get-in irreg [:2sing])
+      
+      (and (not (= :fail (unify arg
+                                {:person :3rd
+                                 :number :sing})))
+           (u/get-in irreg [:3sing]))
+      (u/get-in irreg [:3sing])
+
+      (and (not (= :fail (unify arg
+                                {:person :1st
+                                 :number :plur})))
+           (u/get-in irreg [:1plur]))
+      (u/get-in irreg [:1plur])
+
+      (and (not (= :fail (unify arg
+                                {:person :2nd
+                                 :number :plur})))
+           (u/get-in irreg [:2plur]))
+      (u/get-in irreg [:2plur])
+      
+      (and (not (= :fail (unify arg
+                                {:person :3rd
+                                 :number :plur})))
+           (u/get-in irreg [:3plur]))
+      (u/get-in irreg [:3plur])
+
+      true :use-regular)))
 
 
 
