@@ -324,11 +324,13 @@
 (declare irregular)
 
 (defn morph [structure]
-  (cond (= :fail structure) :fail
-        (nil? structure) :fail
-
+  (cond (or (= :fail structure) 
+            (nil? structure)
+            (string? structure)) structure
+        
+        
         (u/get-in structure [:synsem]) (morph (u/get-in structure [:italiano]))
-
+        
         (and (not (nil? (u/get-in structure [:a])))
              (not (nil? (u/get-in structure [:b]))))
         (string/trim (string/join " "
@@ -336,6 +338,8 @@
                                        [(u/get-in structure [:a])
                                         (u/get-in structure [:b])])))
 
+        (nil? (u/get-in structure [:italiano])) "<empty>"
+        
         (and (irregular-conditional? structure)
              (not (= :use-regular (irregular structure :conditional))))
         (irregular structure :conditional)
