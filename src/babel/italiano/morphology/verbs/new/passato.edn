@@ -8,7 +8,7 @@
 [
  {:agr {:number :sing
         :gender :fem}
-  :u {:synsem {:essere true}}
+  :u {:essere true}
   :g [#"(.*)are$"  "$1ata"
       #"(.*)arsi$" "$1ata"
       #"(.*)ere$"  "$1uta" 
@@ -32,7 +32,7 @@
       
   
  
- {:u {:synsem {:essere true}}
+ {:u {:essere true}
   :agr {:number :plur
         :gender :fem}
   :g [#"(.*)are$"  "$1ate"
@@ -58,7 +58,7 @@
       #"(.*)ute"       "$1ire"
       #"(.*)ute"       "$1uto"]}
  
- {:u {:synsem {:essere true}}
+ {:u {:essere true}
   :agr {:number :plur
         :gender :masc}
   :g [#"(.*)are$"  "$1ati"
@@ -80,10 +80,8 @@
       ;; scesi -> sceso (convert to irregular passato 'sceso' rather than
       ;; infinitive "scendere":
       #"(.*)esi"       "$1eso"]} 
-      
-  
  
- {:u {:synsem {:essere true}}
+ {:u {:essere true}
   :g [#"(.*)are$"  "$1ato"
       #"(.*)arsi$" "$1ato"
       #"(.*)ere$"  "$1uto" 
@@ -101,7 +99,7 @@
       #"(.*)uto" "$1ersi"]}
       
 
- {:u {:synsem {:essere false}}
+ {:u {:essere false}
   :g [#"(.*)are$"  "$1ato"
       #"(.*)arsi$" "$1ato"
       #"(.*)ere$"  "$1uto" 

@@ -274,7 +274,8 @@
                 (map (fn [rule]
                        {:g (:g rule)
                         :p (:p rule)
-                        :u {:agr (:agr rule)
+                        :u {:agr (:agr rule :top)
+                            :essere (u/get-in rule [:u :essere] false)
                             :cat :verb
                             :infl :passato}})))
 
@@ -388,9 +389,8 @@
                                          :u structure})
                                 rules)))
                [#"(.*)" "$1"])]
-          (or (and false regexps)
-              (first (find-matching-pair (u/get-in structure path-to-infinitive)
-                                         regexps))))))
+          (first (find-matching-pair (u/get-in structure path-to-infinitive)
+                                     regexps)))))
 
 (defn irregular-conditional? [structure]
   (and
@@ -431,8 +431,24 @@
    (= :passato (u/get-in structure [:infl]))
    (string? (u/get-in structure [:passato]))))
 
+(def essere-passato-regexps
+  (-> (str "babel/italiano/morphology/verbs/new/essere-passato.edn")
+      clojure.java.io/resource
+      slurp
+      read-string))
+
 (defn irregular-passato [structure]
-  (u/get-in structure [:passato]))
+  (println (u/strip-refs structure))
+  (first
+   (find-matching-pair
+    (u/get-in structure [:passato])
+    (->>
+     essere-passato-regexps
+     (filter #(not (= :fail
+                      (u/unify structure
+                               {:agr (u/get-in % [:agr] :top)
+                                :essere (u/get-in % [:essere] :top)}))))
+     (mapcat :g)))))
 
 (defn irregular-gerund [structure]
   (u/get-in structure [:gerund]))
