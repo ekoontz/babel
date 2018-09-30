@@ -249,13 +249,13 @@
 
 (defn target-generation [spec index-fn model]
   (let [grammar ((:rule-matcher-reducer model) spec)]
-    (morph (binding [babel.generate/println? false
-                     babel.generate/truncate? false
-                     babel.generate/index-fn index-fn
-                     babel.generate/lexical-filter
-                     (fn [lexeme] (= false (u/get-in lexeme [:italiano :exception] false)))
-                     babel.generate/grammar grammar]
-             (time (generate spec model))))))
+    (m/morph-new (binding [babel.generate/println? false
+                           babel.generate/truncate? false
+                           babel.generate/index-fn index-fn
+                           babel.generate/lexical-filter
+                           (fn [lexeme] (= false (u/get-in lexeme [:italiano :exception] false)))
+                           babel.generate/grammar grammar]
+                   (time (generate spec model))))))
 
 (def lexicon-indices
   (let [filtered-lexicon
@@ -281,11 +281,16 @@
 (defn generate-for-verbcoach 
   "generate sentences efficiently given specific constraints."
   [& [spec]]
-  (let [example-verbs #{"arrabbiarsi" "chiamarsi" "dormire" "fermarsi" "parlare" "sedersi"}]
+  (let [example-verbs #{"arrabbiarsi" "chiamarsi" "dormire" "fermarsi" "parlare" "sedersi"}
+        example-verbs #{"avere"}
+        ]
     (repeatedly
      #(do
         (println
-         (let [tense-spec (first (shuffle grammar/tense-specs))
+         (let [spec (or spec :top)
+               tense-spec (first (shuffle grammar/tense-specs))
+               tense-spec (or tense-spec {:synsem {:sem {:aspect :simple
+                                                         :tense :present}}})
                tense-spec
                (let [result (unify spec tense-spec)]
                  (if (not (= :fail result))
