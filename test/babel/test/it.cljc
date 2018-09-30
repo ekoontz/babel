@@ -3,10 +3,10 @@
   (:require
    [babel.directory :refer [models]]
    [babel.generate :as generate]
-   [babel.italiano :as italiano :refer [analyze generate model morph morph-ps parse preprocess]]
+   [babel.italiano :as italiano :refer [analyze generate model morph-ps parse preprocess]]
    [babel.italiano.grammar :as grammar]
    [babel.italiano.lexicon :as lexicon]
-   [babel.italiano.morphology :as morph :refer [analyze-regular]]
+   [babel.italiano.morphology :as morph :refer [analyze-regular morph]]
    [babel.italiano.morphology.nouns :as nouns]
    [babel.lexiconfn :refer [write-lexicon]]
    [babel.italiano.morphology.verbs :as verbs]

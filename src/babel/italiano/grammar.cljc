@@ -5,7 +5,7 @@
    [babel.html :refer [local-timestamp]]
    [babel.index :refer [create-indices lookup-spec]]
    [babel.italiano.lexicon :refer [compile-lexicon edn2lexicon vocab-entry-to-lexeme]]
-   [babel.italiano.morphology :refer [analyze fo]]
+   [babel.italiano.morphology :refer [analyze morph]]
    [babel.lexiconfn :refer [filtered-lexicon read-lexicon] :as lexfn]
    [babel.parse :as parse]
    [babel.ug :refer [apply-default-if comp-modifies-head comp-specs-head
@@ -106,7 +106,7 @@
    "trapassato" {:synsem {:sem {:aspect :pluperfect
                                 :tense :past}}}})
 (defn fo-ps [expr]
-  (parse/fo-ps expr fo))
+  (parse/fo-ps expr morph))
 
 (defn exception [error-string]
   #?(:clj
@@ -607,9 +607,9 @@
 
 ;; TODO: move to italiano/morphology or higher (language-universal)
 (defn morph-walk-tree [tree]
-  (log/debug (str "morph-walk-tree: " (fo tree)))
+  (log/debug (str "morph-walk-tree: " (morph tree)))
   (merge
-   {:surface (fo tree)}
+   {:surface (morph tree)}
    (if (get-in tree [:comp])
      {:comp (morph-walk-tree (get-in tree [:comp]))}
      {})
@@ -797,7 +797,7 @@
       :lexical-cache (atom (cache/fifo-cache-factory {} :threshold 1024))
       :lexicon lexicon
       :lookup (fn [arg] (analyze arg lexicon))
-      :morph (fn [expression & {:keys [from-language show-notes]}] (fo expression))
+      :morph (fn [expression & {:keys [from-language show-notes]}] (morph expression))
       :morph-ps fo-ps         
       :rules rules
       :rule-map (zipmap rules grammar)
@@ -877,7 +877,7 @@
      :language "it"
      :language-keyword :italiano
      :morph-ps fo-ps
-     :morph fo
+     :morph morph
      :lookup (fn [arg]
                (analyze arg lexicon))
      :generate {:lexicon lexicon-for-generation}

@@ -3,7 +3,7 @@
   (:require
    [babel.italiano.grammar :as grammar]
    [babel.italiano.lexicon :as lex]
-   [babel.italiano.morphology :as morph :refer [get-string patterns]]
+   [babel.italiano.morphology :as morph :refer [morph patterns]]
    [babel.generate :as generate]
    [babel.over :as over]
    [babel.parse :as parse]
@@ -31,17 +31,6 @@
       result
       (apply-patterns result))))
 
-(defn morph [expr & {:keys [from-language show-notes]
-                     :or {from-language nil
-                          show-notes true}}]
-  ;; modeled after babel.english/morph:
-  ;; most arguments are simply discarded for italian.
-  ;; TODO: rules should apply repeatedly until no change.
-  (->
-   (get-string (get-in expr [:italiano]))
-   (apply-patterns)
-   (string/trim)))
-    
 (defn morph-ps
   ([expr]
    (morph-ps expr model))
@@ -51,10 +40,10 @@
                        show-notes true}}]
    ;; modeled after babel.english/morph:
    ;; most arguments are simply discarded for italian.
-   (parse/fo-ps expr (:morph model))))
+   (parse/fo-ps expr morph)))
 
 (defn fo-ps [expr]
-  (parse/fo-ps expr #(get-string (get-in % [:italiano]))))
+  (parse/fo-ps expr #(morph %)))
 
 (defn analyze
   "analyze a word: as opposed to parsing which is multi-word."
@@ -75,7 +64,7 @@
    (let [spec (unify spec {:modified false})
          result (generate/generate spec model)]
      (if result
-       (conj {:surface (get-string (get-in result [:italiano]))}
+       (conj {:surface (morph result)}
              result)))))
 
 (defn an-example []
@@ -87,7 +76,7 @@
              #(println 
                (morph (time (generate {:synsem {:cat :verb
                                                 :subcat []
-                                              :sem {:pred :know-s}}}
+                                                :sem {:pred :know-s}}}
                                       med-reload))))))
       (take 5
             (repeatedly 
@@ -144,7 +133,7 @@
 
            (or (seq? input) (vector? input))
            (parse/parse input model)
-        
+           
            true
            (str "don't know how to parse input: " (type input)))))
 
@@ -160,7 +149,7 @@
 
            (or (seq? input) (vector? input))
            (parse/parse input model :original-input original-input)
-        
+           
            true
            (str "don't know how to parse input: " (type input))))))
 
