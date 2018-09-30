@@ -63,6 +63,14 @@
              verb-default?
              {:synsem {:aux true
                        :cat :verb
+                       :sem {:tense :past
+                             :aspect :pluperfect}
+                       :infl :imperfetto}})
+
+            (apply-default-if
+             verb-default?
+             {:synsem {:aux true
+                       :cat :verb
                        :sem {:tense :present
                              :aspect :progressive}
                        :infl :present}})
