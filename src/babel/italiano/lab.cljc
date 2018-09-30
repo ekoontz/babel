@@ -368,5 +368,5 @@
        :passato "visto",
        :future-stem "vedr"}})
 
-(def result (m/get-string-new test-input-2))
+(def result (m/morph test-input-2))
 

@@ -332,7 +332,7 @@
         (and (not (nil? (u/get-in structure [:a])))
              (not (nil? (u/get-in structure [:b]))))
         (string/trim (string/join " "
-                                  (map get-string-new
+                                  (map morph
                                        [(u/get-in structure [:a])
                                         (u/get-in structure [:b])])))
 
