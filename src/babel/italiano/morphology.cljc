@@ -431,6 +431,9 @@
    (= :passato (u/get-in structure [:infl]))
    (string? (u/get-in structure [:passato]))))
 
+(defn irregular-passato [structure]
+  (u/get-in structure [:passato]))
+
 (defn irregular-gerund [structure]
   (u/get-in structure [:gerund]))
 
