@@ -447,7 +447,7 @@
      (filter #(not (= :fail
                       (u/unify structure
                                {:agr (u/get-in % [:agr] :top)
-                                :essere (u/get-in % [:essere] :top)}))))
+                                :essere (u/get-in % [:u :essere] :top)}))))
      (mapcat :g)))))
 
 (defn irregular-gerund [structure]
