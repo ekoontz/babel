@@ -338,6 +338,33 @@
 (declare irregular-imperfetto?)
 (declare irregular)
 
+(def elision-regexps
+  (-> (str "babel/italiano/morphology/elisions.edn")
+      clojure.java.io/resource
+      slurp
+      read-string))
+
+(def generative-elision-regexps
+  (mapcat :g elision-regexps))
+
+(defn elisions
+  "transform string by doing elisions where needed (e.g. 'a il' -> 'al')"
+  [input regex-pairs]
+  (if (empty? regex-pairs)
+    input
+    (elisions
+     (let [[pattern-from pattern-to] regex-pairs]
+       (if (re-matches pattern-from input)
+         (string/replace input pattern-from pattern-to)
+         input))
+     (rest (rest regex-pairs)))))
+
+(defn elisions-to-fixed-point [input]
+  (let [round-one (string/trim (elisions input generative-elision-regexps))]
+    (if (= round-one (string/trim input))
+      round-one
+      (elisions-to-fixed-point round-one))))
+
 (defn morph [structure]
   (cond (or (= :fail structure) 
             (nil? structure)
@@ -347,35 +374,39 @@
         
         (and (not (nil? (u/get-in structure [:a])))
              (not (nil? (u/get-in structure [:b]))))
-        (string/trim (string/join " "
-                                  (map morph
-                                       [(u/get-in structure [:a])
-                                        (u/get-in structure [:b])])))
+        (->
+         (->> 
+          [(u/get-in structure [:a])
+           (u/get-in structure [:b])]
+          (map morph)
+          (string/join " "))
+         string/trim
+         elisions-to-fixed-point)
 
         (nil? (u/get-in structure [:italiano])) "<empty>"
         
         (and (irregular-conditional? structure)
              (not (= :use-regular (irregular structure :conditional))))
         (irregular structure :conditional)
-
+        
         (and (irregular-future? structure)
              (not (= :use-regular (irregular structure :future))))
         (irregular structure :future)
-
+        
         (irregular-gerund? structure)
         (irregular-gerund structure)
-
+        
         (irregular-passato? structure)
         (irregular-passato structure)
-
+        
         (and (irregular-present? structure)
              (not (= :use-regular (irregular structure :present))))
         (irregular structure :present)
-
+        
         (and (irregular-imperfetto? structure)
              (not (= :use-regular (irregular structure :imperfetto))))
         (irregular structure :imperfetto)
-
+        
         true
         (let [path-to-root
               (cond
@@ -402,7 +433,7 @@
                                          :u structure})
                                 rules)))
                [#"(.*)" "$1"])]
-;;          (println (str "regexps: " (string/join "," regexps)))
+          ;;          (println (str "regexps: " (string/join "," regexps)))
           (first (find-matching-pair (u/get-in structure path-to-root)
                                      regexps)))))
 

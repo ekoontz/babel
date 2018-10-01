@@ -1,4 +1,4 @@
-[{:g [#"\b(c)i ([eè])"      "$1'$2"]}  ;; ci è -> c'è
+[{:g [#"\b(c)i\s*([eè])"      "$1'$2"]}  ;; ci è -> c'è
  {:g [#"\bl[ao] ([aeiouh])" "l'$1"]}  ;; io la ho visto-> l'ho visto
 
 
