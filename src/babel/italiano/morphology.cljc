@@ -228,7 +228,14 @@
            (->> (-> (str "babel/italiano/morphology/nouns.edn")
                     clojure.java.io/resource
                     slurp
-                    read-string))
+                    read-string)
+                (map (fn [rule]
+                       {:g (:g rule)
+                        :p (:p rule)
+                        :u {:agr (:agr rule)
+                            :cat :noun
+                            :pronoun false
+                            :propernoun false}})))
 
            (->> (-> (str "babel/italiano/morphology/verbs/conditional.edn")
                     clojure.java.io/resource
@@ -395,7 +402,7 @@
                                          :u structure})
                                 rules)))
                [#"(.*)" "$1"])]
-          ;; (println (str "regexps: " (string/join "," regexps)))
+;;          (println (str "regexps: " (string/join "," regexps)))
           (first (find-matching-pair (u/get-in structure path-to-root)
                                      regexps)))))
 
