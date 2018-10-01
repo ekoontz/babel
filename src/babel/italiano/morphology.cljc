@@ -223,7 +223,7 @@
 
 (def rules
   (reduce concat
-          [(->> (-> (str "babel/italiano/morphology/verbs/new/conditional.edn")
+          [(->> (-> (str "babel/italiano/morphology/verbs/conditional.edn")
                     clojure.java.io/resource
                     slurp
                     read-string)
@@ -234,7 +234,7 @@
                             :cat :verb
                             :infl :conditional}})))
 
-           (->> (-> (str "babel/italiano/morphology/verbs/new/future.edn")
+           (->> (-> (str "babel/italiano/morphology/verbs/future.edn")
                     clojure.java.io/resource
                     slurp
                     read-string)
@@ -245,7 +245,7 @@
                             :cat :verb
                             :infl :future}})))
 
-           (->> (-> (str "babel/italiano/morphology/verbs/new/gerund.edn")
+           (->> (-> (str "babel/italiano/morphology/verbs/gerund.edn")
                     clojure.java.io/resource
                     slurp
                     read-string)
@@ -256,7 +256,7 @@
                             :cat :verb
                             :infl :gerund}})))
            
-           (->> (-> (str "babel/italiano/morphology/verbs/new/imperfetto.edn")
+           (->> (-> (str "babel/italiano/morphology/verbs/imperfetto.edn")
                     clojure.java.io/resource
                     slurp
                     read-string)
@@ -267,7 +267,7 @@
                             :cat :verb
                             :infl :imperfetto}})))
 
-           (->> (-> (str "babel/italiano/morphology/verbs/new/passato.edn")
+           (->> (-> (str "babel/italiano/morphology/verbs/passato.edn")
                     clojure.java.io/resource
                     slurp
                     read-string)
@@ -279,7 +279,7 @@
                             :cat :verb
                             :infl :passato}})))
 
-           (->> (-> (str "babel/italiano/morphology/verbs/new/present.edn")
+           (->> (-> (str "babel/italiano/morphology/verbs/present.edn")
                     clojure.java.io/resource
                     slurp
                     read-string)
@@ -291,7 +291,7 @@
                             :cat :verb
                             :infl :present}})))
 
-           (->> (-> (str "babel/italiano/morphology/verbs/new/subjunctive.edn")
+           (->> (-> (str "babel/italiano/morphology/verbs/subjunctive.edn")
                     clojure.java.io/resource
                     slurp
                     read-string)
@@ -329,7 +329,6 @@
             (nil? structure)
             (string? structure)) structure
         
-        
         (u/get-in structure [:synsem]) (morph (u/get-in structure [:italiano]))
         
         (and (not (nil? (u/get-in structure [:a])))
@@ -364,7 +363,7 @@
         (irregular structure :imperfetto)
 
         true
-        (let [path-to-infinitive
+        (let [path-to-root
               (cond
                 (and
                  (not (nil? (u/get-in structure [:future-stem])))
@@ -389,7 +388,7 @@
                                          :u structure})
                                 rules)))
                [#"(.*)" "$1"])]
-          (first (find-matching-pair (u/get-in structure path-to-infinitive)
+          (first (find-matching-pair (u/get-in structure path-to-root)
                                      regexps)))))
 
 (defn irregular-conditional? [structure]
