@@ -223,7 +223,14 @@
 
 (def rules
   (reduce concat
-          [(->> (-> (str "babel/italiano/morphology/verbs/conditional.edn")
+          [
+
+           (->> (-> (str "babel/italiano/morphology/nouns.edn")
+                    clojure.java.io/resource
+                    slurp
+                    read-string))
+
+           (->> (-> (str "babel/italiano/morphology/verbs/conditional.edn")
                     clojure.java.io/resource
                     slurp
                     read-string)
@@ -255,7 +262,7 @@
                         :u {:agr (:agr rule)
                             :cat :verb
                             :infl :gerund}})))
-           
+
            (->> (-> (str "babel/italiano/morphology/verbs/imperfetto.edn")
                     clojure.java.io/resource
                     slurp
@@ -388,6 +395,7 @@
                                          :u structure})
                                 rules)))
                [#"(.*)" "$1"])]
+          ;; (println (str "regexps: " (string/join "," regexps)))
           (first (find-matching-pair (u/get-in structure path-to-root)
                                      regexps)))))
 
@@ -431,7 +439,7 @@
    (string? (u/get-in structure [:passato]))))
 
 (def essere-passato-regexps
-  (-> (str "babel/italiano/morphology/verbs/new/essere-passato.edn")
+  (-> (str "babel/italiano/morphology/verbs/essere-passato.edn")
       clojure.java.io/resource
       slurp
       read-string))
