@@ -25,6 +25,11 @@
    [clojure.repl :refer (doc)]
    [dag_unify.core :as u :refer [fail? get-in remove-matching-keys strip-refs unify]]))
 
+(defn prep-default? [tree]
+  (and (= :prep (u/get-in tree [:synsem :cat]))
+       (= :noun (u/get-in tree [:comp :synsem :cat]))
+       (= :top (u/get-in tree [:comp :synsem :agr :number] :top))))
+
 (defn verb-default? [tree]
   (and (= :verb (u/get-in tree [:synsem :cat]))
        (or (= :top (u/get-in tree [:synsem :sem :tense] :top))
@@ -88,7 +93,11 @@
              {:synsem {:aux false
                        :cat :verb
                        :sem {:tense :future}
-                       :infl :future}}))]
+                       :infl :future}})
+
+            (apply-default-if
+             prep-default?
+             {:comp {:synsem {:agr {:number :sing}}}}))]
     [result]))
 
 (declare model)
