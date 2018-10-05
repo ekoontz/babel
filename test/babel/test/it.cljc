@@ -4,6 +4,7 @@
    [babel.generate :as generate]
    [babel.italiano :as italiano :refer [analyze generate model morph-ps parse preprocess]]
    [babel.italiano.grammar :as grammar]
+   [babel.italiano.lab :as lab :refer [parse-at]]
    [babel.italiano.lexicon :as lexicon]
    [babel.italiano.morphology :as morph :refer [analyze-regular morph]]
    [babel.italiano.morphology.nouns :as nouns]
