@@ -369,7 +369,6 @@
   (cond (or (= :fail structure) 
             (nil? structure)
             (string? structure)) structure
-        
         (u/get-in structure [:synsem]) (morph (u/get-in structure [:italiano]))
         
         (and (not (nil? (u/get-in structure [:a])))
