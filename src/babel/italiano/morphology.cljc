@@ -523,7 +523,6 @@
       read-string))
 
 (defn irregular-passato [structure]
-  (println (u/strip-refs structure))
   (first
    (find-matching-pair
     (u/get-in structure [:passato])
