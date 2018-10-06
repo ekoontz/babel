@@ -1,5 +1,5 @@
-[{:g [#"(.*)a$"   "$1e"]  ;; donna      -> donne
-  :p [#"(.*)e$"   "$1a"]   ;; donne     -> donna
+[{:g [#"(.*[^c])a$"   "$1e"]  ;; donna     -> donne
+  :p [#"(.*[^c])e$"   "$1a"]  ;; donne     -> donna
   :agr {:gender :fem
         :number :plur}}
  
