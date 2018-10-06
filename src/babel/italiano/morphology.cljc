@@ -97,11 +97,26 @@
 
 ;; analysis-patterns are declarative data that determine how analysis (inflected form ->root form)
 ;; and conjugation (root form -> inflected form) are performed.
-(defonce analysis-patterns
+;; TODO: rename to simply 'patterns' since they are used in both directions,
+;; not just analysis.
+(def analysis-patterns
   (concat
-   adjectives/patterns
-   determiners/patterns
-   nouns/patterns
+   (-> (str "babel/italiano/morphology/adjectives.edn")
+       clojure.java.io/resource
+       slurp
+       read-string)
+   (-> (str "babel/italiano/morphology/determiners.edn")
+       clojure.java.io/resource
+       slurp
+       read-string)
+   (-> (str "babel/italiano/morphology/elisions.edn")
+       clojure.java.io/resource
+       slurp
+       read-string)
+   (-> (str "babel/italiano/morphology/nouns.edn")
+       clojure.java.io/resource
+       slurp
+       read-string)
    verbs/patterns))
 
 (defonce ppa-tokens-to-surface
@@ -126,9 +141,36 @@
      preposition-plus-article
      concat)))
 
+(declare analyze-one-pattern)
+
 (defn analyze-regular [surface-form lexicon]
-  "do regular (i.e. non-exceptional) morphological analysis to determine lexical information for a conjugated surface-form, using the (defonce analysis-patterns) defined above."
   (language-independent/analyze surface-form lexicon analysis-patterns))
+
+(def identity-pattern
+  {:agr :top
+   :p [#"(.*)" "$1"]})
+
+(defn analyze-regular [surface lexicon]
+  (->>
+   (cons identity-pattern
+         babel.italiano.morphology/analysis-patterns)
+   (mapcat #(analyze-one-pattern surface % lexicon))))
+
+(defn analyze-one-pattern
+  "do regular (i.e. non-exceptional) morphological analysis to
+  determine lexical information for a conjugated surface-form, using
+  the (defonce analysis-patterns) defined above."
+  [surface pattern lexicon]
+  (mapcat (fn [[from to]] 
+            (if (re-matches from surface)
+              (->> (string/replace surface from to) ;; get root form..
+                   (get lexicon) ;; look up root form in lexicon..
+                   (map (fn [entry] ;; for each lexical entry, unify against the pattern's :u..
+                          (unify (:u pattern
+                                     {:synsem {:agr (:agr pattern :top)}})
+                                 entry)))
+                   (filter #(not (= :fail %)))))) ;; filter out fails.
+          (babel.morphology/group-by-two (:p pattern))))
 
 (declare analyze-capitalization-variant)
 
