@@ -166,8 +166,8 @@
               (->> (string/replace surface from to) ;; get root form..
                    (get lexicon) ;; look up root form in lexicon..
                    (map (fn [entry] ;; for each lexical entry, unify against the pattern's :u..
-                          (unify (:u pattern
-                                     {:synsem {:agr (:agr pattern :top)}})
+                          (unify (:u pattern :top)
+                                 {:synsem {:agr (:agr pattern :top)}}
                                  entry)))
                    (filter #(not (= :fail %)))))) ;; filter out fails.
           (babel.morphology/group-by-two (:p pattern))))

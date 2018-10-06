@@ -8,7 +8,7 @@
 [
  {:agr {:number :sing
         :gender :fem}
-  :u {:essere true}
+  :u {:synsem {:essere true}}
   :g [#"(.*)are$"  "$1ata"
       #"(.*)arsi$" "$1ata"
       #"(.*)ere$"  "$1uta" 
@@ -32,7 +32,7 @@
       
   
  
- {:u {:essere true}
+ {:u {:synsem {:essere true}}
   :agr {:number :plur
         :gender :fem}
   :g [#"(.*)are$"  "$1ate"
@@ -58,7 +58,7 @@
       #"(.*)ute"       "$1ire"
       #"(.*)ute"       "$1uto"]}
  
- {:u {:essere true}
+ {:u {:synsem {:essere true}}
   :agr {:number :plur
         :gender :masc}
   :g [#"(.*)are$"  "$1ati"
@@ -81,7 +81,7 @@
       ;; infinitive "scendere":
       #"(.*)esi"       "$1eso"]} 
  
- {:u {:essere true}
+ {:u {:synsem {:essere true}}
   :g [#"(.*)are$"  "$1ato"
       #"(.*)arsi$" "$1ato"
       #"(.*)ere$"  "$1uto" 
@@ -99,7 +99,7 @@
       #"(.*)uto" "$1ersi"]}
       
 
- {:u {:essere false}
+ {:u {:synsem {:essere false}}
   :g [#"(.*)are$"  "$1ato"
       #"(.*)arsi$" "$1ato"
       #"(.*)ere$"  "$1uto" 
