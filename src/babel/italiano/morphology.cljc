@@ -215,7 +215,7 @@
                 lexeme))
         (get lexicon surface-form))))
 
-(defonce exceptions-rules
+(def exceptions-rules
   (concat verbs/exceptions-rules
           adjectives/exceptions-rules
           nouns/exceptions-rules))
