@@ -551,20 +551,19 @@
          "dopo ventotto anni ostana ha un cittadino neonato")))
 
 (deftest parse-long-sentence
-  (or true ;; disable this deftest for now, until generation is completely fixed.
-      (let [result (parse "dopo ventotto anni ostana ha un cittadino neonato")
-            parses (mapcat :parses result)
-            semantics
-            (map (fn [parse]
-                   (u/get-in parse [:synsem :sem]))
-                 parses)]
-        (is (not (empty? parses)))
-        (is (not (nil? (some #(= :have (u/get-in % [:pred])) semantics))))
-        (is (not (nil? (some #(= :newborn (u/get-in % [:obj :pred])) semantics))))
-        (is (not (nil? (some #(= :ostana (u/get-in % [:subj :pred])) semantics))))
-        (is (not (nil? (some #(= :after (u/get-in % [:mod :pred])) semantics))))
-        (is (not (nil? (some #(= :year (u/get-in % [:mod :obj :pred])) semantics))))
-        (is (not (nil? (some #(= :twentyeight (u/get-in % [:mod :obj :spec :def])) semantics)))))))
+  (let [result (parse "dopo ventotto anni ostana ha un cittadino neonato")
+        parses (mapcat :parses result)
+        semantics
+        (map (fn [parse]
+               (u/get-in parse [:synsem :sem]))
+             parses)]
+    (is (not (empty? parses)))
+    (is (not (nil? (some #(= :have (u/get-in % [:pred])) semantics))))
+    (is (not (nil? (some #(= :newborn (u/get-in % [:obj :pred])) semantics))))
+    (is (not (nil? (some #(= :ostana (u/get-in % [:subj :pred])) semantics))))
+    (is (not (nil? (some #(= :after (u/get-in % [:mod :pred])) semantics))))
+    (is (not (nil? (some #(= :year (u/get-in % [:mod :obj :pred])) semantics))))
+    (is (not (nil? (some #(= :twentyeight (u/get-in % [:mod :obj :spec :def])) semantics)))))))
 
 (deftest parse-long-sentence-with-punctuation
   (let [result (parse "Dopo ventotto anni, Ostana ha un cittadino neonato.")
