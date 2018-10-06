@@ -563,7 +563,7 @@
     (is (not (nil? (some #(= :ostana (u/get-in % [:subj :pred])) semantics))))
     (is (not (nil? (some #(= :after (u/get-in % [:mod :pred])) semantics))))
     (is (not (nil? (some #(= :year (u/get-in % [:mod :obj :pred])) semantics))))
-    (is (not (nil? (some #(= :twentyeight (u/get-in % [:mod :obj :spec :def])) semantics)))))))
+    (is (not (nil? (some #(= :twentyeight (u/get-in % [:mod :obj :spec :def])) semantics))))))
 
 (deftest parse-long-sentence-with-punctuation
   (let [result (parse "Dopo ventotto anni, Ostana ha un cittadino neonato.")
