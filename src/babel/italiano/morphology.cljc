@@ -474,7 +474,6 @@
                                          :u structure})
                                 rules)))
                [#"(.*)" "$1"])]
-          ;;          (println (str "regexps: " (string/join "," regexps)))
           (first (find-matching-pair (u/get-in structure path-to-root)
                                      regexps)))))
 
