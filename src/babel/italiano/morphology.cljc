@@ -331,7 +331,7 @@
                        {:g (:g rule)
                         :p (:p rule)
                         :u {:agr (:agr rule :top)
-                            :essere (u/get-in rule [:u :essere] false)
+                            :essere (u/get-in rule [:u :synsem :essere] false)
                             :cat :verb
                             :infl :passato}})))
 
