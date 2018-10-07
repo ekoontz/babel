@@ -24,68 +24,18 @@
 ;; TODO: move this to morphology/prepositions.edn,
 ;; following example in morphology/determiners.edn.
 (defonce preposition-plus-article
-  [["a il"   "al"]
-   ["a lo"   "allo"]
-   ["a la"   "alla"]
-   ["a l'"   "all'"]
-   ["a i"    "ai"]
-   ["a gli"  "agli"]
-   ["a le"   "alle"]
-   
-   ["da il"  "dal"]
-   ["da lo"  "dallo"]
-   ["da la"  "dalla"]
-   ["da l'"  "dall'"]
-   ["da i"   "dai"]
-   ["da gli" "dagli"]
-   ["da le"  "dalle"]
-
-   ["de il"  "del"]
-   ["de lo"  "dello"]
-   ["de la"  "della"]
-   ["de l'"  "dell'"]
-   ["de i"   "dei"]
-   ["de gli" "degli"]
-   ["de le"  "delle"]
-
-   ["di il"  "del"]
-   ["di lo"  "dello"]
-   ["di la"  "della"]
-   ["di l'"  "dell'"]
-   ["di i"   "dei"]
-   ["di gli" "degli"]
-   ["di le"  "delle"]
-
-   ["in il"  "nel"]
-   ["in lo"  "nello"]
-   ["in la"  "nella"]
-   ["in l'"  "nell'"]
-   ["in i"   "nei"]
-   ["in gli" "negli"]
-   ["in le"  "nelle"]
-
-   ["su il"  "sul"]
-   ["su lo"  "sullo"]
-   ["su la"  "sulla"]
-   ["su l'"  "sull'"]
-   ["su i"   "sui"]
-   ["su gli" "sugli"]
-   ["su le"  "sulle"]
+  [[""   ""]
    ])
 
 ;; TODO: pre-compile these rules rather than building regexp objects at runtime.
 (defn apply-one-rule [string from-to-pair]
-  (let [from (second from-to-pair)
-        to (first from-to-pair)]
-    (let [from-pattern (re-pattern
-                        (str "\\b" from "\\b"))]
-      (string/replace string from-pattern to))))
+  string)
 
 (defn replace-over [strings]
   ;; TODO: use mapcat rather than (reduce concat) for speed.
   (let [result (set (reduce concat
                             (map (fn [string]
-                                   (map #(apply-one-rule string %)
+                                   (map (fn [x] string)
                                         preposition-plus-article))
                                  strings)))]
     (if (not (= result strings))
