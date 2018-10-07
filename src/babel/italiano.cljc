@@ -3,7 +3,7 @@
   (:require
    [babel.italiano.grammar :as grammar]
    [babel.italiano.lexicon :as lex]
-   [babel.italiano.morphology :as morph :refer [morph]]
+   [babel.italiano.morphology :as morph :refer [analyze-tokens morph]]
    [babel.generate :as generate]
    [babel.over :as over]
    [babel.parse :as parse]
@@ -75,14 +75,6 @@
                                                 :subcat []
                                                 :sem {:pred :know-s}}}
                                       med)))))))))
-
-(defonce tokenizer #"[ '\n,’».]")
-
-(defn analyze-tokens
-  "given a string, generate a list of tokenization hypotheses."
-  [string]
-  [(string/split string tokenizer)])
-
 (defn over
   "given a parent and 2 children, try to arrange them with the first child on the left and the second child on the right."
   [parent child1 child2]

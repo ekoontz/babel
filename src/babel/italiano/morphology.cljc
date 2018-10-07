@@ -44,6 +44,13 @@
 (defn analyze-regular [surface-form lexicon]
   (language-independent/analyze surface-form lexicon analysis-patterns))
 
+(def tokenizer #"[ '\n,’».]")
+
+(defn analyze-tokens
+  "given a string, generate a list of tokenization hypotheses."
+  [string]
+  [(string/split string tokenizer)])
+
 (def identity-pattern
   {:agr :top
    :p [#"(.*)" "$1"]})
