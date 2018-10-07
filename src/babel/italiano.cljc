@@ -78,14 +78,10 @@
 
 (defonce tokenizer #"[ '\n,’».]")
 
-(defn tokenize [input]
-  (string/split input tokenizer))
-
 (defn analyze-tokens
   "given a string, generate a list of tokenization hypotheses."
   [string]
-  (map #(string/split % tokenizer)
-       [string]))
+  [(string/split string tokenizer)])
 
 (defn over
   "given a parent and 2 children, try to arrange them with the first child on the left and the second child on the right."
