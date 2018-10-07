@@ -21,26 +21,8 @@
   (map :g
        (misc/compile-morphology)))
 
-;; TODO: move this to morphology/prepositions.edn,
-;; following example in morphology/determiners.edn.
-(defonce preposition-plus-article
-  [[""   ""]
-   ])
-
-;; TODO: pre-compile these rules rather than building regexp objects at runtime.
-(defn apply-one-rule [string from-to-pair]
-  string)
-
 (defn replace-over [strings]
-  ;; TODO: use mapcat rather than (reduce concat) for speed.
-  (let [result (set (reduce concat
-                            (map (fn [string]
-                                   (map (fn [x] string)
-                                        preposition-plus-article))
-                                 strings)))]
-    (if (not (= result strings))
-      (replace-over result)
-      strings)))
+  strings)
 
 (defn tokenize-prepositions-in [string & [match-pairs]]
   string)
@@ -68,28 +50,6 @@
        slurp
        read-string)
    verbs/patterns))
-
-(defonce ppa-tokens-to-surface
-  (map (fn [pair]
-         [(re-pattern
-           (str "\\b" (first pair) "\\b"))
-          (second pair)])
-       preposition-plus-article))
-
-(defonce ppa-surface-to-tokens
-  (map (fn [pair]
-         [(re-pattern
-           (str "\\b" (second pair) "\\b"))
-          (first pair)])
-       preposition-plus-article))
-
-(defn conjugate-italian-prep [prep np]
-  (let [concat (str (get prep :italiano)
-                    " "
-                    (get np :italiano))]
-    (replace-from-list
-     preposition-plus-article
-     concat)))
 
 (declare analyze-one-pattern)
 
