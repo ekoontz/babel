@@ -5,7 +5,6 @@
    [babel.italiano.lexicon :as lex]
    [babel.italiano.morphology :as morph :refer [analyze-tokens morph]]
    [babel.generate :as generate]
-   [babel.over :as over]
    [babel.parse :as parse]
    [babel.test.test :refer [init-db]]
    #?(:clj [clojure.tools.logging :as log])
@@ -75,10 +74,6 @@
                                                 :subcat []
                                                 :sem {:pred :know-s}}}
                                       med)))))))))
-(defn over
-  "given a parent and 2 children, try to arrange them with the first child on the left and the second child on the right."
-  [parent child1 child2]
-  (over/over parent child1 child2))
 
 (defn preprocess [input]
   "arbitrary regexp replacements to convert Italian orthography into a parsable whitespace-delimited expression"
