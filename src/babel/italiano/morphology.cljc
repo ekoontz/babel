@@ -15,18 +15,6 @@
    #?(:cljs [babel.logjs :as log]) 
    [dag_unify.core :as u :refer (copy dissoc-paths fail? get-in ref? strip-refs unify)]))
 
-;; TODO: move all patterns into here eventually
-;;   (preposition-plus-article, adjectives/patterns,etc).
-(defonce patterns
-  (map :g
-       (misc/compile-morphology)))
-
-(defn replace-over [strings]
-  strings)
-
-(defn tokenize-prepositions-in [string & [match-pairs]]
-  string)
-
 ;; analysis-patterns are declarative data that determine how analysis (inflected form ->root form)
 ;; and conjugation (root form -> inflected form) are performed.
 ;; TODO: rename to simply 'patterns' since they are used in both directions,

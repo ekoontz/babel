@@ -3,7 +3,7 @@
   (:require
    [babel.italiano.grammar :as grammar]
    [babel.italiano.lexicon :as lex]
-   [babel.italiano.morphology :as morph :refer [morph patterns]]
+   [babel.italiano.morphology :as morph :refer [morph]]
    [babel.generate :as generate]
    [babel.over :as over]
    [babel.parse :as parse]
@@ -22,14 +22,6 @@
     (merge
      {:loaded-at (java.time.LocalDateTime/now)}
      @@(get babel.directory/models :it))))
-
-(defn apply-patterns [input-string]
-  (let [result 
-        (reduce (fn [str [from to]] (string/replace str from to))
-                (cons input-string patterns))]
-    (if (= result input-string)
-      result
-      (apply-patterns result))))
 
 (defn morph-ps
   ([expr]
@@ -93,7 +85,7 @@
   "given a string, generate a list of tokenization hypotheses."
   [string]
   (map #(string/split % tokenizer)
-       (morph/replace-over [string])))
+       [string]))
 
 (defn over
   "given a parent and 2 children, try to arrange them with the first child on the left and the second child on the right."
