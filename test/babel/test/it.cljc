@@ -57,6 +57,17 @@
                                          :tense :present}}})]
     (is (= "io sono" (morph result)))))
 
+(deftest present-with-root
+  (let [result (generate {:root {:italiano {:italiano "bere"}}
+                          :synsem {:cat :verb
+                                   :subcat []
+                                   :sem {:aspect :simple
+                                         :obj :unspec
+                                         :subj {:pred :I}
+                                         :tense :present}}})]
+    (is (not (nil? result)))
+    (is (= "io bevo" (morph result)))))
+
 (deftest passato-prossimo
   (let [result (generate {:root {:italiano {:italiano "bere"}}
                           :synsem {:cat :verb
