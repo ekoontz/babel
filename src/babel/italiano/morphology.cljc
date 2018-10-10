@@ -329,7 +329,7 @@
          string/trim
          elisions-to-fixed-point)
 
-        (nil? (u/get-in structure [:italiano])) "<empty>"
+        (nil? (u/get-in structure [:italiano])) "<empty lexeme>"
         
         (and (irregular-conditional? structure)
              (not (= :use-regular (irregular structure :conditional))))

@@ -306,6 +306,13 @@
   "shortcut"
   (sentence-impl input))
 
+
+(def root-head
+  {:root-is :head})
+
+(def root-comp
+  {:root-is :comp})
+
 ;; Phrase [:root [1]]
 ;;       /        \
 ;;  [1] H          C

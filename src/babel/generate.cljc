@@ -101,7 +101,12 @@
                   
                   true ;; generate children that are leaves before children that are trees.
                   (lazy-cat (child-lexemes) (child-trees)))]
+
+            ;; return a list of all possible children added to
+            ;; this tree at the frontier of the tree.
             (assoc-children tree children frontier-path)))
+
+         ;; the tree is full: no frontier left.
          [tree])
        (grow (rest trees))))))
 
@@ -185,8 +190,16 @@
   (if (not (empty? children))
     (lazy-cat
      (let [child (first children)
+           debug (log/info (str "adding to: " (morph-ps tree)))
            tree-with-child (u/assoc-in tree path child)]
+
        (-> tree-with-child
+
+           ;; used by babel.italiano.grammar to log/info a parse tree for debugging.
+           (u/assoc-in! [:morph]
+                        morph-ps)
+
+
            (u/assoc-in! 
             (concat (butlast path) [::done?])
             true)

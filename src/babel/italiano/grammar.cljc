@@ -10,6 +10,7 @@
    [babel.parse :as parse]
    [babel.ug :refer [apply-default-if comp-modifies-head comp-specs-head
                      head-principle
+                     root-comp root-head
                      root-is-comp root-is-comp-root
                      root-is-head root-is-head-root
                      subcat-1-principle
@@ -95,6 +96,35 @@
                        :sem {:tense :future}
                        :infl :future}})
 
+            (apply-default-if
+             #(and (= :head (u/get-in % [:root-is]))
+                   (= false (u/get-in % [:phrasal]))
+                   (do (log/info (str "GOT HERE! 0"))
+                       true))
+             root-is-head)
+
+            (apply-default-if
+             #(and (= :head (u/get-in % [:root-is]))
+                   (= true (u/get-in % [:phrasal]))
+                   (do (log/info (str "adding constraint 'root-is-head-root' to: "
+                                      ((:morph %) %)))
+                       true))
+             root-is-head-root)
+
+            (apply-default-if
+             #(and (= :comp (u/get-in % [:root-is]))
+                   (= false (u/get-in % [:phrasal]))
+                   (do (log/info (str "GOT HERE! 2"))
+                       true))
+             root-is-comp)
+
+            (apply-default-if
+             #(and (= :comp (u/get-in % [:root-is]))
+                   (= true (u/get-in % [:phrasal]))
+                   (do (log/info (str "GOT HERE! 3"))
+                       true))
+             root-is-comp-root)
+            
             (apply-default-if
              prep-default?
              {:comp {:synsem {:agr {:number :sing}}}}))]
@@ -355,6 +385,7 @@
    (unify c10
           comp-specs-head
           root-is-head
+          root-head
           (let [number-agreement (atom :top)
                 is-propernoun? (atom :top)]
             {:rule "noun-phrase1"
@@ -370,6 +401,7 @@
 
    (let [propernoun? (atom :top)]
      (unify h10
+            root-head
             {:rule "np-to-n-pp"
              :synsem {:cat :noun
                       :propernoun propernoun?}
@@ -382,6 +414,7 @@
                              :sem {:pred :di}}}}))
    (unify c10
           comp-specs-head
+          root-head
           (let [number-agreement (atom :top)
                 propernoun? (atom :top)]
             {:rule "noun-phrase2"
@@ -397,6 +430,7 @@
    (let [reflexive (atom :top)
          sem (atom :top)]
      (unify-check h10
+                  root-head
                   subcat-1-principle
                   {:rule "prepositional-phrase"
                    :synsem {:cat :prep
@@ -410,7 +444,7 @@
                                         ;                            :synsem {:cat :prep}})
    
    (unify c10
-          root-is-head-root
+          root-head
           ;; only a vp-aux may be the head child,
           ;; not simply a lexical auxiliary verb.
           {:head {:phrasal true 
@@ -419,13 +453,14 @@
            :synsem {:cat :verb}})
 
    (unify c10
-          root-is-head-root
+          root-head
           {:rule "sentence-phrasal-head"
            :head {:phrasal true}
            :synsem {:aux false
                     :infl {:not :infinitive}}})
 
    (unify c10
+          root-head
           root-is-head
           {:rule "sentence-nonphrasal-head"
            :head {:phrasal false}
@@ -532,7 +567,6 @@
           vp-non-pronoun)
 
    (unify c21
-          root-is-head-root
           {:head {:phrasal true}
            :comp {:synsem {:cat :noun
                            :pronoun true}}
