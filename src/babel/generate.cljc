@@ -41,6 +41,7 @@
   ([spec model]
    (log/debug (str "(generate) with model named: " (:name model)
                    "; truncate? " truncate?))
+   ;; TODO: make a pre-add-default-fn, to be executed before first child is added.
    (binding [default-fn (or default-fn (:default-fn model) (fn [x] [x]))
              grammar (or grammar (:grammar model))
              lexicon (or lexicon
@@ -80,7 +81,8 @@
                                    "; frontier: " frontier-path
                                    "; looking for spec with "
                                    "cat=" (u/get-in child-spec [:synsem :cat])
-                                   " and infl=" (u/get-in child-spec [:synsem :infl]))))
+                                   " and infl=" (u/get-in child-spec [:synsem :infl])
+                                   " and root=" (u/strip-refs (u/get-in child-spec [:root])))))
       (log/debug (str "grow at:" (morph-ps tree)))
       (lazy-cat
        (if (not (empty? frontier-path))
@@ -133,7 +135,11 @@
   "Return every possible tree of depth 1 from the given spec."
   [spec depth]
   ;; get all rules that match input _spec_:
+  (log/info (str "parent-with-head: spec: " (u/strip-refs spec)))
   (->> grammar
+
+       ;; used by babel.italiano.grammar to log/info a parse tree for debugging.
+       (map #(default-fn (u/assoc-in % [:morph] morph-ps)))
        (map #(unify % spec))
        (remove #(= :fail %))
        (parent-with-head-1 spec depth)
@@ -141,6 +147,7 @@
        (map #(u/assoc-in! % [::started?] true))))
 
 (defn parent-with-head-1 [spec depth parent-rules]
+  (when println? (println (str "GOT HERE: " (empty? parent-rules))))
   (if (not (empty? parent-rules))
     (let [parent-rule (first parent-rules)
           parent-cat (u/get-in parent-rule [:synsem :cat])
@@ -154,6 +161,7 @@
                                            (get-lexemes (unify
                                                          (u/get-in spec [:head] :top)
                                                          (u/get-in parent-rule [:head] :top))))]
+      (when println? (println (str "parent-with-head-1:" (u/get-in parent-rule :rule))))
       (cond
         (branch? depth)
         (lazy-cat

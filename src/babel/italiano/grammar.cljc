@@ -98,14 +98,15 @@
 
             (apply-default-if
              #(and (= :head (u/get-in % [:root-is]))
-                   (= false (u/get-in % [:phrasal]))
-                   (do (log/info (str "GOT HERE! 0"))
+                   (= false (u/get-in % [:head :phrasal]))
+                   (do (log/info (str "adding constraint 'root-is-head' to: "
+                                      ((:morph %) %)))
                        true))
              root-is-head)
 
             (apply-default-if
              #(and (= :head (u/get-in % [:root-is]))
-                   (= true (u/get-in % [:phrasal]))
+                   (= true (u/get-in % [:head :phrasal]))
                    (do (log/info (str "adding constraint 'root-is-head-root' to: "
                                       ((:morph %) %)))
                        true))
@@ -461,7 +462,6 @@
 
    (unify c10
           root-head
-          root-is-head
           {:rule "sentence-nonphrasal-head"
            :head {:phrasal false}
            :synsem {:aux false

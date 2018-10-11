@@ -58,13 +58,15 @@
     (is (= "io sono" (morph result)))))
 
 (deftest present-with-root
-  (let [result (generate {:root {:italiano {:italiano "bere"}}
-                          :synsem {:cat :verb
-                                   :subcat []
-                                   :sem {:aspect :simple
-                                         :obj :unspec
-                                         :subj {:pred :I}
-                                         :tense :present}}})]
+  (let [result
+        (binding [babel.generate/println? true]
+          (generate {:root {:italiano {:italiano "bere"}}
+                     :synsem {:cat :verb
+                              :subcat []
+                              :sem {:aspect :simple
+                                    :obj :unspec
+                                    :subj {:pred :I}
+                                    :tense :present}}}))]
     (is (not (nil? result)))
     (is (= "io bevo" (morph result)))))
 
