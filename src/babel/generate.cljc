@@ -58,7 +58,7 @@
      (first (gen spec)))))
 
 (defn gen
-  "generate a potentially infinite (depending on given _spec_ and the model)."
+  "generate a potentially infinite set of expressions."
   [spec]
   (grow (parent-with-head spec 0)))
 
