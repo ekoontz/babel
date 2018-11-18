@@ -229,6 +229,18 @@
        (string? (get-in word '(:plur))))
       (get-in word '(:plur))
 
+      ;; regular masculine nouns ending in -io
+      (and
+       (string? (get-in word [:italiano]))
+       (= (get-in word '(:agr :gender)) :masc)
+       (= (get-in word '(:agr :number)) :plur)
+       (= :noun (get-in word '(:cat)))
+       (not (= true (get-in word '(:pronoun))))
+       (get-in word [:italiano])
+       (re-find #"io$" (get-in word [:italiano])))
+      (string/replace (get-in word [:italiano])
+                      #"io$" "i") ;; figlio -> figli
+
       ;; regular masculine nouns
       (and
        (string? (get-in word [:italiano]))
@@ -239,6 +251,18 @@
        (get-in word [:italiano]))
       (string/replace (get-in word [:italiano])
                       #"[eo]$" "i") ;; dottore => dottori; medico => medici
+
+      
+      ;; regular feminine nouns ending in 'ca':
+      (and
+       (string? (get-in word [:italiano]))
+       (= (get-in word '(:agr :gender)) :fem)
+       (= (get-in word '(:agr :number)) :plur)
+       (= (get-in word '(:cat)) :noun)
+       (get-in word [:italiano])
+       (re-find #"ca$" (get-in word [:italiano])))
+      (string/replace (get-in word [:italiano])
+                      #"ca$" "che") ;; mucca => mucche
 
       ;; regular feminine nouns ending in 'e':
       (and

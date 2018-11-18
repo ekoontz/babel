@@ -519,6 +519,24 @@
     (is (= (morph result) "le case"))
     (is (= (get-in result [:synsem :sem :mod]) []))))
 
+(deftest figlio-plural
+  (let [italiano {:a {:initial true, :cat :det, :italiano "i"},
+                  :b
+                  {:italiano "figlio",
+                   :cat :noun,
+                   :initial false,
+                   :agr {:gender :masc, :person :3rd, :number :plur}}}]
+    (is (= (morph/get-string italiano) "i figli"))))
+
+(deftest mucca-plural
+  (let [italiano {:a {:initial true, :cat :det, :italiano "le"},
+                  :b
+                  {:italiano "mucca",
+                   :cat :noun,
+                   :initial false,
+                   :agr {:gender :fem, :person :3rd, :number :plur}}}]
+    (is (= (morph/get-string italiano) "le mucche"))))
+
 (deftest alla-casa-generate
   (let [result (generate
                 {:comp {:synsem {:agr {:number :sing}
@@ -677,13 +695,13 @@
     (is (= (morph expr)
            "la sedia è davanti il tavolo"))))
 
-;(deftest non-arriva
-;  (is (-> "non arriva"
-;          parse
-;          first
-;          :parses
-;          empty?
-;          not)))
+                                        ;(deftest non-arriva
+                                        ;  (is (-> "non arriva"
+                                        ;          parse
+                                        ;          first
+                                        ;          :parses
+                                        ;          empty?
+                                        ;          not)))
 
 (deftest past-and-gender-agreement
   (is (= (morph (generate {:synsem {:subcat []
