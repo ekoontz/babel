@@ -18,7 +18,7 @@
    [clojure.edn :as edn]
    [clojure.java.io :refer [resource]]
    [clojure.repl :refer [doc]]
-   [dag_unify.core :refer [dissoc-paths fail? get-in strip-refs unify]]))
+   [dag_unify.core :as u :refer [dissoc-paths fail? get-in strip-refs unify]]))
 
 (declare defaults)
 (declare edn2lexicon)
@@ -478,28 +478,32 @@
 
 (defn vocab-entry-to-lexeme [{surface :surface
                               pred :pred
-                              vocab-cat :vocab_cat}]
+                              vocab-cat :vocab_cat
+                              plur :plur}]
   (let [ends-with (str (nth surface (- (count surface) 1)))]
     (cond
 
       (= vocab-cat "noun1")
       {surface
-       [{:vocab-cat vocab-cat
-         :synsem {:sem {:pred (keyword pred)}
-                  :cat :noun
-                  :agr {:gender (cond (= "o" ends-with)
-                                      :masc
-                                      (= "a" ends-with)
-                                      :fem
-                                      true
-                                      :top)}}}]}
+       [(merge
+         {:vocab-cat vocab-cat
+          :synsem {:sem {:pred (keyword pred)}
+                   :cat :noun
+                   :agr {:gender (cond (= "o" ends-with)
+                                       :masc
+                                       (= "a" ends-with)
+                                       :fem
+                                       true
+                                       :top)}}}
+         (if plur
+           {:italiano {:plur plur}} {}))]}
+      
       (= vocab-cat "noun2m")
       {surface
        [{:vocab-cat vocab-cat
          :synsem {:sem {:pred (keyword pred)}
                   :cat :noun
                   :agr {:gender :masc}}}]}
-        
       
       (= vocab-cat "noun2f")
       {surface
