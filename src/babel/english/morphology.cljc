@@ -788,6 +788,10 @@
     (re-find #"[^aeiou]y$" english) 
     (replace english #"([^aeiou])y$" "$1ies")
 
+    ;; crisis => crises
+    (re-find #"i[s]$" english)
+    (replace english #"is$" "es")
+    
     (re-find #"[cs][hsx]$" english) ;; brush => brushes; beach => beaches
     (str english "es")
 
