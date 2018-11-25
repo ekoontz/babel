@@ -480,6 +480,11 @@
                               pred :pred
                               vocab-cat :vocab_cat
                               plur :plur}]
+  (log/info (str "vocab-entry-to-lexeme:"
+                 {:surface surface
+                  :pred pred
+                  :vocab-cat vocab-cat
+                  :plur plur}))
   (let [ends-with (str (nth surface (- (count surface) 1)))]
     (cond
 
@@ -497,6 +502,22 @@
                                        :top)}}}
          (if plur
            {:italiano {:plur plur}} {}))]}
+
+      (= vocab-cat "nouninvf")
+      {surface
+       [{:vocab-cat vocab-cat
+         :synsem {:sem {:pred (keyword pred)}
+                  :cat :noun
+                  :agr {:gender :fem
+                        :number :sing}}
+         :italiano {:italiano surface}}
+        {:vocab-cat vocab-cat
+         :synsem {:sem {:pred (keyword pred)}
+                  :cat :noun
+                  :agr {:gender :fem
+                        :number :plur}}
+         :italiano {:agr {:number :plur}
+                    :plur surface}}]}
       
       (= vocab-cat "noun2m")
       {surface
