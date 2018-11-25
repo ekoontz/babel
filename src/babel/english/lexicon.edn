@@ -2211,11 +2211,12 @@
           :english {:past "spent"
                     :past-participle "spent"}}
 
- "spread food" {:synsem {:cat :verb
-                         :sem {:pred :spread-food}}
-                :english {:past "spreaded food"
-                          :participle "spreading food"
-                          :past-particple "spreaded food"}}
+ "spread (food)" {:synsem {:cat :verb
+                           :sem {:pred :spread-food}}
+                :english {:past "spreaded (food)" 
+                          :present {:3sing "spreads (food)"}
+                          :participle "spreading (food)"
+                          :past-particple "spreaded (food)"}}
 
  "start" {:synsem {:cat :verb
                    :sem {:pred :start}}}
