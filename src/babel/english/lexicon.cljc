@@ -665,6 +665,9 @@
 (defn vocab-entry-to-lexeme [{surface :surface
                               pred :pred
                               vocab-cat :vocab_cat}]
+  (log/info (str "vocab-entry-to-lexeme: surface: " surface ";"
+                 "pred: " pred ";"
+                 "vocab-cat: " vocab-cat))
   (let [surface (clojure.string/replace surface #"\s*\(.*$" "")]
     (cond (clojure.string/starts-with? vocab-cat "noun")
           (let [base-unify 
