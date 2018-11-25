@@ -9,7 +9,7 @@
                             remove-vals verb-pred-defaults]]
    [clojure.java.io :refer [resource]]
    [clojure.tools.logging :as log]
-   [dag_unify.core :refer [dissoc-paths fail? get-in strip-refs unify]]))
+   [dag_unify.core :as u :refer [dissoc-paths fail? get-in strip-refs unify]]))
 
 (declare exception-generator)
 (declare phonize)
@@ -664,10 +664,12 @@
 
 (defn vocab-entry-to-lexeme [{surface :surface
                               pred :pred
+                              structure :structure
                               vocab-cat :vocab_cat}]
   (log/info (str "vocab-entry-to-lexeme: surface: " surface ";"
                  "pred: " pred ";"
-                 "vocab-cat: " vocab-cat))
+                 "vocab-cat: " vocab-cat ";"
+                 "structure: " structure))
   (let [surface (clojure.string/replace surface #"\s*\(.*$" "")]
     (cond (clojure.string/starts-with? vocab-cat "noun")
           (let [base-unify 
@@ -678,7 +680,11 @@
                           ;; TODO: remove need to add these constraints.
                           :propernoun false
                           :pronoun false
-                          :subcat {:1 {:cat :det}}}}]
+                          :subcat {:1 {:cat :det}}}}
+                plur-exception
+                (if (string? (u/get-in structure [:english :plur]))
+                  {:english {:plur (u/get-in structure [:english :plur])}}
+                  :top)]
             (cond
               (or (= vocab-cat "nounplurf")
                   (= vocab-cat "nounplurm")
@@ -690,8 +696,8 @@
                         :english {:inherently-plural true}})]}
               true
               {surface
-               [base-unify]}
-              true {})))))
+               [(unify plur-exception base-unify)]})))))
+
 
 
 
