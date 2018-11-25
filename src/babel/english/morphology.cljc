@@ -771,7 +771,7 @@
          english-verb-phrase)))))
 
 (defn plural-en [english & [word]]
-  (log/info (str "plural-en: english: " english "; word: " (u/strip-refs word)))
+  (log/debug (str "plural-en: english: " english "; word: " (u/strip-refs word)))
   (cond
     ;; handle commas in english word, e.g.: "agent,officer" => "agents,officers"
     (re-find #"," english)
