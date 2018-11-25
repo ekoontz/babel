@@ -480,11 +480,11 @@
                               pred :pred
                               vocab-cat :vocab_cat
                               plur :plur}]
-  (log/info (str "vocab-entry-to-lexeme:"
-                 {:surface surface
-                  :pred pred
-                  :vocab-cat vocab-cat
-                  :plur plur}))
+  (log/debug (str "vocab-entry-to-lexeme:"
+                  {:surface surface
+                   :pred pred
+                   :vocab-cat vocab-cat
+                   :plur plur}))
   (let [ends-with (str (nth surface (- (count surface) 1)))]
     (cond
 
