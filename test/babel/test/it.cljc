@@ -537,6 +537,15 @@
                    :agr {:gender :fem, :person :3rd, :number :plur}}}]
     (is (= (morph/get-string italiano) "le mucche"))))
 
+(deftest falco-plural
+  (let [italiano {:a {:initial true, :cat :det, :italiano "i"},
+                  :b
+                  {:italiano "falco",
+                   :cat :noun,
+                   :initial false,
+                   :agr {:gender :masc :person :3rd, :number :plur}}}]
+    (is (= (morph/get-string italiano) "i falchi"))))
+
 (deftest alla-casa-generate
   (let [result (generate
                 {:comp {:synsem {:agr {:number :sing}

@@ -221,7 +221,7 @@
        (re-find #"e$" (get-in word [:italiano])))
       (string/replace (get-in word [:italiano])
                       #"[e]$" "i") ;; difficile => difficili
-     
+      
       ;; handle lexical exceptions (plural nouns):
       (and
        (= (get-in word '(:agr :number)) :plur)
@@ -250,7 +250,18 @@
        (not (= true (get-in word '(:pronoun))))
        (get-in word [:italiano]))
       (string/replace (get-in word [:italiano])
+                      #"([cg])o$" "$1hi") ;; falco => falchi, lago => laghi
+
+      (and
+       (string? (get-in word [:italiano]))
+       (= (get-in word '(:agr :gender)) :masc)
+       (= (get-in word '(:agr :number)) :plur)
+       (= :noun (get-in word '(:cat)))
+       (not (= true (get-in word '(:pronoun))))
+       (get-in word [:italiano]))
+      (string/replace (get-in word [:italiano])
                       #"[eo]$" "i") ;; dottore => dottori; medico => medici
+
 
       
       ;; regular feminine nouns ending in 'ca':
@@ -318,7 +329,7 @@
        (= (get-in word '(:cat)) :adjective))
       (string/replace (get-in word [:italiano])
                       #"[eo]$" "a") ;; nero => nera
-     
+      
       (and (= :infinitive (get-in word '(:infl)))
            (string? (get-in word [:italiano])))
       (get-in word [:italiano])
@@ -329,94 +340,94 @@
       (str
        (trim (get-string-1 (get-in word [:a]))) " "
        (trim (get-string-1 (get-in word [:b]))))
-     
-     (and
+      
+      (and
+       (string? (get-in word [:italiano]))
+       (= :top (get-in word '(:agr :sing) :top)))
+      (str (get-in word [:italiano]))
+
+      ;; TODO: possibly remove this: not sure it's doing anything.
+      (= true (get-in word [:exception]))
+      (get-in word [:italiano])
+
+      (= (get-in word '(:infl)) :top)
+      (str (get-in word [:italiano]))
+
+      (and
+       (get-in word [:a])
+       (get-in word [:b]))
+      (get-string
+       (get-in word [:a])
+       (get-in word [:b]))
+
+      (= (get-in word [:a]) :top)
+      (str
+       ".." " " (get-string-1 (get-in word [:b])))
+
+      (and
+       (= (get-in word [:b]) :top)
+       (string? (get-string-1 (get-in word [:a]))))
+      (str
+       (get-string-1 (get-in word [:a]))
+       " " "..")
+
+      (and
+       (= (get-in word [:b]) :top)
+       (string? (get-in word '(:a :italiano))))
+      (str
+       (get-string-1 (get-in word '(:a :italiano)))
+       " " "..")
+
+      (and
+       (= (get-in word '(:agr :gender)) :fem)
+       (= (get-in word '(:agr :number)) :sing)
+       (= (get-in word '(:cat)) :noun))
+      (get-in word [:italiano])
+
+      (and
+       (= (get-in word '(:agr :gender)) :masc)
+       (= (get-in word '(:agr :number)) :sing)
+       (= (get-in word '(:cat) :adjective)))
+      (get-in word [:italiano]) ;; nero
+
+      (and
+       (= (get-in word '(:agr :gender)) :masc)
+       (= (get-in word '(:agr :number)) :plur)
+       (= (get-in word '(:cat)) :adjective)
+       ;; handle lexical exceptions.
+       (string? (get-in word '(:masc :plur))))
+      (get-in word '(:masc :plur))
+
+      (and
+       (= (get-in word '(:agr :gender)) :fem)
+       (= (get-in word '(:agr :number)) :plur)
+       (= (get-in word '(:cat)) :adjective)
+       ;; handle lexical exceptions.
+       (string? (get-in word '(:fem :plur))))
+      (get-in word '(:fem :plur))
+      
       (string? (get-in word [:italiano]))
-      (= :top (get-in word '(:agr :sing) :top)))
-     (str (get-in word [:italiano]))
+      (get-in word [:italiano])
 
-     ;; TODO: possibly remove this: not sure it's doing anything.
-     (= true (get-in word [:exception]))
-     (get-in word [:italiano])
+      (or
+       (not (= :none (get-in word [:a] :none)))
+       (not (= :none (get-in word [:b] :none))))
+      (get-string (get-in word [:a])
+                  (get-in word [:b]))
 
-     (= (get-in word '(:infl)) :top)
-     (str (get-in word [:italiano]))
+      (and (map? word)
+           (nil? (:italiano word)))
+      ".."
 
-     (and
-      (get-in word [:a])
-      (get-in word [:b]))
-     (get-string
-      (get-in word [:a])
-      (get-in word [:b]))
+      (or
+       (= (get-in word '(:case)) {:not :acc})
+       (= (get-in word '(:agr)) :top))
+      ".."
 
-     (= (get-in word [:a]) :top)
-     (str
-      ".." " " (get-string-1 (get-in word [:b])))
-
-     (and
-      (= (get-in word [:b]) :top)
-      (string? (get-string-1 (get-in word [:a]))))
-     (str
-      (get-string-1 (get-in word [:a]))
-      " " "..")
-
-     (and
-      (= (get-in word [:b]) :top)
-      (string? (get-in word '(:a :italiano))))
-     (str
-      (get-string-1 (get-in word '(:a :italiano)))
-      " " "..")
-
-     (and
-      (= (get-in word '(:agr :gender)) :fem)
-      (= (get-in word '(:agr :number)) :sing)
-      (= (get-in word '(:cat)) :noun))
-     (get-in word [:italiano])
-
-     (and
-      (= (get-in word '(:agr :gender)) :masc)
-      (= (get-in word '(:agr :number)) :sing)
-      (= (get-in word '(:cat) :adjective)))
-     (get-in word [:italiano]) ;; nero
-
-     (and
-      (= (get-in word '(:agr :gender)) :masc)
-      (= (get-in word '(:agr :number)) :plur)
-      (= (get-in word '(:cat)) :adjective)
-      ;; handle lexical exceptions.
-      (string? (get-in word '(:masc :plur))))
-     (get-in word '(:masc :plur))
-
-     (and
-      (= (get-in word '(:agr :gender)) :fem)
-      (= (get-in word '(:agr :number)) :plur)
-      (= (get-in word '(:cat)) :adjective)
-      ;; handle lexical exceptions.
-      (string? (get-in word '(:fem :plur))))
-     (get-in word '(:fem :plur))
-     
-     (string? (get-in word [:italiano]))
-     (get-in word [:italiano])
-
-     (or
-      (not (= :none (get-in word [:a] :none)))
-      (not (= :none (get-in word [:b] :none))))
-     (get-string (get-in word [:a])
-                 (get-in word [:b]))
-
-     (and (map? word)
-          (nil? (:italiano word)))
-     ".."
-
-     (or
-      (= (get-in word '(:case)) {:not :acc})
-      (= (get-in word '(:agr)) :top))
-     ".."
-
-     ;; TODO: throw exception rather than returning _word_, which is a map or something else unprintable.
-     ;; in other words, if we've gotten this far, it's a bug.
-     :else
-     word)
+      ;; TODO: throw exception rather than returning _word_, which is a map or something else unprintable.
+      ;; in other words, if we've gotten this far, it's a bug.
+      :else
+      word)
     ))
 
 ;; TODO: replace 'a' and 'b' with 'left' and 'right' for clarity.
