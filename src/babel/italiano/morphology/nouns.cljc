@@ -52,10 +52,14 @@
     :u {:synsem {:cat :noun
                  :agr {:number :plur}}}}
 
-   {:p [#"(.*)i$" "$1o"] ;; "compiti" -> "compito"
+   {:p [#"(.*)[cg]hi$" "$1o"] ;; "falchi" -> "falco"; "laghi" -> "lago"
     :u {:synsem {:cat :noun
                  :agr {:number :plur}}}}
-   ])
+
+   {:p [#"(.*)i$" "$1o"] ;; "compiti" -> "compito"
+    :u {:synsem {:cat :noun
+                 :agr {:number :plur}}}}])
+   
 
 (def plural-to-singular-noun-fem-1
   {#"e$"
