@@ -221,7 +221,7 @@
        (re-find #"e$" (get-in word [:italiano])))
       (string/replace (get-in word [:italiano])
                       #"[e]$" "i") ;; difficile => difficili
-      
+
       ;; handle lexical exceptions (plural nouns):
       (and
        (= (get-in word '(:agr :number)) :plur)
@@ -248,7 +248,8 @@
        (= (get-in word '(:agr :number)) :plur)
        (= :noun (get-in word '(:cat)))
        (not (= true (get-in word '(:pronoun))))
-       (get-in word [:italiano]))
+       (get-in word [:italiano])
+       (re-find #"[cg]o$" (get-in word [:italiano])))
       (string/replace (get-in word [:italiano])
                       #"([cg])o$" "$1hi") ;; falco => falchi, lago => laghi
 
