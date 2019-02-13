@@ -254,7 +254,7 @@
       (do
         (log/info (str "got here:[cg]-rule:" (get-in word [:italiano])))
         (string/replace (get-in word [:italiano])
-                        #"([cg])o$" "$1hi") ;; falco => falchi, lago => laghi
+                        #"([cg])o$" "$1hi")) ;; falco => falchi, lago => laghi
 
       (and
        (string? (get-in word [:italiano]))
