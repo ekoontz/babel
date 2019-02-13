@@ -109,6 +109,7 @@
 
 ;; TODO: this is an overly huge method that needs to be rewritten to be easier to understand and maintain.
 (defn get-string-1 [word]
+  (log/info (str "get-string-1:" word))
   (let [person (get-in word [:agr :person])
         number (get-in word [:agr :number])]
     (cond
@@ -250,8 +251,10 @@
        (not (= true (get-in word '(:pronoun))))
        (get-in word [:italiano])
        (re-find #"[cg]o$" (get-in word [:italiano])))
-      (string/replace (get-in word [:italiano])
-                      #"([cg])o$" "$1hi") ;; falco => falchi, lago => laghi
+      (do
+        (log/info (str "got here:[cg]-rule:" (get-in word [:italiano])))
+        (string/replace (get-in word [:italiano])
+                        #"([cg])o$" "$1hi") ;; falco => falchi, lago => laghi
 
       (and
        (string? (get-in word [:italiano]))

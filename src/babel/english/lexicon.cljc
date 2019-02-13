@@ -671,6 +671,8 @@
                  "vocab-cat: " vocab-cat ";"
                  "structure: " structure))
   (let [surface (clojure.string/replace surface #"\s*\(.*$" "")]
+    (log/info (str "vocab entry: plur: " (u/get-in structure [:english :plur])
+                   "; empty: " (empty? (u/get-in structure [:english :plur]))))
     (cond (clojure.string/starts-with? vocab-cat "noun")
           (let [base-unify 
                 {:synsem {:sem {:pred (keyword pred)}
