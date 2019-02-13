@@ -252,7 +252,7 @@
        (get-in word [:italiano])
        (re-find #"[cg]o$" (get-in word [:italiano])))
       (do
-        (log/info (str "got here:[cg]-rule:" (get-in word [:italiano])))
+        (log/info (str "[cg]-rule:" (get-in word [:italiano])))
         (string/replace (get-in word [:italiano])
                         #"([cg])o$" "$1hi")) ;; falco => falchi, lago => laghi
 
@@ -264,8 +264,9 @@
        (not (= true (get-in word '(:pronoun))))
        (get-in word [:italiano]))
       (do
-        (log/info (str "got here: default masculine pluralization: " (get-in word
-                                                                             [:italiano])))
+        (log/info (str "default masculine pluralization: "
+                       (get-in word
+                               [:italiano])))
         (string/replace (get-in word [:italiano])
                         #"[eo]$" "i")) ;; dottore => dottori; medico => medici
 
