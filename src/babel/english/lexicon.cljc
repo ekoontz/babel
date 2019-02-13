@@ -682,7 +682,8 @@
                           :pronoun false
                           :subcat {:1 {:cat :det}}}}
                 plur-exception
-                (if (string? (u/get-in structure [:english :plur]))
+                (if (and (string? (u/get-in structure [:english :plur]))
+                         (not (empty? (u/get-in structure [:english :plur]))))
                   {:english {:plur (u/get-in structure [:english :plur])}}
                   :top)]
             (cond
