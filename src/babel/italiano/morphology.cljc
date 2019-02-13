@@ -149,8 +149,8 @@
        (string? (get-in word '(:a :italiano)))
        (string? (get-in word '(:b :italiano)))
        (or (= :none (get-in word '(:b :agr :number) :none))
-           (= :top (get-in word '(:b :agr :number) :none)))
-       )
+           (= :top (get-in word '(:b :agr :number) :none))))
+      
       (str (string/trim (get-in word '(:a :italiano)))
            " "
            (string/trim (get-in word '(:b :italiano))))
@@ -158,8 +158,8 @@
        (string? (get-in word [:a]))
        (string? (get-in word '(:b :italiano)))
        (or (= :none (get-in word '(:b :agr :number) :none))
-           (= :top (get-in word '(:b :agr :number) :none)))
-       )
+           (= :top (get-in word '(:b :agr :number) :none))))
+      
       (str (string/trim (get-in word [:a]))
            " "
            (string/trim (get-in word '(:b :italiano))))
@@ -263,8 +263,11 @@
        (= :noun (get-in word '(:cat)))
        (not (= true (get-in word '(:pronoun))))
        (get-in word [:italiano]))
-      (string/replace (get-in word [:italiano])
-                      #"[eo]$" "i") ;; dottore => dottori; medico => medici
+      (do
+        (log/info (str "got here: default masculine pluralization: " (get-in word
+                                                                             [:italiano])))
+        (string/replace (get-in word [:italiano])
+                        #"[eo]$" "i")) ;; dottore => dottori; medico => medici
 
 
       
@@ -431,8 +434,8 @@
       ;; TODO: throw exception rather than returning _word_, which is a map or something else unprintable.
       ;; in other words, if we've gotten this far, it's a bug.
       :else
-      word)
-    ))
+      word)))
+    
 
 ;; TODO: replace 'a' and 'b' with 'left' and 'right' for clarity.
 ;; TODO: make b required so that function is easier to understand and refactor.
