@@ -109,7 +109,6 @@
 
 ;; TODO: this is an overly huge method that needs to be rewritten to be easier to understand and maintain.
 (defn get-string-1 [word]
-  (log/info (str "get-string-1:" (u/strip-refs word)))
   (let [person (get-in word [:agr :person])
         number (get-in word [:agr :number])]
     (cond
