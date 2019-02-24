@@ -23,13 +23,6 @@
 
   :filespecs [{:type :path :path "compiled"}]
   :resource-paths ["resources"]
-  :plugins [[cider/cider-nrepl "0.11.0"]
-            [lein-cljsbuild "1.1.2"]
-            [lein-doo "0.1.6"]
-            [lein-environ "1.0.0"]
-            [lein-localrepo "0.4.0"]
-            [lein-pprint "1.1.1"]
-            [lein-ring "0.9.7"]]
 
   ;; run clojure tests with "lein test"
   ;; run clojurescript tests with "lein doo slimer test"
