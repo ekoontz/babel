@@ -289,7 +289,7 @@
        (= (get-in word '(:agr :number)) :plur)
        (= (get-in word '(:cat)) :noun)
        (get-in word [:italiano])
-       (re-find #"e$" (get-in word [:italiano])))
+       (re-find #"ie$" (get-in word [:italiano])))
       (string/replace (get-in word [:italiano])
                       #"ie$" "i") ;; moglie => mogli
 
