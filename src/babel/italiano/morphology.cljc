@@ -282,6 +282,17 @@
       (string/replace (get-in word [:italiano])
                       #"ca$" "che") ;; mucca => mucche
 
+      ;; regular feminine nouns ending in 'ie': (e.g. moglie -> mogli)
+      (and
+       (string? (get-in word [:italiano]))
+       (= (get-in word '(:agr :gender)) :fem)
+       (= (get-in word '(:agr :number)) :plur)
+       (= (get-in word '(:cat)) :noun)
+       (get-in word [:italiano])
+       (re-find #"e$" (get-in word [:italiano])))
+      (string/replace (get-in word [:italiano])
+                      #"ie$" "i") ;; moglie => mogli
+
       ;; regular feminine nouns ending in 'e':
       (and
        (string? (get-in word [:italiano]))
