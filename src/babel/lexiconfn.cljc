@@ -14,9 +14,10 @@
    #?(:cljs [babel.logjs :as log]) 
    [clojure.data.json :as json]
    [clojure.string :as string]
-   [dag_unify.core :as unify :refer [create-path-in dissoc-paths exists?
-                                     fail-path fail? get-in isomorphic?
-                                     serialize strip-refs unify]]
+   [dag_unify.core :as unify :refer [exists? fail-path fail? get-in isomorphic?
+                                     strip-refs unify]]
+   [dag_unify.dissoc :refer [dissoc-in]]
+   [dag_unify.serialization :refer [create-path-in deserialize serialize]]
    [korma.core :refer [exec-raw]]
    [korma.db :refer [transaction]]))
 
@@ -43,7 +44,7 @@
                      .getArray
                      vec)
                  (map read-string)
-                 (map dag_unify.core/deserialize)))
+                 (map deserialize)))
           lexemes))))
 
 (defn compile-lex [lexicon-source]
@@ -372,21 +373,23 @@
 (defn make-intransitive-variant [lexical-entry]
   (cond
 
-   (and (= (get-in lexical-entry [:synsem :cat]) :verb)
-        (exists? lexical-entry [:synsem :subcat :2])
-        (not (empty? (get-in lexical-entry [:synsem :subcat :2]))))
+    (and (= (get-in lexical-entry [:synsem :cat]) :verb)
+         (exists? lexical-entry [:synsem :subcat :2])
+         (not (empty? (get-in lexical-entry [:synsem :subcat :2]))))
 
-   ;; create an intransitive version of this transitive verb by removing the second arg (:synsem :subcat :2), and replacing with nil.
-   (list
-    (unify (dissoc-paths lexical-entry (list [:synsem :subcat :2]
-                                              [:serialized]))
-            {:synsem {:subcat {:2 '()}}
-             :canary :tweet43}) ;; if the canary tweets, then the runtime is getting updated correctly.
+    ;; create an intransitive version of this transitive verb by removing the second arg (:synsem :subcat :2), and replacing with nil.
+    (list
+     (unify
+      (-> lexical-entry
+          (dissoc-in [:synsem :subcat :2])
+          (dissoc-in [:serialized]))
+      {:synsem {:subcat {:2 '()}}
+       :canary :tweet43}) ;; if the canary tweets, then the runtime is getting updated correctly.
 
-    lexical-entry) ;; the original transitive lexeme.
+     lexical-entry) ;; the original transitive lexeme.
 
-   true
-   (list lexical-entry)))
+    true
+    (list lexical-entry)))
 
 ;; Rules like make-intransitive-variant multiply a single lexeme into zero or more lexemes: 
 ;; In other words, their function signature is map => seq(map).
