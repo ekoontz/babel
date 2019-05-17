@@ -18,7 +18,7 @@
       #"arsi$"      "erei"   ;; alzarsi    -> alzerei
       #"ersi$"      "erei"   ;; mettersi   -> metterei
       #"irsi$"      "irei"   ;; diventirsi -> diventirei
-      
+
       ;; :future-stem
       #"r$"         "rei" ;; vivere -> vivrei
       ]
@@ -55,14 +55,14 @@
       #"are$"       "eresti"   ;; parlare    -> parleresti
       #"ere$"       "eresti"   ;; ricevere   -> riceveresti
       #"ire$"       "iresti"   ;; dormire    -> dormiresti
-      #"(.*)arsi$"  "eresti"   ;; alzarsi    -> alzeresti
-      #"(.*)ersi$"  "eresti"   ;; mettersi   -> metteresti
-      #"(.*)irsi$"  "iresti"   ;; divertirsi -> divertiresti
-      
+      #"arsi$"  "eresti"   ;; alzarsi    -> alzeresti
+      #"ersi$"  "eresti"   ;; mettersi   -> metteresti
+      #"irsi$"  "iresti"   ;; divertirsi -> divertiresti
+
       ;; :future-stem
       #"r$"         "resti" ;; vivere -> vivresti
       ]
-  
+
   :p [
       #"(.*)esti"       "$1e"     ;; faresti -> fare
       #"(.*)eresti"     "$1are"
@@ -84,7 +84,7 @@
       #"(.*)rresti"     "$1lere"  ;; vorresti -> volere
       #"(.*)rresti"     "$1nere"  ;; rimarresti -> rimanere
       ]}
- 
+
  {:agr {:number :sing
         :person :3rd}
   :g [#"ciare$"     "cerebbe"  ;; cominciare -> comincerebbe
@@ -97,7 +97,7 @@
       #"arsi$"      "erebbe"   ;; alzarsi    -> alzerebbe
       #"ersi$"      "erebbe"   ;; mettersi   -> metterebbe
       #"irsi$"      "irebbe"   ;; divertirsi -> divertirebbe
-      
+
       ;; :future-stem
       #"r$"         "rebbe" ;; vivere -> vivrebbe
       ]
@@ -123,7 +123,7 @@
       #"(.*)rrebbe"     "$1lere"  ;; vorrebbe -> volere
       #"(.*)rrebbe"     "$1nere"  ;; rimarrebbe -> rimanere
       ]}
- 
+
  {:agr {:number :plur
         :person :1st}
   :g [#"ciare$"     "ceremmo"  ;; cominciare -> cominceremmo
@@ -136,7 +136,7 @@
       #"arsi$"      "eremmo"   ;; alzarsi    -> alzeremmo
       #"ersi$"      "eremmo"   ;; mettersi   -> metteremmo
       #"irsi$"      "iremmo"   ;; divertirsi -> divertiremmo
-      
+
       ;; :future-stem
       #"r$"         "remmo" ;; vivere -> vivremmo
       ]
@@ -162,7 +162,7 @@
       #"(.*)rremmo"     "$1lere"   ;; vorremmo -> volere
       #"(.*)eremmo"     "$1iare"
       ]}
- 
+
  {:agr {:number :plur
         :person :2nd}
 
@@ -176,7 +176,7 @@
       #"arsi$"      "ereste"   ;; alzarsi    -> alzereste
       #"ersi$"      "ereste"   ;; mettersi   -> mettereste
       #"irsi$"      "ireste"   ;; divertirsi -> divertireste
-      
+
       ;; :future-stem
       #"r$"         "reste" ;; vivere -> vivreste
       ]
@@ -215,7 +215,7 @@
       #"arsi$"      "erebbero"   ;; alzarsi    -> alzerebbero
       #"ersi$"      "erebbero"   ;; mettersi   -> metterebbero
       #"irsi$"      "irebbero"   ;; divertirsi -> divertirebbero
-      
+
       ;; :future-stem
       #"r$"         "rebbero" ;; vivere -> vivrebbero
       ]
@@ -240,6 +240,5 @@
       #"(.*)vrebbero"     "$1vere"
       #"(.*)rrebbero"     "$1nere"  ;; rimarreste -> rimanere
       #"(.*)rrebbero"     "$1lere"  ;; vorrebbero -> volere
-      
-      ]}]
 
+      ]}]
