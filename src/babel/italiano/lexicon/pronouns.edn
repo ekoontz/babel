@@ -6,7 +6,7 @@
                   :number :plur}
             :reflexive true
             :sem {:human true
-                  :pred :noi}}}
+                  :pred :we}}}
   {:synsem {:cat :noun
             :pronoun true
             :case :nom
@@ -65,7 +65,7 @@
                   :person :3rd
                   :number :sing}
             :sem {:human true
-                  :pred :lei}
+                  :pred :she}
             :subcat []}
    :italiano {:initial true   ;; TODO: verify that 'la' above and this below are being unified correctly.
               }}
@@ -79,8 +79,8 @@
                   :person :3rd
                   :number :sing}
             :sem {:human false
-                  :place false ;; "they go to it (loro vanna a la)" sounds strange
-                  :pred :lei}
+                  :place false ;; "they go to it ( vanna a la)" sounds strange
+                  :pred :she}
             :subcat []}
    :italiano {:initial true}}]
 
@@ -91,7 +91,7 @@
                         :agr {:person :3rd
                               :gender :fem
                               :number :sing}
-                        :sem {:pred :lei} ;; note: we don't specify human=true (english "it").
+                        :sem {:pred :she} ;; note: we don't specify human=true (english "it").
                         :subcat []}}]
    [{:unify [common]
      :synsem {:sem {:human false}}}
@@ -108,7 +108,7 @@
                   :person :3rd
                   :number :sing}
             :sem {:human true
-                  :pred :lui}
+                  :pred :he}
             :subcat []}}
 
   {:synsem {:cat :noun
@@ -120,7 +120,7 @@
                   :number :sing}
             :sem {:human false
                   :place false
-                  :pred :lui}
+                  :pred :he}
             :subcat []}
    :italiano {:initial true}}  ;; TODO: verify that 'lo' above and this below are being unified correctly.
   ]
@@ -133,7 +133,7 @@
                   :gender :fem
                   :number :plur}
             :sem {:human true
-                  :pred :loro}
+                  :pred :they}
             :subcat []}}
   {:synsem {:cat :noun
             :pronoun true
@@ -142,7 +142,7 @@
                   :gender :masc
                   :number :plur}
             :sem {:human true
-                  :pred :loro}
+                  :pred :they}
             :subcat []}}
   {:synsem {:cat :noun
             :pronoun true
@@ -151,7 +151,7 @@
                   :gender :fem
                   :number :plur}
             :sem {:human false
-                  :pred :loro}
+                  :pred :they}
             :subcat []}}
   {:synsem {:cat :noun
             :pronoun true
@@ -160,7 +160,7 @@
                   :gender :masc
                   :number :plur}
             :sem {:human false
-                  :pred :loro}
+                  :pred :they}
             :subcat []}}
   ]
 
@@ -170,7 +170,7 @@
                               :agr {:person :3rd
                                     :gender :masc
                                     :number :sing}
-                              :sem {:pred :lui} ;; note: we don't specify human=true (english "it").
+                              :sem {:pred :he} ;; note: we don't specify human=true (english "it").
                               :subcat []}}]
          [{:unify [common]
            :synsem {:sem {:human false}}}
@@ -213,7 +213,7 @@
             :agr {:gender :fem
                   :person :1st
                   :number :plur}
-            :sem {:pred :noi
+            :sem {:pred :we
                   :human true}
             :subcat []}}
   {:synsem {:cat :noun
@@ -222,7 +222,7 @@
             :agr {:gender :masc
                   :person :1st
                   :number :plur}
-            :sem {:pred :noi
+            :sem {:pred :we
                   :human true}
             :subcat []}}]
 
@@ -248,7 +248,7 @@
                  :cat :noun
                  :pronoun true
                  :reflexive true}}]
- 
+
  "ti"
  {:synsem {:cat :noun
            :pronoun true
@@ -286,7 +286,7 @@
            :agr {:person :2nd
                  :number :plur}
            :sem {:human true
-                 :pred :voi}
+                 :pred :you-all}
            :subcat []}
   :italiano {:initial true}}
 
@@ -297,7 +297,7 @@
             :agr {:person :2nd
                   :gender :fem
                   :number :plur}
-            :sem {:pred :voi
+            :sem {:pred :you-all
                   :human true}
             :subcat []}}
   {:synsem {:cat :noun
@@ -306,7 +306,7 @@
             :agr {:person :2nd
                   :gender :masc
                   :number :plur}
-            :sem {:pred :voi
+            :sem {:pred :you-all
                   :human true}
             :subcat []}}]
  }
