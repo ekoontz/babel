@@ -2705,7 +2705,7 @@
            :agr {:person :2nd
                  :number :sing}
            :sem {:human true
-                 :pred :tu}}}
+                 :pred :you}}}
  "you all"
  [{:synsem {:cat :noun
             :pronoun true
