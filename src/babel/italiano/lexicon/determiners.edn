@@ -19,6 +19,12 @@
            :def :partitivo
            :agr {:number :plur
                  :gender :fem}}}
+
+
+
+
+
+
  "gli"
  {:generate-with false
   :synsem {:cat :det
@@ -271,7 +277,7 @@
  {:synsem {:cat :det
            :def :possessive
            :agr {:gender :masc
-                 :number :sing}
+                 :number :plur}
            :sem {:number :plur
                  :of {:pred :they}
                  :person :3rd}}}
