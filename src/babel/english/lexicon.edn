@@ -804,7 +804,7 @@
                     :sem {:pred :exist
                           :subj {:null false}}
                     :subcat {:2 []}}}]
-          
+
  "exit" {:synsem {:cat :verb
                   :sem {:pred :exit}}}
 
@@ -1146,7 +1146,7 @@
                       :gendered true
                       :number :sing}
                 :sem {:human true
-                      :pred :lui}
+                      :pred :he}
                 :subcat []}}
 
  "hear" {:synsem {:cat :verb
@@ -1164,11 +1164,11 @@
  "her"
  [{:synsem {:cat :det
             :agr {:number :sing}
-            :sem {:of {:pred :lei}}
+            :sem {:of {:pred :she}}
             :def :possessive}}
   {:synsem {:cat :det
             :agr {:number :plur}
-            :sem {:of {:pred :lei}}
+            :sem {:of {:pred :she}}
             :def :possessive}}
   {:synsem {:cat :noun
             :pronoun true
@@ -1177,7 +1177,7 @@
             :agr {:person :3rd
                   :gender :fem
                   :number :sing}
-            :sem {:pred :lei
+            :sem {:pred :she
                   :human true}
             :subcat []}}]
 
@@ -1198,7 +1198,7 @@
                        :gender :masc
                        :number :sing}
                  :sem {:human true
-                       :pred :lui}
+                       :pred :he}
                  :subcat []}}
 
  "himself" {:synsem {:cat :noun
@@ -1213,11 +1213,11 @@
 
  "his" [{:synsem {:cat :det
                   :agr {:number :sing}
-                  :sem {:of {:pred :lui}}
+                  :sem {:of {:pred :he}}
                   :def :possessive}}
         {:synsem {:cat :det
                   :agr {:number :plur}
-                  :sem {:of {:pred :lui}}
+                  :sem {:of {:pred :he}}
                   :def :possessive}}]
 
  "hit" {:english {:past {:english "hit"
@@ -1397,7 +1397,7 @@
             :agr {:person :3rd
                   :number :sing}
             :reflexive false
-            :sem {:pred :lei
+            :sem {:pred :she
                   :human false}
             :subcat []}}]
  "itself"
@@ -1742,7 +1742,7 @@
  "our"
  {:synsem {:cat :det
            :agr {:gender :masc}
-           :sem {:of {:pred :noi}}
+           :sem {:of {:pred :we}}
            :def :possessive}}
 
  "ourselves"
@@ -2081,12 +2081,12 @@
           [{:unify [common]
             :synsem {:cat :verb
                      :sem {:pred :send}}}
-           
+
            {:unify [common]
             :english {:note "m-"}
             :synsem  {:cat :verb
                       :sem {:pred :send-m}}}
-           
+
            {:unify [common]
             :english {:note "s-"}
             :synsem  {:cat :verb
@@ -2117,7 +2117,7 @@
                  :gendered true
                  :number :sing}
            :sem {:human true
-                 :pred :lei}
+                 :pred :she}
            :subcat []}}
 
  "shoe" {:synsem {:cat :noun
@@ -2213,7 +2213,7 @@
 
  "spread (food)" {:synsem {:cat :verb
                            :sem {:pred :spread-food}}
-                :english {:past "spreaded (food)" 
+                :english {:past "spreaded (food)"
                           :present {:3sing "spreads (food)"}
                           :participle "spreading (food)"
                           :past-particple "spreaded (food)"}}
@@ -2359,7 +2359,7 @@
                        :of {:pred nil}}}}
  "their"
  {:synsem {:cat :det
-           :sem {:of {:pred :loro}}
+           :sem {:of {:pred :they}}
            :def :possessive}}
 
  "themselves"
@@ -2391,7 +2391,7 @@
            :case :nom
            :agr {:person :3rd
                  :number :plur}
-           :sem {:pred :loro}
+           :sem {:pred :they}
            :subcat []}}
 
  "think" (let [common {:synsem {:cat :verb
@@ -2528,7 +2528,7 @@
  "up" {:synsem {:cat :prep
                 :sem {:pred :up}
                 :subcat []}}
- 
+
  "upload"  {:synsem {:cat :verb
                      :sem {:pred :caricare}}}
 
@@ -2607,7 +2607,7 @@
            :agr {:person :1st
                  :number :plur}
            :sem {:human true
-                  :pred :noi}
+                  :pred :we}
            :subcat []}}
 
  "wear" (let [common {:english {:past "wore"
@@ -2715,7 +2715,7 @@
                   :number :plur}
             :sem {:human true
                   :reflexive false
-                  :pred :voi}
+                  :pred :you-all}
             :subcat []}}
 
   {:english {:note "v"}
@@ -2744,7 +2744,7 @@
 
  "your"
  {:synsem {:cat :det
-           :sem {:of {:pred :tu}}
+           :sem {:of {:pred :you}}
            :def :possessive}}
 
  "yourself"
@@ -2755,7 +2755,7 @@
            :agr {:person :2nd
                  :number :sing}
            :sem {:human true
-                 :pred :tu}
+                 :pred :you}
            :subcat []}}
 
  "yourselves"
@@ -2766,5 +2766,5 @@
            :agr {:person :2nd
                  :number :plur}
            :sem {:human true
-                 :pred :voi}
+                 :pred :you-all}
            :subcat []}}}
