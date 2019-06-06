@@ -273,6 +273,15 @@
                  :of {:pred :they}
                  :person :3rd}}}
 
+"la loro"
+ {:synsem {:cat :det
+           :def :possessive
+           :agr {:gender :fem
+                 :number :sing}
+           :sem {:number :plur
+                 :of {:pred :they}
+                 :person :3rd}}}
+
 "i loro"
  {:synsem {:cat :det
            :def :possessive
