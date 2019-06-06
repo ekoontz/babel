@@ -2742,10 +2742,11 @@
                   :pred :ustedes}  ;; for Spanish, vosotros/ustedes a semantic distinction
             :subcat []}}]
 
- "your"
+"your"
  {:synsem {:cat :det
-           :sem {:of {:pred :you}}
-           :def :possessive}}
+           :def :possessive
+           :sem {:of {:pred :you}}}}
+
 
  "yourself"
  {:synsem {:cat :noun
