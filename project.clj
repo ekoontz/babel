@@ -1,4 +1,4 @@
-(defproject babel "3.0.16-verbcoach"
+(defproject babel "3.0.17-verbcoach-SNAPSHOT"
   :description "A library for natural language generation and parsing"
   :url "http://github.com/ekoontz/babel"
   :license {:name "Eclipse Public License"
@@ -19,7 +19,7 @@
                  [org.clojure/math.combinatorics "0.1.3"]
                  [org.clojure/tools.logging "0.4.0"]
                  [org.clojure/tools.namespace "0.2.11"]
-                 [org.postgresql/postgresql "42.1.4"]]
+                 [org.postgresql/postgresql "42.2.5"]]
 
   :filespecs [{:type :path :path "compiled"}]
   :resource-paths ["resources"]
