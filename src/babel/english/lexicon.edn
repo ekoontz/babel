@@ -2743,12 +2743,14 @@
             :subcat []}}]
 
 "your"
- [{:synsem {:cat :det
+ [{:note "sing"
+   :synsem {:cat :det
            :def :possessive
            :sem {:of {:pred :you}}}}
-  {:synsem {:cat :det
-           :def :possessive
-           :sem {:of {:pred :you-all}}}}]
+  {:note "plur"
+   :synsem {:cat :det
+            :def :possessive
+            :sem {:of {:pred :you-all}}}}]
 
 
  "yourself"
