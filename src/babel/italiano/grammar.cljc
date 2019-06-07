@@ -694,6 +694,10 @@
          {:synsem {:cat :verb
                    :sem {:tense :conditional}
                    :infl :conditional}}]]
+    ;; TODO:
+    ;;add passato, trapassato, and present progressive
+    
+    
     (let [with-defaults
           (remove #(= :fail %)
                   (map (fn [default]
@@ -705,7 +709,7 @@
                           "tense=" (get-in tree [:synsem :sem :tense] ::unset) "; "
                           "aspect=" (get-in tree [:synsem :sem :aspect] ::unset) "; "
                           "infl=" (get-in tree [:synsem :infl] ::unset) "; "))
-                                           
+          
           [tree])
         with-defaults))))
 

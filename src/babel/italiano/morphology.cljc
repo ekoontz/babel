@@ -41,14 +41,6 @@
    ["da gli" "dagli"]
    ["da le"  "dalle"]
 
-   ["de il"  "del"]
-   ["de lo"  "dello"]
-   ["de la"  "della"]
-   ["de l'"  "dell'"]
-   ["de i"   "dei"]
-   ["de gli" "degli"]
-   ["de le"  "delle"]
-
    ["di il"  "del"]
    ["di lo"  "dello"]
    ["di la"  "della"]
@@ -72,7 +64,7 @@
    ["su i"   "sui"]
    ["su gli" "sugli"]
    ["su le"  "sulle"]
-      ])
+   ])
 
 ;; TODO: pre-compile these rules rather than building regexp objects at runtime.
 (defn apply-one-rule [string from-to-pair]
