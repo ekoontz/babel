@@ -2743,11 +2743,11 @@
             :subcat []}}]
 
 "your"
- [{:note "sing"
+ [{:english {:note "sing"}
    :synsem {:cat :det
            :def :possessive
            :sem {:of {:pred :you}}}}
-  {:note "plur"
+  {:english {:note "plur"}
    :synsem {:cat :det
             :def :possessive
             :sem {:of {:pred :you-all}}}}]
