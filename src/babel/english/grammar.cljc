@@ -282,8 +282,8 @@
                                 :2 []}}}
        :head {:phrasal false
               :synsem {:cat cat
-                       :sem semantics}}
-       }))
+                       :sem semantics}}}))
+   
    
    (unify-check c10
                 {:rule "determiner-phrase"
@@ -292,38 +292,17 @@
    (unify-check c11-comp-subcat-1
                 (let [propernoun (atom :top)
                       head-sem (atom :top)
-                      mod-sem (atom {:subj head-sem})
-                      rest-mod []]
+                      mod-sem (atom {:subj head-sem})]
                   {:rule "nbar1"
                    :synsem {:reflexive false
                             :propernoun propernoun
-                            :mod {:first mod-sem
-                                  :rest rest-mod}}
+                            :sem {:mod {:first mod-sem
+                                        :rest []}}}
                    :comp {:synsem {:cat :adjective
                                    :sem mod-sem}}
                    :head {:phrasal false
                           :synsem {:cat :noun
-                                   :mod rest-mod
-                                   :propernoun propernoun
-                                   :sem head-sem}}}))
-   
-   (unify-check c11-comp-subcat-1
-                (let [propernoun (atom :top)
-                      head-sem (atom :top)
-                      mod-sem (atom {:subj head-sem})
-                      rest-mod (atom :top)]
-                  {:rule "nbar2"
-                   :synsem {:reflexive false
-                            :propernoun propernoun
-                            :mod {:first mod-sem
-                                  :rest rest-mod}}
-                   :comp {:synsem {:cat :adjective
-                                   :sem mod-sem}}
-                   :head {:phrasal true
-                          :synsem {:cat :noun
-                                   :mod rest-mod
-                                   :propernoun propernoun
-                                   :sem head-sem}}}))
+                                   :propernoun propernoun}}}))
    
    ;; np1 -> det nbar
    (unify-check c10
@@ -336,12 +315,11 @@
                    :synsem {:agr {:number number-agreement}
                             :reflexive false
                             :cat :noun
-                            :mod mod
                             :propernoun propernoun
-                            :sem {:number number-agreement}}
+                            :sem {:mod mod
+                                  :number number-agreement}}
                    :head {:phrasal true
-                          :synsem {:mod mod
-                                   :propernoun propernoun}}}))
+                          :synsem {:propernoun propernoun}}}))
    ;; np2 -> det noun
    (unify-check c10
                 comp-specs-head
@@ -352,9 +330,9 @@
                    :synsem {:agr {:number number-agreement}
                             :reflexive false
                             :cat :noun
-                            :mod []
                             :propernoun propernoun
-                            :sem {:number number-agreement}}
+                            :sem {:mod []
+                                  :number number-agreement}}
                    :head {:phrasal false
                           :synsem {:propernoun propernoun}}}))
    
@@ -478,8 +456,8 @@
       {:synsem {:infl infl
                 :participle participle}
        :head {:synsem {:infl infl
-                       :participle participle}}})
-    )])
+                       :participle participle}}}))])
+    
 
 (defn aux-is-head-feature [phrase]
   (cond (= :verb (get-in phrase [:synsem :cat]))
