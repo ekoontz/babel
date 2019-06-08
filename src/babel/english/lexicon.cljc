@@ -666,7 +666,7 @@
                               pred :pred
                               structure :structure
                               vocab-cat :vocab_cat}]
-  (log/info (str "vocab-entry-to-lexeme: surface: " surface ";"
+  (log/info (str "english: vocab-entry-to-lexeme: surface: " surface ";"
                  "pred: " pred ";"
                  "vocab-cat: " vocab-cat ";"
                  "structure: " structure))
@@ -699,7 +699,12 @@
                         :english {:inherently-plural true}})]}
               true
               {surface
-               [(unify plur-exception base-unify)]})))))
+               [(unify plur-exception base-unify)]}))
+
+          (clojure.string/starts-with? vocab-cat "adj")
+          {:surface
+           [{:synsem {:cat :adj}}]})))
+
 
 
 

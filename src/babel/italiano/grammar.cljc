@@ -792,6 +792,7 @@
                                      0 depth)}))}))))))
 
 (defn model-with-vocab-items [vocab-items filter-lexicon-fn model]
+  (log/info (str "MODEL-WITH-VOCAB-ITEMS: " vocab-items))
   (let [input-lexicon (reduce merge (map vocab-entry-to-lexeme vocab-items))
         synthetic-noun (edn2lexicon input-lexicon)
         new-lexicon (merge-with concat
