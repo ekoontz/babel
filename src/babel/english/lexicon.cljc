@@ -27,6 +27,7 @@
 (defn transform-with-english-lexical-rules [lexicon]
   (->
    lexicon
+
    (map-function-on-map-vals
     (fn [lexical-string lexical-val]
       (phonize lexical-val lexical-string)))
@@ -108,7 +109,7 @@
     (let [gender (atom :top)
           number (atom :top)]
       {:synsem {:cat :noun
-                   :propernoun true
+                :propernoun true
                 :agr {:gender gender
                       :number number}
                 :sem {:gender gender
@@ -156,7 +157,7 @@
               :pronoun false
               :propernoun false
               :agr {:person :3rd}}})
-  
+   
    ;; common nouns' articles agree with their articles:
    ;; e.g. "a dog" but *"a dogs".
    (default
@@ -252,9 +253,9 @@
     (fn [lexeme]
       (unify
        (dissoc-paths
-       (unify lexeme {:applied {:phrasal-verb-intransitivize true}})
-       [[:synsem :subcat :3]
-        [:synsem :sem :obj]])
+        (unify lexeme {:applied {:phrasal-verb-intransitivize true}})
+        [[:synsem :subcat :3]
+         [:synsem :sem :obj]])
 
        ;; prevent filling-in this
        ;; in a later processing step below.
@@ -442,7 +443,7 @@
    
    ;; </prep default rules>
    
- ))
+   ))
 
 (defn exception-generator
   "_lexicon_ is a map where each key is a root form (a string) mapped to a set of lexical entries (maps) for that root form. 
