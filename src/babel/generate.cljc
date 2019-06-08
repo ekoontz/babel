@@ -6,8 +6,9 @@
    #?(:cljs [babel.logjs :as log]) 
    [clojure.math.combinatorics :as combo]
    [clojure.string :as string]
-   [dag_unify.core :refer [assoc-in assoc-in! copy create-path-in
-                           dissoc-paths fail-path get-in fail? strip-refs unify unify!]]))
+   [dag_unify.core :as u
+    :refer [assoc-in assoc-in! copy create-path-in
+            dissoc-paths fail-path get-in fail? strip-refs unify unify!]]))
                                         
 ;; during generation, will not decend deeper than this when creating a tree:
 ;; TODO: should also be possible to override per-language.
@@ -143,8 +144,7 @@
                    :cat (get-in spec [:synsem :cat] :top)}
           :depth depth})
 
-        debug (log/debug (str "looking for key: "
-                             search-for-key))
+        debug (log/trace (str "looking for compiled bolts with key: " search-for-key))
         
         bolts ;; check for bolts compiled into model
         (get (-> model :bolts)
@@ -157,7 +157,7 @@
                         (map #(unify spec %))
                         (filter #(not (= :fail %))))))
       true
-      (do (log/debug (str "no compiled bolts found."))
+      (do (log/trace (str "no compiled bolts found."))
           (lazy-seq (lightning-bolts model spec 0 depth))))))
 
 (defn lightning-bolts
@@ -255,6 +255,12 @@
 (defn add-to-bolt-at-path
   "generate all complements for bolt at given path, and create a partial tree: bolt + complement => partial tree"
   [bolt path model]
+  (if (nil? (u/get-in bolt path))
+    (throw (Exception. (str "spec was nil at path: " path " in bolt: " ((:morph-ps model) bolt)))))
+  (log/debug (str "add-to-bolt-at-path: generating with spec: " (strip-refs (get-in bolt path))
+                 " at path:" (vec path) " in bolt: " ((:morph-ps model) bolt)))
+  (log/debug (str "add-to-bolt-at-path: toasted is: " (vec (map strip-refs (get (:lexicon model) "toasted")))))
+  (log/debug (str "add-to-bolt-at-path: lexemes are: " (vec (sort (keys (:lexicon model))))))
   (->>
    (gen (get-in bolt path) model 0) ;; generate all complements for _bolt_ at _path_.
    (map #(let [partial-tree
