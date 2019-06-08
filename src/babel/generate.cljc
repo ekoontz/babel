@@ -66,6 +66,7 @@
   each of whose depth is no greater than the given depth. Trees are returned in 
   ascending depth."
   [spec model depth & [from-bolts]]
+  (log/debug (str "gen with: " (strip-refs spec) " at depth: " depth))
   ;; 
   ;; Given a spec and a model, return the (potentially infinite) set
   ;; of all trees, in ascending head-depth, that satisfy the given spec.
@@ -105,30 +106,30 @@
     ;;    (throw (Exception. (str "wtf.")))
     nil
     (do
-;;    (println (str "gen@" depth "; spec=" (dag_unify.core/strip-refs spec)))
-  (log/trace (str "gen@" depth "; spec=" (show-spec spec)))
-  (when (< depth max-depth)
-    (let [bolts (or from-bolts
-                    (get-bolts-for model spec 
-                                   depth))]
-      (if (not (empty? bolts))
-        (do
-          (log/trace (str "gen@" depth "; found bolts with spec=" (dag_unify.core/strip-refs spec)))
-          (lazy-cat
-           (let [bolt (first bolts)]
-             (or
-              (and (= false (get-in bolt [:phrasal] true))
-                   ;; This is not a bolt but rather simply a lexical head,
-                   ;; so just return a list with this lexical head:
-                   [bolt])
-              ;; ..otherwise it's a phrase, so return the lazy
-              ;; sequence of adding all possible complements at every possible
-              ;; position at the bolt.
-              (add-comps-to-bolt bolt model
-                                 (reverse (comp-paths depth)))))
-           (gen spec model depth (rest bolts))))
-        (if (not (= false (get-in spec [:phrasal] true)))
-          (gen spec model (+ 1 depth)))))))))
+      ;;    (println (str "gen@" depth "; spec=" (dag_unify.core/strip-refs spec)))
+      (log/trace (str "gen@" depth "; spec=" (show-spec spec)))
+      (when (< depth max-depth)
+        (let [bolts (or from-bolts
+                        (get-bolts-for model spec 
+                                       depth))]
+          (if (not (empty? bolts))
+            (do
+              (log/trace (str "gen@" depth "; found bolts with spec=" (dag_unify.core/strip-refs spec)))
+              (lazy-cat
+               (let [bolt (first bolts)]
+                 (or
+                  (and (= false (get-in bolt [:phrasal] true))
+                       ;; This is not a bolt but rather simply a lexical head,
+                       ;; so just return a list with this lexical head:
+                       [bolt])
+                  ;; ..otherwise it's a phrase, so return the lazy
+                  ;; sequence of adding all possible complements at every possible
+                  ;; position at the bolt.
+                  (add-comps-to-bolt bolt model
+                                     (reverse (comp-paths depth)))))
+               (gen spec model depth (rest bolts))))
+            (if (not (= false (get-in spec [:phrasal] true)))
+              (gen spec model (+ 1 depth)))))))))
 
 ;; Wrapper around (defn lightning-bolts) to provide a way to
 ;; test indexing and memoization strategies.
@@ -258,8 +259,7 @@
   (if (nil? (u/get-in bolt path))
     (throw (Exception. (str "spec was nil at path: " path " in bolt: " ((:morph-ps model) bolt)))))
   (log/debug (str "add-to-bolt-at-path: generating with spec: " (strip-refs (get-in bolt path))
-                 " at path:" (vec path) " in bolt: " ((:morph-ps model) bolt)))
-  (log/debug (str "add-to-bolt-at-path: toasted is: " (vec (map strip-refs (get (:lexicon model) "toasted")))))
+                  " at path:" (vec path) " in bolt: " ((:morph-ps model) bolt)))
   (log/debug (str "add-to-bolt-at-path: lexemes are: " (vec (sort (keys (:lexicon model))))))
   (->>
    (gen (get-in bolt path) model 0) ;; generate all complements for _bolt_ at _path_.
