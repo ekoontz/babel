@@ -713,7 +713,7 @@
             (log/info (str "vocab-entry-to-lexeme: handling adj case."))
             {surface
              [{:synsem {:sem {:pred (keyword pred)}
-                        :cat :adj}}]}))))
+                        :cat :adjective}}]}))))
 
 
 
