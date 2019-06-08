@@ -571,8 +571,11 @@
 ;;(clojure.pprint/pprint (get (:lexicon new-model) "wine"))
 
 (defn model-with-vocab-items [vocab-items filter-lexicon-fn model]
-  (let [input-lexicon (transform-with-english-lexical-rules
-                       (reduce merge (map vocab-entry-to-lexeme vocab-items)))
+  (let [input-lexicon (try (transform-with-english-lexical-rules
+                            (reduce merge (map vocab-entry-to-lexeme vocab-items)))
+                           (catch Exception e
+                             (do (log/error (str "failed to create model with vocab items: " e))
+                                 (throw e))))
         lexicon (merge-with concat
                             input-lexicon
                             (filtered-lexicon
