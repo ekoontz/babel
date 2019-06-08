@@ -666,13 +666,19 @@
                               pred :pred
                               structure :structure
                               vocab-cat :vocab_cat}]
-  (log/info (str "english: vocab-entry-to-lexeme: surface: " surface ";"
-                 "pred: " pred ";"
-                 "vocab-cat: " vocab-cat ";"
-                 "structure: " structure))
-  (let [surface (clojure.string/replace surface #"\s*\(.*$" "")]
-    (log/info (str "vocab entry: plur: " (u/get-in structure [:english :plur])
-                   "; empty: " (empty? (u/get-in structure [:english :plur]))))
+  (log/debug (str "vocab-entry-to-lexeme: english: vocab-entry-to-lexeme: surface: " surface ";"
+                  "pred: " pred ";"
+                  "vocab-cat: " vocab-cat ";"
+                  "structure: " structure))
+  (let [surface (clojure.string/replace surface #"\s*\(.*$" "")
+        pred (-> pred
+                 clojure.string/trim
+                 (clojure.string/replace #"[()]" "")
+                 (clojure.string/replace #" " "-")
+                 (clojure.string/replace #"\." ""))]
+    (log/debug (str "vocab entry: plur: " (u/get-in structure [:english :plur])
+                    "; empty: " (empty? (u/get-in structure [:english :plur]))))
+    (log/debug (str "pred: " pred))
     (cond (clojure.string/starts-with? vocab-cat "noun")
           (let [base-unify 
                 {:synsem {:sem {:pred (keyword pred)}
@@ -702,8 +708,13 @@
                [(unify plur-exception base-unify)]}))
 
           (clojure.string/starts-with? vocab-cat "adj")
-          {:surface
-           [{:synsem {:cat :adj}}]})))
+          (do
+            (log/info (str "vocab-entry-to-lexeme: handling adj case."))
+            {surface
+             [{:synsem {:sem {:pred (keyword pred)}
+                        :cat :adj}}]}))))
+
+
 
 
 
