@@ -480,13 +480,18 @@
                               pred :pred
                               vocab-cat :vocab_cat
                               plur :plur}]
-  (log/error (str "VOCAB-ENTRY-TO-LEXEME!! " surface " with vocab_cat: " vocab-cat))
-  (log/info (str "italiano: vocab-entry-to-lexeme:"
-                 {:surface surface
-                  :pred pred
-                  :vocab-cat vocab-cat
-                  :plur plur}))
-  (let [ends-with (str (nth surface (- (count surface) 1)))]
+  (log/debug (str "italiano: vocab-entry-to-lexeme:"
+                  {:surface surface
+                   :pred pred
+                   :vocab-cat vocab-cat
+                   :plur plur}))
+  (let [pred (-> pred
+                 clojure.string/trim
+                 (clojure.string/replace #"[()]" "")
+                 (clojure.string/replace #" " "-")
+                 (clojure.string/replace #"\." "")
+                 keyword)
+        ends-with (str (nth surface (- (count surface) 1)))]
     (cond
 
       (= vocab-cat "noun1")
@@ -589,14 +594,11 @@
 
       (or (= vocab-cat "adj1")
           (= vocab-cat "adj2"))	
-      (do
-        (log/info (str "GOT HERE!!!: " vocab-cat))
-        (log/info (str "ADJECTIVE PRED: " pred))
-        {surface
-         [{:vocab-cat vocab-cat
-           :synsem {:cat :adjective
-                    :sem {:pred (keyword pred)
-                          :comparative false}}}]})
+      {surface
+       [{:vocab-cat vocab-cat
+         :synsem {:cat :adjective
+                  :sem {:pred (keyword pred)
+                        :comparative false}}}]}
       true
       (do
         (log/warn (str "(vocab-entry-to-lexeme: "
