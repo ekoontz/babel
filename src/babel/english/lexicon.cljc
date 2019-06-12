@@ -713,7 +713,12 @@
             (log/info (str "vocab-entry-to-lexeme: handling adj case."))
             {surface
              [{:synsem {:sem {:pred (keyword pred)}
-                        :cat :adjective}}]}))))
+                        :cat :adjective}}]})
+
+          true
+          (do
+            (log/warn (str "vocab-entry-to-lexeme: unable to create lexeme for: '"
+                           surface "' with vocab-cat: " vocab-cat ": returning nil."))))))
 
 
 
