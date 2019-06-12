@@ -454,13 +454,13 @@
    (mapcat
     (fn [root]
       (let [lexemes (get lexicon root)]
-        (log/debug (str "exception generator: " root))
+        (log/trace (str "exception generator: " root))
         (mapcat (fn [path-and-merge-fn]
                   (let [path (:path path-and-merge-fn)
                         surface (:surface path-and-merge-fn)
                         merge-fn (:merge-fn path-and-merge-fn)]
-                    (log/debug (str "root: " root))
-                    (log/debug (str "path: " path))
+                    (log/trace (str "root: " root))
+                    (log/trace (str "path: " path))
 
                     ;; a lexeme-kv is a pair of a key and value. The key is a string (the word's surface form)
                     ;; and the value is a list of lexemes for that string.
