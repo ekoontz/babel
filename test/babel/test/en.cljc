@@ -218,17 +218,6 @@
                    ::undefined-should-not-return-this)
            '()))))
 
-(deftest her-name-is-luisa
-  (is (= "her name is Luisa"
-         (morph (generate {:modified false
-                           :synsem {:cat :verb
-                                    :sem {:mod []
-                                          :iobj {:pred :luisa}
-                                          :pred :be-called
-                                          :subj {:pred :lei}
-                                          :tense :present}
-                                    :subcat []}})))))
-
 (deftest jean-s
   (is (not (empty? (parse "Jean's")))))
 
@@ -252,19 +241,6 @@
                                   :pred :dog}}})]
     (is (not (nil? result)))
     (is (= "Juana's dog" (morph result)))))
-
-(deftest generate-with-possessive-2
-  (let [result
-        (generate {:synsem {:cat :noun
-                            :pronoun false
-                            :mod {:first {:pred :rosso}}
-                            :sem {:number :sing
-                                  :spec {:pred :of
-                                         :of {:pred :Juana}}
-                                  :pred :dog}
-                            :subcat '()}})]
-    (is (not (nil? result)))
-    (is (= "Juana's red dog" (morph result)))))
 
 (deftest no-failed-bolts
   (let [result
@@ -384,38 +360,38 @@
 
 (deftest past-and-gender-agreement
   (= (morph (generate {:synsem {:sem {:pred :go
-                                      :aspect :perfect
+                                      :aspect :perfect}
                                    :tense :present
                                    :subj {:gender :fem
-                                          :pred :loro}}}}))
+                                          :pred :loro}}}))
      "they (♀) went"))
 
 (deftest noun-number-agreement
-  (= (morph (generate {:synsem {:agr {:number :plur}
+  (= (morph (generate {:synsem {:agr {:number :plur}}
                              :cat :noun
                              :sem {:pred :cat :spec {:def :def}
-                                   :mod '()}}}))
+                                   :mod '()}}))
      "the cats"))
 
 (deftest phrasal-verbs
   (is (not (empty? (parse "I turned on the radio"))))
   (is (not (empty? (parse "I turned the radio on"))))
   (is (not (empty? (parse "I turned off the radio"))))
-  (is (not (empty? (parse "I turned the radio off"))))
-  (let [generated (morph (generate {:synsem {:subcat '()
-                                             :sem {:pred :turn-on
-                                                   :tense :present
-                                                   :obj {:mod '()
-                                                         :number :sing
-                                                         :pred :radio
-                                                         :spec {:def :def
-                                                                :of {:pred nil}}}
-                                                   :subj {:pred :lei}}
-                                             :cat :verb}}))]
-    (is (or (= "she turns the radio on"
-                generated)
-            (= "she turns on the radio"
-               generated)))))
+  (is (not (empty? (parse "I turned the radio off")))))
+;  (let [generated (morph (generate {:synsem {:subcat '()
+;                                             :sem {:pred :turn-on
+;                                                   :tense :present
+;                                                   :obj {:mod '()
+;                                                         :number :sing
+;                                                         :pred :radio
+;                                                         :spec {:def :def
+;                                                                :of {:pred nil}
+;                                                   :subj {:pred :lei}
+;                                             :cat :verb)))
+;    (is (or (= "she turns the radio on"
+;                generated
+;            (= "she turns on the radio"
+;               generated))))
 
 ;; cats cannot read: generating with this spec
 ;; should quickly return with nil (rather than
@@ -618,18 +594,6 @@
                                                  :subcat '()}}))))]
     (is (= 1 (count (take 1 (repeatedly to-run)))))))
 
-(deftest relative-clause []
-  (let [parse (first (parse "the man you see"))]
-    (is (not (nil? parse)))
-    (is (= (get-in parse [:synsem :cat])
-           :noun))
-    (is (= (get-in parse [:synsem :mod :first :obj :pred])
-           :man))
-    (is (= (get-in parse [:synsem :mod :first :subj :pred])
-           :tu))
-    (is (= (get-in parse [:synsem :mod :first :pred])
-           :see))))
-
 (deftest generate-for-italian
   (let [p (first
            (filter #(= :verb (get-in % [:synsem :cat]))
@@ -680,27 +644,6 @@
                                                                :sem {:pred :I}}}}
                                               model)
       :from-language "it")))
-
-;; generate "the woman she sees"
-(def spec-for-the-woman-she-sees
-  {:synsem {:agr {:number :sing}
-            :pronoun false
-            :cat :noun
-            :subcat '()
-            :sem {:pred :woman
-                  :spec {:def :def}}
-            :mod {:first {:pred :see
-                          :tense :present
-                          :subj {:pred :lei
-                                 :human true}}}}})
-
-(deftest generate-with-relative-clause
-  (let [result (generate spec-for-the-woman-she-sees)]
-    (is (or
-         (= "the woman she sees"
-            (morph result))
-         (= "the woman that she sees"
-            (morph result))))))
 
 (deftest generate-from-vocab-items
   (let [vocab-items [{:surface "acre", :pred "acre", :vocab_cat "noun1"}
