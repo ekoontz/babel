@@ -257,7 +257,7 @@
   "generate all complements for bolt at given path, and create a partial tree: bolt + complement => partial tree"
   [bolt path model]
   (if (nil? (u/get-in bolt path))
-    (log/warn (str "spec was nil at path: " path " in bolt: " ((:morph-ps model) bolt))))
+    (log/warn (str "spec was nil at path: " (vec path) " in bolt: " ((:morph-ps model) bolt))))
   (log/debug (str "add-to-bolt-at-path: generating with spec: " (strip-refs (get-in bolt path))
                   " at path:" (vec path) " in bolt: " ((:morph-ps model) bolt)))
   (log/debug (str "add-to-bolt-at-path: lexemes are: " (vec (sort (keys (:lexicon model))))))
