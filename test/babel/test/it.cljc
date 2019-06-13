@@ -225,22 +225,9 @@
   (let [result (:parses (first (parse "io parlo")))]
     (is (not (empty? result)))
     (is (= "io parlo") (morph (first (:parses (first result)))))))
-        
-(deftest round-trip-1
-  (let [expr (italiano/generate {:synsem {:subcat []
-                                          :cat :noun
-                                          :sem {:spec {:def :def} 
-                                                :mod {:pred :difficile}
-                                                :number :sing
-                                                :pred :donna}}}
-                                @np-grammar)]
-    (is (or (= (morph expr) "la donna difficile")
-            (= (morph expr) "la difficile donna")))
-    (is (not (empty? (reduce concat (map
-                                     :parses (parse (morph expr) @np-grammar))))))))
 
 (deftest forbid-mispelling
- (is (empty? (:parses (parse (morph "la donna difficila") @np-grammar)))))
+  (is (empty? (:parses (parse (morph "la donna difficila") @np-grammar)))))
 
 (deftest generate-and-parse-noun-phrase-with-specifier
   ;; create a noun phrase where the determiner is "ventotto", but the head of the noun phrase
@@ -252,42 +239,6 @@
     (is (not (empty? (parse (morph result)))))))
 
 (def map-fn #?(:clj pmap) #?(:cljs map))
-
-;; <roundtrip parsing tests>
-;; these tests will not pass if you
-;; don't have enough linguistic material
-;; (grammar + lexicon) to generate
-;; enough 'do-this-many' sentences to test.
-;; The 'do-this-many' is controlled by each
-;; deftest's 'do-this-many' below.
-(deftest roundtrip-np-grammar
-  (let [do-this-many 10
-        spec {:phrasal true
-              :synsem {:cat :noun
-                       :subcat []
-                       :agr {:gender :top
-                             :number :top}
-                       :sem {:mod {:pred :top}
-                             :pred :top
-                             :spec {:def :top}}}}
-        ;; Change the above generic noun-phrase spec to something more specific
-        ;; if this test fails and you want to investigate why:
-        ;; 1. To prevent adjectives, use: [:synsem :sem :mod]=[].
-        ;; 2. Possible values of [:synsem :sem :spec :def] are: {:def, :indef, :partitivo, possessive}
-        
-        expressions (take do-this-many
-                          (repeatedly #(italiano/generate
-                                        spec @np-grammar)))]
-    (is (= do-this-many
-           (count (map-fn (fn [expr] 
-                            (let [surface (morph expr)
-                                  parsed (reduce concat (map :parses
-                                                             (parse surface @np-grammar)))]
-                              (if (not (empty? parsed))
-                                (log/info (str "roundtrip-np-grammar: " surface))
-                                (log/error (str "parse failed: " surface)))
-                              (is (not (empty? parsed)))))
-                          expressions))))))
 
 (deftest roundtrip-simple-present
   (let [do-this-many 10
@@ -400,46 +351,15 @@
     (log/debug (str "expressions: " (string/join "," (map morph expressions))))
     (is (= do-this-many
            (count (map (fn [expr]
-                            (let [surface (morph expr)
-                                  debug (log/debug (str "surface: " surface))
-                                  debug (log/debug (str "root: " (get-in expr [:root :italiano :italiano])))
-                                  parsed (reduce concat (map :parses (parse surface)))]
-                              (if (not (empty? parsed))
-                                (log/info (str "parse OK:" surface))
-                                (log/error (str "parse failed: " surface)))
-                              (is (not (empty? parsed)))))
-                          expressions))))))
-
-(deftest the-red-cat-woke-up
-  (log/info (str "starting test: the-red-cat-woke-up"))
-  (let [result (:parses (first (parse "il gatto rosso si è alzato")))]
-    ;; should find at least one structure:
-    (is (not (empty? result)))
-    ;; formatting the first of the resultant parse trees:
-    ;; output should be the same as the input to the parser:
-    (is (or (= "il gatto rosso si è alzato"
-               (morph (first result)))
-            (= "il rosso gatto si è alzato"
-               (morph (first result))))))
-  (log/info (str "ending test: the-red-cat-woke-up")))
-            
-;; tricky tokenization of 'la sua' and 'la loro' as lexemes.
-(deftest parsing
-  (count
-   (map (fn [surface]
-          (let [semantics (strip-refs
-                           (get-in
-                            (first
-                             (reduce concat (map :parses (parse surface model))))
-                            [:synsem :sem]))]
-            (is (map? semantics))))
-        ["la sua ragazza"
-         "la sua ragazza dorme"
-         "la sua ragazza bella dorme"
-         "noi beviamo la loro acqua bella"
-         ;"noi abbiamo bevuto la loro acqua bella"
-         ;"Luisa e io abbiamo bevuto la loro acqua bella"
-         ])))
+                         (let [surface (morph expr)
+                               debug (log/debug (str "surface: " surface))
+                               debug (log/debug (str "root: " (get-in expr [:root :italiano :italiano])))
+                               parsed (reduce concat (map :parses (parse surface)))]
+                           (if (not (empty? parsed))
+                             (log/info (str "parse OK:" surface))
+                             (log/error (str "parse failed: " surface)))
+                           (is (not (empty? parsed)))))
+                       expressions))))))
 
 (deftest parse-with-boot-stem
   (is (not (empty? (:parses (first (parse "lei esce")))))))
@@ -486,16 +406,6 @@
 (deftest casa-parse
   (is (not (empty?
             (reduce concat (map :parses (parse "io sono a casa")))))))
-
-(deftest gestiscono
-  (let [result
-        (generate {:synsem {:subcat []
-                            :cat :verb
-                            :sem {:subj {:pred :loro}
-                                  :pred :manage
-                                  :aspect :simple
-                                  :tense :present}}})]
-    (is (= "loro gestiscono" (morph result)))))
 
 (deftest casa-generate
   (let [result (generate {:synsem {:subcat []
@@ -712,16 +622,6 @@
                                         ;          empty?
                                         ;          not)))
 
-(deftest past-and-gender-agreement
-  (is (= (morph (generate {:synsem {:subcat []
-                                    :cat :verb
-                                    :sem {:pred :go
-                                          :aspect :perfect
-                                          :tense :present
-                                          :subj {:gender :fem
-                                                 :pred :loro}}}}))
-         "loro sono andate")))
-
 (deftest exists1
   (is (= (morph (generate {:synsem {:cat :verb
                                     :subcat []
@@ -799,16 +699,6 @@
                                                              :person :2nd}}
                                               :modified false
                                               :root {:italiano {:italiano "fornire"}}})))))
-
-
-(deftest present-progressive-reflexive
-  (is (= "loro si stanno addormentando" (morph (generate {:synsem {:cat :verb
-                                                                   :subcat []
-                                                                   :sem {:tense :present
-                                                                         :aspect :progressive
-                                                                         :subj {:pred :loro}}}
-                                                          :modified false
-                                                          :root {:italiano {:italiano "addormentarsi"}}})))))
 
 (defn generate-speed-test [spec & [times]]
   (btest/generate-speed-test spec model times))
