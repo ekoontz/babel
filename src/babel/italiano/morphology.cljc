@@ -255,13 +255,11 @@
        (not (= true (get-in word '(:pronoun))))
        (get-in word [:italiano]))
       (do
-        (log/info (str "default masculine pluralization: "
-                       (get-in word
-                               [:italiano])))
+        (log/debug (str "default masculine pluralization: "
+                        (get-in word
+                                [:italiano])))
         (string/replace (get-in word [:italiano])
                         #"[eo]$" "i")) ;; dottore => dottori; medico => medici
-
-
       
       ;; regular feminine nouns ending in 'ca':
       (and
