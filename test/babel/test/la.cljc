@@ -48,46 +48,9 @@
 (deftest generate-future
   (is (= "ardebunt"
          (morph (generate
-              {:root "ardēre"
-               :synsem {:agr {:person :3rd :number :plur}
-                        :sem {:tense :future}}})))))
-(deftest reader1
-  (let [spec (let [agreement (atom {:person :3rd :number :sing :gender :masc})]
-               {:synsem {:slash false
-                         :cat :verb
-                         :agr agreement
-                         :sem {:obj :unspec
-                               :tense :past
-                               :subj {:pred :lui}
-                               :aspect :progressive
-                               :pred :answer}}
-                :comp {:synsem {:agr agreement}}})
-        source-format-fn (:morph @@(-> models source-language))
-        source-generate-fn (:generate-fn @@(-> models source-language))
-        target-format-fn (:morph model)
-
-        source (->
-                spec
-
-                ;; This is required for English in order
-                ;; to generate complete sentences with both a subject
-                ;; and a verb.
-                (unify {:synsem {:subcat '()}})
-
-                source-generate-fn
-                source-format-fn)
-
-        target (->
-                spec
-                generate
-                target-format-fn)]
-    (log/info (str "source: " source))
-    (log/info (str "target: " target))
-    (is (or (= source "he used to answer")
-            (= source "he was answering")
-            (= source "he used to respond")
-            (= source "he was responding")))
-    (is (or (= target "respondebat")))))
+                 {:root "ardēre"
+                  :synsem {:agr {:person :3rd :number :plur}
+                           :sem {:tense :future}}})))))
 
 (deftest reader2
   (let [source-model @@(-> (-> models :en))
