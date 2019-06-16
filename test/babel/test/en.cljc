@@ -710,10 +710,13 @@
        :show-notes false)))))
 
 (deftest the-small-dog
-  (= "the small dog"
-     (morph (generate {:phrasal true
-                       :synsem {:cat :noun 
-                                :subcat []
-                                :sem {:pred :dog 
-                                      :mod {:first {:pred :small}}
-                                      :spec {:def :def}}}}))))
+  (is 
+   (= "the small dog"
+      (morph (generate {:phrasal true
+                        :synsem {:cat :noun 
+                                 :subcat []
+                                 :agr {:number :sing}
+                                 :sem {:pred :dog 
+                                       :mod {:first {:pred :small}}
+                                       :spec {:def :def}}}})))))
+

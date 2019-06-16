@@ -708,14 +708,15 @@
                                  :sem {:reflexive true
                                        :tense :present
                                        :aspect :perfect}}}))
+(deftest il-gatto-nero
+  (is (= "il gatto nero"
+         (morph (generate {:phrasal true
+                           :synsem {:cat :noun 
+                                    :subcat []
+                                    :agr {:number :sing}
+                                    :sem {:pred :cat
+                                          :mod {:first {:pred :nero}}
+                                          :spec {:def :def}}}})))))
 
-(deftest the-black-cat
-  (= "il gatto nero"
-     (morph (generate {:phrasal true
-                       :synsem {:cat :noun 
-                                :subcat []
-                                :sem {:pred :cat
-                                      :mod {:first {:pred :nero}}
-                                      :spec {:def :def}}}}))))
 
 
