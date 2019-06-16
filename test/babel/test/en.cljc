@@ -708,4 +708,12 @@
                               :subj {:pred :top}
                               :obj {:top :top}}}}))
        :show-notes false)))))
-       
+
+(deftest the-small-dog
+  (= "the small dog"
+     (morph (generate {:phrasal true
+                       :synsem {:cat :noun 
+                                :subcat []
+                                :sem {:pred :dog 
+                                      :mod {:first {:pred :small}}
+                                      :spec {:def :def}}}}))))
