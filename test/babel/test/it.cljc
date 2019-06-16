@@ -20,7 +20,7 @@
    #?(:clj [clojure.repl :refer [doc]])
    [clojure.string :as string]
    [clojure.set :as set]
-   [dag_unify.core :refer [copy fail? get-in strip-refs unify]]))
+   [dag_unify.core :as u :refer [copy fail? get-in strip-refs unify]]))
 
 (btest/init-db)
 (log/info (str "recompiling and writing lexicon to database.."))
