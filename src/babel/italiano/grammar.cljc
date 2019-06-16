@@ -223,6 +223,21 @@
 (defonce modified {:modified true})
 (defonce unmodified {:modified false})
 
+(def word-of-interest-is-head
+  (let [woi (atom :top)]
+    {:head woi
+     :word-of-interest woi}))
+
+(def word-of-interest-is-head-word-of-interest
+  (let [woi (atom :top)]
+    {:head {:word-of-interest woi}
+     :word-of-interest woi}))
+
+(def word-of-interest-is-comp
+  (let [woi (atom :top)]
+    {:comp woi
+     :word-of-interest woi}))
+
 (defonce grammar (list (unify h21
                               {:rule "adjective-phrase"
                                :synsem {:cat :adjective}})
@@ -256,6 +271,8 @@
                        
                        ;; nbar where head (noun) is first ('h' in h11)
                        (unify h11-comp-subcat-1
+                              root-is-head
+                              word-of-interest-is-head
                               (let [is-propernoun? (atom :top)
                                     mod-sem (atom :top)
                                     head-sem {:mod {:first mod-sem}}]
@@ -266,7 +283,25 @@
                                         :synsem {:modified false ;; TODO: document what purpose :modified serves (if any: if none, remove).
                                                  :sem head-sem
                                                  :propernoun is-propernoun?}}
-                                 :rule "nbar1"
+                                 :rule "nbar1-woi-1"
+                                 :synsem {:cat :noun
+                                          :modified true
+                                          :sem head-sem
+                                          :propernoun is-propernoun?}}))
+                       (unify h11-comp-subcat-1
+                              root-is-head
+                              word-of-interest-is-comp
+                              (let [is-propernoun? (atom :top)
+                                    mod-sem (atom :top)
+                                    head-sem {:mod {:first mod-sem}}]
+                                {:comp {:phrasal false ;; rathole prevention ;; TODO: see if this can be removed.
+                                        :synsem {:cat :adjective
+                                                 :sem mod-sem}}
+                                 :head {:phrasal false
+                                        :synsem {:modified false ;; TODO: document what purpose :modified serves (if any: if none, remove).
+                                                 :sem head-sem
+                                                 :propernoun is-propernoun?}}
+                                 :rule "nbar1-woi-2"
                                  :synsem {:cat :noun
                                           :modified true
                                           :sem head-sem
@@ -275,6 +310,7 @@
                        (unify c10
                               comp-specs-head
                               root-is-head
+                              word-of-interest-is-head
                               (let [number-agreement (atom :top)
                                     is-propernoun? (atom :top)]
                                 {:rule "noun-phrase1"
@@ -289,6 +325,7 @@
                                  :comp {:phrasal false}})) ;; rathole prevention ;; TODO: see if this can be removed.
 
                        (unify h10
+                              word-of-interest-is-head                              
                               {:rule "np-to-n-pp"
                                :synsem {:cat :noun}
                                :head {:phrasal false}
@@ -296,6 +333,8 @@
                                                :sem {:pred :di}}}})
                        (unify c10
                               comp-specs-head
+                              root-is-head-root
+                              word-of-interest-is-head-word-of-interest
                               (let [number-agreement (atom :top)
                                     is-propernoun? (atom :top)]
                                 {:rule "noun-phrase2"
@@ -311,6 +350,7 @@
                        (let [reflexive (atom :top)
                              sem (atom :top)]
                          (unify-check h10
+                                      word-of-interest-is-head
                                       subcat-1-principle
                                       {:rule "prepositional-phrase"
                                        :synsem {:cat :prep

@@ -710,13 +710,37 @@
                                        :aspect :perfect}}}))
 (deftest il-gatto-nero
   (is (= "il gatto nero"
-         (morph (generate {:phrasal true
-                           :synsem {:cat :noun 
-                                    :subcat []
-                                    :agr {:number :sing}
-                                    :sem {:pred :cat
-                                          :mod {:first {:pred :nero}}
-                                          :spec {:def :def}}}})))))
+         (morph
+          (generate {:phrasal true
+                     :synsem {:cat :noun 
+                              :subcat []
+                              :agr {:number :sing}
+                              :sem {:pred :cat
+                                    :mod {:first {:pred :nero}}
+                                    :spec {:def :def}}}})))))
 
+(deftest word-of-interest-is-nero
+  (let [spec {:phrasal true
+              :synsem {:cat :noun 
+                       :subcat []
+                       :agr {:number :sing
+                             :gender :masc}}
+              :word-of-interest {:italiano {:italiano "nero"}}}]
+    (is (= "nero"
+           (u/get-in (generate spec)
+                     [:head :comp :italiano :italiano])))))
+
+(deftest word-of-interest-is-gatto
+  (let [spec {:phrasal true
+              :head {:phrasal true}
+              :synsem {:cat :noun 
+                       :subcat []
+                       :agr {:number :sing}}
+              :word-of-interest {:italiano {:italiano "gatto"}}}
+        expression (generate spec)]
+    (println (morph expression))
+    (is (= "gatto"
+           (u/get-in expression
+                     [:head :head :italiano :italiano])))))
 
 
