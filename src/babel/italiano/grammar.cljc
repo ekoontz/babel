@@ -146,7 +146,6 @@
      subcat-1-1-principle-comp-subcat-1
      hc-agreement
      head-principle
-     comp-modifies-head
      head-first
      {:schema-symbol 'h11-comp-subcat-1
       :first :comp
@@ -257,15 +256,20 @@
                        
                        ;; nbar where head (noun) is first ('h' in h11)
                        (unify h11-comp-subcat-1
-                              (let [is-propernoun? (atom :top)]
+                              (let [is-propernoun? (atom :top)
+                                    mod-sem (atom :top)
+                                    head-sem {:mod {:first mod-sem}}]
                                 {:comp {:phrasal false ;; rathole prevention ;; TODO: see if this can be removed.
-                                        :synsem {:cat :adjective}}
+                                        :synsem {:cat :adjective
+                                                 :sem mod-sem}}
                                  :head {:phrasal false
                                         :synsem {:modified false ;; TODO: document what purpose :modified serves (if any: if none, remove).
+                                                 :sem head-sem
                                                  :propernoun is-propernoun?}}
                                  :rule "nbar1"
                                  :synsem {:cat :noun
                                           :modified true
+                                          :sem head-sem
                                           :propernoun is-propernoun?}}))
 
                        (unify c10
