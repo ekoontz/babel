@@ -725,9 +725,11 @@
                        :subcat []
                        :agr {:number :sing
                              :gender :masc}}
-              :word-of-interest {:italiano {:italiano "nero"}}}]
+              :word-of-interest {:italiano {:italiano "nero"}}}
+        expression (generate spec)]
+    (println (morph expression))
     (is (= "nero"
-           (u/get-in (generate spec)
+           (u/get-in expression
                      [:head :comp :italiano :italiano])))))
 
 (deftest word-of-interest-is-gatto
