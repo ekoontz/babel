@@ -710,7 +710,7 @@
 
           (clojure.string/starts-with? vocab-cat "adj")
           (do
-            (log/info (str "vocab-entry-to-lexeme: handling adj case."))
+            (log/debug (str "vocab-entry-to-lexeme: surface= " surface "; pred=" (keyword pred)))
             {surface
              [{:synsem {:sem {:pred (keyword pred)}
                         :cat :adjective}}]})
