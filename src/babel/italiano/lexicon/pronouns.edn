@@ -267,7 +267,7 @@
             :agr {:person :2nd
                   :gender :fem
                   :number :sing}
-            :sem {:pred :tu
+            :sem {:pred :you
                   :human true}
             :subcat []}}
   {:synsem {:cat :noun
@@ -276,7 +276,7 @@
             :agr {:person :2nd
                   :gender :masc
                   :number :sing}
-            :sem {:pred :tu
+            :sem {:pred :you
                   :human true}
             :subcat []}}]
  "vi"
