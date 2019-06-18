@@ -375,6 +375,8 @@
                                      :3plur "were being necessary"}
                          :past {:1sing "was necessary"
                                 :2sing "were necessary"
+                                :3sing "was necessary"
+                                :1plur "were necessary"
                                 :2plur "were necessary"
                                 :3plur "were necessary"}
                          :present {:1sing "am necessary"
