@@ -379,6 +379,7 @@
                                 :1plur "were necessary"
                                 :2plur "were necessary"
                                 :3plur "were necessary"}
+                         :past-participle "been necessary"
                          :present {:1sing "am necessary"
                                    :2sing "are necessary"
                                    :3sing "is necessary"
@@ -406,6 +407,7 @@
                                  :2sing "were pleasant"
                                  :2plur "were pleasant"
                                  :3plur "were pleasant"}
+                          :past-participle "been pleasant"
                           :present {:1sing "am pleasant"
                                     :2sing "are pleasant"
                                     :3sing "is pleasant"
