@@ -364,8 +364,7 @@
       (and (= (get-in word [:infl]) :imperfect)
            (string? (get-in word [:imperfect :3sing]))
            (and (= person :3rd) (= number :sing))))
-
-    (get-in word [:imperfect :3plur])
+    (get-in word [:imperfect :3sing])
 
     (let [number (get-in word '(:agr :number))
           person (get-in word '(:agr :person))]
