@@ -1385,7 +1385,7 @@
             :agr {:person :3rd
                   :number :sing}
             :reflexive false
-            :sem {:pred :lui
+            :sem {:pred :he
                   :human false}
             :subcat []}}
   {:synsem {:cat :noun
