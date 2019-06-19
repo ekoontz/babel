@@ -2513,8 +2513,8 @@
    :synsem {:cat :verb
             :sem {:pred :turn-up}
             :subcat {:3 {:cat :prep
-                         :sem {:pred :up}}}}}
-  ]
+                         :sem {:pred :up}}}}}]
+ 
 
  "understand" (let [common {:english {:past "understood"}}]
                 [{:unify [common]
