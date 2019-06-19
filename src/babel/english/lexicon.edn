@@ -1746,7 +1746,6 @@
 
  "our"
  {:synsem {:cat :det
-           :agr {:gender :masc}
            :sem {:of {:pred :we}}
            :def :possessive}}
 
