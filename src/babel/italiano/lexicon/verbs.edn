@@ -355,7 +355,8 @@
                      :sem {:pred :create}}}
 
  "credere" {:synsem {:cat :verb
-                     :sem {:pred :believe}}}
+                     :sem {:subj {:human true}
+                           :pred :believe}}}
 
  "controllare" {:synsem {:sem {:pred :check}
                          :cat :verb}}
