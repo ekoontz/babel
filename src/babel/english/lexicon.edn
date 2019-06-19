@@ -277,6 +277,7 @@
                                   :3plur "were being born"}
                       :past {:english "was born"
                              :2sing "were born"
+                             :1plur "were born"
                              :2plur "were born"
                              :3plur "were born"}
                       :present {:1sing "am born"
