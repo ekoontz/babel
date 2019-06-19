@@ -29,7 +29,7 @@
                  :person :3rd
                  :gender :fem}}}
 
- "Antonio and Luisa"
+ "Antonio e Luisa"
  {:synsem {:propernoun true
            :agr {:number :plur
                  :person :3rd
