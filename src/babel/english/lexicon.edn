@@ -21,6 +21,14 @@
            :sem {:pred :antonia-and-luisa
                  :human true}}}
 
+ "Antonio and Luisa"
+ {:synsem {:propernoun true
+           :agr {:number :plur
+                 :person :3rd
+                 :gender :masc}
+           :sem {:pred :antonio-and-luisa
+                 :human true}}}
+
  "Antonio"
  {:synsem {:propernoun true
            :agr {:number :sing

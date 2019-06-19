@@ -29,6 +29,13 @@
                  :person :3rd
                  :gender :fem}}}
 
+ "Antonio and Luisa"
+ {:synsem {:propernoun true
+           :agr {:number :plur
+                 :person :3rd
+                 :gender :masc}
+           :sem {:pred :antonio-and-luisa
+                 :human true}}}
 
  "Gianluca"
  {:synsem {:agr {:gender :masc}
