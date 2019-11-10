@@ -650,9 +650,7 @@
   (f/formatter "MMM dd, yyyy HH:mm"))
 (defn display-time [timestamp]
   "convert time objects of various types to our chosen datetime format."
-  (cond (= (type timestamp) java.sql.Timestamp)
-        (f/unparse short-format (c/from-long (.getTime timestamp)))
-        (= (type timestamp) org.joda.time.DateTime)
+  (cond (= (type timestamp) org.joda.time.DateTime)
         (f/unparse short-format timestamp)
         true
         timestamp))
@@ -718,10 +716,7 @@
 
 (defn default-td [row key]
   (let [the-val (get row key)]
-    (cond (= java.sql.Timestamp (type the-val))
-          [:td [:span {:class "date"}
-                (display-time the-val)]]
-          (number? the-val)
+    (cond (number? the-val)
           [:td.num the-val]
           true
           [:td the-val])))
