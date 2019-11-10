@@ -3,6 +3,8 @@
 
 # babel
 
+Important note: I've moved on to the next iteration of these ideas in a [new project called Babylon.](https://github.com/ekoontz/babylon)
+
 A Clojure library for generation and parsing of natural language expressions.
 
 ```clojure
