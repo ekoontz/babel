@@ -1,6 +1,7 @@
 (ns babel.lexiconfn ;; TODO consider renaming babel.lexiconfn to babel.lexicon.
   (:refer-clojure :exclude [exists? get-in resolve find])
   (:require
+   [babel.dagcompat :refer [dissoc-paths exists?]]   
    [babel.encyclopedia :refer [sem-impl]]
    [babel.exception :refer [exception]]
    [babel.korma :as db]
@@ -14,9 +15,9 @@
    #?(:cljs [babel.logjs :as log]) 
    [clojure.data.json :as json]
    [clojure.string :as string]
-   [dag_unify.core :as unify :refer [create-path-in dissoc-paths exists?
-                                     fail-path fail? get-in isomorphic?
-                                     serialize strip-refs unify]]
+   [dag_unify.core :as unify :refer [fail-path fail? get-in isomorphic?
+                                     strip-refs unify]]
+   [dag_unify.serialization :refer [create-path-in deserialize serialize]]
    [korma.core :refer [exec-raw]]
    [korma.db :refer [transaction]]))
 
@@ -43,7 +44,7 @@
                      .getArray
                      vec)
                  (map read-string)
-                 (map dag_unify.core/deserialize)))
+                 (map deserialize)))
           lexemes))))
 
 (defn compile-lex [lexicon-source]
@@ -804,7 +805,7 @@
               language
               (db/prepare-array
                (vec (map (fn [lexeme]
-                           (str (vec (dag_unify.core/serialize lexeme))))
+                           (str (vec (serialize lexeme))))
                          lexemes)))
               ]]))
 

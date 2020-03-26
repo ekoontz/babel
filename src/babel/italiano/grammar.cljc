@@ -1,6 +1,7 @@
 (ns babel.italiano.grammar
   (:refer-clojure :exclude [get-in resolve])
   (:require
+   [babel.dagcompat :refer [remove-matching-keys]]
    [babel.generate :as generate :refer [lightning-bolts]]
    [babel.index :refer [create-indices intersection-with-identity lookup-spec map-subset-by-path]]
    [babel.italiano.lexicon :refer [compile-lexicon edn2lexicon vocab-entry-to-lexeme]]
@@ -22,7 +23,7 @@
    [clojure.core.cache :as cache]
    [clojure.pprint :refer (pprint)]
    [clojure.repl :refer (doc)]
-   [dag_unify.core :refer (fail? get-in remove-matching-keys strip-refs unify)]))
+   [dag_unify.core :refer (fail? get-in strip-refs unify)]))
 
 (declare model)
 

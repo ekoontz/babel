@@ -21,9 +21,8 @@
             #?(:clj [clojure.tools.logging :as log])
             #?(:cljs [babel.logjs :as log]) 
 
-            [dag_unify.core :as u :refer [assoc-in dissoc-paths fail?
-                                          fail-path-between get-in
-                                          strip-refs unify]]))
+            [dag_unify.core :as u :refer [assoc-in fail?
+                                          get-in strip-refs unify]]))
 (btest/init-db)
 (write-lexicon "en" (grammar/compile-lexicon))
 (def model @@(get models :en))

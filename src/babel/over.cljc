@@ -1,15 +1,14 @@
 (ns babel.over
   (:refer-clojure :exclude [get-in])
   (:require
+   [babel.dagcompat :refer [dissoc-paths]]
    [babel.exception :refer [exception]]
    #?(:clj [clojure.tools.logging :as log])
    #?(:cljs [babel.logjs :as log]) 
    [dag_unify.core :refer [copy fail-path get-in unify unify!
-                           ;; temporary: until we move (truncate) from here to dag_unify, we
-                           ;; need these three:
-                           deserialize dissoc-paths serialize
                            ;; needed for log/debug statements:
-                           strip-refs]]))
+                           strip-refs]]
+   [dag_unify.serialization :refer [deserialize serialize]]))
 
 ;; use map or pmap.
 (def ^:const mapfn pmap)

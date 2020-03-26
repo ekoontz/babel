@@ -1,13 +1,14 @@
 (ns babel.espanol.morphology
   (:refer-clojure :exclude [get-in resolve])
-  (:require [babel.espanol.morphology.nouns :as nouns]
+  (:require [babel.dagcompat :refer [dissoc-paths]]
+            [babel.espanol.morphology.nouns :as nouns]
             [babel.espanol.morphology.verbs :as verbs]
             [babel.stringutils :refer [show-as-tree]]
             [clojure.string :as string]
             [clojure.string :refer (trim)]
             #?(:clj [clojure.tools.logging :as log])
             #?(:cljs [babel.logjs :as log])
-            [dag_unify.core :refer (copy dissoc-paths fail? get-in ref? strip-refs unifyc)]))
+            [dag_unify.core :refer (copy fail? get-in ref? strip-refs unify)]))
 
 (declare get-string)
 
@@ -566,7 +567,7 @@
                                              (string/replace surface-form key
                                                              (:replace-with replace-with)))
                               looked-up (lookup-fn lexical-form)]
-                          (map #(unifyc 
+                          (map #(unify 
                                  %
                                  (:unify-with replace-with))
                                looked-up))))
@@ -582,7 +583,7 @@
                    (if (and (keyword? key) (= key :identity))
                         (let [lexical-form surface-form
                               looked-up (lookup-fn lexical-form)]
-                          (map #(unifyc 
+                          (map #(unify 
                                  %
                                  (:unify-with (get replace-pairs key)))
                                looked-up))))
@@ -624,7 +625,7 @@
                                                 (list {(get-in lexeme path :none)
                                                        (merge
                                                         lexeme
-                                                        (unifyc (apply merge-fn (list lexeme))
+                                                        (unify (apply merge-fn (list lexeme))
                                                                 {:espanol {:exception true}}))}))))
                                           lexemes)))
                               [
@@ -708,34 +709,33 @@
 
           (and (map? a-map)
                (not (= :no-espanol (get-in a-map [:espanol] :no-espanol))))
-          (unifyc {:espanol {:espanol a-string}}
-                  common
-                  a-map)
-
+          (unify {:espanol {:espanol a-string}}
+                 common
+                 a-map)
         true
-        (unifyc a-map
-                {:espanol {:espanol a-string}}
-                common))))
+        (unify a-map
+               {:espanol {:espanol a-string}}
+               common))))
 
 (defn agreement [lexical-entry]
   (cond
    (= (get-in lexical-entry [:synsem :cat]) :verb)
    (let [cat (atom :top)
          infl (atom :top)]
-     (unifyc lexical-entry
-             {:espanol {:cat cat
-                         :infl infl}
-              :synsem {:cat cat
-                       :infl infl}}))
+     (unify lexical-entry
+            {:espanol {:cat cat
+                       :infl infl}
+             :synsem {:cat cat
+                      :infl infl}}))
 
    (= (get-in lexical-entry [:synsem :cat]) :noun)
    (let [agr (atom :top)
          cat (atom :top)]
-     (unifyc lexical-entry
-             {:espanol {:agr agr
-                        :cat cat}
-              :synsem {:agr agr
-                       :cat cat}}))
+     (unify lexical-entry
+            {:espanol {:agr agr
+                       :cat cat}
+             :synsem {:agr agr
+                      :cat cat}}))
 
    true
    lexical-entry))

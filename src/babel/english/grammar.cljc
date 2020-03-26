@@ -1,6 +1,7 @@
 (ns babel.english.grammar
   (:refer-clojure :exclude [get-in])
-  (:require 
+  (:require
+   [babel.dagcompat :refer [remove-matching-keys]]
    [babel.english.lexicon :refer [deliver-lexicon transform-with-english-lexical-rules
                                   vocab-entry-to-lexeme]]
    [babel.english.morphology :refer (analyze fo)]
@@ -21,7 +22,7 @@
    #?(:clj [clojure.tools.logging :as log])
    #?(:cljs [babel.logjs :as log]) 
    [clojure.core.cache :as cache]
-   [dag_unify.core :refer [fail? get-in remove-matching-keys strip-refs unify]]))
+   [dag_unify.core :refer [fail? get-in strip-refs unify]]))
 
 (def index-lexicon-on-paths
   [[:synsem :agr :gender]
@@ -496,6 +497,7 @@
   (into {}
         (for [[k v] (deliver-lexicon)]
           (let [filtered-v v]
+            (log/info (str "V: " (vec filtered-v)))
             (if (not (empty? filtered-v))  ;; TODO: this empty-filtering should be done in lexicon.cljc, not here.
               [k filtered-v])))))
 

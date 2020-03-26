@@ -1,6 +1,7 @@
 (ns babel.italiano.morphology
   (:refer-clojure :exclude [get-in resolve])
   (:require
+   [babel.dagcompat :refer [dissoc-paths]]
    [babel.pos :refer (noun)]
    [babel.italiano.morphology.adjectives :as adjectives]
    [babel.italiano.morphology.adjectives
@@ -20,7 +21,7 @@
    [clojure.string :refer (trim)]
    #?(:clj [clojure.tools.logging :as log])
    #?(:cljs [babel.logjs :as log]) 
-   [dag_unify.core :as u :refer (copy dissoc-paths fail? get-in ref? strip-refs unify)]))
+   [dag_unify.core :as u :refer (copy fail? get-in ref? strip-refs unify)]))
 
 ;; TODO: move this to morphology/prepositions.edn,
 ;; following example in morphology/determiners.edn.

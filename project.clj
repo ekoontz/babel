@@ -1,4 +1,4 @@
-(defproject babel "3.0.18-verbcoach"
+(defproject babel "3.0.19-verbcoach-SNAPSHOT"
   :description "A library for natural language generation and parsing"
   :url "http://github.com/ekoontz/babel"
   :license {:name "Eclipse Public License"
@@ -7,7 +7,7 @@
                  [clj-time "0.11.0"]
                  [clojail "1.0.6"]
                  [compojure "1.1.6"]
-                 [dag_unify "1.5.3"]
+                 [dag_unify "1.7.12-SNAPSHOT"]
                  [environ "1.0.0"]
                  [korma "0.4.3"]
                  [log4j/log4j "1.2.17"]

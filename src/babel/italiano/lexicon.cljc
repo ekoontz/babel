@@ -2,6 +2,7 @@
 (ns babel.italiano.lexicon
   (:refer-clojure :exclude [get-in])
   (:require
+   [babel.dagcompat :refer [dissoc-paths]]
    [babel.encyclopedia :as encyc]
    [babel.lexiconfn
     :as lexfn
@@ -18,7 +19,7 @@
    [clojure.edn :as edn]
    [clojure.java.io :refer [resource]]
    [clojure.repl :refer [doc]]
-   [dag_unify.core :as u :refer [dissoc-paths fail? get-in strip-refs unify]]))
+   [dag_unify.core :as u :refer [fail? get-in strip-refs unify]]))
 
 (declare defaults)
 (declare edn2lexicon)

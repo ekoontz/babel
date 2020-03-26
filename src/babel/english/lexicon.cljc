@@ -1,6 +1,7 @@
 (ns babel.english.lexicon
   (:refer-clojure :exclude [get-in])
   (:require
+   [babel.dagcompat :refer [dissoc-paths]]
    [babel.encyclopedia :as encyc]
    [babel.english.morphology :as morph]
    [babel.lexiconfn :refer [apply-unify-key compile-lex default
@@ -9,7 +10,7 @@
                             remove-vals verb-pred-defaults]]
    [clojure.java.io :refer [resource]]
    [clojure.tools.logging :as log]
-   [dag_unify.core :as u :refer [dissoc-paths fail? get-in strip-refs unify]]))
+   [dag_unify.core :as u :refer [fail? get-in strip-refs unify]]))
 
 (declare exception-generator)
 (declare phonize)
@@ -454,7 +455,7 @@
    (mapcat
     (fn [root]
       (let [lexemes (get lexicon root)]
-        (log/trace (str "exception generator: " root))
+        (log/info (str "exception generator: " root))
         (mapcat (fn [path-and-merge-fn]
                   (let [path (:path path-and-merge-fn)
                         surface (:surface path-and-merge-fn)

@@ -1,12 +1,13 @@
 (ns babel.francais.morphology.verbs
   (:refer-clojure :exclude [future get-in resolve])
   (:require
+   [babel.dagcompat :refer [dissoc-paths]]
    [babel.francais.morphology.nouns :as nouns]
    [clojure.string :as string]
    [clojure.string :refer (trim)]
    #?(:clj [clojure.tools.logging :as log])
    #?(:cljs [babel.logjs :as log])
-   [dag_unify.core :refer (copy dissoc-paths fail? get-in ref? strip-refs unify)]))
+   [dag_unify.core :refer (copy fail? get-in ref? strip-refs unify)]))
 
 ;; TODO: convert to (babel.morphology/conjugation)
 ;; (see babel.latin.morphology for an example of how to use babel.morphology/conjugation)

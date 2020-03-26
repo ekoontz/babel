@@ -1,14 +1,15 @@
 (ns babel.generate
   (:refer-clojure :exclude [assoc-in get-in deref resolve find parents])
   (:require
+   [babel.dagcompat :refer [dissoc-paths]]
    [babel.index :refer [intersection-with-identity]]
    #?(:clj [clojure.tools.logging :as log])
    #?(:cljs [babel.logjs :as log]) 
    [clojure.math.combinatorics :as combo]
    [clojure.string :as string]
    [dag_unify.core :as u
-    :refer [assoc-in assoc-in! copy create-path-in
-            dissoc-paths fail-path get-in fail? strip-refs unify unify!]]))
+    :refer [assoc-in assoc-in! copy
+            fail-path get-in fail? strip-refs unify unify!]]))
                                         
 ;; during generation, will not decend deeper than this when creating a tree:
 ;; TODO: should also be possible to override per-language.

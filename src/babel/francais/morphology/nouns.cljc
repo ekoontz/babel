@@ -5,7 +5,7 @@
    [clojure.string :refer (trim)]
    #?(:clj [clojure.tools.logging :as log])
    #?(:cljs [babel.logjs :as log])
-   [dag_unify.core :refer (copy dissoc-paths fail? get-in ref? strip-refs unifyc)]))
+   [dag_unify.core :refer (copy fail? get-in ref? strip-refs unify)]))
 
 (defonce regular-patterns
   [
@@ -17,8 +17,8 @@
 (defn agreement [lexical-entry]
   (let [agr (atom :top)
         cat (atom :top)]
-    (unifyc lexical-entry
-            {:français {:agr agr
-                        :cat cat}
-             :synsem {:agr agr
-                      :cat cat}})))
+    (unify lexical-entry
+           {:français {:agr agr
+                       :cat cat}
+            :synsem {:agr agr
+                     :cat cat}})))

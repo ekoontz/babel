@@ -1,11 +1,11 @@
 (ns babel.italiano.morphology.determiners
   (:refer-clojure :exclude [get-in resolve])
   (:require
+   [babel.dagcompat :refer [dissoc-paths]]
    [clojure.string :as string]
    [clojure.string :refer (trim)]
    #?(:clj [clojure.tools.logging :as log])
-   #?(:cljs [babel.logjs :as log])
-   [dag_unify.core :refer (copy dissoc-paths fail? get-in ref? strip-refs unifyc)]))
+   #?(:cljs [babel.logjs :as log])))
 
 (def patterns
   (-> "babel/italiano/morphology/determiners.edn"

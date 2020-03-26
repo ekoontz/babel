@@ -4,8 +4,7 @@
    [clojure.string :as string]
    [clojure.string :refer (trim)]
    #?(:clj [clojure.tools.logging :as log])
-   #?(:cljs [babel.logjs :as log])
-   [dag_unify.core :refer (copy dissoc-paths fail? get-in ref? strip-refs unifyc)]))
+   #?(:cljs [babel.logjs :as log])))
 
 ;; TODO: add :g as with babel.italiano.morphology.verbs/patterns.
 (defonce patterns

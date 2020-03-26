@@ -1,6 +1,7 @@
 (ns babel.francais.morphology
   (:refer-clojure :exclude [get-in resolve])
   (:require
+   [babel.dagcompat :refer [dissoc-paths]]
    [babel.francais.morphology.adjectives :as adjectives]
    [babel.francais.morphology.nouns :as nouns]
    [babel.francais.morphology.verbs :as verbs]
@@ -8,7 +9,7 @@
    [clojure.string :refer (trim)]
    #?(:clj [clojure.tools.logging :as log])
    #?(:cljs [babel.logjs :as log])
-   [dag_unify.core :refer (copy dissoc-paths fail? get-in ref? strip-refs unify)]))
+   [dag_unify.core :refer (copy fail? get-in ref? strip-refs unify)]))
 
 (def regular-patterns
   (concat

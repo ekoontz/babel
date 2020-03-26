@@ -1,6 +1,6 @@
 (ns babel.pos
   (:require
-   [dag_unify.core :refer (unifyc)]))
+   [dag_unify.core :refer (unify)]))
 
 ;; TODO: this file has a lot of language-specific stuff that should be factored into pos/$language.
 ;; for example, english does not have gender agreement between articles, nouns and adjectives.
@@ -54,7 +54,7 @@
                     :sem {:mass mass}}})
 
         drinkable
-        (unifyc mass
+        (unify mass
                 common
                 {:synsem {:sem {:number :sing
                                 :drinkable true}}})]
@@ -100,34 +100,34 @@
 
 ;; intransitive: has subject but no object.
 (def intransitive
-  (unifyc verb-subjective
-          {:synsem {:subcat {:2 '()}}}))
+  (unify verb-subjective
+         {:synsem {:subcat {:2 '()}}}))
 
 ;; intransitive: has subject and no syntactic object, but only a semantic and underspecified (:unspec) object.
 (def intransitive-unspecified-obj
-  (unifyc intransitive
-          {:synsem {:sem {:obj :unspec}}}))
+  (unify intransitive
+         {:synsem {:sem {:obj :unspec}}}))
 
 ;; transitive: has both subject and object.
 (def transitive
-  (unifyc verb-subjective
-          (let [obj-sem (atom :top)
-                infl (atom :top)]
-            {:synsem {:sem {:obj obj-sem}
-                      :infl infl
-                      :subcat {:2 {:sem obj-sem
-                                   :subcat '()
-                                   :cat :noun
-                                   :case :acc}}}})))
+  (unify verb-subjective
+         (let [obj-sem (atom :top)
+               infl (atom :top)]
+           {:synsem {:sem {:obj obj-sem}
+                     :infl infl
+                     :subcat {:2 {:sem obj-sem
+                                  :subcat '()
+                                  :cat :noun
+                                  :case :acc}}}})))
 
 (def transitive-but-object-cat-not-set
-  (unifyc verb-subjective
-          (let [obj-sem (atom :top)
-                infl (atom :top)]
-            {:synsem {:sem {:obj obj-sem}
-                      :infl infl
-                      :subcat {:2 {:sem obj-sem
-                                   :case :acc}}}})))
+  (unify verb-subjective
+         (let [obj-sem (atom :top)
+               infl (atom :top)]
+           {:synsem {:sem {:obj obj-sem}
+                     :infl infl
+                     :subcat {:2 {:sem obj-sem
+                                  :case :acc}}}})))
 
 (def verb {:transitive transitive})
 
@@ -149,11 +149,11 @@
 
 ;; TODO: not using this: either use or lose.
 (def transitive-but-with-prepositional-phrase-instead-of-noun
-  (unifyc verb-subjective
-          (let [obj-sem (atom :top)
-                infl (atom :top)]
-            {:synsem {:sem {:obj obj-sem}
-                      :infl infl
+  (unify verb-subjective
+         (let [obj-sem (atom :top)
+               infl (atom :top)]
+           {:synsem {:sem {:obj obj-sem}
+                     :infl infl
                       :subcat {:2 {:sem obj-sem
                                    :subcat '()
                                    :cat :prep}
@@ -183,7 +183,7 @@
 ;; "Y is X."
 (def non-comparative-adjective
   (let [subject (atom :top)]
-    (unifyc
+    (unify
      subcat1
      {:synsem {:sem {:arg1 subject}
                :subcat {:1 {:sem subject}}}})))
