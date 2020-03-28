@@ -32,7 +32,7 @@
         true
         (let [path (first paths)]
           (dissoc-paths
-           (let [fs (dissoc fs ::serialized) ;; remove the existing serialized version of the serialized structure, since
+           (let [fs (dissoc fs :dag_unify.serialization/serialized) ;; remove the existing serialized version of the serialized structure, since
                  ;; it will not be valid after we've altered the structure itself.
                  feature (first path)]
              (cond
