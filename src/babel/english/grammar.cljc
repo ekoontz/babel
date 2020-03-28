@@ -497,7 +497,6 @@
   (into {}
         (for [[k v] (deliver-lexicon)]
           (let [filtered-v v]
-            (log/info (str "V: " (vec filtered-v)))
             (if (not (empty? filtered-v))  ;; TODO: this empty-filtering should be done in lexicon.cljc, not here.
               [k filtered-v])))))
 
