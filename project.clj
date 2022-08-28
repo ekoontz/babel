@@ -1,4 +1,4 @@
-(defproject babel "3.0.18-verbcoach"
+(defproject babel "3.0.19-verbcoach"
   :description "A library for natural language generation and parsing"
   :url "http://github.com/ekoontz/babel"
   :license {:name "Eclipse Public License"
@@ -24,6 +24,8 @@
   :filespecs [{:type :path :path "compiled"}]
   :resource-paths ["resources"]
 
+  :plugins [[lein-localrepo "0.5.4"]]
+  
   ;; run clojure tests with "lein test"
   ;; run clojurescript tests with "lein doo slimer test"
   :cljsbuild {:builds [{:id "test"
