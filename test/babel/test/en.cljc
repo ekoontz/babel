@@ -11,7 +11,8 @@
             [babel.parse :as parse]
             [babel.test.test :as btest]
             [babel.ug :refer [head-principle unify-check]]
-            
+            [babel.unify-compat :refer [unifym]]
+
             [clojure.math.combinatorics :as combo]
             [clojure.pprint :refer [pprint]]
             [clojure.repl :refer [doc]]
@@ -599,7 +600,7 @@
   (let [p (first
            (filter #(= :verb (get-in % [:synsem :cat]))
                    (parse "I speak")))
-        spec (strip-refs (unify
+        spec (strip-refs (unifym
                           {:synsem {:subcat '()
                                     :cat :verb}}
                           {:synsem {:sem (get-in p [:synsem :sem])}}
