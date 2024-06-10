@@ -14,11 +14,13 @@
    #?(:cljs [babel.logjs :as log]) 
    [babel.italiano.morphology :as morph
     :refer [phonize2]]
+   [babel.unify-compat :refer [dissoc-paths]]
 
    [clojure.edn :as edn]
    [clojure.java.io :refer [resource]]
    [clojure.repl :refer [doc]]
-   [dag_unify.core :as u :refer [dissoc-paths fail? get-in strip-refs unify]]))
+   [dag_unify.core :as u :refer [fail? get-in unify]]
+   [dag_unify.diagnostics :refer [strip-refs]]))
 
 (declare defaults)
 (declare edn2lexicon)

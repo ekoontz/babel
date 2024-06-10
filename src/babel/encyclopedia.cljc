@@ -6,7 +6,8 @@ as a map of implications"}
    [babel.exception :refer [exception]]
    #?(:cljs [babel.logjs :as log])
    #?(:clj [clojure.tools.logging :as log])
-   [dag_unify.core :refer [strip-refs unify unify!]]))
+   [dag_unify.core :refer [unify unify!]]
+   [dag_unify.diagnostics :refer [strip-refs]]))
 
 ;; TODO: use clojure.core/isa? and clojure.core/derive where possible
 ;; in here, e.g.: (derive ::human ::animal)

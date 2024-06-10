@@ -1,20 +1,22 @@
 (ns babel.espanol
   (:refer-clojure :exclude [get-in])
   (:require
-   [dag_unify.core :refer (fail-path get-in unifyc)]
+   [dag_unify.core :refer (get-in)]
    [babel.generate :as generate]
    [babel.espanol.grammar :as grammar]
    [babel.espanol.morphology :as morph :refer [fo]]
    #?(:cljs [babel.logjs :as log])
    [babel.over :refer [over truncate]]
    [babel.parse :as parse]
+   [babel.unify-compat :refer [dissoc-paths unifyc]]
    [clojure.repl :refer [doc]]
    [clojure.string :as string]
    #?(:clj [clojure.tools.logging :as log])
-   [dag_unify.core :refer [deserialize dissoc-paths
-                           fail? fail-path get-in serialize strip-refs
+   [dag_unify.core :refer [fail? get-in
                            ;;temporary
-                           copy]]))
+                           copy]]
+   [dag_unify.diagnostics :refer [fail-path strip-refs]]
+   [dag_unify.serialization :refer [deserialize serialize]]))
 
 (def small-model (promise))
 (defn small []

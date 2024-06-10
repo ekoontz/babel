@@ -1,7 +1,8 @@
 (ns babel.latin.morphology
   (:require [babel.morphology :as morph]
             [clojure.tools.logging :as log]
-            [dag_unify.core :refer [strip-refs unify]]))
+            [dag_unify.core :refer [unify]]
+            [dag_unify.diagnostics :refer [strip-refs]]))
 
 (defn conjugation [specification]
   "compile a high-level conjugation pattern into 

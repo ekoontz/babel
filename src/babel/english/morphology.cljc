@@ -4,7 +4,9 @@
             [clojure.string :as string :refer [join replace trim]]
             #?(:clj [clojure.tools.logging :as log])
             #?(:cljs [babel.logjs :as log]) 
-            [dag_unify.core :as u :refer [assoc-in copy dissoc-paths fail? get-in ref? strip-refs unify]]))
+            [dag_unify.core :as u :refer [assoc-in copy fail? get-in ref? unify]]
+            [dag_unify.diagnostics :refer [strip-refs]]
+            [babel.unify-compat :refer [dissoc-paths]]))
 
 (declare get-string)
 (declare plural-en)
@@ -771,7 +773,7 @@
          english-verb-phrase)))))
 
 (defn plural-en [english & [word]]
-  (log/debug (str "plural-en: english: " english "; word: " (u/strip-refs word)))
+  (log/debug (str "plural-en: english: " english "; word: " (strip-refs word)))
   (cond
     ;; handle commas in english word, e.g.: "agent,officer" => "agents,officers"
     (re-find #"," english)

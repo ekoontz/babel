@@ -2,14 +2,12 @@
   (:refer-clojure :exclude [get-in])
   (:require
    [babel.exception :refer [exception]]
+   [babel.unify-compat :refer [dissoc-paths]]
    #?(:clj [clojure.tools.logging :as log])
    #?(:cljs [babel.logjs :as log]) 
-   [dag_unify.core :refer [copy fail-path get-in unify unify!
-                           ;; temporary: until we move (truncate) from here to dag_unify, we
-                           ;; need these three:
-                           deserialize dissoc-paths serialize
-                           ;; needed for log/debug statements:
-                           strip-refs]]))
+   [dag_unify.core :refer [copy get-in unify unify!]]
+   [dag_unify.diagnostics :refer [fail-path strip-refs]]
+   [dag_unify.serialization :refer [deserialize serialize]]))
 
 ;; use map or pmap.
 (def ^:const mapfn pmap)

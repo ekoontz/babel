@@ -5,6 +5,7 @@
    [babel.directory :refer [models]]
    [babel.generate :refer [generate]]
    [babel.korma :as korma :refer [convert-keys-from-string-to-keyword init-db read-array]]
+   [babel.unify-compat :refer [dissoc-paths]]
    [cljstache.core :as cljstache]
    [clojure.core.async :refer [>! alts!! timeout chan go]]
    [clojure.string :as string]
@@ -12,7 +13,8 @@
    [clojure.java.io :as io]
    [clojure.tools.logging :as log]
    [compojure.core :as compojure :refer [GET PUT POST DELETE ANY]]
-   [dag_unify.core :as unify :refer [dissoc-paths get-in ref? strip-refs unify]]
+   [dag_unify.core :as unify :refer [get-in ref? unify]]
+   [dag_unify.diagnostics :refer [strip-refs]] 
    [korma.core :as db]
    [ring.util.response :as resp]])
 
@@ -148,7 +150,7 @@
         target-expression
         (target-timing-fn (babel.generate/generate target-spec target-model))
         source-spec
-        (unify/strip-refs ;; TODO: consider removing strip-refs; not clear if there is any reason why we need to do it.
+        (strip-refs ;; TODO: consider removing strip-refs; not clear if there is any reason why we need to do it.
          (unify/unify
           {:synsem {:sem (unify/get-in target-expression [:synsem :sem])}}
           basic-spec))
@@ -159,7 +161,7 @@
         (source-timing-fn (generate source-spec source-model))]
     (let [pairing
           {:target ((:morph target-model) target-expression) ;; TODO: hard-wired to Italian.
-           :pred (unify/strip-refs
+           :pred (strip-refs
                   (unify/get-in target-expression [:synsem :sem :pred]))
            :tense (unify/get-in target-expression [:synsem :sem :tense])
            :sem (unify/get-in target-expression [:synsem :sem])

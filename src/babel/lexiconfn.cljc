@@ -9,14 +9,15 @@
                       subcat0 subcat1
                       transitive-but-object-cat-not-set
                       verb-subjective]]
+   [babel.unify-compat :refer [dissoc-paths exists? unifym]]
    [clojure.set :as set]
    #?(:clj [clojure.tools.logging :as log])
    #?(:cljs [babel.logjs :as log]) 
    [clojure.data.json :as json]
    [clojure.string :as string]
-   [dag_unify.core :as unify :refer [create-path-in dissoc-paths exists?
-                                     fail-path fail? get-in isomorphic?
-                                     serialize strip-refs unify]]
+   [dag_unify.core :as unify :refer [fail? get-in unify]]
+   [dag_unify.diagnostics :refer [fail-path isomorphic? strip-refs]] 
+   [dag_unify.serialization :as ser :refer [create-path-in serialize]]
    [korma.core :refer [exec-raw]]
    [korma.db :refer [transaction]]))
 
@@ -43,7 +44,7 @@
                      .getArray
                      vec)
                  (map read-string)
-                 (map dag_unify.core/deserialize)))
+                 (map ser/deserialize)))
           lexemes))))
 
 (defn compile-lex [lexicon-source]
@@ -285,7 +286,7 @@
              (not (= (get-in lexical-entry [:synsem :propernoun]) true)))
         (let [result 
               (unify lexical-entry
-                      (unify agreement-noun
+                      (unifym agreement-noun
                               common-noun
                               {:synsem {:pronoun false
                                         :subcat {:1 {:cat :det}
@@ -293,11 +294,11 @@
           (if (fail? result)
             (throw (exception (str "fail when trying to create common-noun from lexical-entry: " lexical-entry
                                    "fail-path: "
-                                   (dag_unify.core/fail-path lexical-entry
-                                                             (unify agreement-noun
-                                                                    common-noun
-                                                                    {:synsem {:pronoun false
-                                                                              :subcat {:1 {:cat :det}}}})))))
+                                   (fail-path lexical-entry
+                                              (unifym agreement-noun
+                                                     common-noun
+                                                     {:synsem {:pronoun false
+                                                               :subcat {:1 {:cat :det}}}})))))
             result))
         true
         lexical-entry))
@@ -633,7 +634,7 @@
             (let [unify-against
                   (create-path-in path (unify (get-in original-val path :fail)
                                                value-at-path))
-                  result (unify original-val unify-against unify-with)]
+                  result (unifym original-val unify-against unify-with)]
               (if (not (fail? result))
                 result
                 original-val)))
@@ -730,7 +731,7 @@
   (into {} (map (fn [k] [k (map (fn [v]
                                   (if (= :noun (get-in v [:synsem :cat]))
                                     (let [unif (unify v {:synsem {:cat :noun
-                                                                  :sem (sem-impl (dag_unify.core/strip-refs (get-in v [:synsem :sem])))}})]
+                                                                  :sem (sem-impl (strip-refs (get-in v [:synsem :sem])))}})]
                                       (if (not (= :fail unif))
                                         unif
                                         v))
@@ -804,7 +805,7 @@
               language
               (db/prepare-array
                (vec (map (fn [lexeme]
-                           (str (vec (dag_unify.core/serialize lexeme))))
+                           (str (vec (serialize lexeme))))
                          lexemes)))
               ]]))
 

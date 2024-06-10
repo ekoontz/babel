@@ -2,11 +2,13 @@
   (:refer-clojure :exclude [future get-in resolve])
   (:require
    [babel.francais.morphology.nouns :as nouns]
+   [babel.unify-compat :refer [dissoc-paths]]
    [clojure.string :as string]
    [clojure.string :refer (trim)]
    #?(:clj [clojure.tools.logging :as log])
    #?(:cljs [babel.logjs :as log])
-   [dag_unify.core :refer (copy dissoc-paths fail? get-in ref? strip-refs unify)]))
+   [dag_unify.core :refer (copy fail? get-in ref? unify)]
+   [dag_unify.diagnostics :refer [strip-refs]]))
 
 ;; TODO: convert to (babel.morphology/conjugation)
 ;; (see babel.latin.morphology for an example of how to use babel.morphology/conjugation)

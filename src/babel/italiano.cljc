@@ -8,12 +8,14 @@
    [babel.generate :as generate]
    [babel.over :as over]
    [babel.parse :as parse]
+   [babel.unify-compat :refer [fail-path-between unifyc]]
    #?(:clj [clojure.tools.logging :as log])
    #?(:cljs [babel.logjs :as log])
    [clojure.pprint :refer [pprint]]
    [clojure.repl :refer [doc]]
    [clojure.string :as string]
-   [dag_unify.core :refer [fail-path-between get-in strip-refs unifyc]]))
+   [dag_unify.core :refer [get-in]]
+   [dag_unify.diagnostics :refer [strip-refs]]))
 
 ;; can't decide between 'morph' or 'fo' or something other better name.
 (defn morph [expr & {:keys [from-language show-notes]

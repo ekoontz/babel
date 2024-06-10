@@ -8,6 +8,7 @@
    [babel.index :refer [create-indices lookup-spec]]
    [babel.lexiconfn :refer [edn2lexicon filtered-lexicon read-lexicon]]
    [babel.parse :as parse]
+   [babel.unify-compat :refer [remove-matching-keys]]
    [babel.ug :as ug
     :refer [apply-default-if comp-modifies-head
             comp-specs-head head-semantics
@@ -21,7 +22,8 @@
    #?(:clj [clojure.tools.logging :as log])
    #?(:cljs [babel.logjs :as log]) 
    [clojure.core.cache :as cache]
-   [dag_unify.core :refer [fail? get-in remove-matching-keys strip-refs unify]]))
+   [dag_unify.core :refer [fail? get-in unify]]
+   [dag_unify.diagnostics :refer [strip-refs]]))
 
 (def index-lexicon-on-paths
   [[:synsem :agr :gender]

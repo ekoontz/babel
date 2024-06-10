@@ -9,7 +9,8 @@
    [clojure.repl :refer [doc]]
    [clojure.test :refer [deftest is]]
    [clojure.tools.logging :as log]
-   [dag_unify.core :refer [get-in strip-refs unify]]))
+   [dag_unify.core :refer [get-in unify]]
+   [dag_unify.diagnostics :refer [strip-refs]]))
 
 (btest/init-db)
 (def source-language :en)

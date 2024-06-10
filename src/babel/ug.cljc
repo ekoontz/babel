@@ -1,10 +1,12 @@
 (ns babel.ug
   (:refer-clojure :exclude [get-in resolve])
   (:require [babel.lexiconfn :refer [apply-default]]
+            [babel.unify-compat :refer [unifym]]
             [clojure.math.combinatorics :as combo]
             [clojure.string :as string]
             #?(:clj [clojure.tools.logging :as log])
-            [dag_unify.core :refer [fail? fail-path get-in strip-refs unify]]))
+            [dag_unify.core :refer [fail? get-in unify]]
+            [dag_unify.diagnostics :refer [fail-path strip-refs]]))
 
 (def phrasal {:phrasal true})
 
@@ -15,7 +17,7 @@
      (throw (js/Error. error-string))))
 
 (defn unify-check [ & vals]
-  (let [result (apply unify vals)]
+  (let [result (reduce unify vals)]
     (if (fail? result)
       (exception (str "failed to unify components of grammar rule: "
                       (first  ;; there may be other failed components, but showing
@@ -52,21 +54,21 @@
         head-is-pronoun (atom :top)
         head-sem (atom :top)]
     (unify phrasal
-            {:synsem {:cat head-cat
-                      :essere head-essere
-                      :pronoun head-is-pronoun
-                      :sem head-sem}
-             :head {:synsem {:cat head-cat
-                             :essere head-essere
-                             :pronoun head-is-pronoun
-                             :sem head-sem}}})))
+           {:synsem {:cat head-cat
+                     :essere head-essere
+                     :pronoun head-is-pronoun
+                     :sem head-sem}
+            :head {:synsem {:cat head-cat
+                            :essere head-essere
+                            :pronoun head-is-pronoun
+                            :sem head-sem}}})))
 
 ;;    [1]
 ;;   /   \
 ;;  /     \
 ;; H[1]    C
 (def head-principle
-  (unify head-principle-no-infl
+  (unifym head-principle-no-infl
           phrasal
           (let [head-infl (atom :top)
                 agr (atom :top)]
@@ -247,7 +249,7 @@
     :comp {:synsem {:subcat '()}}}))
 
 (def c21
-  (unify
+  (unifym
    subcat-2-principle
    head-principle
    {:comp {:synsem {:subcat '()}}
@@ -256,7 +258,7 @@
     :comment "c21"}))
 
 (def h11
-  (unify
+  (unifym
    subcat-1-1-principle
    head-principle
    comp-modifies-head

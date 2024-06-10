@@ -10,7 +10,8 @@
             #?(:cljs [cljs.test :refer-macros [deftest is]])
             #?(:clj [clojure.tools.logging :as log])
             #?(:cljs [babel.logjs :as log]) 
-            [dag_unify.core :refer [fail-path fail? get-in strip-refs unifyc]]))
+            [dag_unify.core :refer [fail? get-in]]
+            [dag_unify.diagnostics :refer [fail-path strip-refs]]))
 
 (deftest split
   (is (= 2 (count (string/split "je suis" tokenizer)))))

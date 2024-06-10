@@ -20,7 +20,8 @@
    #?(:clj [clojure.repl :refer [doc]])
    [clojure.string :as string]
    [clojure.set :as set]
-   [dag_unify.core :as u :refer [copy fail? get-in strip-refs unify]]))
+   [dag_unify.core :as u :refer [copy fail? get-in unify]]
+   [dag_unify.diagnostics :refer (strip-refs)]))
 
 (btest/init-db)
 (log/info (str "recompiling and writing lexicon to database.."))
@@ -315,7 +316,7 @@
                               (if (not (empty? parsed))
                                 (log/info (str "roundtrip-present: " surface))
                                 (log/error (str "parse failed: " surface ": italiano:"
-                                                (dag_unify.core/strip-refs
+                                                (strip-refs
                                                  (get-in expr
                                                          [:italiano])))))
                               (is (not (empty? parsed)))))
@@ -335,7 +336,7 @@
                             (if (not (empty? parsed))
                               (log/info (str "roundtrip-future: " surface))
                               (log/error (str "parse failed: " surface ": italiano:"
-                                              (dag_unify.core/strip-refs
+                                              (strip-refs
                                                (get-in expr
                                                        [:italiano])))))
                             (is (not (empty? parsed)))))

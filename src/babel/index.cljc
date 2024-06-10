@@ -3,11 +3,12 @@
   (:require
    ;; TODO: comment is misleading in that we never call core/get-in from this file.
    ;; TODO: alphabetize
+   [babel.unify-compat :refer [dissoc-paths label-of]]
    [clojure.string :as string]
    #?(:clj [clojure.tools.logging :as log])
-   #?(:cljs [babel.logjs :as log]) 
-   [dag_unify.core :refer [fail? dissoc-paths get-in label-of
-                           strip-refs unify]]))
+   #?(:cljs [babel.logjs :as log])
+   [dag_unify.core :refer [fail? get-in unify]]
+   [dag_unify.diagnostics :refer [strip-refs]]))
 
 (defn exception [error-string]
   #?(:clj

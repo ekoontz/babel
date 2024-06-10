@@ -16,11 +16,13 @@
    [babel.italiano.morphology.verbs :as verbs]
    [babel.morphology :as language-independent]
    [babel.stringutils :refer (replace-from-list)]
+   [babel.unify-compat :refer [dissoc-paths]]
    [clojure.string :as string]
    [clojure.string :refer (trim)]
    #?(:clj [clojure.tools.logging :as log])
    #?(:cljs [babel.logjs :as log]) 
-   [dag_unify.core :as u :refer (copy dissoc-paths fail? get-in ref? strip-refs unify)]))
+   [dag_unify.core :as u :refer (copy fail? get-in ref? unify)]
+   [dag_unify.diagnostics :refer (strip-refs)]))
 
 ;; TODO: move this to morphology/prepositions.edn,
 ;; following example in morphology/determiners.edn.
@@ -123,7 +125,7 @@
         (if (or (nil? conjugated) (empty? conjugated))
           (do
             (log/debug (str "failed to conjugate: "
-                            (dag_unify.core/strip-refs word)))
+                            (strip-refs word)))
             "..")
           conjugated))
 

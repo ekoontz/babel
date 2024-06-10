@@ -2,14 +2,17 @@
   (:refer-clojure :exclude [assoc-in get-in deref resolve find parents])
   (:require
    [babel.index :refer [intersection-with-identity]]
+   [babel.unify-compat :refer [dissoc-paths]]
    #?(:clj [clojure.tools.logging :as log])
    #?(:cljs [babel.logjs :as log]) 
    [clojure.math.combinatorics :as combo]
    [clojure.string :as string]
    [dag_unify.core :as u
-    :refer [assoc-in assoc-in! copy create-path-in
-            dissoc-paths fail-path get-in fail? strip-refs unify unify!]]))
-                                        
+    :refer [assoc-in assoc-in! copy
+            get-in fail? unify unify!]]
+   [dag_unify.diagnostics :refer [fail-path isomorphic? strip-refs]]
+   [dag_unify.serialization :as ser :refer [create-path-in]]))
+
 ;; during generation, will not decend deeper than this when creating a tree:
 ;; TODO: should also be possible to override per-language.
 (def ^:const max-depth 4)
@@ -106,7 +109,7 @@
     ;;    (throw (Exception. (str "wtf.")))
     nil
     (do
-      ;;    (println (str "gen@" depth "; spec=" (dag_unify.core/strip-refs spec)))
+      ;;    (println (str "gen@" depth "; spec=" (strip-refs spec)))
       (log/trace (str "gen@" depth "; spec=" (show-spec spec)))
       (when (< depth max-depth)
         (let [bolts (or from-bolts
@@ -114,7 +117,7 @@
                                        depth))]
           (if (not (empty? bolts))
             (do
-              (log/trace (str "gen@" depth "; found bolts with spec=" (dag_unify.core/strip-refs spec)))
+              (log/trace (str "gen@" depth "; found bolts with spec=" (strip-refs spec)))
               (lazy-cat
                (let [bolt (first bolts)]
                  (or
@@ -137,7 +140,7 @@
   "Return every possible bolt for the given model and spec."
   [model spec depth]
   (let [search-for-key
-        (dag_unify.core/strip-refs
+        (strip-refs
          {:synsem {:sem {:aspect (get-in spec [:synsem :sem :aspect] :top)
                          :reflexive (get-in spec [:synsem :sem :reflexive] :top)
                          :tense (get-in spec [:synsem :sem :tense] :top)}

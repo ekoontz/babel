@@ -16,10 +16,11 @@
                      subcat-2-principle subcat-2-2-principle
                      subcat-5-principle
                      ]]
+   [babel.unify-compat :refer [unifyc]]
    #?(:clj [clojure.tools.logging :as log])
    #?(:cljs [babel.logjs :as log])
    [clojure.core.cache :as cache]
-   [dag_unify.core :refer (get-in unifyc)]))
+   [dag_unify.core :refer (get-in)]))
 
 (def index-lexicon-on-paths
   [[:synsem :cat]

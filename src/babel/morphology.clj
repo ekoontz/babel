@@ -1,7 +1,8 @@
 (ns babel.morphology
   (:require [clojure.tools.logging :as log]
             [clojure.string :as string]
-            [dag_unify.core :refer [fail? strip-refs unify]]))
+            [dag_unify.core :refer [fail? unify]]
+            [dag_unify.diagnostics :refer [strip-refs]]))
 
 (declare group-by-two)
 

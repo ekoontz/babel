@@ -457,7 +457,7 @@
     (str butlast (suffix-of word))))
 
 (defn regular-present [word]
-  (log/debug (str "(regular-present " (dag_unify.core/strip-refs word) ")"))
+  (log/debug (str "(regular-present " (dag_unify.diagnostics/strip-refs word) ")"))
   (let [unifying-patterns
         (remove nil? (mapcat #(when
                                   (not (= :fail

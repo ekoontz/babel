@@ -7,7 +7,8 @@
   [clojure.string :as string]
   #?(:clj [clojure.tools.logging :as log])
   #?(:cljs [babel.logjs :as log])
-  [dag_unify.core :refer (get-in strip-refs)]))
+  [dag_unify.core :refer (get-in)]
+  [dag_unify.diagnostics :refer [strip-refs]]))
 
 (def ^:const parse-with-lexical-caching true)
 

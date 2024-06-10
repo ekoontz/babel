@@ -1,18 +1,21 @@
 (ns babel.english
   (:refer-clojure :exclude [get-in])
   (:require
-   [dag_unify.core :refer (fail-path get-in unifyc)]
+   [dag_unify.core :refer (get-in)]
    [babel.generate :as generate]
    [babel.english.grammar :as grammar]
    [babel.english.morphology :as morph]
    [babel.over :refer [over truncate]]
    [babel.parse :as parse]
+   [babel.unify-compat :refer [dissoc-paths unifyc]]
    [clojure.repl :refer [doc]]
    [clojure.string :as string]
    #?(:cljs [babel.logjs :as log])
    #?(:clj [clojure.tools.logging :as log])
-   [dag_unify.core :refer [deserialize dissoc-paths
-                           fail? fail-path get-in serialize strip-refs]]))
+   [dag_unify.core :refer [fail? get-in]]
+   [dag_unify.diagnostics :refer [fail-path strip-refs]]
+   [dag_unify.serialization :refer [deserialize serialize]]))
+
 (declare morph)
 
 (defn generate

@@ -4,11 +4,13 @@
    [babel.francais.morphology.adjectives :as adjectives]
    [babel.francais.morphology.nouns :as nouns]
    [babel.francais.morphology.verbs :as verbs]
+   [babel.unify-compat :refer [dissoc-paths unifym]]
    [clojure.string :as string]
    [clojure.string :refer (trim)]
    #?(:clj [clojure.tools.logging :as log])
    #?(:cljs [babel.logjs :as log])
-   [dag_unify.core :refer (copy dissoc-paths fail? get-in ref? strip-refs unify)]))
+   [dag_unify.core :refer (copy fail? get-in ref? unify)]
+   [dag_unify.diagnostics :refer [strip-refs]]))
 
 (def regular-patterns
   (concat
@@ -119,7 +121,7 @@
                                   (strip-refs conjugate-with) "; "
                                   {:français {:infinitive infinitive
                                               :exception true}} ": "
-                                  (dag_unify.core/fail-path
+                                  (dag_unify.diagnostics/fail-path
                                    conjugate-with
                                    {:français {:infinitive infinitive
                                                :exception true}}))))
@@ -133,7 +135,7 @@
                                               {:français {:infinitive infinitive
                                                           :exception true}}
                                               "; fail-path:"
-                                              (dag_unify.core/fail-path
+                                              (dag_unify.diagnostics/fail-path
                                                (strip-refs (dissoc-paths
                                                             conjugate-with [[:français :exception]]))
                                                {:français {:infinitive infinitive
@@ -161,7 +163,7 @@
                                           
                                             true (throw (Exception. (str "problem with irregular pattern:" %)))))
                                     (do (log/debug (str "irregular: unify failed: fail-path: "
-                                                        (dag_unify.core/fail-path unify-with spec)))
+                                                        (dag_unify.diagnostics/fail-path unify-with spec)))
                                         nil)))
                                verbs/irregular-conjugations)))
                 
@@ -483,7 +485,7 @@
                                                                 (get-in exceptional-lexeme
                                                                         [:français :français]))
                                                      (let [exceptional-lexeme
-                                                           (unify
+                                                           (unifym
                                                             exceptional-lexeme
                                                             (dissoc-paths lexeme [path
                                                                                   [:français :français]])
@@ -510,10 +512,10 @@
 
           (and (map? a-map)
                (not (= :no-français (get-in a-map [:français] :no-français))))
-          (unify {:français {:français a-string}}
-                 common
-                 a-map)
+          (unifym {:français {:français a-string}}
+                  common
+                  a-map)
         true
-        (unify a-map
-               {:français {:français a-string}}
-               common))))
+        (unifym a-map
+                {:français {:français a-string}}
+                common))))

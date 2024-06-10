@@ -10,7 +10,8 @@
    [clojure.java.io :refer [resource]]
    [clojure.repl :refer [doc]]
    [clojure.tools.logging :as log]
-   [dag_unify.core :refer [fail? get-in strip-refs unify]]))
+   [dag_unify.core :refer [fail? get-in unify]]
+   [dag_unify.diagnostics :refer [strip-refs]]))
 
 (def index-lexicon-on-paths
   [[:synsem :cat]

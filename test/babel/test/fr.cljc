@@ -16,7 +16,8 @@
             #?(:cljs [cljs.test :refer-macros [deftest is]])
             #?(:clj [clojure.tools.logging :as log])
             #?(:cljs [babel.logjs :as log]) 
-            [dag_unify.core :refer [fail-path fail? get-in strip-refs unify]]))
+            [dag_unify.core :refer [fail? get-in unify]]
+            [dag_unify.diagnostics :refer [fail-path strip-refs]]))
 
 (btest/init-db)
 (write-lexicon "fr" (compile-lexicon))

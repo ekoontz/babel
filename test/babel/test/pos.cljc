@@ -1,7 +1,7 @@
 (ns babel.test.pos
   (:require #?(:clj [clojure.test :refer [deftest is]])
             #?(:cljs [cljs.test :refer-macros [deftest is]])
-            [dag_unify.core :refer [unifyc get-in]]
+            [dag_unify.core :refer [get-in]]
             [babel.pos :refer [common-noun proper-noun verb-subjective]])
   
   (:refer-clojure :exclude [get-in]))

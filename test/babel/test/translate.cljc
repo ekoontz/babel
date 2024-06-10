@@ -7,7 +7,8 @@
    [babel.test.test :as btest]
    [clojure.test :refer [deftest is]]
    [clojure.tools.logging :as log]
-   [dag_unify.core :refer [get-in strip-refs]]))
+   [dag_unify.core :refer [get-in]]
+   [dag_unify.diagnostics :refer [strip-refs]]))
 
 ;; In Italian, certain verbs, called "essere" verbs, when conjugated
 ;; in certain tenses, agree in gender and number with their subject:
