@@ -115,6 +115,7 @@
         (let [bolts (or from-bolts
                         (get-bolts-for model spec 
                                        depth))]
+          (log/info (str "this many bolts: " (count bolts)))
           (if (not (empty? bolts))
             (do
               (log/trace (str "gen@" depth "; found bolts with spec=" (strip-refs spec)))
@@ -156,12 +157,12 @@
     (cond
       (not (nil? bolts))
       (do
-        (log/debug (str "found compiled bolts."))
+        (log/info (str "found compiled bolts."))
         (shufflefn (->> bolts
                         (map #(unify spec %))
                         (filter #(not (= :fail %))))))
       true
-      (do (log/trace (str "no compiled bolts found."))
+      (do (log/info (str "no compiled bolts found."))
           (lazy-seq (lightning-bolts model spec 0 depth))))))
 
 (defn lightning-bolts

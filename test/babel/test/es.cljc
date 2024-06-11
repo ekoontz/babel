@@ -58,14 +58,16 @@
     (is (not (empty? (fo result))))))
 
 (deftest llamo
-  (let [result (fo (generate {:synsem {:subcat '()
-                                       :cat :verb
-                                       :sem {:tense :present
-                                             :aspect :simple
-                                             :subj {:pred :I}
-                                             :pred :be-called
-                                             :obj {:pred :Juan}}}}
-                             model))]
+  (let [spec {:synsem {:subcat '()
+                       :cat :verb
+                       :sem {:tense :present
+                             :aspect :simple
+                             :subj {:pred :I}
+                             :pred :be-called
+                             :obj {:pred :Juan}}}}
+        result1 (generate spec model)
+        result (fo result1)]
+    (log/info (str "result1: " result1))
     (is (or (= result
                "yo me llamo Juan")
             (= result "me llamo Juan")))))
