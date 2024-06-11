@@ -7,6 +7,7 @@
    [babel.lexiconfn :refer [default listify map-function-on-map-vals
                             verb-pred-defaults]]
    [babel.encyclopedia :as encyc]
+   [babel.unify-compat :refer [unifym]]
    [clojure.java.io :refer [resource]]
    [clojure.repl :refer [doc]]
    [clojure.tools.logging :as log]
@@ -114,7 +115,7 @@
          {:agr {:person :3rd
                 :number :plur}}]
         retval
-        (unify
+        (unifym
          base-spec
 
          ;; Read 'em their rights:
