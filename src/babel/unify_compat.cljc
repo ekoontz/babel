@@ -12,11 +12,6 @@
 
 (defn unifyc [& args]
   (->> args
-       (map u/copy)
-       (reduce u/unify)))
-
-(defn unifym [& args]
-  (->> args
        (reduce u/unify)))
 
 (defn dissoc-paths

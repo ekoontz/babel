@@ -1,6 +1,5 @@
 (ns babel.espanol.pos
-  (:require [babel.unify-compat :refer [unifym]]
-            [babel.lexiconfn :as lexiconfn :refer [map-function-on-map-vals]]
+  (:require [babel.lexiconfn :as lexiconfn :refer [map-function-on-map-vals]]
             [babel.pos :as pos]
             [dag_unify.core :refer [unify]]))
 
@@ -43,12 +42,12 @@
                      :subcat {:1 {:agr agr}}}})))
 
 (def transitive
-  (unifym verb-subjective
+  (unify verb-subjective
           pos/transitive
           {:synsem {:essere false}}))
 
 (def intransitive-unspecified-obj
-  (unifym verb-subjective
+  (unify verb-subjective
           {:synsem {:sem {:reflexive false}}}
           pos/intransitive-unspecified-obj))
 

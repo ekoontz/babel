@@ -4,7 +4,7 @@
    [babel.francais.morphology.adjectives :as adjectives]
    [babel.francais.morphology.nouns :as nouns]
    [babel.francais.morphology.verbs :as verbs]
-   [babel.unify-compat :refer [dissoc-paths unifym]]
+   [babel.unify-compat :refer [dissoc-paths]]
    [clojure.string :as string]
    [clojure.string :refer (trim)]
    #?(:clj [clojure.tools.logging :as log])
@@ -485,7 +485,7 @@
                                                                 (get-in exceptional-lexeme
                                                                         [:français :français]))
                                                      (let [exceptional-lexeme
-                                                           (unifym
+                                                           (unify
                                                             exceptional-lexeme
                                                             (dissoc-paths lexeme [path
                                                                                   [:français :français]])
@@ -512,10 +512,10 @@
 
           (and (map? a-map)
                (not (= :no-français (get-in a-map [:français] :no-français))))
-          (unifym {:français {:français a-string}}
+          (unify {:français {:français a-string}}
                   common
                   a-map)
         true
-        (unifym a-map
+        (unify a-map
                 {:français {:français a-string}}
                 common))))

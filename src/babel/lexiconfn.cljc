@@ -9,7 +9,7 @@
                       subcat0 subcat1
                       transitive-but-object-cat-not-set
                       verb-subjective]]
-   [babel.unify-compat :refer [dissoc-paths exists? unifym]]
+   [babel.unify-compat :refer [dissoc-paths exists?]]
    [clojure.set :as set]
    #?(:clj [clojure.tools.logging :as log])
    #?(:cljs [babel.logjs :as log]) 
@@ -286,7 +286,7 @@
              (not (= (get-in lexical-entry [:synsem :propernoun]) true)))
         (let [result 
               (unify lexical-entry
-                      (unifym agreement-noun
+                      (unify agreement-noun
                               common-noun
                               {:synsem {:pronoun false
                                         :subcat {:1 {:cat :det}
@@ -295,7 +295,7 @@
             (throw (exception (str "fail when trying to create common-noun from lexical-entry: " lexical-entry
                                    "fail-path: "
                                    (fail-path lexical-entry
-                                              (unifym agreement-noun
+                                              (unify agreement-noun
                                                      common-noun
                                                      {:synsem {:pronoun false
                                                                :subcat {:1 {:cat :det}}}})))))
@@ -634,7 +634,7 @@
             (let [unify-against
                   (create-path-in path (unify (get-in original-val path :fail)
                                                value-at-path))
-                  result (unifym original-val unify-against unify-with)]
+                  result (unify original-val unify-against unify-with)]
               (if (not (fail? result))
                 result
                 original-val)))

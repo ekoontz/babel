@@ -16,7 +16,6 @@
                      subcat-1-principle subcat-1-1-principle
                      subcat-1-1-principle-comp-subcat-1 subcat-2-principle
                      subcat-2-2-principle subcat-5-principle]]
-   [babel.unify-compat :refer [unifym]]
    [clojure.core.cache :as cache]
    [dag_unify.core :refer (fail? get-in unify)]
    [dag_unify.diagnostics :refer [strip-refs]]))
@@ -94,7 +93,7 @@
       :français {:a head-french
                  :b comp-french}})))
 (defonce h21
-  (unifym
+  (unify
    subcat-2-principle
    head-principle
    head-first
@@ -146,7 +145,7 @@
         comp-français (atom :top)
         head-cat (atom :top)
         comp-cat (atom :top)]
-    (unifym
+    (unify
      {:comp {:français {:cat comp-cat
                         :initial true}
              :synsem {:cat comp-cat}}
@@ -167,7 +166,7 @@
 ;; -- BEGIN SCHEMA DEFINITIONS
 
 (defonce c10
-  (unifym
+  (unify
    schema-10
    head-last
    {:comment "c10"
@@ -181,7 +180,7 @@
     :comp {:synsem {:subcat '()}}}))
 
 (defonce c21
-  (unifym
+  (unify
    subcat-2-principle
    head-principle
    head-last
@@ -193,7 +192,7 @@
     :comment "c21"}))
 
 (defonce h11
-  (unifym
+  (unify
    subcat-1-1-principle
    hc-agreement
    head-principle
@@ -207,7 +206,7 @@
 
 (defonce h11-comp-subcat-1
   (let [subcat (atom :top)]
-    (unifym
+    (unify
      {:head {:synsem {:subcat {:1 subcat}}}
       :comp {:synsem {:subcat {:1 subcat}}}}
      subcat-1-1-principle-comp-subcat-1
@@ -220,7 +219,7 @@
       :comment "h11-comp-subcat-1"})))
 
 (defonce h10
-  (unifym
+  (unify
    subcat-1-principle
    head-principle
    head-first
@@ -229,7 +228,7 @@
     :first :head}))
 
 (defonce h21
-  (unifym
+  (unify
    subcat-2-principle
    head-principle
    head-first
@@ -238,7 +237,7 @@
     :first :head}))
 
 (defonce h22
-  (unifym
+  (unify
    subcat-2-2-principle
    head-principle
    head-first
@@ -247,7 +246,7 @@
     :first :head}))
 
 (defonce h32
-  (unifym
+  (unify
    subcat-5-principle
    head-principle
    head-first
@@ -283,7 +282,7 @@
                               :rule "nbar"
                               :synsem head-synsem}))
 
-                   (unifym c10
+                   (unify c10
                            comp-specs-head
                            (let [number-agreement (atom :top)]
                              {:rule "noun-phrase1"
@@ -296,7 +295,7 @@
                               ;; rathole prevention ;; TODO: see if this can be removed.
                               :comp {:phrasal false}})) 
 
-                   (unifym c10
+                   (unify c10
                            comp-specs-head
                            (let [number-agreement (atom :top)]
                              {:rule "noun-phrase2"
@@ -312,7 +311,7 @@
                            {:rule "prepositional-phrase"
                             :synsem {:cat :prep}})
 
-                   (unifym c10
+                   (unify c10
                            root-is-head-root
                            ;; only a vp-aux may be the head child,
                            ;; not simply a lexical auxiliary verb.
@@ -323,7 +322,7 @@
                                      :cat :verb
                                      :sem {:aspect :perfect
                                            :tense :present}}})
-                   (unifym c10
+                   (unify c10
                            root-is-head-root
                            {:rule "s-future-phrasal"
                             :head {:phrasal true}
@@ -331,7 +330,7 @@
                                      :infl :future
                                      :cat :verb
                                      :sem {:tense :future}}})
-                   (unifym c10
+                   (unify c10
                            root-is-head
                            {:rule "s-future-nonphrasal"
                             :head {:phrasal false}
@@ -339,7 +338,7 @@
                                      :infl :future
                                      :cat :verb
                                      :sem {:tense :future}}})
-                   (unifym c10
+                   (unify c10
                            root-is-head-root
                            {:rule "s-conditional-phrasal"
                             :head {:phrasal true}
@@ -347,7 +346,7 @@
                                      :infl :conditional
                                      :cat :verb
                                      :sem {:tense :conditional}}})
-                   (unifym c10
+                   (unify c10
                            root-is-head
                            {:rule "s-conditional-nonphrasal"
                             :head {:phrasal false}
@@ -355,7 +354,7 @@
                                      :infl :conditional
                                      :cat :verb
                                      :sem {:tense :conditional}}})
-                   (unifym c10
+                   (unify c10
                            root-is-head-root
                            {:rule "s-imperfect-phrasal"
                             :head {:phrasal true}
@@ -364,7 +363,7 @@
                                      :cat :verb
                                      :sem {:aspect :progressive
                                            :tense :past}}})
-                   (unifym c10
+                   (unify c10
                           root-is-head
                           head-imperfect-infl
                            {:rule "s-imperfect-nonphrasal"
@@ -372,7 +371,7 @@
                                      :cat :verb
                                      :sem {:aspect :progressive
                                            :tense :past}}})
-                   (unifym c10
+                   (unify c10
                            root-is-head-root
                            {:rule "s-present-phrasal"
                             :head {:phrasal true}
@@ -381,7 +380,7 @@
                                      :cat :verb
                                      :sem {:aspect :simple
                                            :tense :present}}})
-                   (unifym c10
+                   (unify c10
                           root-is-head
                           head-present-infl
                           {:rule "s-present-nonphrasal"
@@ -389,7 +388,7 @@
                                     :cat :verb
                                     :sem {:aspect :simple
                                           :tense :present}}})
-                   (unifym c21
+                   (unify c21
                            root-is-head-root
                            {:head {:phrasal true
                                    :infl {:not :past-p}}
@@ -405,7 +404,7 @@
                             :synsem {:aux false
                                      :infl :infinitive
                                      :cat :verb}})
-                   (unifym h21a
+                   (unify h21a
                           root-is-comp
                           head-present-infl
                           {:rule "vp-aux"
@@ -416,7 +415,7 @@
                                     :cat :verb}})
                    
                    ;; [nous [être + naître]] => nous sommes nées
-                   (unifym h22
+                   (unify h22
                            root-is-comp
                            head-present-infl
                            (let [obj-agr (atom :top)] ;; TODO: Remove: this obj-agr is not used.
@@ -453,7 +452,7 @@
 
                    ;; e.g. used as: "je m'appelle Jean" -
                    ;; [s-present-phrasal 'je' [vp-pronoun-phrasal 'm'' [vp32 'se appeler' 'Jean']]]
-                   (unifym h32
+                   (unify h32
                           root-is-head
                           ;; TODO: why does adding head-present-infl
                           ;; cause the test 'generate-named-sentence' to fail?
@@ -465,7 +464,7 @@
                                     :cat :verb}})
                    
                    ;; [s-present "je" [vp-pronoun "m'" "amuse"]]
-                   (unifym c21
+                   (unify c21
                            root-is-head
                            {:head {:phrasal false
                                    :synsem {:infl {:not :past-p}}}

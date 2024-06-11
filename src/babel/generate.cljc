@@ -221,7 +221,7 @@
   [bolts path model]
   (if (not (empty? bolts))
     (let [bolt (first bolts)]
-      (log/debug (str "add-comp-to-bolts: " ((:morph-ps model) bolt) "@[" (string/join " " path) "]"))
+      (log/info (str "add-comp-to-bolts: " ((:morph-ps model) bolt) "@[" (string/join " " path) "]"))
       (lazy-cat
        (add-to-bolt-at-path bolt path model)
        (add-comp-to-bolts (rest bolts) path model)))))

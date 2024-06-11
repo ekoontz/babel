@@ -6,7 +6,7 @@
             #?(:cljs [babel.logjs :as log]) 
             [dag_unify.core :as u :refer [assoc-in copy fail? get-in ref? unify]]
             [dag_unify.diagnostics :refer [strip-refs]]
-            [babel.unify-compat :refer [dissoc-paths unifym]]))
+            [babel.unify-compat :refer [dissoc-paths]]))
 
 (declare get-string)
 (declare plural-en)
@@ -635,7 +635,7 @@
               (get-in [:english]))
           to-be-present-tense-with-agreement
           (-> to-be
-              (unifym {:cat :verb
+              (unify {:cat :verb
                        :infl :present}
                       {:agr (get-in word [:agr])}))]
       (log/debug (str "lexical entry for be:" (strip-refs to-be)))
@@ -658,7 +658,7 @@
               (get-in [:english]))
           to-be-present-tense-with-agreement
           (-> to-be
-              (unifym {:cat :verb
+              (unify {:cat :verb
                       :infl :present}
                      {:agr (get-in word [:agr])}))]
       (log/debug (str "lexical entry for be:" (strip-refs to-be)))

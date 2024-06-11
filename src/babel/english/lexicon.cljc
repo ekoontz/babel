@@ -7,7 +7,7 @@
                             edn2lexicon listify
                             map-function-on-map-vals new-entries
                             remove-vals verb-pred-defaults]]
-   [babel.unify-compat :refer [dissoc-paths unifym]]
+   [babel.unify-compat :refer [dissoc-paths]]
    [clojure.java.io :refer [resource]]
    [clojure.tools.logging :as log]
    [dag_unify.core :as u :refer [fail? get-in unify]]
@@ -491,7 +491,7 @@
                                        (list {(if (= surface :use-root)
                                                 root
                                                 (get-in lexeme path))
-                                              (unifym
+                                              (unify
                                                (dissoc-paths lexeme [path
                                                                      [:english :english]])
                                                merge
@@ -661,7 +661,7 @@
                a-map)
 
           true
-          (unifym a-map
+          (unify a-map
                  {:english {:english a-string}}
                  common))))
 

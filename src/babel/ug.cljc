@@ -1,7 +1,6 @@
 (ns babel.ug
   (:refer-clojure :exclude [get-in resolve])
   (:require [babel.lexiconfn :refer [apply-default]]
-            [babel.unify-compat :refer [unifym]]
             [clojure.math.combinatorics :as combo]
             [clojure.string :as string]
             #?(:clj [clojure.tools.logging :as log])
@@ -68,7 +67,7 @@
 ;;  /     \
 ;; H[1]    C
 (def head-principle
-  (unifym head-principle-no-infl
+  (unify head-principle-no-infl
           phrasal
           (let [head-infl (atom :top)
                 agr (atom :top)]
@@ -249,7 +248,7 @@
     :comp {:synsem {:subcat '()}}}))
 
 (def c21
-  (unifym
+  (unify
    subcat-2-principle
    head-principle
    {:comp {:synsem {:subcat '()}}
@@ -258,7 +257,7 @@
     :comment "c21"}))
 
 (def h11
-  (unifym
+  (unify
    subcat-1-1-principle
    head-principle
    comp-modifies-head
