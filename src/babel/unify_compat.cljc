@@ -31,6 +31,9 @@
         (seq? fs)
         (map #(dissoc-paths % paths) fs)
 
+        (vector? fs)
+        (map #(dissoc-paths % paths) fs)
+
         (ref? fs)
         (dissoc-paths @fs paths)
 
@@ -43,7 +46,8 @@
         true
         (let [path (first paths)]
           (dissoc-paths
-           (let [fs (dissoc fs ::serialized) ;; remove the existing serialized version of the serialized structure, since
+           (let [log (log/debug (str "DISSOCAPATHS: FS: " fs))
+                 fs (dissoc fs ::serialized) ;; remove the existing serialized version of the serialized structure, since
                  ;; it will not be valid after we've altered the structure itself.
                  feature (first path)]
              (cond
