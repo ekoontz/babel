@@ -374,7 +374,7 @@
                            {:rule "vp-32"
                             :head {:phrasal false}
                             :synsem {:aux false
-                                     :infl {:not :past}
+                                     :infl :present
                                      :cat :verb}})
                    (unifyc c21
                            root-is-head
@@ -384,7 +384,7 @@
                                             :pronoun true}}
                             :rule "vp-pronoun-nonphrasal"
                             :synsem {:cat :verb
-                                     :infl {:not :past}}})
+                                     :infl :present}})
                    (unifyc c21
                            root-is-head-root
                            {:head {:phrasal true}
@@ -393,7 +393,7 @@
                                             :pronoun true}}
                             :rule "vp-pronoun-phrasal"
                             :synsem {:cat :verb
-                                     :infl {:not :past}}})
+                                     :infl :present}})
                    (unifyc h10
                            {:head {:phrasal false
                                    :synsem {:cat :sent-modifier}}
