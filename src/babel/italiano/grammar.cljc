@@ -543,6 +543,14 @@
                                :rule "vp-pronoun-phrasal"
                                :synsem {:cat :verb
                                         :infl :present}})
+                       (unify c21
+                              root-is-head-root
+                              {:head {:phrasal true}
+                               :comp {:synsem {:cat :noun
+                                               :pronoun true}}
+                               :rule "vp-pronoun-phrasal"
+                               :synsem {:cat :verb
+                                        :infl :imperfetto}})
 
                        ;; Note {:reflexive true} below: for now, we are trying to
                        ;; only generate reflexive sentences (e.g. "io mi alzo") and not transitive
@@ -562,6 +570,16 @@
                                :rule "vp-pronoun-nonphrasal"
                                :synsem {:cat :verb
                                         :infl :present}})
+                       (unify c21
+                              root-is-head
+                              {:head {:phrasal false
+                                      :synsem {:sem {:reflexive true}}}
+                               :comp {:synsem {:cat :noun
+                                               :reflexive true
+                                               :pronoun true}}
+                               :rule "vp-pronoun-nonphrasal"
+                               :synsem {:cat :verb
+                                        :infl :imperfetto}})
 
                        ;; e.g. used as: "io mi chiamo Luisa" -
                        ;; [s-present-phrasal 'io' [vp-pronoun-phrasal 'mi' [vp-32 'chiamo' 'Luisa']]]
@@ -572,6 +590,14 @@
                                       :synsem {:aux false}}
                                :synsem {:aux false
                                         :infl :present
+                                        :cat :verb}})
+                       (unify h32
+                              root-is-head
+                              {:rule "vp-32"
+                               :head {:phrasal false
+                                      :synsem {:aux false}}
+                               :synsem {:aux false
+                                        :infl :imperfetto
                                         :cat :verb}})
                        (unify h10
                               root-is-comp
