@@ -115,7 +115,7 @@
         (let [bolts (or from-bolts
                         (get-bolts-for model spec 
                                        depth))]
-          (log/info (str "this many bolts: " (count bolts)))
+          (log/debug (str "this many bolts: " (count bolts)))
           (if (not (empty? bolts))
             (do
               (log/trace (str "gen@" depth "; found bolts with spec=" (strip-refs spec)))
@@ -157,12 +157,12 @@
     (cond
       (not (nil? bolts))
       (do
-        (log/info (str "found compiled bolts."))
+        (log/debug (str "found compiled bolts."))
         (shufflefn (->> bolts
                         (map #(unify spec %))
                         (filter #(not (= :fail %))))))
       true
-      (do (log/info (str "no compiled bolts found."))
+      (do (log/debug (str "no compiled bolts found."))
           (lazy-seq (lightning-bolts model spec 0 depth))))))
 
 (defn lightning-bolts
@@ -221,7 +221,7 @@
   [bolts path model]
   (if (not (empty? bolts))
     (let [bolt (first bolts)]
-      (log/info (str "add-comp-to-bolts: " ((:morph-ps model) bolt) "@[" (string/join " " path) "]"))
+      (log/debug (str "add-comp-to-bolts: " ((:morph-ps model) bolt) "@[" (string/join " " path) "]"))
       (lazy-cat
        (add-to-bolt-at-path bolt path model)
        (add-comp-to-bolts (rest bolts) path model)))))
