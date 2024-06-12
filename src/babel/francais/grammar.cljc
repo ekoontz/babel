@@ -391,7 +391,7 @@
                    (unify c21
                            root-is-head-root
                            {:head {:phrasal true
-                                   :infl {:not :past-p}}
+                                   :infl :conditional}
                             :comp {:phrasal false
                                    :synsem {:cat :noun
                                             :case :acc
@@ -460,14 +460,26 @@
                           {:rule "vp-32"
                            :head {:phrasal false}
                            :synsem {:aux false
-                                    :infl {:not :past}
+                                    :infl :present
                                     :cat :verb}})
                    
                    ;; [s-present "je" [vp-pronoun "m'" "amuse"]]
                    (unify c21
                            root-is-head
                            {:head {:phrasal false
-                                   :synsem {:infl {:not :past-p}}}
+                                   :synsem {:infl :conditional}}
+                            :comp {:phrasal false
+                                   :synsem {:cat :noun
+                                            :case :acc
+                                            :pronoun true}}
+                            :rule "vp-pronoun-nonphrasal"
+                            :synsem {:aux false
+                                     :cat :verb}})
+
+                   (unify c21
+                           root-is-head
+                           {:head {:phrasal false
+                                   :synsem {:infl :present}}
                             :comp {:phrasal false
                                    :synsem {:cat :noun
                                             :case :acc
