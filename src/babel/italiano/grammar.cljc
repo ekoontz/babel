@@ -542,7 +542,7 @@
                                                :pronoun true}}
                                :rule "vp-pronoun-phrasal"
                                :synsem {:cat :verb
-                                        :infl {:not :passato}}})
+                                        :infl :present}})
 
                        ;; Note {:reflexive true} below: for now, we are trying to
                        ;; only generate reflexive sentences (e.g. "io mi alzo") and not transitive
@@ -561,7 +561,7 @@
                                                :pronoun true}}
                                :rule "vp-pronoun-nonphrasal"
                                :synsem {:cat :verb
-                                        :infl {:not :passato}}})
+                                        :infl :present}})
 
                        ;; e.g. used as: "io mi chiamo Luisa" -
                        ;; [s-present-phrasal 'io' [vp-pronoun-phrasal 'mi' [vp-32 'chiamo' 'Luisa']]]
@@ -571,7 +571,7 @@
                                :head {:phrasal false
                                       :synsem {:aux false}}
                                :synsem {:aux false
-                                        :infl {:not :passato}
+                                        :infl :present
                                         :cat :verb}})
                        (unify h10
                               root-is-comp
