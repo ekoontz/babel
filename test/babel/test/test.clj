@@ -10,7 +10,7 @@
 
 (defn init-db []
   (let [database-url
-        (or (env :database-url) "postgres://localhost/babel")]        
+        (or (env :database-url) "postgres://verbcoach@localhost/verbcoach")]
     (log/info (str "init-db with database-url: " database-url))
     (->
      database-url
