@@ -69,7 +69,7 @@
   each of whose depth is no greater than the given depth. Trees are returned in 
   ascending depth."
   [spec model depth & [from-bolts]]
-  (log/info (str "gen with: " (strip-refs spec) " at depth: " depth "; from-bolts: " from-bolts))
+  (log/debug (str "gen with: " (strip-refs spec) " at depth: " depth "; from-bolts: " from-bolts))
   ;; 
   ;; Given a spec and a model, return the (potentially infinite) set
   ;; of all trees, in ascending head-depth, that satisfy the given spec.
@@ -110,8 +110,8 @@
     nil
     (do
       ;;    (println (str "gen@" depth "; spec=" (strip-refs spec)))
-      (log/info (str "gen@" depth "; spec=" (show-spec spec)))
-      (log/info (str "gen@" depth "; from-bolts: " from-bolts))
+      (log/debug (str "gen@" depth "; spec=" (show-spec spec)))
+      (log/debug (str "gen@" depth "; from-bolts: " from-bolts))
       (when (< depth max-depth)
         (let [bolts (or from-bolts
                         (get-bolts-for model spec 
