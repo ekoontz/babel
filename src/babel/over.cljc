@@ -59,14 +59,11 @@
                          {:head (copy head)})]
       (if (not (= :fail result))
         (do
-          (log/info (str "overh success: " (get-in parent [:rule]) "-> cat=" (get-in head [:synsem :cat])))
-          (log/info (str "overh success: " (get-in parent [:rule]) "-> pred=" (get-in head [:synsem :sem :pred]))) 
+          (log/debug (str "overh success: " (get-in parent [:rule]) "-> cat=" (get-in head [:synsem :cat])))
+          (log/debug (str "overh success: " (get-in parent [:rule]) "-> pred=" (get-in head [:synsem :sem :pred]))) 
           [result])
-        (log/info (str "overh: fail-path for rule: " (:rule parent) ":"
-                       (fail-path (copy parent) {:head (copy head)})
-                       " with values: "
-                       (get-in (copy parent) (fail-path (copy parent) {:head (copy head)})) "/"
-                       (get-in {:head (copy head)} (fail-path (copy parent) {:head (copy head)}))))))))
+        (log/debug (str "overh: fail-path for rule: " (:rule parent) ":"
+                        (fail-path (copy parent) {:head (copy head)})))))))
 
 (defn overc [parent comp]
   "add given child as the complement of the parent"
