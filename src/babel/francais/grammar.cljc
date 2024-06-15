@@ -467,7 +467,7 @@
                    (unify c21
                            root-is-head
                            {:head {:phrasal false
-                                   :synsem {:infl :conditional}}
+                                   :synsem {:infl :present}}
                             :comp {:phrasal false
                                    :synsem {:cat :noun
                                             :case :acc
