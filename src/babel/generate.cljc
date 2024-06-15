@@ -69,7 +69,7 @@
   each of whose depth is no greater than the given depth. Trees are returned in 
   ascending depth."
   [spec model depth & [from-bolts]]
-  (log/debug (str "gen with: " (strip-refs spec) " at depth: " depth))
+  (log/info (str "gen with: " (strip-refs spec) " at depth: " depth "; from-bolts: " from-bolts))
   ;; 
   ;; Given a spec and a model, return the (potentially infinite) set
   ;; of all trees, in ascending head-depth, that satisfy the given spec.
@@ -110,7 +110,8 @@
     nil
     (do
       ;;    (println (str "gen@" depth "; spec=" (strip-refs spec)))
-      (log/trace (str "gen@" depth "; spec=" (show-spec spec)))
+      (log/info (str "gen@" depth "; spec=" (show-spec spec)))
+      (log/info (str "gen@" depth "; from-bolts: " from-bolts))
       (when (< depth max-depth)
         (let [bolts (or from-bolts
                         (get-bolts-for model spec 
@@ -140,6 +141,7 @@
 (defn get-bolts-for
   "Return every possible bolt for the given model and spec."
   [model spec depth]
+  (log/info (str "GET-BOLTS-FOR spec: " spec))
   (let [search-for-key
         (strip-refs
          {:synsem {:sem {:aspect (get-in spec [:synsem :sem :aspect] :top)
@@ -149,7 +151,7 @@
                    :cat (get-in spec [:synsem :cat] :top)}
           :depth depth})
 
-        debug (log/trace (str "looking for compiled bolts with key: " search-for-key))
+        debug (log/info (str "looking for compiled bolts with key: " search-for-key))
         
         bolts ;; check for bolts compiled into model
         (get (-> model :bolts)
