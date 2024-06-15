@@ -926,6 +926,7 @@
                             :cat :noun},
                    :phrasal false}]
     (log/info (str "TESTING THE LOOKUP FN: (count): " (count (lookup-spec test-spec indices index-lexicon-on-paths))))
+    (log/info (str "   THE INDICES KEYS: " (keys indices)))
     {:index-fn (fn [spec] (lookup-spec spec indices index-lexicon-on-paths))
      :name "np-grammar"
      :morph-walk-tree (fn [tree]
