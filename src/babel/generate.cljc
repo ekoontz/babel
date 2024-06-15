@@ -194,7 +194,7 @@
                                  (map #(unify % spec))
                                  (filter #(not (= :fail %)))
                                  (shufflefn)))]
-      (log/info (str "lightning-bolts: found this many candidate parents: " (count candidate-parents) " for this spec: " spec))
+      (log/info (str "lightning-bolts: found this many candidate parents: " (count candidate-parents) " for this spec: " spec " at depth: " depth "; max-depth: " max-depth))
       (if (not (empty? candidate-parents))
         (let [candidate-parent (first candidate-parents)]
           (lazy-cat
@@ -205,7 +205,11 @@
                 (map (fn [head]
                        (assoc-in candidate-parent [:head] head))))
            (lightning-bolts model spec depth max-depth (rest candidate-parents))))))
-    (shufflefn (get-lexemes model spec))))
+    (do
+      (log/info (str "reached the (get-lexemes) level with spec: " spec))
+      (let [lexemes (shufflefn (get-lexemes model spec))]
+        (log/info (str "lightning-bolts: found this many lexemes: " (count lexemes) " with stripped ref: " (strip-refs spec)))
+        lexemes))))
 
 (defn add-comps-to-bolt
   "bolt + paths => trees"
