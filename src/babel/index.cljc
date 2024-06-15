@@ -151,6 +151,9 @@
     (let [val (first vals-at-path)]
       (merge {val
               (filter (fn [lexeme]
+                        (when (= path [:synsem :cat])
+                          (log/info (str "THE PATH IS THE CAT PATH; and vals-at-path are: " vals-at-path))
+                          (log/info (str "the value for this lexeme is: " (get-in lexeme path :top))))
                         (or (= :top (get-in lexeme path :top))
                             (= val
                                (get-in lexeme path))))
@@ -160,6 +163,7 @@
                                   path)))))
 
 (defn map-subset-by-path [lexicon path]
+  (log/info (str "map-subset-by-path with path: " path))
   (map-subset-by-path2
    (vec (set (filter #(not (= :top %))
                      (map (fn [entry]
