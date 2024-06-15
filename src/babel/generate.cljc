@@ -69,7 +69,7 @@
   each of whose depth is no greater than the given depth. Trees are returned in 
   ascending depth."
   [spec model depth & [from-bolts]]
-  (log/debug (str "gen with: " (strip-refs spec) " at depth: " depth "; from-bolts: " from-bolts))
+  (log/debug (str "gen with: " (strip-refs spec) " at depth: " depth))
   ;; 
   ;; Given a spec and a model, return the (potentially infinite) set
   ;; of all trees, in ascending head-depth, that satisfy the given spec.
@@ -110,8 +110,7 @@
     nil
     (do
       ;;    (println (str "gen@" depth "; spec=" (strip-refs spec)))
-      (log/debug (str "gen@" depth "; spec=" (show-spec spec)))
-      (log/debug (str "gen@" depth "; from-bolts: " from-bolts))
+      (log/trace (str "gen@" depth "; spec=" (show-spec spec)))
       (when (< depth max-depth)
         (let [bolts (or from-bolts
                         (get-bolts-for model spec 
@@ -141,7 +140,6 @@
 (defn get-bolts-for
   "Return every possible bolt for the given model and spec."
   [model spec depth]
-  (log/info (str "GET-BOLTS-FOR spec: " spec))
   (let [search-for-key
         (strip-refs
          {:synsem {:sem {:aspect (get-in spec [:synsem :sem :aspect] :top)
@@ -151,7 +149,7 @@
                    :cat (get-in spec [:synsem :cat] :top)}
           :depth depth})
 
-        debug (log/info (str "looking for compiled bolts with key: " search-for-key))
+        debug (log/trace (str "looking for compiled bolts with key: " search-for-key))
         
         bolts ;; check for bolts compiled into model
         (get (-> model :bolts)
@@ -194,7 +192,6 @@
                                  (map #(unify % spec))
                                  (filter #(not (= :fail %)))
                                  (shufflefn)))]
-      (log/info (str "lightning-bolts: found this many candidate parents: " (count candidate-parents) " for this spec: " spec " at depth: " depth "; max-depth: " max-depth))
       (if (not (empty? candidate-parents))
         (let [candidate-parent (first candidate-parents)]
           (lazy-cat
@@ -205,11 +202,7 @@
                 (map (fn [head]
                        (assoc-in candidate-parent [:head] head))))
            (lightning-bolts model spec depth max-depth (rest candidate-parents))))))
-    (do
-      (log/info (str "reached the (get-lexemes) level with stripped spec: " (strip-refs spec)))
-      (let [lexemes (shufflefn (get-lexemes model spec))]
-        (log/info (str "lightning-bolts: found this many lexemes: " (count lexemes) " with stripped spec: " (strip-refs spec)))
-        lexemes))))
+    (shufflefn (get-lexemes model spec))))
 
 (defn add-comps-to-bolt
   "bolt + paths => trees"
