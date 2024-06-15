@@ -206,9 +206,9 @@
                        (assoc-in candidate-parent [:head] head))))
            (lightning-bolts model spec depth max-depth (rest candidate-parents))))))
     (do
-      (log/info (str "reached the (get-lexemes) level with spec: " spec))
+      (log/info (str "reached the (get-lexemes) level with stripped spec: " (strip-refs spec)))
       (let [lexemes (shufflefn (get-lexemes model spec))]
-        (log/info (str "lightning-bolts: found this many lexemes: " (count lexemes) " with stripped ref: " (strip-refs spec)))
+        (log/info (str "lightning-bolts: found this many lexemes: " (count lexemes) " with stripped spec: " (strip-refs spec)))
         lexemes))))
 
 (defn add-comps-to-bolt
