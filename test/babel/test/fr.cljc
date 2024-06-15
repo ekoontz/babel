@@ -524,7 +524,8 @@
                (first (filter #(= (get % :rule) "s-present-phrasal")
                               (:grammar model)))
                :vp-pronoun-nonphrasal
-               (first (filter #(= (get % :rule) "vp-pronoun-nonphrasal")
+               (first (filter #(and (= (get % :rule) "vp-pronoun-nonphrasal")
+                                    (= :present (get-in % [:head :synsem :infl])))
                               (:grammar model)))}
 
         result (over (get rules :s-present-phrasal)
