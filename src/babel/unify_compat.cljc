@@ -92,36 +92,6 @@
                            pred))))
     {}))
 
-(defn deserialize-with-remove [serialized pred]
-  (let [base (recursive-dissoc (second (first serialized)) pred)]
-    (apply merge
-           (let [all
-                 (cons base
-                       (flatten
-                        (map (fn [paths-val]
-                               (let [paths (first paths-val)
-                                     val (atom
-                                          (cond (map? atom)
-                                                (recursive-dissoc
-                                                 (second paths-val)
-                                                 pred)
-                                                true
-                                                (second paths-val)))]
-                                 (map (fn [path]
-                                        (if (empty?
-                                             (remove false?
-                                                     (map (fn [key-in-path]
-                                                            (pred key-in-path))
-                                                          path)))
-                                          (create-path-in path val)))
-                                      paths)))
-                             (rest serialized))))]
-             all))))
-
-(defn remove-matching-keys [fs pred]
-  (let [serialized (serialize fs)]
-    (deserialize-with-remove serialized pred)))
-
 (defn- pathify
   "Transform a map into a map of paths/value pairs,
   where paths are lists of keywords, and values are atomic values.

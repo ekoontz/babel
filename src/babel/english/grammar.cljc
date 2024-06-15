@@ -8,7 +8,6 @@
    [babel.index :refer [create-indices lookup-spec]]
    [babel.lexiconfn :refer [edn2lexicon filtered-lexicon read-lexicon]]
    [babel.parse :as parse]
-   [babel.unify-compat :refer [remove-matching-keys]]
    [babel.ug :as ug
     :refer [apply-default-if comp-modifies-head
             comp-specs-head head-semantics
