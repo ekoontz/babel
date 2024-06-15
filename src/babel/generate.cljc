@@ -194,6 +194,7 @@
                                  (map #(unify % spec))
                                  (filter #(not (= :fail %)))
                                  (shufflefn)))]
+      (log/info (str "lightning-bolts: found this many candidate parents: " (count candidate-parents) " for this spec: " spec))
       (if (not (empty? candidate-parents))
         (let [candidate-parent (first candidate-parents)]
           (lazy-cat
