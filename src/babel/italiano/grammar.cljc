@@ -873,10 +873,9 @@
   (let [lexicon (compile-lexicon)
         grammar
         (filter #(or (= (:rule %) "noun-phrase1")
-;;                     (= (:rule %) "noun-phrase2")
-;;                     (= (:rule %) "nbar1")
-;;                     (= (:rule %) "nbar2")
-                     )
+                     (= (:rule %) "noun-phrase2")
+                     (= (:rule %) "nbar1")
+                     (= (:rule %) "nbar2"))
                 grammar)
         rules (map #(keyword (get-in % [:rule])) grammar)
         lexicon
@@ -884,11 +883,9 @@
               (for [[k v] lexicon]
                 (let [filtered-v
                       (filter #(and (not (= true (get-in % [:top])))
-                                    (or ;;(= (get-in % [:synsem :cat] :adjective) :adjective)
-                                     (and (= (get-in % [:synsem :cat] :det) :det)
-                                          (= (get-in % [:synsem :def]) :twentyeight))
+                                    (or (= (get-in % [:synsem :cat] :adjective) :adjective)
+                                        (= (get-in % [:synsem :cat] :det) :det)
                                         (and (= (get-in % [:synsem :cat] :noun) :noun)
-                                             (= (get-in % [:synsem :sem :pred]) :dog)
                                              (not (= (get-in % [:synsem :propernoun] false) true))
                                              (not (= (get-in % [:synsem :pronoun] false) true)))))
                               v)
