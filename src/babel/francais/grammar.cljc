@@ -479,6 +479,30 @@
                    (unify c21
                            root-is-head
                            {:head {:phrasal false
+                                   :synsem {:infl :conditional}}
+                            :comp {:phrasal false
+                                   :synsem {:cat :noun
+                                            :case :acc
+                                            :pronoun true}}
+                            :rule "vp-pronoun-nonphrasal"
+                            :synsem {:aux false
+                                     :cat :verb}})
+
+                   (unify c21
+                           root-is-head
+                           {:head {:phrasal false
+                                   :synsem {:infl :imperfect}}
+                            :comp {:phrasal false
+                                   :synsem {:cat :noun
+                                            :case :acc
+                                            :pronoun true}}
+                            :rule "vp-pronoun-nonphrasal"
+                            :synsem {:aux false
+                                     :cat :verb}})
+
+                   (unify c21
+                           root-is-head
+                           {:head {:phrasal false
                                    :synsem {:infl :present}}
                             :comp {:phrasal false
                                    :synsem {:cat :noun
