@@ -911,7 +911,21 @@
                     [k remove-semantic-features]))))
         lexicon-for-generation (lexicon-for-generation lexicon)
         ;; indices from paths to subsets of the lexicon
-        indices (create-indices lexicon-for-generation index-lexicon-on-paths)]
+        indices (create-indices lexicon-for-generation index-lexicon-on-paths)
+        test-spec {:italiano {:initial false,
+                              :cat :noun},
+                   :synsem {:pronoun :top,
+                            :propernoun :top,
+                            :sem {:spec {:def :twentyeight},
+                                  :mod '(),
+                                  :number :top},
+                            :agr {:number :top},
+                            :subcat {:1 {:sem {:def :twentyeight}, :subcat '(), :cat :top}, :2 '()},
+                            :infl :top,
+                            :essere :top,
+                            :cat :noun},
+                   :phrasal false}]
+    (log/info (str "TESTING THE LOOKUP FN: (count): " (count (lookup-spec test-spec indices index-lexicon-on-paths))))
     {:index-fn (fn [spec] (lookup-spec spec indices index-lexicon-on-paths))
      :name "np-grammar"
      :morph-walk-tree (fn [tree]
