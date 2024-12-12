@@ -197,7 +197,8 @@
        (or (= (get-in word [:agr :gender]) :masc)
            (= (get-in word [:agr :gender]) :top))
        (= (get-in word [:agr :number]) :plur)
-       (= (get-in word [:cat]) :adjective))
+       (= (get-in word [:cat]) :adjective)
+       (re-find #"i[eo]$" (get-in word [:italiano])))
       (string/replace (get-in word '[:italiano])
                       #"i[eo]$" "i") ;; grigio => grigi
 
