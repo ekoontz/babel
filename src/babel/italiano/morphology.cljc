@@ -199,6 +199,15 @@
        (= (get-in word [:agr :number]) :plur)
        (= (get-in word [:cat]) :adjective))
       (string/replace (get-in word '[:italiano])
+                      #"i[eo]$" "i") ;; grigio => grigi
+
+      (and
+       (string? (get-in word [:italiano]))
+       (or (= (get-in word [:agr :gender]) :masc)
+           (= (get-in word [:agr :gender]) :top))
+       (= (get-in word [:agr :number]) :plur)
+       (= (get-in word [:cat]) :adjective))
+      (string/replace (get-in word '[:italiano])
                       #"[eo]$" "i") ;; nero => neri
       
       (and
