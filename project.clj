@@ -1,4 +1,4 @@
-(defproject babel "3.0.20-verbcoach"
+(defproject babel "3.0.22-verbcoach"
   :description "A library for natural language generation and parsing"
   :url "http://github.com/ekoontz/babel"
   :license {:name "Eclipse Public License"
