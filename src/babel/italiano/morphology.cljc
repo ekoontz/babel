@@ -215,6 +215,13 @@
        (= (get-in word '(:agr :gender)) :fem)
        (= (get-in word '(:agr :number)) :plur)
        (= (get-in word '(:cat)) :adjective)
+       (re-find #"co$" (get-in word [:italiano])))
+      (string/replace (get-in word [:italiano])
+                      #"c[o]$" "che") ;; bianco => bianche
+      (and
+       (= (get-in word '(:agr :gender)) :fem)
+       (= (get-in word '(:agr :number)) :plur)
+       (= (get-in word '(:cat)) :adjective)
        (re-find #"o$" (get-in word [:italiano])))
       (string/replace (get-in word [:italiano])
                       #"[o]$" "e") ;; nero => nere
