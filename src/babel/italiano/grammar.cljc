@@ -579,6 +579,26 @@
                                :rule "vp-pronoun-nonphrasal"
                                :synsem {:cat :verb
                                         :infl :imperfetto}})
+                       (unify c21
+                              root-is-head
+                              {:head {:phrasal false
+                                      :synsem {:sem {:reflexive true}}}
+                               :comp {:synsem {:cat :noun
+                                               :reflexive true
+                                               :pronoun true}}
+                               :rule "vp-pronoun-nonphrasal"
+                               :synsem {:cat :verb
+                                        :infl :future}})
+                       (unify c21
+                              root-is-head
+                              {:head {:phrasal false
+                                      :synsem {:sem {:reflexive true}}}
+                               :comp {:synsem {:cat :noun
+                                               :reflexive true
+                                               :pronoun true}}
+                               :rule "vp-pronoun-nonphrasal"
+                               :synsem {:cat :verb
+                                        :infl :conditional}})
 
                        ;; e.g. used as: "io mi chiamo Luisa" -
                        ;; [s-present-phrasal 'io' [vp-pronoun-phrasal 'mi' [vp-32 'chiamo' 'Luisa']]]
