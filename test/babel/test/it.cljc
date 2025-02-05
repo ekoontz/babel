@@ -108,6 +108,31 @@
     (is (not (nil? result)))
     (is (= "io avevo bevuto" (morph result)))))
 
+(def lavarsi-imperfect
+  {:root {:italiano {:italiano "lavarsi"}},
+   :modified false
+   :synsem {:sem {:tense :past
+                  :aspect :progressive}
+            :subcat []
+            :cat :verb}})
+
+(deftest lavarsi-imperfect-test
+  (let [generated (generate lavarsi-imperfect)]
+    (log/info (str "generated: " generated))
+    (is (not (nil? generated)))))
+
+(def lavarsi-futuro
+  {:root {:italiano {:italiano "lavarsi"}}
+   :modified false
+   :synsem {:sem {:tense :future}
+            :subcat []
+            :cat :verb}})
+
+(deftest lavarsi-futuro-test
+  (let [generated (generate lavarsi-futuro)]
+    (log/info (str "generated: " generated))
+    (is (not (nil? generated)))))
+
 (def alzarsi-is-slow
   {:root {:italiano {:italiano "alzarsi"}}
    :synsem {:cat :verb
