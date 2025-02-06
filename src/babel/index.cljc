@@ -160,7 +160,7 @@
                                   path)))))
 
 (defn map-subset-by-path [lexicon path]
-  (log/info (str "map-subset-by-path with path: " path))
+  (log/debug (str "map-subset-by-path with path: " path))
   (map-subset-by-path2
    (vec (set (filter #(not (= :top %))
                      (map (fn [entry]
