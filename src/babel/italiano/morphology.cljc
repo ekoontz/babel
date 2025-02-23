@@ -342,8 +342,7 @@
        (= (get-in word '(:agr :number)) :plur)
        (= (get-in word '(:cat)) :adjective))
       (string/replace (get-in word [:italiano])
-                      #"[eo]$" "e") ;; nero => nere
-
+                      #"o$" "e") ;; nero => nere
       ;; TODO: move this down to other adjectives.
       ;; this was moved up here to avoid
       ;; another rule from matching it.
