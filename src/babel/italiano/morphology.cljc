@@ -365,8 +365,7 @@
        (= (get-in word '(:agr :number)) :sing)
        (= (get-in word '(:cat)) :adjective))
       (string/replace (get-in word [:italiano])
-                      #"[eo]$" "a") ;; nero => nera
-      
+                      #"o$" "a") ;; nero => nera
       (and (= :infinitive (get-in word '(:infl)))
            (string? (get-in word [:italiano])))
       (get-in word [:italiano])
