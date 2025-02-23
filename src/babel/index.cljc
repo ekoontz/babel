@@ -169,8 +169,8 @@
                                     (and false
                                          (= path [:synsem :cat])
                                          (not (= :top (get-in entry path :top)))))
-                              (log/info (str "THE VALUE IS: " (get-in entry path :top) " FOR ENTRY: "
-                                             entry)))
+                              (log/debug (str "map-subset-by-path: value : " (get-in entry path :top)
+                                              " for entry: " entry)))
                             (get-in entry path :top))
                           (flatten (vals lexicon))))))
    (flatten (vals lexicon))
