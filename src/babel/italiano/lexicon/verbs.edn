@@ -540,7 +540,7 @@
 
     {:unify [essere-common]
      :notes "existential"
-     :synsem {:sem {:pred :exist
+     :synsem {:sem {:pred :be
                     :reflexive false}
               :subcat {:1 {:cat :noun
                            :agr {:person :3rd}
