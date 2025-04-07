@@ -599,7 +599,7 @@
       {surface
        [{:vocab-cat vocab-cat
          :synsem {:cat :adjective
-                  :sem {:pred (keyword pred)
+                  :sem {:pred (-> pred clojure.string/trim keyword)
                         :comparative false}}}]}
       true
       (do
