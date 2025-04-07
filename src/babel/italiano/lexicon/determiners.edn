@@ -19,12 +19,6 @@
            :def :partitivo
            :agr {:number :plur
                  :gender :fem}}}
-
-
-
-
-
-
  "gli"
  {:generate-with false
   :synsem {:cat :det
