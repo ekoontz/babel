@@ -596,11 +596,18 @@
 
       (or (= vocab-cat "adj1")
           (= vocab-cat "adj2"))	
-      {surface
-       [{:vocab-cat vocab-cat
-         :synsem {:cat :adjective
-                  :sem {:pred (-> pred clojure.string/trim keyword)
-                        :comparative false}}}]}
+      (let [pred (cond (string? pred)
+                       (-> pred clojure.string/trim keyword)
+                       (keyword? pred) pred
+                       :else
+                       (do
+                         (log/warn (str "don't know what to do with pred: " pred " of type: " (type pred) "; returning it as-is."))
+                         pred))]
+        {surface
+         [{:vocab-cat vocab-cat
+           :synsem {:cat :adjective
+                    :sem {:pred pred
+                          :comparative false}}}]})
       true
       (do
         (log/warn (str "(vocab-entry-to-lexeme: "
