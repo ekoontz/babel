@@ -794,7 +794,10 @@
     (re-find #"i[s]$" english)
     (replace english #"is$" "es")
     
-    (re-find #"[cs][hsx]$" english) ;; brush => brushes; beach => beaches
+    (re-find #"[cs][hs]$" english) ;; brush => brushes; beach => beaches
+    (str english "es")
+
+    (re-find #"x$" english) ;; box => boxes
     (str english "es")
 
     ;; found in lexical entries derived from vocab-items where
