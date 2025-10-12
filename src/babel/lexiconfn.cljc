@@ -849,3 +849,20 @@
                              (vals lexicon))))]
     (zipmap (map first surface-and-structures-pairs)
             (map second surface-and-structures-pairs))))
+
+(defn pprint [lexeme]
+  (let [exceptions (unify/get-in lexeme [:exceptions])]
+    (cond
+      (map? lexeme)
+      (-> lexeme
+          ((fn [lexeme]
+             (merge
+              lexeme
+              (cond (keyword? exceptions)
+                    {}
+                    (seq exceptions)
+                    {:exceptions (vec exceptions)}
+                    :else {}))))
+          unify/pprint)
+      :else lexeme)))
+
