@@ -8,7 +8,7 @@
    [babel.italiano.lexicon :as lexicon]
    [babel.italiano.morphology :as morph :refer [analyze-regular]]
    [babel.italiano.morphology.nouns :as nouns]
-   [babel.lexiconfn :refer [write-lexicon]]
+   [babel.lexiconfn :as l :refer [write-lexicon]]
    [babel.italiano.morphology.verbs :as verbs]
    #?(:cljs [babel.logjs :as log])
    [babel.over :as over]
@@ -741,4 +741,8 @@
            (u/get-in expression
                      [:head :head :italiano :italiano])))))
 
-
+(defn refresh-model []
+  ;; taken from documentation comments in babel.directory:
+  (babel.lexiconfn/write-lexicon "it" (babel.italiano.lexicon/compile-lexicon))
+  (babel.directory/refresh-models)
+  (def model @@(get models :it)))
