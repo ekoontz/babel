@@ -1230,12 +1230,14 @@
  infermiere                | male nurse                                              | noun2m
  infezione                 | infection                                               | noun2f
  infinito                  | infinite                                                | adj1
- influenza                 | influence , flu                                         | noun1
+ influenza                 | influence                                               | noun1
+ influenza                 | flu                                                     | noun1
  informare                 | to inform                                               | verb
  informatica               | information technology                                  | noun1
  ingegnere                 | engineer                                                | noun1m
  ingegnere                 | engineer                                                | noun2m
- ingente                   | serious, enormous (negatively)                          | adj2
+ ingente                   | serious                                                 | adj2            | i-, negatively
+ ingente                   | enormous                                                | adj2            | i-, negatively
  ingenuo                   | naïve                                                   | adj1
  inglese                   | English                                                 | adj2
  ingrediente               | ingredient                                              | noun2m
@@ -2165,7 +2167,7 @@
  separato                  | separated                                               | adj1
  sera                      | evening                                                 | noun1
  serata                    | evening (activities/weather)                            | noun1
- serio                     | serious                                                 | adj1
+ serio                     | serious                                                 | adj1            | s-
  serpente                  | snake                                                   | noun2m
  serra                     | green house                                             | noun1
  serve                     | it is necessary                                         | phrase
