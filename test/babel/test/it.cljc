@@ -708,3 +708,20 @@
   (babel.lexiconfn/write-lexicon "it" (babel.italiano.lexicon/compile-lexicon))
   (babel.directory/refresh-models)
   (def model @@(get models :it)))
+
+
+;; add some tests to:
+;; add lexical items from babel.italiano.lexicon
+;; /edn2lexicon
+;; /exception-generator
+;; vocab-entry-to-lexeme
+;;
+;; GET /vocab/296/question
+
+(deftest vocab-entry
+  (let [input {:surface "inquilino", :pred "male tenant", :vocab_cat "noun1"}]
+    (is (= {"inquilino"
+            [{:vocab-cat "noun1",
+              :synsem
+              {:sem {:pred :male-tenant}, :cat :noun, :agr {:gender :masc}}}]}
+           (-> input lexicon/vocab-entry-to-lexeme)))))
