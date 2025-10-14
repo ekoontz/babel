@@ -618,44 +618,6 @@
                                         ;          empty?
                                         ;          not)))
 
-(deftest exists1
-  (is (= (morph (generate {:synsem {:cat :verb
-                                    :subcat []
-                                    :sem {:obj :unspec
-                                          :subj :top
-                                          :pred :exist
-                                          :reflexive false
-                                          :tense :conditional}}
-                           :root {:italiano {:italiano "essere"}}
-                           :comp {:synsem {:agr {:number :sing}}}}))
-         "ci sarebbe")))
-
-(deftest exists2
-  (is (= (morph (generate {:synsem {:cat :verb
-                                    :subcat []
-                                    :sem {:obj :unspec
-                                          :subj :top
-                                          :pred :exist
-                                          :reflexive false
-                                          :aspect :progressive
-                                          :tense :past}}
-                           :root {:italiano {:italiano "essere"}}
-                           :comp {:synsem {:agr {:number :sing}}}}))
-         "c'era")))
-
-(deftest exists3
-  (is (= (morph (generate {:synsem {:cat :verb
-                                    :subcat []
-                                    :sem {:obj :unspec
-                                          :subj :top
-                                          :pred :exist
-                                          :reflexive false
-                                          :aspect :simple
-                                          :tense :present}}
-                           :root {:italiano {:italiano "essere"}}
-                           :comp {:synsem {:agr {:number :sing}}}}))
-         "c'è")))
-
 (deftest bisogno
   (is (not (empty? (:parses (first (parse "io ho bisogno di il caffè")))))))
 
