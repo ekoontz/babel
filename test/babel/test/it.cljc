@@ -719,9 +719,14 @@
 ;; GET /vocab/296/question
 
 (deftest vocab-entry
-  (let [input {:surface "inquilino", :pred "male tenant", :vocab_cat "noun1"}]
+  (let [inquilino {:surface "inquilino", :pred "male tenant", :vocab_cat "noun1"}
+        buffo     {:surface "buffo",     :pred "funny", :vocab_cat "adj1"}]
     (is (= {"inquilino"
             [{:vocab-cat "noun1",
               :synsem
               {:sem {:pred :male-tenant}, :cat :noun, :agr {:gender :masc}}}]}
-           (-> input lexicon/vocab-entry-to-lexeme)))))
+           (-> inquilino lexicon/vocab-entry-to-lexeme)))
+
+    (is (= {"buffo" [{:vocab-cat "adj1",
+                      :synsem {:cat :adjective, :sem {:pred :funny, :comparative false}}}]}
+           (-> buffo lexicon/vocab-entry-to-lexeme)))))
