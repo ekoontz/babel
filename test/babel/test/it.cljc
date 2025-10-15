@@ -5,7 +5,7 @@
    [babel.generate :as generate]
    [babel.italiano :as italiano :refer [morph preprocess]]
    [babel.italiano.grammar :as grammar]
-   [babel.italiano.lexicon :as lexicon]
+   [babel.italiano.lexicon :as lexicon :refer [vocab-entry-to-lexeme]]
    [babel.italiano.morphology :as morph :refer [analyze-regular]]
    [babel.italiano.morphology.nouns :as nouns]
    [babel.lexiconfn :as l :refer [write-lexicon]]
@@ -725,8 +725,13 @@
             [{:vocab-cat "noun1",
               :synsem
               {:sem {:pred :male-tenant}, :cat :noun, :agr {:gender :masc}}}]}
-           (-> inquilino lexicon/vocab-entry-to-lexeme)))
+           (-> inquilino vocab-entry-to-lexeme)))
 
     (is (= {"buffo" [{:vocab-cat "adj1",
                       :synsem {:cat :adjective, :sem {:pred :funny, :comparative false}}}]}
-           (-> buffo lexicon/vocab-entry-to-lexeme)))))
+           (-> buffo vocab-entry-to-lexeme)))
+    ;; c.f.: babel.italiano.grammar/model-with-vocab-items
+    (let [vocab-items [inquilino buffo]
+          input-lexicon (reduce merge (map vocab-entry-to-lexeme vocab-items))]
+      (is (= 1 1)))))
+
