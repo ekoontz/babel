@@ -22,7 +22,7 @@
    [clojure.core.cache :as cache]
    [clojure.pprint :refer (pprint)]
    [clojure.repl :refer (doc)]
-   [dag_unify.core :refer (fail? get-in unify)]
+   [dag_unify.core :refer (fail? get-in unify) :as u]
    [dag_unify.diagnostics :refer (strip-refs)]))
 
 (declare model)
