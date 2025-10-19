@@ -8,6 +8,7 @@
             [babel.latin :as la]
             [babel.lexiconfn :refer [write-lexicon]]
             [clojure.tools.logging :as log]
+            [dag_unify.core :as u]
             [korma.db :refer [transaction]]))
 
 ;; babel.directory provides a centralized way to discover and access language models.
@@ -57,3 +58,27 @@
 
    (print (str "it.."))
    (println (write-lexicon "it" (it-lex/compile-lexicon)))))
+
+(defn create-model-with-vocab-items
+  "Create source and target language models from a set of vocab items. The model can then be used to generate or parse expressions."
+  [target-language source-language target-vocab-items source-vocab-items generative-features]
+  (let [{definite-articles? :definite-articles?
+         possessive-articles? :possessive-articles?
+         adjectives? :adjectives?} generative-features]
+    (log/info (str "create-model: target-vocab-items count:" (count target-vocab-items) " and generative-feature switches: " generative-features))
+    (let [target-model @@(get models target-language)
+          source-model @@(get models source-language)
+          filter-lexicon-fn
+          (fn [lexeme]
+            (or
+             (and (= :det (u/get-in lexeme [:synsem :cat]))
+                  (or (and definite-articles?
+                           (= :def (u/get-in lexeme [:synsem :def]))
+                           (= :definite (u/get-in lexeme [:synsem :sem :pred]))
+                           (= nil (u/get-in lexeme [:synsem :sem :of :pred])))
+                      (and possessive-articles?
+                           (= :possessive (u/get-in lexeme [:synsem :def])))))))
+          target-model ((:vocab2model target-model) target-vocab-items filter-lexicon-fn)
+          source-model ((:vocab2model source-model) source-vocab-items filter-lexicon-fn)]
+      {:source source-model
+       :target target-model})))
