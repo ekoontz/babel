@@ -482,11 +482,11 @@
                               pred :pred
                               vocab-cat :vocab_cat
                               plur :plur}]
-  (log/debug (str "italiano: vocab-entry-to-lexeme:"
-                  {:surface surface
-                   :pred pred
-                   :vocab-cat vocab-cat
-                   :plur plur}))
+  (log/info (str "italiano: vocab-entry-to-lexeme:"
+                 {:surface surface
+                  :pred pred
+                  :vocab-cat vocab-cat
+                  :plur plur}))
   (let [pred (-> pred
                  clojure.string/trim
                  (clojure.string/replace #"[()]" "")

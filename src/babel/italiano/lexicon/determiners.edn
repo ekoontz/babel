@@ -326,6 +326,10 @@
            :agr {:mass false
                  :number :sing}}}
 
+
+ "tutto" [{:synsem {:cat :pre-det
+                    :sem {:pred :all}}}]
+
  "un" [{:synsem {:cat :det
                  :def :indef
                  :mass false

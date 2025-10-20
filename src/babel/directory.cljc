@@ -71,6 +71,8 @@
           filter-lexicon-fn
           (fn [lexeme]
             (or
+             (and adjectives?
+                  (= :adjective (u/get-in lexeme [:synsem :cat])))
              (and (= :det (u/get-in lexeme [:synsem :cat]))
                   (or (and definite-articles?
                            (= :def (u/get-in lexeme [:synsem :def]))
@@ -80,5 +82,7 @@
                            (= :possessive (u/get-in lexeme [:synsem :def])))))))
           target-model ((:vocab2model target-model) target-vocab-items filter-lexicon-fn)
           source-model ((:vocab2model source-model) source-vocab-items filter-lexicon-fn)]
+      (log/info (str "create-model-with-vocab-items: target-vocab-items: " (vec target-vocab-items)))
+      (log/info (str "create-model-with-vocab-items: source-vocab-items: " (vec source-vocab-items)))
       {:source source-model
        :target target-model})))
