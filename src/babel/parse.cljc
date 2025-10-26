@@ -298,6 +298,7 @@
    by calling the supplied _fo_ function"
   (let [head-first? (get-in tree [:first] :none)
         cat (str (get-in tree [:synsem :cat]) "")]
+    (log/debug (str "rule: " (get-in tree [:rule]) "; :first: " (get-in tree [:first]) "; head-first? " head-first?))
     (if (= true (get-in tree [:phrasal]))
       (do (log/trace (str "fo-ps: rule at top of tree: " (get-in tree [:rule])))
           (log/trace (str "fo-ps: " (strip-refs tree))))
