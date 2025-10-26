@@ -94,7 +94,9 @@
      {:head {:italiano head-italian}
       :comp {:italiano comp-italian}
       :italiano {:a head-italian
-                 :b comp-italian}})))
+                 :b comp-italian}
+      :first :head})))
+
 (defonce head-last
   (let [head-italian (atom :top)
         comp-italian (atom :top)
@@ -107,7 +109,8 @@
      {:head {:italiano head-italian}
       :comp {:italiano comp-italian}
       :italiano {:a comp-italian
-                 :b head-italian}})))
+                 :b head-italian}
+      :first :comp})))
 
 ;; -- BEGIN SCHEMA DEFINITIONS
 (defonce c10
@@ -136,7 +139,6 @@
      comp-modifies-head
      head-last
      {:schema-symbol 'c11-comp-subcat-1
-      :first :head
       :comment "c11-comp-subcat-1"})))
 
 (defonce h11-comp-subcat-1
@@ -149,7 +151,6 @@
      head-principle
      head-first
      {:schema-symbol 'h11-comp-subcat-1
-      :first :comp
       :comment "h11-comp-subcat-1"})))
 
 (defonce h10
@@ -890,8 +891,8 @@
         grammar
         (filter #(or (= (:rule %) "noun-phrase1")
                      (= (:rule %) "noun-phrase2")
-                     (= (:rule %) "nbar1")
-                     (= (:rule %) "nbar2"))
+                     (= (:rule %) "nbar1-woi-1")
+                     (= (:rule %) "nbar1-woi-2"))
                 grammar)
         rules (map #(keyword (get-in % [:rule])) grammar)
         lexicon
