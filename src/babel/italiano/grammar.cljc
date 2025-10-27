@@ -240,7 +240,7 @@
     {:comp woi
      :word-of-interest woi}))
 
-(defonce grammar (list (unify h21
+(def grammar (list (unify h21
                               {:rule "adjective-phrase"
                                :synsem {:cat :adjective}})
 
@@ -365,6 +365,19 @@
                                         ;                           {:rule "adjunct-prepositional-phrase"
                                         ;                            :synsem {:cat :prep}})
                        
+
+                       (unify word-of-interest-is-head
+                              subcat-1-principle
+                              head-first
+                              {:rule "tutti-phrase"
+                               :synsem {:cat :noun}
+                               :head {:cat :pre-det
+                                      :phrasal false
+                                      :italiano {:italiano "tutti"}}
+                               :comp {:cat :noun
+                                      :phrasal true
+                                      :subcat []}})
+
                        (unify c10
                               root-is-head-root
                               {:head {:phrasal true ;; only a vp-aux may be the head child, not simply a lexical auxiliary verb.
@@ -892,7 +905,8 @@
         (filter #(or (= (:rule %) "noun-phrase1")
                      (= (:rule %) "noun-phrase2")
                      (= (:rule %) "nbar1-woi-1")
-                     (= (:rule %) "nbar1-woi-2"))
+                     (= (:rule %) "nbar1-woi-2")
+                     (= (:rule %) "tutti-phrase"))
                 grammar)
         rules (map #(keyword (get-in % [:rule])) grammar)
         lexicon

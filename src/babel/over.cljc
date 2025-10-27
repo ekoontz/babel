@@ -2,6 +2,7 @@
   (:refer-clojure :exclude [get-in])
   (:require
    [babel.exception :refer [exception]]
+   [babel.lexiconfn :as l]
    [babel.unify-compat :refer [dissoc-paths]]
    #?(:clj [clojure.tools.logging :as log])
    #?(:cljs [babel.logjs :as log]) 
@@ -63,7 +64,12 @@
           (log/debug (str "overh success: " (get-in parent [:rule]) "-> pred=" (get-in head [:synsem :sem :pred]))) 
           [result])
         (log/debug (str "overh: fail-path for rule: " (:rule parent) ":"
-                        (fail-path (copy parent) {:head (copy head)})))))))
+                        (str "candidate head: " (l/pprint head)) "; fail-path: "
+                        (let [fail-path (fail-path (copy parent) {:head (copy head)})]
+                          (str "candidate head's value at fail-path: "
+                               (get-in head (rest fail-path)))
+                          (str "parent's value at fail-path: "
+                               (get-in parent fail-path)))))))))
 
 (defn overc [parent comp]
   "add given child as the complement of the parent"

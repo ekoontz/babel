@@ -608,6 +608,13 @@
            :synsem {:cat :adjective
                     :sem {:pred pred
                           :comparative false}}}]})
+
+      (= vocab-cat "pre-det")
+      {surface
+       [{:vocab-cat vocab-cat
+         :synsem {:cat :pre-det
+                  :sem {:pred pred}}}]}
+      
       true
       (do
         (log/warn (str "(vocab-entry-to-lexeme: "

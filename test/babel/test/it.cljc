@@ -62,6 +62,9 @@
 (defn analyze [str]
   (italiano/analyze str model))
 
+(defn analyze-with-model [str model]
+  (italiano/analyze str model))
+
 (deftest analyze-1
   (let [singular (analyze "compito")
         plural  (analyze "compiti")]
@@ -718,6 +721,9 @@
 ;;
 ;; GET /vocab/296/question
 
+(defn create-model [base-model vocab-items filter-lexicon-fn]
+  ((:vocab2model base-model) vocab-items filter-lexicon-fn))
+
 (deftest vocab-entry
   (let [inquilino {:surface "inquilino" :pred "male tenant" :vocab_cat "noun1"}
         buffo     {:surface "buffo"     :pred "funny"       :vocab_cat "adj1"}
@@ -775,8 +781,8 @@
                                    filter-lexicon-fn))]
 
       ;; cf verbcoach.question.babel/expression
-      (let [target-model @@(get models :it)
-            source-model @@(get models :en)
+      (let [base-target-model @@(get models :it)
+            base-source-model @@(get models :en)
             generative-features {:definite-articles? true
                                  :possessive-articles? true
                                  :adjectives? true}
@@ -790,19 +796,18 @@
                              (= nil (u/get-in lexeme [:synsem :sem :of :pred])))
                         (and possessive-articles?
                              (= :possessive (u/get-in lexeme [:synsem :def])))))))
-            target-model ((:vocab2model target-model) target-vocab-items filter-lexicon-fn)
-            source-model ((:vocab2model source-model) source-vocab-items filter-lexicon-fn)
+            target-model (create-model base-target-model target-vocab-items filter-lexicon-fn)
+            source-model (create-model base-source-model source-vocab-items filter-lexicon-fn)
             base-spec {:synsem {:cat :noun
                                 :subcat []}}
             vocab-item-root "inquilino"
             target-spec (u/unify base-spec
                                  {:word-of-interest {:italiano {:italiano "inquilino"}}})]
-        (doall
-         (take 50
-               (repeatedly #(let [expression (babel.generate/generate
-                                              target-spec target-model)]
-                              (log/info (str "expression: " (morph expression)))
-                              (is (map? expression))))))))))
+        (let [expression (babel.generate/generate
+                          target-spec target-model)]
+          (log/info (str "expression: " (morph expression)))
+          (is (map? expression)))
 
 
-
+        (let [analysis (analyze-with-model "inquilino" target-model)]
+          (is (not (empty? analysis))))))))
