@@ -892,7 +892,8 @@
  "raccontare" {:synsem {:cat :verb
                         :sem {:pred :recount}}}
 
- "radersi" {:synsem {:cat :verb
+ "radersi" {:italiano {:passato "raso"}
+            :synsem {:cat :verb
                      :sem {:pred :shave
                            :reflexive true}
                      :subcat {:1 {:agr {:gender :masc}}}}}
